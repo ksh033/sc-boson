@@ -1,0 +1,53 @@
+@import '../../style/index.less';
+.sc-searchbar {
+  .ant-form-item {
+    margin-bottom: 24px;
+    margin-right: 0;
+    display: flex;
+    flex-wrap: nowrap;
+
+    > .ant-form-item-label {
+      min-width: 70px;
+      text-align: left;
+    }
+    .ant-form-item-control {
+      flex: 1 1;
+      line-height: 32px;
+    }
+
+    .ant-radio-group {
+      white-space: nowrap;
+    }
+  }
+
+  &-option {
+    text-align: end;
+    flex: 0 0 100%;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding-left: 90px !important;
+  }
+  &-buttons {
+    white-space: nowrap;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    text-align: right;
+  }
+  &-buttons-lastrow {
+    text-align: right;
+  }
+}
+@media screen and (max-width: @screen-lg) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 8px;
+  }
+}

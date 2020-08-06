@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {},
+  "peerDependencies": {
+    "react": "16",
+    "react-dom": "16"
+  },
+  "devDependencies": {},
+  "name": "sc-boson"
+}

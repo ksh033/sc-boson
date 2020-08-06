@@ -1,0 +1,49 @@
+.sc-advanced-table-toolbar{
+    margin-bottom: 8px;
+    .sc-advanced-table-part{
+        display: inline-block;
+        &+.sc-advanced-table-part{
+            margin-left: 16px;
+        }
+    }
+}
+.sc-advanced-table-toolbar-show-columns{
+    background: #fff;
+    padding: 8px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    .ant-checkbox-group-item{
+        display: block;
+        margin: 0;
+        padding: 4px 0;
+    }
+}
+.react-resizable {
+    position: relative;
+}
+.react-resizable-handle {
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    bottom: 0;
+    right: 0px;
+    cursor: col-resize;
+}
+tr.drop-over-downward td {
+    border-bottom: 2px dashed #1890ff;
+}
+  
+tr.drop-over-upward td {
+    border-top: 2px dashed #1890ff;
+}
+.sc-advanced-table-resize-proxy{
+    background: #ccc;
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    top: 0;
+    cursor: col-resize;
+    display: none;
+}
+
+   

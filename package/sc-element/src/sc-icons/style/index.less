@@ -1,0 +1,115 @@
+
+@size-xxxs: 16px;
+@size-xxs: 18px;
+@size-xs: 20px;
+@size-s: 24px;
+@size-m: 28px;
+@size-l: 36px;
+@size-xl: 42px;
+@size-xxl: 48px;
+@size-xxxl: 60px;
+@size-xxxxl: 72px;
+
+:global {
+
+  .bs-icon-box {
+    display: inline;
+    vertical-align: text-bottom;
+
+    > span {
+        vertical-align: middle;
+        position: relative;
+        display: inline-block;
+
+        > span {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+  }
+
+  .bs-icon {
+    fill: currentColor;
+    background-size: cover;
+    width: @size-m;
+    height: @size-m;
+    font-family: "bsfont" !important;
+    user-select: none;
+    font-style: normal;
+    vertical-align: middle;
+
+    &-xxxs {
+      width: @size-xxxs;
+      height: @size-xxxs;
+      line-height: @size-xxxs;
+    }
+
+    &-xxs {
+      width: @size-xxs;
+      height: @size-xxs;
+      line-height: @size-xxs;
+    }
+
+    &-xs {
+      width: @size-xs;
+      height: @size-xs;
+      font-size: @size-xs;
+      line-height: @size-xs;
+    }
+
+    &-s {
+      width: @size-s;
+      height: @size-s;
+      font-size: @size-s;
+      line-height: @size-s;
+    }
+
+    &-m {
+      width: @size-m;
+      height: @size-m;
+      font-size: @size-m;
+      line-height: @size-m;
+    }
+
+    &-l {
+      width: @size-l;
+      height: @size-l;
+      font-size: @size-l;
+      line-height: @size-l;
+    }
+
+    &-xl {
+      width: @size-xl;
+      height: @size-xl;
+      font-size: @size-xl;
+      line-height: @size-xl;
+    }
+
+    &-xxl {
+      width: @size-xxl;
+      height: @size-xxl;
+      font-size: @size-xxl;
+      line-height: @size-xxl;
+    }
+
+    &-xxxl {
+      width: @size-xxxl;
+      height: @size-xxxl;
+      font-size: @size-xxxl;
+      line-height: @size-xxxl;
+    }
+
+    &-xxxxl {
+      width: @size-xxxxl;
+      height: @size-xxxxl;
+      font-size: @size-xxxxl;
+      line-height: @size-xxxxl;
+    }
+
+    & span {
+      padding-left: 5px
+    }
+  }
+}
