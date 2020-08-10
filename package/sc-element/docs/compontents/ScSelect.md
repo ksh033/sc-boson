@@ -161,5 +161,6 @@ export default () => {
 | onSearch  | 输入查询回调 | (value)=>void | null  |
 | remoteSearch | 是否支持远程查询数据 | boolean | false |
 | singleInput | 单选查询并生成自定义选项 | boolean | false |
+| openReloadData | remoteSearch = true 时，是否每次展开都重新拉取数据 | boolean | false |
 
 更多配置项，请查看 Antd [ `select` ](https://ant.design/components/select-cn/)。

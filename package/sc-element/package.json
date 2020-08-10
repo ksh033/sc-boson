@@ -1,6 +1,6 @@
 {
-  "name": "sc-element",
-  "version": "1.0.16",
+  "name": "@scboson/sc-element",
+  "version": "1.0.17",
   "description": "基于ReactJS+Antd+Dva组成",
   "scripts": {
     "start": "dumi dev",

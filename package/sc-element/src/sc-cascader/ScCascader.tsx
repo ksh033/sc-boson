@@ -31,6 +31,7 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
     params,
     onLoad,
     onChange,
+    options,
     value,
     ...restProps
   } = props;
@@ -199,8 +200,8 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
   }
   return (
     <Cascader
-      options={treeData}
       ref={ref}
+      options={treeData}
       {...restProps}
       {...otherProps}
       value={_value}
