@@ -1,6 +1,6 @@
 {
   "name": "@scboson/utils",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "utils",
   "scripts": {
     "build": "father build"

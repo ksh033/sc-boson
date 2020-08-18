@@ -1,8 +1,8 @@
-export default class ArrayFn {
+export default {
   /*判断一个元素是否在数组中*/
   contains(arr, val) {
     return arr.indexOf(val) != -1 ? true : false
-  }
+  },
 
   /**
    * @param  {arr} 数组
@@ -17,7 +17,7 @@ export default class ArrayFn {
       var res = fn.apply(arr, [arr[i], i].concat(args))
       if (res != null) a.push(res)
     }
-  }
+  },
 
   /**
    * @param  {arr} 数组
@@ -33,7 +33,7 @@ export default class ArrayFn {
       if (res != null) a.push(res)
     }
     return a
-  }
+  },
 
   /**
    * @param  {arr} 数组
@@ -53,7 +53,7 @@ export default class ArrayFn {
           return arr
       }
     })
-  }
+  },
 
   /*去重*/
   unique(arr) {
@@ -89,13 +89,13 @@ export default class ArrayFn {
           return r
       }
        */
-  }
+  },
 
   /*求两个集合的并集*/
   union(a, b) {
     var newArr = a.concat(b)
     return this.unique(newArr)
-  }
+  },
 
   /*求两个集合的交集*/
   intersect(a, b) {
@@ -104,7 +104,7 @@ export default class ArrayFn {
     return this.map(a, function(o) {
       return _this.contains(b, o) ? o : null
     })
-  }
+  },
 
   /*删除其中一个元素*/
   remove(arr, ele) {
@@ -113,7 +113,7 @@ export default class ArrayFn {
       arr.splice(index, 1)
     }
     return arr
-  }
+  },
 
   /*将类数组转换为数组的方法*/
   formArray(ary) {
@@ -124,27 +124,27 @@ export default class ArrayFn {
       arr = Array.prototype.slice.call(ary)
     }
     return arr
-  }
+  },
 
   /*最大值*/
   max(arr) {
     return Math.max.apply(null, arr)
-  }
+  },
 
   /*最小值*/
   min(arr) {
     return Math.min.apply(null, arr)
-  }
+  },
 
   /*求和*/
   sum(arr) {
     return arr.reduce((pre, cur) => {
       return pre + cur
     })
-  }
+  },
 
   /*平均值*/
   average(arr) {
     return this.sum(arr) / arr.length
-  }
+  },
 }

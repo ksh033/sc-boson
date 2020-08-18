@@ -1,4 +1,4 @@
-export default class NumberFn {
+export default {
   /*随机数范围*/
   random(min, max) {
     if (arguments.length === 2) {
@@ -6,7 +6,7 @@ export default class NumberFn {
     } else {
       return null
     }
-  }
+  },
 
   /*将阿拉伯数字翻译成中文的大写数字*/
   numberToChinese(num) {
@@ -56,7 +56,7 @@ export default class NumberFn {
     if (re == '一十') re = '十'
     if (re.match(/^一/) && re.length == 3) re = re.replace('一', '')
     return re
-  }
+  },
 
   /*将数字转换为大写金额*/
   changeToChinese(Num) {
@@ -207,5 +207,5 @@ export default class NumberFn {
       newchar = newchar + '整'
     }
     return newchar
-  }
+  },
 }

@@ -1,4 +1,4 @@
-export default class StringFn {
+export default {
   /**
    * 去除空格
    * @param  {str}
@@ -20,7 +20,7 @@ export default class StringFn {
       default:
         return str
     }
-  }
+  },
 
   /**
    * @param  {str}
@@ -61,7 +61,7 @@ export default class StringFn {
       default:
         return str
     }
-  }
+  },
 
   /*
       检测密码强度
@@ -84,7 +84,7 @@ export default class StringFn {
       Lv++
     }
     return Lv
-  }
+  },
 
   /*过滤html代码(把<>转换)*/
   filterTag(str) {
@@ -93,5 +93,5 @@ export default class StringFn {
     str = str.replace(/>/gi, '&gt;')
     str = str.replace(' ', '&nbsp;')
     return str
-  }
+  },
 }
