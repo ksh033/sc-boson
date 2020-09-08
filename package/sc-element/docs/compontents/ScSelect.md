@@ -119,7 +119,6 @@ export default () => {
     <div>
       <div style={{lineHeight: '2'}}>每次改变参数，都会重新执行type中定义的方法，再次获取一次数据, 当前type:{params.type}</div>
       <ScSelect
-        modelKey="data"  
         request={request}
         autoload={true}
         params={params}

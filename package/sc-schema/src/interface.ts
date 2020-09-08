@@ -78,10 +78,8 @@ export interface FormItem {
   // 字段
   name?: string | string[]
   /**
-   * 是否显示
+   * 表单项属性
    */
-  isView?: boolean | string
-  // 表单项属性
   formItemProps?: FormItemProp
   /**
    * 子集
@@ -117,6 +115,10 @@ export interface FormItem {
   dataName?:
     | string
     | ((value: string | object | number, fromItem: FormItem) => string)
+  /**
+   * 数据默认转换类型
+   */
+  dataType?: string
 }
 
 export interface FormConfig {
