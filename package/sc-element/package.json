@@ -1,5 +1,5 @@
 {
-  "name": "@scboson/sc-element",
+  "name": "sc-element",
   "version": "1.0.18",
   "description": "基于ReactJS+Antd+Dva组成",
   "scripts": {
