@@ -193,7 +193,7 @@ export default () => {
   }
 
   const onSelectRow = (selectedRowKeys, selectedRows) => {
-    console.log(selectedRows)
+     console.log(selectedRows)
   }
   return (
    <ScTable

@@ -80,6 +80,13 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     rows: selectedRows || [],
   });
 
+  const getDataKeys = (_data: any[]) => {
+    const dataKey = _data.map(item => item[rowKey]);
+    dataKeys.current = new Set(dataKey);
+  };
+
+  const dataKeys = useRef<Set<any>>(new Set([]));
+
   const loadData = async () => {
     const { current } = pagination;
 
@@ -101,6 +108,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         _data = onLoad(_data);
       }
       setDataSource(_data);
+      getDataKeys(_data.rows || []);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -108,6 +116,26 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   };
 
   const handleRowSelectChange = (_rowKeys: string[], _rows: any[] = []) => {
+    const _dataKeys = dataKeys.current;
+
+    let crowKeys = [...(action.current.rowKeys || [])];
+    let crows = [...(action.current.rows || [])];
+    // 先过滤掉当前有数据的选择项
+    crowKeys = crowKeys.filter(item => !_dataKeys.has(item));
+    crows = crows.filter(item => !_dataKeys.has(item[rowKey]));
+
+    crowKeys = [...crowKeys, ..._rowKeys].filter(
+      item => item !== undefined && item !== null,
+    );
+    const srowKeys = new Set(crowKeys);
+    crows = [...crows, ..._rows].filter(
+      item => item !== undefined && item !== null && srowKeys.has(item[rowKey]),
+    );
+
+    changeRowSelect(crowKeys, crows);
+  };
+
+  const changeRowSelect = (_rowKeys: string[], _rows: any[] = []) => {
     if (onSelectRow) {
       onSelectRow(_rowKeys, _rows);
     }
@@ -120,6 +148,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   };
 
   useEffect(() => {
+    getDataKeys(data.rows || []);
     if (autoload) {
       loadData();
     }
@@ -180,7 +209,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     const key = record[rowKey];
     let _rowKeys = [...(action.current.rowKeys || [])];
     let _rows = [...(action.current.rows || [])];
-    if (key) {
+    if (key !== undefined && key !== null) {
       if (rowSelection?.type === 'radio') {
         _rowKeys = [key];
         _rows = [record];
@@ -200,7 +229,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         }
       }
     }
-    handleRowSelectChange(_rowKeys, _rows);
+    changeRowSelect(_rowKeys, _rows);
     onRowSelect && onRowSelect(record);
   };
 
@@ -238,7 +267,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     const _rowSelection = checkbox
       ? {
           selectedRowKeys: rowKeys,
-          // onChange: handleRowSelectChange,
+          onChange: handleRowSelectChange,
           getCheckboxProps: (record: any) => ({
             disabled: record.disabled,
           }),
