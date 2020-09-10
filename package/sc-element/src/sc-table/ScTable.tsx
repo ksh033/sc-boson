@@ -62,7 +62,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   } = restPros;
 
   const [dataSource, setDataSource] = useState(data);
-  const action = useRef<any>();
+
   // const [needTotalList, setNeedTotalList] = useState(initTotalList(columns))
   const [rowKeys, setRowKeys] = useState(selectedRowKeys || []);
   const [loading, setLoading] = useState(false);
@@ -74,6 +74,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   });
   const [filters, setFilters] = useState({});
   const [sorter, setSorter] = useState({});
+
+  const action = useRef<any>({
+    rowKeys: selectedRowKeys || [],
+    rows: selectedRows || [],
+  });
 
   const loadData = async () => {
     const { current } = pagination;
@@ -107,19 +112,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       onSelectRow(_rowKeys, _rows);
     }
     action.current = {
-      loadData,
       rowKeys: _rowKeys,
       rows: _rows,
     };
     setRowKeys(_rowKeys);
     setRows(_rows);
-  };
-
-  action.current = {
-    loadData,
-    rowKeys,
-    rows,
-    dataSource,
   };
 
   useEffect(() => {
@@ -130,12 +127,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
   useEffect(() => {
     const userAction = {
-      data: action.current.dataSource || dataSource,
+      data: dataSource,
       selectedRowKeys: action.current.rowKeys || rowKeys,
       selectedRows: action.current.rows || rows,
-      reload: () => {
-        action.current.loadData && action.current.loadData();
-      },
+      reload: loadData,
     };
     if (saveRef && typeof saveRef === 'function') {
       saveRef(userAction);
@@ -181,10 +176,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     setSorter(_sorter);
   };
 
-  // const cleanSelectedKeys = () => {
-  //   handleRowSelectChange([], [])
-  // }
-
   const handleRowSelect = (record: any) => {
     const key = record[rowKey];
     let _rowKeys = [...(action.current.rowKeys || [])];
@@ -209,7 +200,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         }
       }
     }
-
     handleRowSelectChange(_rowKeys, _rows);
     onRowSelect && onRowSelect(record);
   };
@@ -248,7 +238,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     const _rowSelection = checkbox
       ? {
           selectedRowKeys: rowKeys,
-          onChange: handleRowSelectChange,
+          // onChange: handleRowSelectChange,
           getCheckboxProps: (record: any) => ({
             disabled: record.disabled,
           }),
@@ -273,7 +263,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         if (result === undefined || result === null) {
           result = {};
         }
-        if (result && rowSelected) {
+        if (result && rowSelected && checkbox) {
           result['onClick'] = (event: any) => {
             // 阻止合成事件间的冒泡
             event.stopPropagation();

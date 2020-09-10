@@ -58,7 +58,7 @@ export default () => {
 /**
  * title: 异步请求
  */
-import React from 'react'
+import React, {useRef} from 'react'
 import {
   Divider,
   Badge,
@@ -73,6 +73,8 @@ export default () => {
   }
   const statusMap = ['default', 'processing', 'success', 'error'];
   const status = ['关闭', '运行中', '已上线', '异常'];
+  const saveRef = useRef()
+  
   const columns = [
     {
       title: '规则编号',
@@ -166,11 +168,12 @@ export default () => {
     },
   ];
   const request = (params) => {
+    const {size ,current} = params
     return new Promise(function(reslove, reject) {
       let data = [];
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < size; i++) {
         data.push({
-          no:  i + 1,
+          no:  (current - 1) * size + i,
           description: 'fhja',
           callNo: Math.floor(Math.random() * 30),
           status:  Math.floor(Math.random() * 3),
@@ -186,8 +189,11 @@ export default () => {
     });
   }
   const  onLoad = (data) => {
-    console.log(data);
     return data;
+  }
+
+  const onSelectRow = (selectedRowKeys, selectedRows) => {
+    console.log(selectedRows)
   }
   return (
    <ScTable
@@ -199,8 +205,11 @@ export default () => {
           <div>共{selectedRowKeys.length}条</div>
         )
       }}
+      rowKey="no"
+      onSelectRow={onSelectRow}
       request={request}
       onLoad = {onLoad}
+      saveRef={saveRef}
       autoload={true}
       columns={columns}
     />
