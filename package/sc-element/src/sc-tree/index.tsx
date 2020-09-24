@@ -1,3 +1,4 @@
-import ScTree from './ScTree'
-export { ScTreeProps } from './ScTree'
-export default ScTree
+import ScTree from './ScTree';
+
+export { ScTreeProps } from './ScTree';
+export default ScTree;

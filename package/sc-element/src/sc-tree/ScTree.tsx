@@ -2,29 +2,36 @@ import * as React from 'react';
 import { Tree, Input } from 'antd';
 import { TreeProps } from 'antd/lib/tree';
 import { useUpdateEffect, useThrottle } from '@umijs/hooks';
+
 const { useState, useEffect, useCallback, useRef } = React;
-const Search = Input.Search;
+const { Search } = Input;
 export interface ScTreeProps extends TreeProps {
-  data: any[];
+  data?: any[];
   textField?: string;
   valueField?: string;
-  root: any;
   params: any;
-  modelKey: string;
-  autoload: boolean;
-  ansy: boolean;
-  model?: string;
+  autoload?: boolean;
   canSearch?: boolean;
   placeholder?: string;
   onSearch?: any;
   nodeRender?: Function;
   request?: (params: any) => Promise<unknown>;
   onLoad?: (data: any) => void;
+  isLeafFormat?: (data: any) => boolean;
+  async?: boolean;
+  loadDataPramsFormat?: (data: any) => any;
+}
+
+interface DataNode {
+  title: string;
+  key: string;
+  isLeaf?: boolean;
+  children?: DataNode[];
 }
 
 const ScTree: React.FC<ScTreeProps> = props => {
   const {
-    data,
+    data = [],
     textField = 'title',
     valueField = 'key',
     params = null,
@@ -35,83 +42,71 @@ const ScTree: React.FC<ScTreeProps> = props => {
     request,
     onLoad,
     nodeRender,
-    autoExpandParent,
-    root,
+    isLeafFormat,
+    async = false,
+    defaultExpandAll = false,
+    defaultExpandParent = false,
+    loadDataPramsFormat,
     ...restProps
   } = props;
 
-  const formatTreeData = (_data: any) => {
+  const formatTreeData = (_data: any): any => {
     if (Array.isArray(_data) && _data.length > 0) {
       return _data.map((item: any) => {
         const { metaInfo, disabled } = item;
-        const otherAttr = { disabled: disabled ? disabled : false };
+        const otherAttr = { disabled: disabled || false };
         const attr = { ...otherAttr, dataRef: item };
-        let children = item.children;
+        let { children } = item;
+        let isLeaf = true;
+
         let title = (
           <div>
             {item[textField || 'title']}
-            {metaInfo ? metaInfo : null}
+            {metaInfo || null}
           </div>
         );
         if (nodeRender) {
           title = nodeRender(item);
         }
-        if (children && children.length > 0) {
+
+        if (Array.isArray(children) && children.length > 0) {
           children = formatTreeData(children);
         }
+        if (
+          isLeafFormat &&
+          (item.isLeaf === undefined || item.isLeaf === null)
+        ) {
+          isLeaf = isLeafFormat(item);
+        }
         return {
-          ...item,
           title,
+          isLeaf,
           key: item[valueField || 'key'],
-          children,
           ...attr,
+          children,
         };
       });
     } else {
       return [];
     }
   };
-  const getData = (_data: any) => {
-    let privateData = [];
-    if (root) {
-      if (Array.isArray(_data) && _data.length > 0) {
-        root.children = _data;
-      }
-      privateData.push(root);
-    } else {
-      privateData = _data;
-    }
-    return privateData;
-  };
 
   // let newData = formatTreeData(getData(data));
   // console.log(newData);
-  const [treeData, setTreeData] = useState(() => {
-    return formatTreeData(getData(data));
+  const [treeData, setTreeData] = useState<any>(() => {
+    return formatTreeData(data);
   });
 
   useUpdateEffect(() => {
     if (!request) {
       setTreeData(() => {
-        return formatTreeData(getData(data));
+        return formatTreeData(data);
       });
     }
   }, [data]);
 
   const [value, setValue] = useState<any>();
   const throttledValue = useThrottle(value, 500);
-
-  useEffect(() => {
-    if (!root && autoload) {
-      loadData(params);
-    }
-  }, []);
-
-  useUpdateEffect(() => {
-    if (!root && autoload) {
-      loadData(params);
-    }
-  }, [params]);
 
   useUpdateEffect(() => {
     if (onSearch) {
@@ -124,47 +119,84 @@ const ScTree: React.FC<ScTreeProps> = props => {
       if (!request) {
         throw 'no remote request method';
       }
-      let payload = _params ? _params : null;
+      let payload = _params || null;
       payload = params ? { ...params, ..._params } : payload;
 
       let _data: any = await request(payload);
       if (onLoad) {
         onLoad(treeData);
       }
-      _data = formatTreeData(getData(_data));
+      _data = formatTreeData(_data);
       setTreeData(_data);
     },
     [params],
   );
 
-  const onLoadData = (treeNode: any): Promise<void> => {
+  useEffect(() => {
+    if (autoload) {
+      loadData(params);
+    }
+  }, []);
+
+  useUpdateEffect(() => {
+    if (autoload) {
+      loadData(params);
+    }
+  }, [params]);
+
+  function updateTreeData(
+    list: DataNode[],
+    key: React.Key,
+    children: DataNode[],
+  ): DataNode[] {
+    return list.map(node => {
+      if (node.key === key) {
+        return {
+          ...node,
+          children,
+        };
+      } else if (node.children) {
+        return {
+          ...node,
+          children: updateTreeData(node.children, key, children),
+        };
+      }
+      return node;
+    });
+  }
+
+  const onLoadData = (node: any): Promise<void> => {
+    const { key, children } = node;
     return new Promise(async resolve => {
-      if (treeNode.props.data.children) {
+      if (children) {
         resolve();
         return;
       }
       if (!request) {
         throw 'no remote request method';
       }
-      let _data = await request(treeNode.props.data);
-      if (onLoad) {
-        onLoad(treeData);
+      let newparams = node.dataRef;
+      if (loadDataPramsFormat) {
+        newparams = loadDataPramsFormat(node.dataRef);
       }
-      treeNode.props.data.children = formatTreeData(_data);
-      setTreeData([...treeData]);
+      const _data = await request(newparams);
+
+      setTreeData((origin: any) => {
+        const newData = updateTreeData(origin, key, formatTreeData(_data));
+        return newData;
+      });
       resolve();
     });
   };
 
   const treeProps = {
-    treeData: treeData,
-    defaultExpandAll: true,
-    defaultExpandParent: true,
+    treeData,
+    defaultExpandAll,
+    defaultExpandParent,
     ...restProps,
-    autoExpandParent: autoExpandParent,
   };
 
-  if (request) {
+  if (async) {
     treeProps.loadData = onLoadData;
   }
 
