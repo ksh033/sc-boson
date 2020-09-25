@@ -1,94 +1,94 @@
-import * as React from 'react'
-import { Col, Row, Form, Divider } from 'antd'
-import { useCallback, useMemo } from 'react'
-const FormItem = Form.Item
+import * as React from 'react';
+import { Col, Row, Form, Divider } from 'antd';
+import { useCallback, useMemo } from 'react';
+const FormItem = Form.Item;
 
 export interface ScFormProps {
-  formConfig?: any
-  groupConfig?: any
-  form?:any
+  formConfig?: any;
+  groupConfig?: any;
+  form?: any;
 }
 export interface ScFormState {
-  data?: any
+  data?: any;
 }
 export interface FormItem {
-  label?: any
-  formProps?: any
-  props?: any
-  name: never
-  component?: any
-  group?: string
+  label?: any;
+  formProps?: any;
+  props?: any;
+  name: never;
+  component?: any;
+  group?: string;
 }
 
 const ScForm: React.ForwardRefRenderFunction<unknown, ScFormProps> = (
   _props,
-  ref
+  ref,
 ) => {
-  const { formConfig = {}, groupConfig = {}, form } = _props
+  const { formConfig = {}, groupConfig = {}, form } = _props;
 
   const initialValues = useMemo(() => {
-    let valuse: any = {}
+    let valuse: any = {};
     formConfig.map((item: FormItem) => {
       const {
         formProps: { initialValue },
-        name
-      } = item
+        name,
+      } = item;
       if (initialValue) {
-        valuse[name] = initialValue
+        valuse[name] = initialValue;
       }
-    })
-    return valuse
-  }, [formConfig])
+    });
+    return valuse;
+  }, [formConfig]);
 
-  const [wrapForm] = Form.useForm()
-  React.useImperativeHandle(form, () => wrapForm)
-  React.useImperativeHandle(ref, () => wrapForm)
+  const [wrapForm] = Form.useForm();
+  React.useImperativeHandle(form, () => wrapForm);
+  React.useImperativeHandle(ref, () => wrapForm);
 
   const createFormItem = useCallback((item: FormItem) => {
-    const { label, formProps, props, name, component } = item
-    const { initialValue, ...fromItemProps } = formProps
+    const { label, formProps, props, name, component } = item;
+    const { initialValue, ...fromItemProps } = formProps;
     return (
       <FormItem key={name} label={label} {...fromItemProps} name={name}>
         {React.createElement(component, { ...props })}
       </FormItem>
-    )
-  }, [])
+    );
+  }, []);
 
   //将表单条目分组
   const createGroup = useCallback((_formConfig: any): any => {
-    let formGroups: any = {}
+    let formGroups: any = {};
     _formConfig.map((item: FormItem) => {
-      const { group } = item
+      const { group } = item;
       if (group) {
         if (!formGroups[group]) {
-          formGroups[group] = []
+          formGroups[group] = [];
         }
-        formGroups[group].push(item)
+        formGroups[group].push(item);
       } else {
         if (!formGroups['default']) {
-          formGroups['default'] = []
+          formGroups['default'] = [];
         }
-        formGroups['default'].push(item)
+        formGroups['default'].push(item);
       }
-    })
-    return formGroups
-  }, [])
+    });
+    return formGroups;
+  }, []);
 
   //创建表单
   function createForm(_formGroups: any, _groupConfig: any): any {
-    let forms: any = []
+    let forms: any = [];
     _groupConfig =
       _groupConfig && _groupConfig.length
         ? _groupConfig
         : [
             {
               name: 'default',
-              col: '1'
-            }
-          ]
+              col: '1',
+            },
+          ];
 
     _groupConfig.map((item: any) => {
-      const { col, name, title, gutter } = item
+      const { col, name, title, gutter } = item;
       forms.push(
         <div key={name} className={'sc-form-group'}>
           {title ? <Divider orientation="left">{title}</Divider> : null}
@@ -98,13 +98,13 @@ const ScForm: React.ForwardRefRenderFunction<unknown, ScFormProps> = (
                 <Col key={item.name} span={24 / col}>
                   {createFormItem(item)}
                 </Col>
-              )
+              );
             })}
           </Row>
-        </div>
-      )
-    })
-    return forms
+        </div>,
+      );
+    });
+    return forms;
   }
 
   return (
@@ -113,7 +113,7 @@ const ScForm: React.ForwardRefRenderFunction<unknown, ScFormProps> = (
         {createForm(createGroup(formConfig), groupConfig)}
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default React.forwardRef(ScForm)
+export default React.forwardRef(ScForm);
