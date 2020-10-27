@@ -57,7 +57,7 @@ const ScTree: React.FC<ScTreeProps> = props => {
         const otherAttr = { disabled: disabled || false };
         const attr = { ...otherAttr, dataRef: item };
         let { children } = item;
-        let isLeaf = true;
+        let isLeaf = item.isLeaf;
 
         let title = (
           <div>
