@@ -189,26 +189,27 @@ export interface SearchFilterProp {
     | Map<String, (item: QueryConfigItem) => QueryConfigItem | any>
     | undefined
 }
-/**
- * 页面返回值
- */
-export interface PageConfig {
-  queryConfig?: Array<FormItem> | Map<String, Array<FormItem>>
-  formConfig?: Array<FormConfig> | Map<String, Array<FormConfig>>
-  tableConfig?: ProColumn[]
-  service?: Map<String, Promise<any>> | any
-  event?: Map<String, Function | Promise<any>> | any
-}
 
+/**
+ * 页面类型
+ */
+export enum PageType{
+  list="listpage",
+  modal="modalpage",
+  page="page"
+}
+/**
+* 页面返回值
+*/
+export interface PageConfig {
+  queryConfig?: Array<FormItem> | Map<String, Array<FormItem>>;
+  formConfig?: Array<FormConfig> | Map<String, Array<FormConfig>>;
+  tableConfig?: ProColumn[];
+  service?: Map<String, Promise<any>> | any;
+  pageType?:PageType|string;
+  event?: Map<String, Function | Promise<any>> | any;
+  path?:string
+}
 export interface ColItem {
   editable?: boolean
-}
-/**
- * 按钮类型集合
- */
-export interface ButtonTypes {
-  text?: string // 按钮名称
-  icon?: string | React.ReactNode // 按钮的图标
-  type?: string // 按钮类型
-  buttonType?: string // 按钮对应的方法，以及按钮远程请求的方法名
 }
