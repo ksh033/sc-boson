@@ -69,10 +69,11 @@ export interface QueryConfigItem extends FormItemProp {
   columnSize?: number
 }
 
+
 /**
  * 表单项配置
  */
-export interface FormItem {
+export interface FormItem{
   // 文本
   label?: string
   // 字段
@@ -101,10 +102,7 @@ export interface FormItem {
    * 是否只读
    */
   readonly?: boolean
-  /**
-   * 是否隐藏
-   */
-  hiddenExpend?: boolean
+ 
   /**
    * 是否隐藏
    */
@@ -119,7 +117,18 @@ export interface FormItem {
    * 数据默认转换类型
    */
   dataType?: string
+
+  [index:string]:any
 }
+
+export interface FormSearchItem extends FormItem{ 
+  /**
+    * 是否隐藏
+    */
+   hiddenExpend?: boolean
+ }
+ 
+
 
 export interface FormConfig {
   /**
@@ -202,7 +211,7 @@ export enum PageType{
 * 页面返回值
 */
 export interface PageConfig {
-  queryConfig?: Array<FormItem> | Map<String, Array<FormItem>>;
+  queryConfig?: Array<FormSearchItem> | Map<String, Array<FormSearchItem>>;
   formConfig?: Array<FormConfig> | Map<String, Array<FormConfig>>;
   tableConfig?: ProColumn[];
   service?: Map<String, Promise<any>> | any;

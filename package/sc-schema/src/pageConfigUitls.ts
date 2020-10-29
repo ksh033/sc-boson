@@ -70,26 +70,32 @@ const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
       itemInfos = _.cloneDeep(typeConfig[key || ''])
     }
     if (itemInfos && itemInfos.length > 0) {
-      // if (!itemInfos[0].group) {
-      // itemInfos = [{ group: 'default', groupTitle: 'default', items: itemInfos }]
-      // }
       newFormInfos = itemInfos.map((element: FormConfig) => {
         const groupItems: any[] = []
         const { group, items } = element
-        items.forEach((item: any) => {
+        items.forEach((it: FormItem) => {
+          let item = it;
           if (!item) {
             groupItems.push(item)
             return
           }
-          const { component, props, formItemProps } = item
-          // let otherprops={}
-          if (action && !item[`${action}`]) {
-            return
+          // 获取组建属性
+          if (!item.props) {
+            item.props = {}
           }
-          //   otherprops=item[`${action}`]
+          // 获取组建表单属性,用于getFieldDecorator(id, options)
+          if (!item.formItemProps) {
+            item.formItemProps = {}
+          }
+          // 有不同操作时覆盖对应不同的值
+          if (action && item[action]) {
+            const itenOtherProps = item[`${action}`] || {}
+            item = _.defaultsDeep(item, itenOtherProps)
+          }
+          
           // 查找注册组建
-          if (component && cmps[component]) {
-            item.component = cmps[component]
+          if (item.component && cmps[item.component]) {
+            item.component = cmps[item.component]
           } else {
             item.component = cmps.Input
           }
@@ -105,21 +111,17 @@ const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
           }
 
           let extProps = null
-          if (fieldsProp && fieldsProp[item.name]) {
-            if (_.isFunction(fieldsProp[item.name])) {
-              extProps = fieldsProp[item.name](item)
-            } else {
-              extProps = fieldsProp[item.name]
+          if (typeof item.name === 'string') { 
+            if (fieldsProp && fieldsProp[item.name]) {
+              if (_.isFunction(fieldsProp[item.name])) {
+                extProps = fieldsProp[item.name](item)
+              } else {
+                extProps = fieldsProp[item.name]
+              }
             }
           }
-          // 获取组建属性
-          if (!props) {
-            item.props = {}
-          }
-          // 获取组建表单属性,用于getFieldDecorator(id, options)
-          if (!formItemProps) {
-            item.formItemProps = {}
-          }
+
+        
           // 查找注册远程请求
           item = getRequest(item, pageConfig)
           // 业务字段属性覆盖，用于事件或其它需要根据业务需要控制组建属性
@@ -159,10 +161,7 @@ const filterSearchConfig = (
   pageConfig: PageConfig,
   filter: SearchFilterProp
 ) => {
-  // let newSearchInfos = {
-  // quicks: [],
-  // advances: [],
-  //  };
+
   const newSearchInfos: any = []
   const { nodeType, action } = filter
   let typeConfig: any = getConfig(nodeType, pageConfig)
