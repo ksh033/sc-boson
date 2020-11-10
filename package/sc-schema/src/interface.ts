@@ -118,6 +118,8 @@ export interface FormItem{
    */
   dataType?: string
 
+  viewUseComponent?: boolean
+
   [index:string]:any
 }
 
@@ -142,7 +144,7 @@ export interface FormConfig {
   /**
    * 分组名称
    */
-  groupTitle?: string
+  groupTitle?: string | React.ReactNode
   /**
    * 分组表单项
    */
