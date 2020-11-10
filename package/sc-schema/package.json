@@ -1,6 +1,6 @@
 {
   "name": "@scboson/schema",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "sc-schema",
   "scripts": {
     "build": "father build"
