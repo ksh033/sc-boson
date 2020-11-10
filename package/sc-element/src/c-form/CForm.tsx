@@ -166,11 +166,10 @@ const CForm: React.FC<any> = props => {
             };
           } else {
             // eslint-disable-next-line no-shadow
-            const { labelCol, wrapperCol } = itemProps.formItemProps;
-            if (!labelCol) {
+            if (!itemProps.formItemProps.labelCol) {
               itemProps.formItemProps['labelCol'] = labelCol;
             }
-            if (!wrapperCol) {
+            if (!itemProps.formItemProps.wrapperCol) {
               itemProps.formItemProps['wrapperCol'] = wrapperCol;
             }
           }
@@ -210,10 +209,11 @@ const CForm: React.FC<any> = props => {
           </Row>,
         );
       }
+
       return (
         <div key={`form-group-${group}`} className="sc-form-group">
           {groupTitle ? (
-            <Divider orientation="left">{groupTitle}</Divider>
+            <div className="sc-form-group-title">{groupTitle}</div>
           ) : null}
           {rows}
         </div>

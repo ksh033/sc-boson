@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react'
-import { Row, Col } from 'antd'
+import React, { PureComponent } from 'react';
+import { Row, Col } from 'antd';
 
 export default class ViewItem extends PureComponent<any> {
   render() {
@@ -11,7 +11,7 @@ export default class ViewItem extends PureComponent<any> {
       initialValue,
       initData,
       render,
-    } = this.props
+    } = this.props;
     return (
       <div className="sc-viem-item-item">
         <Row>
@@ -19,7 +19,9 @@ export default class ViewItem extends PureComponent<any> {
             <div className="sc-viem-item-label">{label}：</div>
           </Col>
           <Col {...wrapperCol}>
-            {render
+            {this.props.children
+              ? this.props.children
+              : render
               ? render(initialValue, initData)
               : typeof initialValue === 'object'
               ? initialValue[name] || ''
@@ -27,6 +29,6 @@ export default class ViewItem extends PureComponent<any> {
           </Col>
         </Row>
       </div>
-    )
+    );
   }
 }
