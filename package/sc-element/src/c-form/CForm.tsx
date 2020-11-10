@@ -70,6 +70,7 @@ const CForm: React.FC<any> = props => {
       name,
       component,
       label,
+      viewUseComponent = false,
       formItemProps,
       dataName,
       hidden,
@@ -115,9 +116,11 @@ const CForm: React.FC<any> = props => {
             {...itemProps}
             initialValue={initialValues}
           >
-            {typeof component === 'function'
-              ? React.createElement(component, { ...item.props })
-              : React.cloneElement(component, { ...item.props })}
+            {viewUseComponent
+              ? typeof component === 'function'
+                ? React.createElement(component, { ...item.props })
+                : React.cloneElement(component, { ...item.props })
+              : null}
           </ViewItem>
         ) : (
           <FormItem key={`form-item-${name}`} name={_name} {...itemProps}>
