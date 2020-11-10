@@ -138,7 +138,8 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
                   return item[`${valueField}`];
                 }),
               );
-              handleChange(selectedOptions);
+              let newvalue: any[] = formatValue(selectedOptions);
+              handleChange(newvalue, selectedOptions);
             }
           } else {
             setTreeData(_data);
@@ -180,12 +181,11 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
     }
   };
 
-  const handleChange = (oldValue: any) => {
+  const handleChange = (newValue: any[], options: any[]) => {
     if (onChange) {
-      let newvalue: any[] = formatValue(oldValue);
-      onChange(newvalue);
+      onChange(newValue, options);
     } else {
-      setValue(oldValue);
+      setValue(newValue);
     }
   };
 
