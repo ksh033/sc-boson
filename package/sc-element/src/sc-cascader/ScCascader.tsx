@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 import { CascaderProps } from 'antd/lib/cascader';
 import { Cascader } from 'antd';
-// import { DataComponentProps } from '../Component';
 import { useUpdateEffect } from '@umijs/hooks';
+
 const { useCallback, useState, useLayoutEffect } = React;
 
 export interface ScCascaderProps extends CascaderProps {
@@ -40,7 +40,7 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
 
   const formatValue = (pValue: any) => {
     let newValue: any[] = pValue || [];
-    //if (!asyn) {
+    // if (!asyn) {
     if (Array.isArray(pValue)) {
       newValue = pValue.map((item: any, i) => {
         if (typeof item === 'string') {
@@ -50,7 +50,7 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
         }
       });
     }
-    //}
+    // }
 
     return newValue;
   };
@@ -76,18 +76,6 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
   const temData = data || [];
   const [treeData, setTreeData] = useState<any>(convertData(temData));
 
-  useLayoutEffect(() => {
-    if (request && autoload) {
-      loadData();
-    }
-  }, []);
-
-  useUpdateEffect(() => {
-    if (request && autoload) {
-      loadData();
-    }
-  }, [params]);
-
   const loadData = useCallback(async () => {
     if (!request) {
       throw 'no remote request method';
@@ -98,6 +86,14 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
     }
     setTreeData(convertData(_data));
   }, [params]);
+
+  const handleChange = (newValue: any[], _options: any[]) => {
+    if (onChange) {
+      onChange(newValue, _options);
+    } else {
+      setValue(newValue);
+    }
+  };
 
   const loadTreeData = (selectedOptions: any) => {
     if (Array.isArray(selectedOptions) && selectedOptions.length > 0) {
@@ -138,7 +134,7 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
                   return item[`${valueField}`];
                 }),
               );
-              let newvalue: any[] = formatValue(selectedOptions);
+              const newvalue: any[] = formatValue(selectedOptions);
               handleChange(newvalue, selectedOptions);
             }
           } else {
@@ -152,16 +148,24 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
   };
 
   const displayRender = (labels: any[], selectedOptions: any[]) => {
+    console.log(labels);
     if (labels.length > 0) {
       return labels.map((item: any, i) => {
-        if (i === labels.length - 1) {
-          return <span key={i}>{item}</span>;
+        if (typeof item === 'string') {
+          if (i === labels.length - 1) {
+            return <span key={i}>{item}</span>;
+          }
+          return <span key={i}>{item} / </span>;
+        } else {
+          if (i === labels.length - 1) {
+            return <span key={i}>{item[`${textField}`]}</span>;
+          }
+          return <span key={i}>{item[`${textField}`]} / </span>;
         }
-        return <span key={i}>{item} / </span>;
       });
     } else {
       if (Array.isArray(_value)) {
-        let length = _value.length;
+        const { length } = _value;
         return _value.map((item: any, i) => {
           if (typeof item === 'string') {
             if (i === length - 1) {
@@ -181,13 +185,17 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
     }
   };
 
-  const handleChange = (newValue: any[], options: any[]) => {
-    if (onChange) {
-      onChange(newValue, options);
-    } else {
-      setValue(newValue);
+  useLayoutEffect(() => {
+    if (request && autoload) {
+      loadData();
     }
-  };
+  }, []);
+
+  useUpdateEffect(() => {
+    if (request && autoload) {
+      loadData();
+    }
+  }, [params]);
 
   useUpdateEffect(() => {
     setValue(value);
