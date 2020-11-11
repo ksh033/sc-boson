@@ -148,7 +148,6 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
   };
 
   const displayRender = (labels: any[], selectedOptions: any[]) => {
-    console.log(labels);
     if (labels.length > 0) {
       return labels.map((item: any, i) => {
         if (typeof item === 'string') {
