@@ -120,6 +120,16 @@ const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
               }
             }
           }
+          if (Array.isArray(item.name)) { 
+            const fieldsName = item.name.join(".")
+            if (fieldsProp && fieldsProp[fieldsName]) {
+              if (_.isFunction(fieldsProp[fieldsName])) {
+                extProps = fieldsProp[fieldsName](item)
+              } else {
+                extProps = fieldsProp[fieldsName]
+              }
+            }
+          }
 
         
           // 查找注册远程请求

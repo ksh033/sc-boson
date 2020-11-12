@@ -101,6 +101,7 @@ const CForm: React.FC<any> = props => {
       };
     }
     item.props.key = `form-item-component-${name}`;
+    item.props.form = waForm;
     // eslint-disable-next-line no-nested-ternary
     const viewName: string = _dataName
       ? initialValues && initialValues[`${_dataName}Name`]
