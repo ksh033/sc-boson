@@ -184,6 +184,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     loadData();
   }, [pagination.current, pagination.pageSize]);
 
+  useUpdateEffect(() => {
+    setDataSource(data);
+  }, [JSON.stringify(data || '')]);
+
   const handleTableChange = (
     _pagination: any,
     _filtersArg: any,
