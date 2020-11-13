@@ -216,7 +216,7 @@ const CForm: React.FC<any> = props => {
 
       return (
         <div key={`form-group-${group}`} className="sc-form-group">
-          {groupTitle ? (
+          {groupTitle && rows.length > 0 ? (
             <div className="sc-form-group-title">{groupTitle}</div>
           ) : null}
           {rows}
