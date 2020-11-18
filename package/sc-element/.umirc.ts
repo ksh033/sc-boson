@@ -29,6 +29,14 @@ export default defineConfig({
         style: true,
       },
     ],
+    [
+      require.resolve('babel-plugin-import'),
+      {
+        libraryName: 'sc-element',
+        libraryDirectory: 'es',
+        style: true,
+      },'babel-plugin-import2'
+    ]
   ],
   // more config: https://d.umijs.org/config
 });
