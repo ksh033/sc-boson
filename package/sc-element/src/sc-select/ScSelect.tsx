@@ -4,13 +4,15 @@ import { Select, Tooltip } from 'antd';
 import { useUpdateEffect, useDebounceFn } from '@umijs/hooks';
 
 const { useMemo, useLayoutEffect, useState, useRef } = React;
-const { Option } = Select;
+const { Option,OptGroup  } = Select;
 export interface ScSelectProps extends SelectProps<any> {
   textField?: any;
   valueField?: string;
+  groupField?:string;
   data?: any[];
   params?: any;
   autoload?: boolean;
+  group?:boolean;
   tip?: boolean;
   model?: string;
   remoteSearch?: boolean;
@@ -36,6 +38,7 @@ const ScSelect: React.FC<ScSelectProps> = props => {
     showSearch = false,
     searchField = '_search',
     customRef,
+    group=false,
     onSearch,
     singleInput = false,
     onChange,
@@ -100,8 +103,27 @@ const ScSelect: React.FC<ScSelectProps> = props => {
     }
   }, []);
 
-  const children: any[] = useMemo(() => {
+
+  const renderList=(dataSource:any[])=>{
     const list: any[] = [];
+    dataSource.forEach((item: any, index: number) => {
+      if (valueField && textField) {
+        let text =
+          typeof textField === 'string' ? item[textField] : textField(item);
+        if (tip) {
+          text = <Tooltip title={text}>{text}</Tooltip>;
+        }
+        list.push(
+          <Option key={index.toString()} value={item[valueField]}>
+            {text}
+          </Option>,
+        );
+      }
+    });
+    return list
+  }
+  const children: any[] = useMemo(() => {
+    let list: any[] = [];
     if (singleInput && input !== '') {
       list.push(
         <Option key={inputKey} value={inputKey}>
@@ -110,20 +132,28 @@ const ScSelect: React.FC<ScSelectProps> = props => {
       );
     }
     if (Array.isArray(dataSource) && dataSource.length > 0) {
-      dataSource.forEach((item: any, index: number) => {
-        if (valueField && textField) {
-          let text =
-            typeof textField === 'string' ? item[textField] : textField(item);
-          if (tip) {
-            text = <Tooltip title={text}>{text}</Tooltip>;
+      if (!group){
+       list=renderList(dataSource);
+      }else{
+        let groupMap:any={};
+        dataSource.forEach((item:any,index)=>{
+          if (item["group"]){
+             if (!groupMap[item["group"]]){
+                  groupMap[item["group"]]=[]
+             }
+             groupMap[item["group"]].push(item)
           }
-          list.push(
-            <Option key={index.toString()} value={item[valueField]}>
-              {text}
-            </Option>,
-          );
-        }
-      });
+        })
+        list=Object.keys(groupMap).map((key)=>{
+            const childList=renderList(groupMap[key])
+            return (<OptGroup label={key}>
+              {childList}
+            </OptGroup>)
+
+        })
+        
+      }
+  
     }
     return list;
   }, [dataSource, input]);
