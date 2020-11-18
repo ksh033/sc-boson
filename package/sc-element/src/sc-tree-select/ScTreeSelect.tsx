@@ -12,16 +12,11 @@ export interface ScTreeSelectProps extends TreeSelectProps<TreeNodeProps> {
   root: any
   dispatch: any
   textField?: string
-  idField?: string
   pIdField?: string
   keyField?: string
   valueField?: string
   params: any
-  modelKey: string
-  leafField: string
   autoload: boolean
-  asyn: false
-  model?: string
   nodeTransform?: Function
 }
 
@@ -33,11 +28,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
     data = [],
     textField = 'title',
     valueField = 'key',
-    idField = '',
-    pIdField = 'nodekey',
     params = null,
-    asyn = false,
-    modelKey = 'treeData',
     root = null,
     autoload = false,
     nodeTransform = null,
