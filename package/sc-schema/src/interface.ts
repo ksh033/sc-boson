@@ -151,10 +151,13 @@ export interface FormConfig {
   items: FormItem[]
 }
 
+/**
+ * 表单过滤
+ */
 export interface FormFilterProp {
-  nodeType: string
+  nodeType?: string
   /**
-   * key "节点下的key"
+   * key "节点下的key",多表单时使用
    */
   key?: string
   /**
@@ -171,10 +174,13 @@ export interface FormFilterProp {
     | any
 }
 
+/**
+ * 表格过滤
+ */
 export interface TableFilterProp {
-  nodeType: string
+  nodeType?: string
   /**
-   * key "节点下的key"
+   * key "节点下的key"多表格时使用
    */
   key?: string
   /**
@@ -184,17 +190,20 @@ export interface TableFilterProp {
   action?: string
   fieldsProp?: Map<String, (item: ProColumn) => FormItem | any> | undefined
 }
-
+/**
+ * 查询配置过滤
+ */
 export interface SearchFilterProp {
-  nodeType: string
+  nodeType?: string
   /**
-   * key "节点下的key"
+   * key "节点下的key"多查询配置时使用
    */
   key?: string
   /**
    * callBack 每一项回调处理
    */
   callBack?: (item: QueryConfigItem) => boolean
+  /**当前操作 */
   action?: string
   fieldsProp?:
     | Map<String, (item: QueryConfigItem) => QueryConfigItem | any>
@@ -205,20 +214,48 @@ export interface SearchFilterProp {
  * 页面类型
  */
 export enum PageType{
+  /**
+   * 列表页
+   */
   list="listpage",
+  /**
+   * 弹出页
+   */
   modal="modalpage",
+  /**
+   * 普通编辑页
+   */
   page="page"
 }
 /**
-* 页面返回值
+* 页面配置
 */
 export interface PageConfig {
-  queryConfig?: Array<FormSearchItem> | Map<String, Array<FormSearchItem>>;
-  formConfig?: Array<FormConfig> | Map<String, Array<FormConfig>>;
-  tableConfig?: ProColumn[];
+  /**查询配置 */
+  queryConfig?:  {[key:string]:Array<FormSearchItem>} | Array<FormSearchItem>;
+  /**
+   * 表单配家配置
+   */
+  formConfig?:{[key:string]:Array<FormConfig>} | Array<FormConfig> ;
+  /**
+   * 表格配置
+   */
+  tableConfig?: {[key:string]:Array<ProColumn>}  | Array<ProColumn>;
+  /**
+   * 远程服务
+   */
   service?: Map<String, Promise<any>> | any;
+  /**
+   * 页面类型
+   */
   pageType?:PageType|string;
+  /**
+   * 页面事件
+   */
   event?: Map<String, Function | Promise<any>> | any;
+  /**
+   * 页面路径
+   */
   path?:string
 }
 export interface ColItem {

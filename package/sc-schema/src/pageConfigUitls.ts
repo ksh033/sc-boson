@@ -173,7 +173,7 @@ const filterSearchConfig = (
 ) => {
 
   const newSearchInfos: any = []
-  const { nodeType, action } = filter
+  const { nodeType="queryConfig", action } = filter
   let typeConfig: any = getConfig(nodeType, pageConfig)
   typeConfig = action ? typeConfig[action] : typeConfig
 
@@ -205,7 +205,7 @@ const filterSearchConfig = (
   return newSearchInfos
 }
 const filterPageConfig = (pageConfig: PageConfig, filter: TableFilterProp) => {
-  const { nodeType, key, callBack } = filter
+  const { nodeType="formConfig", key, callBack } = filter
   const newFormInfos: any = []
   const typeConfig: any = getConfig(nodeType, pageConfig)
   if (typeConfig) {
