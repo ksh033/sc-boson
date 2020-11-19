@@ -35,7 +35,7 @@ const getValue = (obj: any) =>
 
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const {
-    data = { rows: [], total: 0, current: 1, size: 10 },
+    data,
     columns,
     rowKey = 'key',
     prefixCls = 'sc-table',
@@ -68,7 +68,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<any[]>(selectedRows || []);
   const [pagination, setPagination] = useState({
-    current: data.current || 1,
+    current: data ? data.current : 1,
     pageSize,
     total: 0,
   });
@@ -148,7 +148,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   };
 
   useEffect(() => {
-    getDataKeys(data.rows || []);
+    if (data) {
+      getDataKeys(data.rows || []);
+    }
     if (autoload) {
       loadData();
     }
@@ -240,8 +242,13 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   };
 
   const tableProp: any = () => {
-    const { total } = dataSource;
-    const _row = dataSource.rows || [];
+    let _row = [];
+    let total = 0;
+    if (dataSource) {
+      total = dataSource.total || 0;
+      _row = dataSource.rows || [];
+    }
+
     _row.forEach((item: any, index: number) => {
       item.key = index;
     });
@@ -312,7 +319,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       loading,
       rowKey: key,
       rowSelection: _rowSelection,
-      dataSource: dataSource.rows || dataSource,
+      dataSource: dataSource ? dataSource.rows : dataSource,
       columns,
       pagination: paginationProps,
       onChange: handleTableChange,
