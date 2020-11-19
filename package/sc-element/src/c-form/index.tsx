@@ -1,15 +1,16 @@
 import CForm from './CForm'
 import { FormInstance } from 'antd/es/form';
-
+export {deepGet} from './ViewItem'
 
 export interface FormComponent<P> extends React.FC<P>{
-    readonly?:boolean
-   
+    customView?:boolean
 }
+ 
 export interface FormComponentProps {
        readonly?:boolean;
-       viewName?:string
+       name?:string
        form?:FormInstance;
+       initialValues?:any;
 }
 export default CForm
 

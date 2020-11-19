@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 
-function deepGet(obj: Object, keys: any, defaultVal?: any): any {
+export function deepGet(obj: Object, keys: any, defaultVal?: any): any {
   return (
     (!Array.isArray(keys)
       ? keys
@@ -25,7 +25,7 @@ export default class ViewItem extends PureComponent<any> {
       render,
     } = this.props;
 
-    const newName = Array.isArray(name) ? name.join('.') : name;
+   // const newName = Array.isArray(name) ? name.join('.') : name;
     return (
       <div className="sc-viem-item-item">
         <Row>
@@ -37,9 +37,7 @@ export default class ViewItem extends PureComponent<any> {
               ? this.props.children
               : render
               ? render(initialValue, initData)
-              : typeof initialValue === 'object'
-              ? deepGet(initialValue, newName) || ''
-              : initialValue}
+              : deepGet(initialValue, name)}
           </Col>
         </Row>
       </div>

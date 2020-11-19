@@ -109,6 +109,9 @@ const CForm: React.FC<any> = props => {
     item.props.key = `form-item-component-${name}`;
     item.props.form = waForm;
     // eslint-disable-next-line no-nested-ternary
+    if (name&&!item.props["name"]){
+      item.props["name"]=name;
+    }
     const viewName: string = _dataName
       ? initialValues && initialValues[`${_dataName}Name`]
         ? `${_dataName}Name`
@@ -123,16 +126,16 @@ const CForm: React.FC<any> = props => {
             {...itemProps}
             initialValue={initialValues}
           >
-            {viewUseComponent||component.readonly
+            {viewUseComponent||component.customView
               ? typeof component === 'function'
-                ? React.createElement(component, { ...item.props,readonly,viewName })
-                : React.cloneElement(component, { ...item.props, readonly,viewName})
+                ? React.createElement(component, { ...item.props,readonly })
+                : React.cloneElement(component, { ...item.props, readonly})
               : null}
           </ViewItem>
         ) : (
           <FormItem key={`form-item-${name}`} name={_name} {...itemProps}>
             {typeof component === 'function'
-              ? React.createElement(component, { ...item.props })
+              ? React.createElement(component, { ...item.props  })
               : React.cloneElement(component, { ...item.props })}
           </FormItem>
         )}
