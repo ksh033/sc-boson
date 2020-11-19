@@ -12,7 +12,7 @@ const ScCheck: React.FC<ScCheckProps> = props => {
   const {
     textField = 'label',
     valueField = 'value',
-    data = [],
+    data,
     autoload = false,
     request,
     onLoad,
@@ -22,39 +22,28 @@ const ScCheck: React.FC<ScCheckProps> = props => {
   const { params = null } = resPros;
   const [dataSource, setDataSource] = useState(data);
 
-  // useUpdateEffect(() => {
-  //   if (!autoload) {
-  //     setDataSource(data)
-  //   }
-  // }, [data])
+  useUpdateEffect(() => {
+    if (!autoload && data) {
+      setDataSource(data);
+    }
+  }, [data]);
 
   const loadData = useCallback(async () => {
     if (!request) {
       throw 'no remote request method';
     }
     let _data = await useFetchData(request, params);
-    setDataSource(_data);
-  }, [request, params]);
-
-  if (params !== null) {
-    useEffect(() => {
-      if (request && autoload) {
-        loadData();
-      }
-    }, [params]);
-  }
-
-  useUpdateEffect(() => {
     if (onLoad) {
-      onLoad(dataSource);
+      _data = onLoad(_data);
     }
-  }, [dataSource]);
+    setDataSource(_data);
+  }, [params]);
 
-  useLayoutEffect(() => {
-    if (autoload) {
+  useEffect(() => {
+    if (request && autoload) {
       loadData();
     }
-  }, []);
+  }, [params]);
 
   let children: any[] = useMemo(() => {
     let list: any[] = [];
