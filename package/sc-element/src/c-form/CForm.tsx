@@ -131,10 +131,12 @@ const CForm: React.FC<any> = props => {
                 ? React.createElement(component, {
                     ...item.props,
                     readonly: true,
+                    initialValues,
                   })
                 : React.cloneElement(component, {
                     ...item.props,
                     readonly: true,
+                    initialValues,
                   })
               : null}
           </ViewItem>
