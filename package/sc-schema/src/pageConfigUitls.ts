@@ -60,7 +60,7 @@ const getConfig = (nodeType: string, pageConfig: PageConfig) => {
 
 const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
   let newFormInfos: any[] = []
-  const { nodeType, action, fieldsProp, callBack, key } = filter
+  const { nodeType = "formConfig", action, fieldsProp, callBack, key } = filter
   const typeConfig: any = getConfig(nodeType, pageConfig)
   if (typeConfig) {
     let itemInfos: Array<FormConfig> = []
@@ -205,7 +205,7 @@ const filterSearchConfig = (
   return newSearchInfos
 }
 const filterPageConfig = (pageConfig: PageConfig, filter: TableFilterProp) => {
-  const { nodeType="formConfig", key, callBack } = filter
+  const { nodeType="tableConfig", key, callBack } = filter
   const newFormInfos: any = []
   const typeConfig: any = getConfig(nodeType, pageConfig)
   if (typeConfig) {
