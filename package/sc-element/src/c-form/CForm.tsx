@@ -1,10 +1,10 @@
-import React, { useEffect,useMemo } from 'react';
-import { Row, Form, Divider, Col,Anchor } from 'antd';
+import React, { useEffect, useMemo } from 'react';
+import { Row, Form, Divider, Col, Anchor } from 'antd';
 import _, { isObject } from 'lodash';
 import ViewItem from './ViewItem';
 
 const FormItem = Form.Item;
-const Link=Anchor.Link;
+const Link = Anchor.Link;
 // const Panel = Page.PagePanel;
 
 const CForm: React.FC<any> = props => {
@@ -14,8 +14,8 @@ const CForm: React.FC<any> = props => {
     labelCol = { span: 8 },
     wrapperCol = { span: 12 },
     labelAlign = 'right',
-    anchor=false,
-    
+    anchor = false,
+
     initialValues,
     action,
     form,
@@ -87,8 +87,8 @@ const CForm: React.FC<any> = props => {
     const value = convertData(name, _dataName, item.props, initialValues);
     const _name = name;
     const { itemValue, isDict } = value;
-    if (!item.props){
-      item.props={};
+    if (!item.props) {
+      item.props = {};
     }
     if (isDict && !item.props['data']) {
       item.props['data'] = [itemValue];
@@ -109,8 +109,8 @@ const CForm: React.FC<any> = props => {
     item.props.key = `form-item-component-${name}`;
     item.props.form = waForm;
     // eslint-disable-next-line no-nested-ternary
-    if (name&&!item.props["name"]){
-      item.props["name"]=name;
+    if (name && !item.props['name']) {
+      item.props['name'] = name;
     }
     const viewName: string = _dataName
       ? initialValues && initialValues[`${_dataName}Name`]
@@ -126,16 +126,22 @@ const CForm: React.FC<any> = props => {
             {...itemProps}
             initialValue={initialValues}
           >
-            {viewUseComponent||component.customView
+            {viewUseComponent || component.customView
               ? typeof component === 'function'
-                ? React.createElement(component, { ...item.props,readonly })
-                : React.cloneElement(component, { ...item.props, readonly})
+                ? React.createElement(component, {
+                    ...item.props,
+                    readonly: true,
+                  })
+                : React.cloneElement(component, {
+                    ...item.props,
+                    readonly: true,
+                  })
               : null}
           </ViewItem>
         ) : (
           <FormItem key={`form-item-${name}`} name={_name} {...itemProps}>
             {typeof component === 'function'
-              ? React.createElement(component, { ...item.props  })
+              ? React.createElement(component, { ...item.props })
               : React.cloneElement(component, { ...item.props })}
           </FormItem>
         )}
@@ -143,7 +149,7 @@ const CForm: React.FC<any> = props => {
     );
   };
 
-  const groups:any[]=[];
+  const groups: any[] = [];
   // 创建表单
   const createForm = (_formConfig: any) => {
     return _formConfig.map((item: any) => {
@@ -154,7 +160,7 @@ const CForm: React.FC<any> = props => {
       const rows = [];
       let rowIndex = 0;
       let colCount = 0;
-      let itemCount=0;
+      let itemCount = 0;
       items.forEach((formItem: any, index: number) => {
         if (!formItem) {
           cols.push(
@@ -171,7 +177,7 @@ const CForm: React.FC<any> = props => {
             _props.style = {
               display: 'none',
             };
-          }else{
+          } else {
             itemCount++;
           }
           colCount = colCount + props.span + props.push + props.pull;
@@ -226,42 +232,55 @@ const CForm: React.FC<any> = props => {
           </Row>,
         );
       }
-      if (itemCount>0){
-
-        groups.push({group,groupTitle});
+      if (itemCount > 0) {
+        groups.push({ group, groupTitle });
       }
-      return (
-        itemCount > 0 ?
-        (<div key={`form-group-${group}`} className="sc-form-group" id={`${group}`}>
-            {groupTitle?(<div className="sc-form-group-title" >{groupTitle}</div>):null}
+      return itemCount > 0 ? (
+        <div
+          key={`form-group-${group}`}
+          className="sc-form-group"
+          id={`${group}`}
+        >
+          {groupTitle ? (
+            <div className="sc-form-group-title">{groupTitle}</div>
+          ) : null}
           {rows}
-        </div>) 
-        : null
-      );
+        </div>
+      ) : null;
     });
   };
-  const formChildren=useMemo(()=>{
+  const formChildren = useMemo(() => {
     return createForm(formConfig);
-  },[formConfig,action])
+  }, [formConfig, action]);
 
-  const anchorRender=useMemo(()=>{
-     const anchorItems=groups.map(({groupTitle,group},index)=>{
-      return (<Link key={`link_${index}`}href={`#${group}`} title={groupTitle}></Link>)
+  const anchorRender = useMemo(() => {
+    const anchorItems = groups.map(({ groupTitle, group }, index) => {
+      return (
+        <Link
+          key={`link_${index}`}
+          href={`#${group}`}
+          title={groupTitle}
+        ></Link>
+      );
     });
-    let anchorProps={};
-    if (_.isObject(anchor)){
-      anchorProps={...anchor}
+    let anchorProps = {};
+    if (_.isObject(anchor)) {
+      anchorProps = { ...anchor };
     }
-  return <div className="sc-form-nav"><Anchor  {...anchorProps}>{anchorItems} </Anchor></div>
-  },[formConfig,action])
+    return (
+      <div className="sc-form-nav">
+        <Anchor {...anchorProps}>{anchorItems} </Anchor>
+      </div>
+    );
+  }, [formConfig, action]);
 
   //const getAnchor()
   return (
     <div className="sc-form">
-    <Form form={waForm} {...formProps}>
-      {anchor?anchorRender:null}
-      {formChildren}
-    </Form>
+      <Form form={waForm} {...formProps}>
+        {anchor ? anchorRender : null}
+        {formChildren}
+      </Form>
     </div>
   );
 };

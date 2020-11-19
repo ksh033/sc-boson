@@ -1,6 +1,6 @@
 {
   "name": "sc-element",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "description": "基于ReactJS+Antd+Dva组成",
   "scripts": {
     "start": "dumi dev",
