@@ -1,31 +1,18 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 
-export function deepGet(obj: Object, keys: any, defaultVal?: any): any {
-  return (
-    (!Array.isArray(keys)
-      ? keys
-          .replace(/\[/g, '.')
-          .replace(/\]/g, '')
-          .split('.')
-      : keys
-    ).reduce((o: any, k: any) => (o || {})[k], obj) || defaultVal
-  );
-}
-
 export default class ViewItem extends PureComponent<any> {
   render() {
     const {
       label,
-      name,
       labelCol,
       wrapperCol,
       initialValue,
-      initData,
+      value,
       render,
     } = this.props;
 
-   // const newName = Array.isArray(name) ? name.join('.') : name;
+    // const newName = Array.isArray(name) ? name.join('.') : name;
     return (
       <div className="sc-viem-item-item">
         <Row>
@@ -36,8 +23,8 @@ export default class ViewItem extends PureComponent<any> {
             {this.props.children
               ? this.props.children
               : render
-              ? render(initialValue, initData)
-              : deepGet(initialValue, name)}
+              ? render(value, initialValue)
+              : value}
           </Col>
         </Row>
       </div>

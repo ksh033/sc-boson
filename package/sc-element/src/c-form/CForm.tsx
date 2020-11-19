@@ -7,6 +7,18 @@ const FormItem = Form.Item;
 const Link = Anchor.Link;
 // const Panel = Page.PagePanel;
 
+export function deepGet(obj: Object, keys: any, defaultVal?: any): any {
+  return (
+    (!Array.isArray(keys)
+      ? keys
+          .replace(/\[/g, '.')
+          .replace(/\]/g, '')
+          .split('.')
+      : keys
+    ).reduce((o: any, k: any) => (o || {})[k], obj) || defaultVal
+  );
+}
+
 const CForm: React.FC<any> = props => {
   const {
     formConfig = [],
@@ -117,13 +129,15 @@ const CForm: React.FC<any> = props => {
         ? `${_dataName}Name`
         : _dataName
       : name;
+
+    const itValue: any = deepGet(initialValues, viewName);
     return (
       <>
         {action === 'view' || readonly ? (
           <ViewItem
             key={`form-item-${name}`}
             name={viewName}
-            {...itemProps}
+            value={itValue}
             initialValue={initialValues}
           >
             {viewUseComponent || component.customView
@@ -132,11 +146,13 @@ const CForm: React.FC<any> = props => {
                     ...item.props,
                     readonly: true,
                     initialValues,
+                    value: itValue,
                   })
                 : React.cloneElement(component, {
                     ...item.props,
                     readonly: true,
                     initialValues,
+                    value: itValue,
                   })
               : null}
           </ViewItem>
