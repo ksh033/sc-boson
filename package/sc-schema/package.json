@@ -1,6 +1,6 @@
 {
   "name": "@scboson/schema",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "sc-schema",
   "scripts": {
     "build": "father build"
@@ -21,12 +21,12 @@
     "es",
     "src"
   ],
-  "dependencies": {
-    "@types/lodash": "^4.14.158",
+  "peerDependencies": {
     "antd": "^4.5.2",
+    "sc-element": "^1.0.30",
+    "@types/lodash": "^4.14.158",
     "lodash": "^4.17.19",
-    "react": "^16.8.6",
-    "sc-element": "^1.0.15"
+    "react": "^16.8.6"
   },
   "devDependencies": {
     "babel-plugin-import": "^1.13.0",
