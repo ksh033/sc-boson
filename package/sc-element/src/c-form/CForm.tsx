@@ -130,7 +130,7 @@ const CForm: React.FC<any> = props => {
         : _dataName
       : name;
 
-    const itValue: any = deepGet(initialValues, viewName);
+    const itValue = deepGet(initialValues, viewName);
     return (
       <>
         {action === 'view' || readonly ? (
@@ -138,6 +138,7 @@ const CForm: React.FC<any> = props => {
             key={`form-item-${name}`}
             name={viewName}
             value={itValue}
+            {...itemProps}
             initialValue={initialValues}
           >
             {viewUseComponent || component.customView
