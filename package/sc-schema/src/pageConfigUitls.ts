@@ -60,7 +60,7 @@ const getConfig = (nodeType: string, pageConfig: PageConfig) => {
 
 const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
   let newFormInfos: any[] = []
-  const { nodeType = "formConfig", action, fieldsProp, callBack, key } = filter
+  const { nodeType = 'formConfig', action, fieldsProp, callBack, key } = filter
   const typeConfig: any = getConfig(nodeType, pageConfig)
   if (typeConfig) {
     let itemInfos: Array<FormConfig> = []
@@ -74,7 +74,7 @@ const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
         const groupItems: any[] = []
         const { group, items } = element
         items.forEach((it: FormItem) => {
-          let item = it;
+          let item = it
           if (!item) {
             groupItems.push(item)
             return
@@ -92,7 +92,7 @@ const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
             const itenOtherProps = item[`${action}`] || {}
             item = _.defaultsDeep(item, itenOtherProps)
           }
-          
+
           // 查找注册组建
           if (item.component && cmps[item.component]) {
             item.component = cmps[item.component]
@@ -111,7 +111,7 @@ const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
           }
 
           let extProps = null
-          if (typeof item.name === 'string') { 
+          if (typeof item.name === 'string') {
             if (fieldsProp && fieldsProp[item.name]) {
               if (_.isFunction(fieldsProp[item.name])) {
                 extProps = fieldsProp[item.name](item)
@@ -120,8 +120,8 @@ const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
               }
             }
           }
-          if (Array.isArray(item.name)) { 
-            const fieldsName = item.name.join(".")
+          if (Array.isArray(item.name)) {
+            const fieldsName = item.name.join('.')
             if (fieldsProp && fieldsProp[fieldsName]) {
               if (_.isFunction(fieldsProp[fieldsName])) {
                 extProps = fieldsProp[fieldsName](item)
@@ -131,15 +131,14 @@ const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
             }
           }
 
-        
           // 查找注册远程请求
           item = getRequest(item, pageConfig)
           // 业务字段属性覆盖，用于事件或其它需要根据业务需要控制组建属性
           if (extProps) {
-            if (extProps.formProps) {
+            if (extProps.formItemProps) {
               item.formItemProps = {
                 ...item.formItemProps,
-                ...extProps.formProps,
+                ...extProps.formItemProps,
               }
             }
             if (extProps.props) {
@@ -171,9 +170,8 @@ const filterSearchConfig = (
   pageConfig: PageConfig,
   filter: SearchFilterProp
 ) => {
-
   const newSearchInfos: any = []
-  const { nodeType="queryConfig", action } = filter
+  const { nodeType = 'queryConfig', action } = filter
   let typeConfig: any = getConfig(nodeType, pageConfig)
   typeConfig = action ? typeConfig[action] : typeConfig
 
@@ -205,7 +203,7 @@ const filterSearchConfig = (
   return newSearchInfos
 }
 const filterPageConfig = (pageConfig: PageConfig, filter: TableFilterProp) => {
-  const { nodeType="tableConfig", key, callBack } = filter
+  const { nodeType = 'tableConfig', key, callBack } = filter
   const newFormInfos: any = []
   const typeConfig: any = getConfig(nodeType, pageConfig)
   if (typeConfig) {
