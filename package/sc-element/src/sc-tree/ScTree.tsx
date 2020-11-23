@@ -124,7 +124,7 @@ const ScTree: React.FC<ScTreeProps> = props => {
 
       let _data: any = await request(payload);
       if (onLoad) {
-        onLoad(_data);
+        _data = onLoad(_data);
       }
       _data = formatTreeData(_data);
       setTreeData(_data);
