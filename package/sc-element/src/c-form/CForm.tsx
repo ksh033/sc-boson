@@ -129,8 +129,10 @@ const CForm: React.FC<any> = props => {
         ? `${_dataName}Name`
         : _dataName
       : name;
-
-    const itValue = deepGet(initialValues, viewName);
+    let itValue = '';
+    if (viewName) {
+      itValue = deepGet(initialValues, viewName);
+    }
     return (
       <>
         {action === 'view' || readonly ? (
