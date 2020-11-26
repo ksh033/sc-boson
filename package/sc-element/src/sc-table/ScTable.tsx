@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Table, Tooltip, Divider } from 'antd';
 import { TableProps, TablePaginationConfig } from 'antd/lib/table/Table';
-import { useUpdateEffect } from '@umijs/hooks';
-import { OperationProps } from './Operation';
-
+import { useUpdateEffect, useRequest } from '@umijs/hooks';
 const { useState, useEffect, useRef } = React;
 
 export interface ScTableProps<T> extends TableProps<T> {
@@ -61,11 +59,17 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     autoload = false,
   } = restPros;
   const isGone = useRef(false);
+  const { loading, run } = useRequest(
+    request ||
+      new Promise((resolve, reject) => {
+        resolve(null);
+      }),
+    {
+      manual: true,
+    },
+  );
   const [dataSource, setDataSource] = useState(data);
-
-  // const [needTotalList, setNeedTotalList] = useState(initTotalList(columns))
   const [rowKeys, setRowKeys] = useState(selectedRowKeys || []);
-  const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<any[]>(selectedRows || []);
   const [pagination, setPagination] = useState({
     current: data ? data.current : 1,
@@ -101,18 +105,14 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       throw 'no remote request method';
     }
 
-    try {
-      setLoading(true);
-      let _data = await request(payload);
-      if (isGone.current) return;
+    let _data = await run(payload);
+    if (isGone.current) return;
+    if (_data) {
       if (onLoad) {
         _data = onLoad(_data);
       }
       setDataSource(_data);
       getDataKeys(_data.rows || []);
-      setLoading(false);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -149,15 +149,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   };
 
   useEffect(() => {
-    if (data) {
-      getDataKeys(data.rows || []);
-    }
-    if (autoload) {
-      loadData();
-    }
-  }, []);
-
-  useEffect(() => {
     const userAction = {
       data: dataSource,
       selectedRowKeys: action.current.rowKeys || rowKeys,
@@ -169,6 +160,12 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
     if (saveRef && typeof saveRef !== 'function') {
       saveRef.current = userAction;
+    }
+    if (data) {
+      getDataKeys(data.rows || []);
+    }
+    if (autoload) {
+      loadData();
     }
     return () => {
       isGone.current = true;
