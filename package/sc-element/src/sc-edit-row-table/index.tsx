@@ -186,6 +186,7 @@ const EditableTable = (props: EditableTableProps<any>) => {
     showEditOperation = true,
     ...restPros
   } = props;
+  const isGone = useRef(false);
   const tableRef = useRef<any>();
   const [dataSource, setData] = useState(data);
   const [editingKey, setEditingKey] = useState('');
@@ -217,6 +218,7 @@ const EditableTable = (props: EditableTableProps<any>) => {
     try {
       setLoading(true);
       let _data: any = await request(payload);
+      if (isGone.current) return;
       if (onLoad) {
         _data = onLoad(_data);
       }
@@ -374,6 +376,9 @@ const EditableTable = (props: EditableTableProps<any>) => {
     }
     tableRef.current = data;
     getSaveRef();
+    return () => {
+      isGone.current = true;
+    };
   }, []);
 
   useUpdateEffect(() => {

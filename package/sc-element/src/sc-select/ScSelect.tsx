@@ -4,15 +4,15 @@ import { Select, Tooltip } from 'antd';
 import { useUpdateEffect, useDebounceFn } from '@umijs/hooks';
 
 const { useMemo, useLayoutEffect, useState, useRef } = React;
-const { Option,OptGroup  } = Select;
+const { Option, OptGroup } = Select;
 export interface ScSelectProps extends SelectProps<any> {
   textField?: any;
   valueField?: string;
-  groupField?:string;
+  groupField?: string;
   data?: any[];
   params?: any;
   autoload?: boolean;
-  group?:boolean;
+  group?: boolean;
   tip?: boolean;
   model?: string;
   remoteSearch?: boolean;
@@ -38,13 +38,14 @@ const ScSelect: React.FC<ScSelectProps> = props => {
     showSearch = false,
     searchField = '_search',
     customRef,
-    group=false,
+    group = false,
     onSearch,
     singleInput = false,
     onChange,
     openReloadData,
     ...restProps
   } = props;
+  const isGone = useRef(false);
   const [dataSource, setDataSource] = useState(data || []);
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState('');
@@ -72,6 +73,7 @@ const ScSelect: React.FC<ScSelectProps> = props => {
     setLoading(true);
     try {
       let _data = await request({ ...params, ...searchParam });
+      if (isGone.current) return;
       if (onLoad) {
         _data = onLoad(_data);
       }
@@ -101,10 +103,12 @@ const ScSelect: React.FC<ScSelectProps> = props => {
     if (autoload) {
       loadData();
     }
+    return () => {
+      isGone.current = true;
+    };
   }, []);
 
-
-  const renderList=(dataSource:any[])=>{
+  const renderList = (dataSource: any[]) => {
     const list: any[] = [];
     dataSource.forEach((item: any, index: number) => {
       if (valueField && textField) {
@@ -120,8 +124,8 @@ const ScSelect: React.FC<ScSelectProps> = props => {
         );
       }
     });
-    return list
-  }
+    return list;
+  };
   const children: any[] = useMemo(() => {
     let list: any[] = [];
     if (singleInput && input !== '') {
@@ -132,28 +136,23 @@ const ScSelect: React.FC<ScSelectProps> = props => {
       );
     }
     if (Array.isArray(dataSource) && dataSource.length > 0) {
-      if (!group){
-       list=renderList(dataSource);
-      }else{
-        let groupMap:any={};
-        dataSource.forEach((item:any,index)=>{
-          if (item["group"]){
-             if (!groupMap[item["group"]]){
-                  groupMap[item["group"]]=[]
-             }
-             groupMap[item["group"]].push(item)
+      if (!group) {
+        list = renderList(dataSource);
+      } else {
+        let groupMap: any = {};
+        dataSource.forEach((item: any, index) => {
+          if (item['group']) {
+            if (!groupMap[item['group']]) {
+              groupMap[item['group']] = [];
+            }
+            groupMap[item['group']].push(item);
           }
-        })
-        list=Object.keys(groupMap).map((key)=>{
-            const childList=renderList(groupMap[key])
-            return (<OptGroup label={key}>
-              {childList}
-            </OptGroup>)
-
-        })
-        
+        });
+        list = Object.keys(groupMap).map(key => {
+          const childList = renderList(groupMap[key]);
+          return <OptGroup label={key}>{childList}</OptGroup>;
+        });
       }
-  
     }
     return list;
   }, [dataSource, input]);

@@ -60,7 +60,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     pageSize = 10,
     autoload = false,
   } = restPros;
-
+  const isGone = useRef(false);
   const [dataSource, setDataSource] = useState(data);
 
   // const [needTotalList, setNeedTotalList] = useState(initTotalList(columns))
@@ -104,6 +104,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     try {
       setLoading(true);
       let _data = await request(payload);
+      if (isGone.current) return;
       if (onLoad) {
         _data = onLoad(_data);
       }
@@ -169,6 +170,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     if (saveRef && typeof saveRef !== 'function') {
       saveRef.current = userAction;
     }
+    return () => {
+      isGone.current = true;
+    };
   }, []);
 
   useUpdateEffect(() => {

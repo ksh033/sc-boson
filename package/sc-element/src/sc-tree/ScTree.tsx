@@ -49,7 +49,7 @@ const ScTree: React.FC<ScTreeProps> = props => {
     loadDataPramsFormat,
     ...restProps
   } = props;
-
+  const isGone = useRef(false);
   const formatTreeData = (_data: any): any => {
     if (Array.isArray(_data) && _data.length > 0) {
       return _data.map((item: any) => {
@@ -123,6 +123,7 @@ const ScTree: React.FC<ScTreeProps> = props => {
       payload = params ? { ...params, ..._params } : payload;
 
       let _data: any = await request(payload);
+      if (isGone.current) return;
       if (onLoad) {
         _data = onLoad(_data);
       }
@@ -136,6 +137,9 @@ const ScTree: React.FC<ScTreeProps> = props => {
     if (autoload) {
       loadData(params);
     }
+    return () => {
+      isGone.current = true;
+    };
   }, []);
 
   useUpdateEffect(() => {
@@ -180,7 +184,7 @@ const ScTree: React.FC<ScTreeProps> = props => {
         newparams = loadDataPramsFormat(node.dataRef);
       }
       const _data = await request(newparams);
-
+      if (isGone.current) return;
       setTreeData((origin: any) => {
         const newData = updateTreeData(origin, key, formatTreeData(_data));
         return newData;

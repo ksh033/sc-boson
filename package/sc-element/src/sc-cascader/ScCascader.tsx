@@ -35,6 +35,7 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
     value,
     ...restProps
   } = props;
+  const isGone = useRef(false);
   const ref = useRef<any>();
   const [_value, setValue] = useState(value);
 
@@ -81,6 +82,7 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
       throw 'no remote request method';
     }
     let _data = await request(params);
+    if (isGone.current) return;
     if (onLoad) {
       _data = onLoad(_data);
     }
@@ -106,6 +108,7 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
       }
       request(payload)
         .then((_data: any) => {
+          if (isGone.current) return;
           if (onLoad) {
             _data = onLoad(_data);
           }
@@ -188,6 +191,9 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
     if (request && autoload) {
       loadData();
     }
+    return () => {
+      isGone.current = true;
+    };
   }, []);
 
   useUpdateEffect(() => {

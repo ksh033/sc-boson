@@ -1,31 +1,31 @@
-import * as React from 'react'
-import { TreeSelect } from 'antd'
-import { TreeSelectProps } from 'antd/lib/tree-select/index'
-import { TreeNodeProps } from 'rc-tree-select/lib/TreeNode'
-import { useUpdateEffect } from '@umijs/hooks'
-import useFetchData from '../_util/useFetchData'
-const { useState, useEffect, useMemo, useCallback } = React
+import React, { useRef } from 'react';
+import { TreeSelect } from 'antd';
+import { TreeSelectProps } from 'antd/lib/tree-select/index';
+import { TreeNodeProps } from 'rc-tree-select/lib/TreeNode';
+import { useUpdateEffect } from '@umijs/hooks';
+import useFetchData from '../_util/useFetchData';
+const { useState, useEffect, useMemo, useCallback } = React;
 export interface ScTreeSelectProps extends TreeSelectProps<TreeNodeProps> {
-  request?: (params: any) => Promise<void>
-  onLoad?: (dataSource: any) => void
-  data: any[]
-  root: any
-  dispatch: any
-  textField?: string
-  pIdField?: string
-  keyField?: string
-  valueField?: string
-  params: any
-  autoload: boolean
-  nodeTransform?: Function
+  request?: (params: any) => Promise<void>;
+  onLoad?: (dataSource: any) => void;
+  data: any[];
+  root: any;
+  dispatch: any;
+  textField?: string;
+  pIdField?: string;
+  keyField?: string;
+  valueField?: string;
+  params: any;
+  autoload: boolean;
+  nodeTransform?: Function;
 }
 
-const defaultKey = 'key'
-const defaultText = 'title'
+const defaultKey = 'key';
+const defaultText = 'title';
 
-const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
+const ScTreeSelect: React.FC<ScTreeSelectProps> = props => {
   const {
-    data = [],
+    data,
     textField = 'title',
     valueField = 'key',
     params = null,
@@ -35,21 +35,21 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
     request,
     onLoad,
     ...restProps
-  } = props
-
+  } = props;
+  const isGone = useRef(false);
   const formatTreeData = (_data: any) => {
     return _data.map((item: any, index: number) => {
-      const value = valueField ? item[valueField] : item[defaultKey]
+      const value = valueField ? item[valueField] : item[defaultKey];
       // const key = keyField ? item[keyField] : 1 + '_' + index
-      const title = textField ? item[textField] : item[defaultText]
+      const title = textField ? item[textField] : item[defaultText];
 
-      let nodeProps = {}
+      let nodeProps = {};
       if (nodeTransform) {
-        nodeProps = nodeTransform(item)
+        nodeProps = nodeTransform(item);
       }
-      let children = item.children
+      let children = item.children;
       if (children && children.length > 0) {
-        children = formatTreeData(children)
+        children = formatTreeData(children);
       }
       return {
         ...item,
@@ -58,103 +58,107 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
         key: value,
         children,
         ...nodeProps,
-      }
-    })
-  }
+      };
+    });
+  };
 
   const getData = (_data: any) => {
-    let privateData = []
+    let privateData = [];
     if (root) {
       if (Array.isArray(_data) && _data.length > 0) {
-        root.children = _data
+        root.children = _data;
       }
-      privateData.push(root)
+      privateData.push(root);
     } else {
-      privateData = _data
+      privateData = _data;
     }
-    return privateData
-  }
+    return privateData;
+  };
 
   const [treeData, setTreeData] = useState(() => {
-    return formatTreeData(getData(data))
-  })
+    return formatTreeData(getData(data));
+  });
 
-  // useUpdateEffect(() => {
-  //   if (!autoload) {
-  //     setTreeData(formatTreeData(getData(data)))
-  //   }
-  // }, [data])
+  useUpdateEffect(() => {
+    if (!autoload) {
+      setTreeData(formatTreeData(getData(data)));
+    }
+  }, [data]);
 
   useEffect(() => {
     if (autoload && !root) {
-      loadData(null)
+      loadData(null);
     }
-  }, [])
+    return () => {
+      isGone.current = true;
+    };
+  }, []);
 
   useUpdateEffect(() => {
     if (!root && autoload) {
-      loadData(null)
+      loadData(null);
     }
-  }, [params])
+  }, [params]);
 
   const loadData = useCallback(
-    async (_params) => {
+    async _params => {
       if (!request) {
-        throw 'no remote request method'
+        throw 'no remote request method';
       }
-      let payload = _params ? _params : null
-      payload = params ? { ...params, ..._params } : payload
+      let payload = _params ? _params : null;
+      payload = params ? { ...params, ..._params } : payload;
 
-      let _data = await useFetchData(request, payload)
+      let _data = await useFetchData(request, payload);
+      if (isGone.current) return;
       if (onLoad) {
-        _data = onLoad(_data)
+        _data = onLoad(_data);
       }
-      setTreeData(formatTreeData(getData(_data)))
+      setTreeData(formatTreeData(getData(_data)));
     },
-    [params]
-  )
+    [params],
+  );
 
   const onLoadData = (treeNode: any) => {
-    return new Promise(async (resolve) => {
+    return new Promise(async resolve => {
       if (
         treeNode.props.data.children &&
         treeNode.props.data.children.length > 0
       ) {
-        resolve()
-        return
+        resolve();
+        return;
       }
       if (!request) {
-        throw 'no remote request method'
+        throw 'no remote request method';
       }
-      let _data = await useFetchData(request, treeNode.props.data)
-
+      let _data = await useFetchData(request, treeNode.props.data);
+      if (isGone.current) return;
       if (onLoad) {
-        _data = onLoad(_data)
+        _data = onLoad(_data);
       }
 
-      treeNode.props.data.children = formatTreeData(_data)
-      setTreeData(connetData(treeData, treeNode.props.data))
-      resolve()
-    })
-  }
+      treeNode.props.data.children = formatTreeData(_data);
+      setTreeData(connetData(treeData, treeNode.props.data));
+      resolve();
+    });
+  };
 
   const connetData = (_data: any, treeNode: any) => {
     return _data.map((item: any) => {
       if (item.key === treeNode.key) {
-        item = treeNode
+        item = treeNode;
       }
       if (item.children) {
-        item.children = connetData(item.children, treeNode)
+        item.children = connetData(item.children, treeNode);
       }
-      return item
-    })
-  }
+      return item;
+    });
+  };
 
   const onDropdownVisibleChange = () => {
     // if ((treeData === null || treeData.length < 1) && !autoload) {
     //   loadData(null)
     // }
-  }
+  };
 
   const treeProps = useMemo(() => {
     return {
@@ -163,12 +167,12 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
       style: { width: '100%' },
       onDropdownVisibleChange: onDropdownVisibleChange,
       ...restProps,
-    }
-  }, [restProps, treeData])
+    };
+  }, [restProps, treeData]);
 
   return treeData && treeData.length > 0 ? (
     <TreeSelect {...treeProps}></TreeSelect>
-  ) : null
-}
+  ) : null;
+};
 
-export default ScTreeSelect
+export default ScTreeSelect;

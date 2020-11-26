@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useRef } from 'react';
 import { useUpdateEffect } from '@umijs/hooks';
 import { Radio } from 'antd';
 import { RadioGroupProps } from 'antd/lib/radio';
@@ -29,7 +29,7 @@ const ScRadio: React.FC<ScRadioProps> = props => {
     onLoad,
     ...restProps
   } = props;
-
+  const isGone = useRef(false);
   const [dataSource, setDataSource] = useState(data);
 
   const redioProps = {
@@ -45,6 +45,7 @@ const ScRadio: React.FC<ScRadioProps> = props => {
       throw 'no remote request method';
     }
     let _data = await useFetchData(request, params);
+    if (isGone.current) return;
     if (onLoad) {
       _data = onLoad(_data);
     }
@@ -55,6 +56,9 @@ const ScRadio: React.FC<ScRadioProps> = props => {
     if (autoload) {
       loadData();
     }
+    return () => {
+      isGone.current = true;
+    };
   }, []);
 
   useUpdateEffect(() => {

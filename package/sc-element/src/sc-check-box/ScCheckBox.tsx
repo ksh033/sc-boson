@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useRef } from 'react';
 import { Checkbox } from 'antd';
 import { CheckboxGroupProps } from 'antd/lib/checkbox';
 import { DataComponentProps } from '../Component';
@@ -18,9 +18,15 @@ const ScCheck: React.FC<ScCheckProps> = props => {
     onLoad,
     ...resPros
   } = props;
-
+  const isGone = useRef(false);
   const { params = null } = resPros;
   const [dataSource, setDataSource] = useState(data);
+
+  useEffect(() => {
+    return () => {
+      isGone.current = true;
+    };
+  }, []);
 
   useUpdateEffect(() => {
     if (!autoload && data) {
@@ -33,6 +39,7 @@ const ScCheck: React.FC<ScCheckProps> = props => {
       throw 'no remote request method';
     }
     let _data = await useFetchData(request, params);
+    if (isGone.current) return;
     if (onLoad) {
       _data = onLoad(_data);
     }
