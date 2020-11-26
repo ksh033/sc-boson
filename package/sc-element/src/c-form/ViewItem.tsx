@@ -12,22 +12,19 @@ export default class ViewItem extends PureComponent<any> {
       render,
     } = this.props;
 
-    // const newName = Array.isArray(name) ? name.join('.') : name;
     return (
-      <div className="sc-viem-item-item">
-        <Row>
-          <Col {...labelCol}>
-            <div className="sc-viem-item-label">{label}：</div>
-          </Col>
-          <Col {...wrapperCol}>
-            {this.props.children
-              ? this.props.children
-              : render
-              ? render(value, initialValue)
-              : value}
-          </Col>
-        </Row>
-      </div>
+      <Row className="ant-form-item sc-viem-item-item">
+        <Col {...labelCol}>
+          <div className="sc-viem-item-label">{label}：</div>
+        </Col>
+        <Col {...wrapperCol}>
+          {this.props.children
+            ? this.props.children
+            : render
+            ? render(value, initialValue)
+            : value}
+        </Col>
+      </Row>
     );
   }
 }

@@ -9,7 +9,7 @@ export interface ScTreeProps extends TreeProps {
   data?: any[];
   textField?: string;
   valueField?: string;
-  params: any;
+  params?: any;
   autoload?: boolean;
   canSearch?: boolean;
   placeholder?: string;

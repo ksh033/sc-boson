@@ -162,6 +162,8 @@ const SearchBar: React.FC<ScSearchBarProps> = props => {
         createCmp = component;
       } else {
         const { defaultValue, ...restProps } = item.props || {};
+        // 把form设置进组件中
+        restProps.form = wrapForm;
         if (_children.length > 0) {
           createCmp = React.createElement(
             component,
