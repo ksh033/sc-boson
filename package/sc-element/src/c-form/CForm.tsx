@@ -24,7 +24,7 @@ const CForm: React.FC<any> = props => {
     formConfig = [],
     layout = 'horizontal',
     labelCol = { span: 8 },
-    wrapperCol = { span: 12 },
+    wrapperCol = { span: 16 },
     labelAlign = 'right',
     anchor = false,
 
@@ -174,9 +174,9 @@ const CForm: React.FC<any> = props => {
   // 创建表单
   const createForm = (_formConfig: any) => {
     return _formConfig.map((item: any) => {
-      const { groupTitle, group, items, gutter = 16, col = 4 } = item;
+      const { groupTitle, group, items, gutter = { xs: 8, sm: 16, md: 24, lg: 32 }, col = 4 } = item;
       const colSpan = 24 / col;
-      const defColProp = { span: colSpan, push: 0, pull: 0 };
+      const defColProp = { span: colSpan, push: 0, pull: 0, offset:0 };
       let cols: any[] = [];
       const rows = [];
       let rowIndex = 0;
@@ -199,9 +199,10 @@ const CForm: React.FC<any> = props => {
               display: 'none',
             };
           } else {
+            colCount = colCount + (_props.span|0) + (_props.push|0)+ (_props.pull|0)+ (_props.offset|0);
+
             itemCount++;
           }
-          colCount = colCount + props.span + props.push + props.pull;
           // 设置默认的 栅格比例
           if (!itemProps.formItemProps || _.isEmpty(itemProps.formItemProps)) {
             itemProps.formItemProps = {

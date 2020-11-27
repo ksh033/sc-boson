@@ -21,7 +21,7 @@ import { CForm,ScSelect } from 'sc-element';
 export default () => {
   let formConfig= [
     {
-      col: 1,
+      col: 3,
       group: 'basic',
       groupTitle: '基本信息',
       items: [
@@ -35,6 +35,7 @@ export default () => {
           label: '上级机构',
           name: 'userFullName',
           component: Input,
+           colProps:{offset:8},
 
         },
         {
@@ -50,6 +51,7 @@ export default () => {
               },
             ],
           },
+          colProps:{offset:8},
           props: {
             placeholder: '组织机构名称不能超过20个字符',
           },
@@ -57,7 +59,7 @@ export default () => {
 
   ]},
   {
-      col: 1,
+      col: 3,
       group: 'base2',
       groupTitle: '角色信息',
       items: [
@@ -71,6 +73,7 @@ export default () => {
           label: '角色所属系统',
           name: 'systemCode',
           component: ScSelect,
+          colProps:{span:24},
           // formItemProps: {
           //   required: true,
           //   rules: [
