@@ -1,4 +1,5 @@
 import { ColumnsType } from 'antd/lib/table/interface'
+import {ColProps} from 'antd/lib/col/index';
 
 import { Rule } from 'antd/lib/form'
 // 搜索条件表单
@@ -38,8 +39,8 @@ export interface FormItemProp {
   hasFeedback?: boolean | 'string'
   rules?: Array<Rule>
   required?: boolean
-  labelCol?: { span: number }
-  wrapperCol?: { span: number }
+  labelCol?:ColProps
+  wrapperCol?: ColProps
 }
 
 export interface QueryConfigItem extends FormItemProp {
@@ -149,6 +150,10 @@ export interface FormConfig {
    * 分组表单项
    */
   items: FormItem[]
+  
+  labelCol?:ColProps
+
+  wrapperCol?: ColProps
 }
 
 /**

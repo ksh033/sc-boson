@@ -174,7 +174,7 @@ const CForm: React.FC<any> = props => {
   // 创建表单
   const createForm = (_formConfig: any) => {
     return _formConfig.map((item: any) => {
-      const { groupTitle, group, items, gutter = { xs: 8, sm: 16, md: 24, lg: 32 }, col = 4 } = item;
+      const { groupTitle, group, items, gutter = { xs: 0, sm: 0, md: 0, lg: 0 }, col = 4 } = item;
       const colSpan = 24 / col;
       const defColProp = { span: colSpan, push: 0, pull: 0, offset:0 };
       let cols: any[] = [];
@@ -206,16 +206,16 @@ const CForm: React.FC<any> = props => {
           // 设置默认的 栅格比例
           if (!itemProps.formItemProps || _.isEmpty(itemProps.formItemProps)) {
             itemProps.formItemProps = {
-              labelCol: labelCol,
-              wrapperCol: wrapperCol,
+              labelCol:  item.labelCol || labelCol,
+              wrapperCol: item.wrapperCol || wrapperCol,
             };
           } else {
             // eslint-disable-next-line no-shadow
             if (!itemProps.formItemProps.labelCol) {
-              itemProps.formItemProps['labelCol'] = labelCol;
+              itemProps.formItemProps['labelCol'] = item.labelCol || labelCol;
             }
             if (!itemProps.formItemProps.wrapperCol) {
-              itemProps.formItemProps['wrapperCol'] = wrapperCol;
+              itemProps.formItemProps['wrapperCol'] = item.wrapperCol || wrapperCol;
             }
           }
           if (itemProps.component) {
