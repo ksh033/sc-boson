@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { SelectProps } from 'antd/lib/select';
 import { Select, Tooltip } from 'antd';
-import { useUpdateEffect, useDebounceFn, useRequest } from '@umijs/hooks';
+import { useUpdateEffect, useDebounceFn } from '@umijs/hooks';
 
 const { useMemo, useLayoutEffect, useState, useRef } = React;
 const { Option, OptGroup } = Select;
@@ -50,18 +50,9 @@ const ScSelect: React.FC<ScSelectProps> = props => {
   const [input, setInput] = useState('');
   const [inputKey, setInputKey] = useState(-1);
   const selectProps: any = { params, ...restProps };
+  const [loading, setLoading] = useState(false);
   const ref = useRef<any>();
   // const [searchValue,setSearchValue]=useState("");
-
-  const { loading, run } = useRequest(
-    request ||
-      new Promise((resolve, reject) => {
-        resolve(null);
-      }),
-    {
-      manual: true,
-    },
-  );
 
   const setCustomRef = () => {
     if (customRef) {
@@ -79,13 +70,20 @@ const ScSelect: React.FC<ScSelectProps> = props => {
     if (!request) {
       throw 'no remote request method';
     }
-    let _data = await run({ ...params, ...searchParam });
-    if (isGone.current) return;
-    if (_data) {
-      if (onLoad) {
-        _data = onLoad(_data);
+    setLoading(true);
+    try {
+      let _data = await request({ ...params, ...searchParam });
+
+      if (isGone.current) return;
+      if (_data) {
+        if (onLoad) {
+          _data = onLoad(_data);
+        }
+        setDataSource(_data || []);
       }
-      setDataSource(_data || []);
+    } catch (error) {
+    } finally {
+      setLoading(false);
     }
   };
 
