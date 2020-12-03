@@ -20,7 +20,7 @@ export interface ScTreeProps extends TreeProps {
   isLeafFormat?: (data: any) => boolean;
   async?: boolean;
   loadDataPramsFormat?: (data: any) => any;
-  ref: React.MutableRefObject<any> | ((ref: any) => void);
+  ref?: any;
 }
 
 interface DataNode {
