@@ -149,9 +149,9 @@ const ScSelect: React.FC<ScSelectProps> = props => {
             groupMap[item['group']].push(item);
           }
         });
-        list = Object.keys(groupMap).map(key => {
+        list = Object.keys(groupMap).map((key,i) => {
           const childList = renderList(groupMap[key]);
-          return <OptGroup label={key}>{childList}</OptGroup>;
+          return <OptGroup key={i} label={key}>{childList}</OptGroup>;
         });
       }
     }
