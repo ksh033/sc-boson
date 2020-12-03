@@ -18,81 +18,6 @@ nav:
 
 ``` jsx
 /**
- * title: 基础
- */
-import React from 'react'
-import { ScSelect } from 'sc-element';
-
-export default () => {
-  const data=[
-    {
-      text:'空',
-      value:''
-    },
-    {
-      text:'select1',
-      value:'1'
-    },
-    {
-      text:'select2',
-      value:'2'
-    }
-  ]
-
-  return (
-    <ScSelect  
-      showSearch
-      tip
-      filterOption={(input, option) =>
-        option.props.children.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      }
-      data={data}
-      style={{ width: 300 }}
-    />
-  )
-}
-```
-
-``` jsx
-/**
- * title: 单选自定义可输入
- */
-import React from 'react'
-import { ScSelect } from 'sc-element';
-
-export default () => {
-  const data=[
-    {
-      text:'空',
-      value:''
-    },
-    {
-      text:'select1',
-      value:'1'
-    },
-    {
-      text:'select2',
-      value:'2'
-    }
-  ]
-
-  return (
-    <ScSelect  
-      singleInput
-      showSearch
-      allowClear
-      data={data}
-      placeholder={ `请选择` }
-      optionFilterProp="children"
-      labelInValue
-      style={{ width: 300 }}
-    />
-  )
-}
-```
-
-``` jsx
-/**
  * title: 异步请求
  */
 import React, { useState } from 'react'
@@ -122,6 +47,7 @@ export default () => {
         request={request}
         remoteSearch
         showSearch
+        autoload
         params={params}
         style={{ width: 300 }}
          notFoundContent={null}

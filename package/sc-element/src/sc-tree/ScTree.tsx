@@ -20,6 +20,7 @@ export interface ScTreeProps extends TreeProps {
   isLeafFormat?: (data: any) => boolean;
   async?: boolean;
   loadDataPramsFormat?: (data: any) => any;
+  ref: React.MutableRefObject<any> | ((ref: any) => void);
 }
 
 interface DataNode {
@@ -43,6 +44,7 @@ const ScTree: React.FC<ScTreeProps> = props => {
     onLoad,
     nodeRender,
     isLeafFormat,
+    ref,
     async = false,
     defaultExpandAll = false,
     defaultExpandParent = false,
@@ -134,6 +136,15 @@ const ScTree: React.FC<ScTreeProps> = props => {
   );
 
   useEffect(() => {
+    const userAction = {
+      reload: loadData,
+    };
+    if (ref && typeof ref === 'function') {
+      ref(userAction);
+    }
+    if (ref && typeof ref !== 'function') {
+      ref.current = userAction;
+    }
     if (autoload) {
       loadData(params);
     }
