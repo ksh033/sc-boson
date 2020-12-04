@@ -20,15 +20,14 @@ import {
   ScDatePicker as ScDate,
   ScCheckBox,
   ScRadio,
+  ScTextArea,
 } from 'sc-element'
 
-const InputGroup = Input.Group
-
 const { ScDatePicker, ScRangePicker } = ScDate
-const { TextArea } = Input
+const { Group: InputGroup } = Input
 export const cmps: any = {
   Input,
-  TextArea,
+  ScTextArea,
   TreeSelect,
   Select,
   Checkbox,

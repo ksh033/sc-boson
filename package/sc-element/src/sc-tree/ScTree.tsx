@@ -20,7 +20,7 @@ export interface ScTreeProps extends TreeProps {
   isLeafFormat?: (data: any) => boolean;
   async?: boolean;
   loadDataPramsFormat?: (data: any) => any;
-  ref?: any;
+  saveRef?: any;
 }
 
 interface DataNode {
@@ -44,7 +44,7 @@ const ScTree: React.FC<ScTreeProps> = props => {
     onLoad,
     nodeRender,
     isLeafFormat,
-    ref,
+    saveRef,
     async = false,
     defaultExpandAll = false,
     defaultExpandParent = false,
@@ -116,34 +116,33 @@ const ScTree: React.FC<ScTreeProps> = props => {
     }
   }, [throttledValue]);
 
-  const loadData = useCallback(
-    async _params => {
-      if (!request) {
-        throw 'no remote request method';
-      }
-      let payload = _params || null;
-      payload = params ? { ...params, ..._params } : payload;
+  const loadData = async (_params: any) => {
+    if (!request) {
+      throw 'no remote request method';
+    }
+    let payload = _params || null;
+    payload = params ? { ...params, ..._params } : payload;
 
-      let _data: any = await request(payload);
-      if (isGone.current) return;
-      if (onLoad) {
-        _data = onLoad(_data);
-      }
-      _data = formatTreeData(_data);
-      setTreeData(_data);
-    },
-    [params],
-  );
+    let _data: any = await request(payload);
+    if (isGone.current) return;
+    if (onLoad) {
+      _data = onLoad(_data);
+    }
+    _data = formatTreeData(_data);
+    setTreeData(_data);
+  };
 
   useEffect(() => {
     const userAction = {
-      reload: loadData,
+      reload: () => {
+        loadData(params);
+      },
     };
-    if (ref && typeof ref === 'function') {
-      ref(userAction);
+    if (saveRef && typeof saveRef === 'function') {
+      saveRef(userAction);
     }
-    if (ref && typeof ref !== 'function') {
-      ref.current = userAction;
+    if (saveRef && typeof saveRef !== 'function') {
+      saveRef.current = userAction;
     }
     if (autoload) {
       loadData(params);

@@ -1,6 +1,6 @@
 {
   "name": "sc-element",
-  "version": "1.0.39",
+  "version": "1.0.41",
   "description": "基于ReactJS+Antd+Dva组成",
   "scripts": {
     "start": "dumi dev",
@@ -29,7 +29,7 @@
     "type": "git",
     "url": "https://192.168.10.60/sc-dva-antd-pro.git"
   },
-  "main": "./lib/index.js",
+  "main": "./es/index.js",
   "module": "./es/index.js",
   "types": "./lib/index.d.ts",
   "files": [
