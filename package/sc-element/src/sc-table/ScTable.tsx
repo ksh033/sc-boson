@@ -148,13 +148,15 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     setRows(_rows);
   };
 
-  useEffect(() => {
+  const updateAction = () => {
     const userAction = {
       pagination: pagination,
       data: dataSource,
       selectedRowKeys: action.current.rowKeys || rowKeys,
       selectedRows: action.current.rows || rows,
-      reload: loadData,
+      reload: () => {
+        loadData();
+      },
     };
     if (saveRef && typeof saveRef === 'function') {
       saveRef(userAction);
@@ -162,6 +164,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     if (saveRef && typeof saveRef !== 'function') {
       saveRef.current = userAction;
     }
+  };
+
+  useEffect(() => {
+    updateAction();
     if (data) {
       getDataKeys(data.rows || []);
     }
@@ -174,6 +180,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   }, []);
 
   useUpdateEffect(() => {
+    updateAction();
     if (pagination.current > 1) {
       setPagination({
         ...pagination,
@@ -185,6 +192,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   }, [params]);
 
   useUpdateEffect(() => {
+    updateAction();
     loadData();
   }, [pagination.current, pagination.pageSize]);
 
