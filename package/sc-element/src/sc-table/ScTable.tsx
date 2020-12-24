@@ -150,6 +150,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
   useEffect(() => {
     const userAction = {
+      pagination: pagination,
       data: dataSource,
       selectedRowKeys: action.current.rowKeys || rowKeys,
       selectedRows: action.current.rows || rows,
