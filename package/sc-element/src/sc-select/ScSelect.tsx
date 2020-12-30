@@ -109,7 +109,7 @@ const ScSelect: React.FC<ScSelectProps> = props => {
     };
   }, []);
 
-  const renderList = (dataSource: any[]) => {
+  const renderList = (dataSource: any[],level:string = '1') => {
     const list: any[] = [];
     dataSource.forEach((item: any, index: number) => {
       if (valueField && textField) {
@@ -119,7 +119,7 @@ const ScSelect: React.FC<ScSelectProps> = props => {
           text = <Tooltip title={text}>{text}</Tooltip>;
         }
         list.push(
-          <Option key={index.toString()} value={item[valueField]}>
+          <Option key={level+index.toString()} value={item[valueField]}>
             {text}
           </Option>,
         );
@@ -150,7 +150,7 @@ const ScSelect: React.FC<ScSelectProps> = props => {
           }
         });
         list = Object.keys(groupMap).map((key,i) => {
-          const childList = renderList(groupMap[key]);
+          const childList = renderList(groupMap[key], `${i}`);
           return <OptGroup key={i} label={key}>{childList}</OptGroup>;
         });
       }
