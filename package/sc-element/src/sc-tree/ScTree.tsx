@@ -132,7 +132,7 @@ const ScTree: React.FC<ScTreeProps> = props => {
     setTreeData(_data);
   };
 
-  useEffect(() => {
+  const updateAction = () => {
     const userAction = {
       reload: () => {
         loadData(params);
@@ -144,6 +144,10 @@ const ScTree: React.FC<ScTreeProps> = props => {
     if (saveRef && typeof saveRef !== 'function') {
       saveRef.current = userAction;
     }
+  };
+
+  useEffect(() => {
+    updateAction();
     if (autoload) {
       loadData(params);
     }
@@ -153,6 +157,7 @@ const ScTree: React.FC<ScTreeProps> = props => {
   }, []);
 
   useUpdateEffect(() => {
+    updateAction();
     if (autoload) {
       loadData(params);
     }

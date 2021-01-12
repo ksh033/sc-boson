@@ -49,6 +49,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     rowSelected = true,
     onCustomRow,
     onRowSelect,
+    pagination,
     ...restPros
   } = props;
 
@@ -71,7 +72,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const [dataSource, setDataSource] = useState(data);
   const [rowKeys, setRowKeys] = useState(selectedRowKeys || []);
   const [rows, setRows] = useState<any[]>(selectedRows || []);
-  const [pagination, setPagination] = useState({
+  const [innerPagination, setPagination] = useState({
     current: data ? data.current : 1,
     pageSize,
     total: 0,
@@ -92,10 +93,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const dataKeys = useRef<Set<any>>(new Set([]));
 
   const loadData = async () => {
-    const { current } = pagination;
+    const { current, pageSize } = innerPagination;
 
     const payload = {
-      size: pagination.pageSize,
+      size: pageSize,
       current,
       ...params,
       ...filters,
@@ -150,7 +151,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
   const updateAction = () => {
     const userAction = {
-      pagination: pagination,
+      pagination: innerPagination,
       data: dataSource,
       selectedRowKeys: action.current.rowKeys || rowKeys,
       selectedRows: action.current.rows || rows,
@@ -180,10 +181,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   }, []);
 
   useUpdateEffect(() => {
-    updateAction();
-    if (pagination.current > 1) {
+    if (innerPagination.current > 1) {
       setPagination({
-        ...pagination,
+        ...innerPagination,
         current: 1,
       });
     } else {
@@ -192,9 +192,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   }, [params]);
 
   useUpdateEffect(() => {
-    updateAction();
     loadData();
-  }, [pagination.current, pagination.pageSize]);
+  }, [innerPagination.current, innerPagination.pageSize]);
 
   useUpdateEffect(() => {
     if (data) {
@@ -206,6 +205,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     _pagination: any,
     _filtersArg: any,
     _sorter: any,
+    extra: { currentDataSource: []; action: any },
   ) => {
     const _filters = Object.keys(_filtersArg).reduce(
       (obj: any, key: string) => {
@@ -217,7 +217,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       },
       {},
     );
-
     setPagination(_pagination);
     setFilters(_filters);
     setSorter(_sorter);
@@ -265,6 +264,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
+      ...innerPagination,
       ...pagination,
       total,
       showTotal: (rowTotal: any, range: any[]) => {
@@ -309,6 +309,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       : undefined;
 
     const key = rowKey || 'key';
+    updateAction();
     return {
       onRow: (record: any, index: number) => {
         let result: any = onCustomRow && onCustomRow(record, index);
