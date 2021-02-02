@@ -12,10 +12,6 @@
   "publishConfig": {
     "registry": "http://172.18.169.70:8081/repository/bsnpm/"
   },
-  "repository": {
-    "type": "git",
-    "url": "http://bogon/smart-city-ui/sc-js.git"
-  },
   "license": "MIT",
   "files": [
     "lib",

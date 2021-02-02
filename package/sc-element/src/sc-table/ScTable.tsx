@@ -261,11 +261,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     _row.forEach((item: any, index: number) => {
       item.key = index;
     });
-    const paginationProps = {
+
+    let paginationProps: any = {
       showSizeChanger: true,
       showQuickJumper: true,
       ...innerPagination,
-      ...pagination,
       total,
       showTotal: (rowTotal: any, range: any[]) => {
         return (
@@ -286,6 +286,15 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         );
       },
     };
+
+    if (pagination === false) {
+      paginationProps = false;
+    } else {
+      paginationProps = {
+        ...paginationProps,
+        ...pagination,
+      };
+    }
 
     const _rowSelection = checkbox
       ? {

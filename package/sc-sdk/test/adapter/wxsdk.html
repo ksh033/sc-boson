@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+        <style>
+            .demo button {
+                margin: 10px;
+                display: block;
+            }
+            .demo div > button{
+                display: inline-block;
+            }
+        </style>
+        <!--<script src="../../node_modules/mocha/mocha.js"></script>-->
+        <script src="../../node_modules/axios/dist/axios.js"></script>
+        <script src="../../node_modules/loadjs/dist/loadjs.js"></script>
+        <script src="https://s.url.cn/qqun/qun/qqweb/m/qun/confession/js/vconsole.min.js"></script>
+        <script src="../../node_modules/babel-polyfill/dist/polyfill.js"></script>
+        <script src="../../dist/index.umd.js"></script>
+        <script>
+    //    var  appid="wx098ba91d70da965e"
+    // 		var appsecret="37300747966f4724f5aaf9641d1e1f85"
+    // 		var wxTokenUrl="/wxapi"
+    // 		var wxJsTokenUrl="/wxapi/cgi-bin/ticket/getticket?type=jsapi&access_token="
+    // 		axios.get(wxTokenUrl,{
+    // 			withCredentials: false, // 默认的
+    // 		})
+    // 		.then(function (response) {
+    // 			var data=response.data;
+    // 			var access_token=data["access_token"]
+    // 		})
+
+
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
+            ///mocha.setup('tdd');
+           
+            window.scJsSdk.getSdkApi({authUrl:"https://testepay.bstj.com/sjq/80/wxapi"}).then((api)=>{
+                sdkApi=api
+            })
+
+            let WxSdk = {
+                _initParam: {
+                    idsArr: []
+                },
+
+                // 初始化判断
+                init: ()=> {
+                    // if (sdkApi){
+                        return true;
+                    // }
+                },
+
+                // 扫一扫
+                scan: function(){
+                    if (WxSdk.init()){
+                        sdkApi.scan().then((data)=>{
+                            console.log("扫一扫结果为：")
+                            console.log(data)
+                        })
+                    }
+                },
+                
+                // 选择图片
+                choseImage: function(){
+                    if (WxSdk.init()){
+                        sdkApi.choseImage().then((data)=>{
+                            console.log('选择图片成功');
+                            console.log(data);
+                            this.setImgs(data.data)
+                        })
+                    }
+                },
+                
+                // 上传图片
+                uploadImage: function(){
+                    if (WxSdk.init()){
+                        let imgs = document.getElementById('chosedImgs').getElementsByTagName("img");
+                        for(let i = 0; i < imgs.length; i++) {
+                            console.log('上传图片为:'+imgs[i].getAttribute('localId'));
+                            sdkApi.uploadImage({
+                                localId: imgs[i].getAttribute('localId'), // 需要上传的图片的本地ID，由chooseImage接口获得
+                                isShowProgressTips: 1, // 默认为1，显示进度提示
+                            }).then((data)=>{
+                                console.log('上传图片成功');
+                                console.log(data);
+                            })
+                        }
+                    }
+                },
+
+                // 显示选中图片的名称
+                setImgs: (idsArr)=>{
+                    // 思源
+                    if (idsArr.base64) {
+                        var img = document.createElement('img');
+                        img.src = 'data:image/jpeg;base64,'+idsArr.base64;
+                        img.style.width = '200px';
+                        document.getElementById('chosedImgs').appendChild(img);
+                        console.log('本地图片加载成功');
+                    } else {
+                        for (let i = 0; i < idsArr.length; i ++) {
+                            var img = document.createElement('img');
+                            img.src = idsArr[i];
+                            img.setAttribute('localId', idsArr[i]);
+                            img.style.width = '200px';
+                            // img.style.height = ''
+                            document.getElementById('chosedImgs').appendChild(img);
+                            console.log('本地图片id为：'+idsArr[i]);
+                        }
+                    }
+                },
+
+                // 录音
+                record: (type) => {
+                    if (WxSdk.init()){
+                        sdkApi.record({
+                            type: type,
+                            params: {}
+                        }).then((data)=>{
+                            console.log( type + '录音成功')
+                            console.log(data);
+                            if (data.data) {
+                                let localIdInput = document.getElementById('localId');
+                                localIdInput.setAttribute('value', data.data);
+                            }
+                        })
+                    }
+                },
+
+                // 语音
+                voice: (type) => {
+                    if (WxSdk.init()){
+                        let param = {};
+                        if (type === 'download') {
+                            let serverIdInput = document.getElementById('serverId');
+                            let serverId = serverIdInput.getAttribute('value');
+                            param = {
+                                serverId,
+                            }
+                        } else {
+                            let localIdInput = document.getElementById('localId');
+                            let localId = localIdInput.getAttribute('value');
+                            param = {
+                                localId,
+                            }
+                        }
+                        sdkApi.voice({
+                            type: type,
+                            params: param
+                        }).then((data)=>{
+                            console.log( type + '语音成功')
+                            console.log(data);
+                            if (type === 'upload') {
+                                let serverIdInput = document.getElementById('serverId');
+                                serverIdInput.setAttribute('value', data.data);
+                            }
+                        })
+                    }
+                },
+
+                // 获取位置
+                getLocation: () => {
+                    if (WxSdk.init()){
+                        sdkApi.getLocation().then((res)=>{
+                            console.log('获取位置成功');
+                            console.log(res);
+                            let data = res.data;
+                            let latitudeInput = document.getElementById('latitude');
+                            let longitudeInput = document.getElementById('longitude');
+                            latitudeInput.innerText = data.latitude;
+                            longitudeInput.innerText = data.longitude;
+                        })
+                    }
+                },
+
+                // 手机GPS设置
+                setGPS: () => {
+                    sdkApi.setGPS();
+                },
+
+                // 打开地图
+                openLocation: () => {
+                    if (WxSdk.init()){
+                        let param = {};
+                        let latitudeInput = document.getElementById('latitude');
+                        let longitudeInput = document.getElementById('longitude');
+                        let latitude = latitudeInput.innerText;
+                        let longitude = longitudeInput.innerText;
+                        param = {
+                            latitude: parseFloat(latitude), // 纬度，浮点数，范围为90 ~ -90
+                            longitude: parseFloat(longitude), // 经度，浮点数，范围为180 ~ -180。
+                            // name: '不知道', // 位置名
+                            // address: '不知道城市名', // 地址详情说明
+                            // infoUrl: 'www.baidu.com' // 在查看位置界面底部显示的超链接,可点击跳转
+                        }
+                        sdkApi.openLocation(param).then((data)=>{
+                            console.log('打开地图成功');
+                            console.log(data);
+                        })
+                    }
+                },
+            }
+            
+            
+        </script>
+    </head>
+    <body>
+        <div id="mocha" class="demo">
+            <img src="https://testepay.bstj.com/sjq/80/qrcode"/>
+            
+            <div>
+                <div for="">
+                    经度：
+                    <span id="longitude"></span>
+                </div>
+                <div for="">
+                    纬度：
+                    <span id="latitude" ></span>
+                </div>
+            </div>
+            <div for="">
+                选中的图片为： 
+                <div id='chosedImgs'></div>
+            </div>
+            
+            <!-- 博思SDK -->
+            <div>
+                <h2>博思</h2>
+                <button onclick="WxSdk.scan()">扫一扫</button>
+                <button onclick="WxSdk.choseImage()">选择图片</button>
+                <button onclick='WxSdk.getLocation()'>获取地理位置</button>
+            </div>
+
+            <!-- 思源 -->
+            <div>
+                <h2>思源</h2>
+                <button onclick="WxSdk.choseImage()">选择图片</button>
+                <button onclick='WxSdk.getLocation()'>获取地理位置</button>
+                <button onclick='WxSdk.setGPS()'>手机GPS设置</button>
+                <button onclick='WxSdk.openLocation()'>根据获取位置查看地图</button>
+            </div>
+            
+
+            <!-- 微信 -->
+            <div>
+                <h2>微信</h2>
+                <button onclick='WxSdk.getLocation()'>获取地理位置</button>
+                <button onclick='WxSdk.openLocation()'>根据获取位置查看地图</button>
+            </div>
+            <!-- 微信 -->
+            <div>
+                <button onclick="WxSdk.scan()">扫一扫</button>
+                <button onclick="WxSdk.choseImage()">选择图片</button>
+                <button onclick="WxSdk.uploadImage()">上传图片</button>
+            </div>
+
+            <!-- 微信 -->
+            <div>
+                <button onclick='WxSdk.record("start")'>开始录音</button>
+                <button onclick='WxSdk.record("stop")'>停止录音</button>
+                <input id="localId" type="hidden" />
+                <input id="serverId" type="hidden" />
+            </div>
+
+            <!-- 微信 -->
+            <div>
+                <button onclick='WxSdk.voice("play")'>开始播放语音</button>
+                <button onclick='WxSdk.voice("pause")'>暂停播放语音</button>
+                <button onclick='WxSdk.voice("stop")'>停止播放语音</button>
+                <button onclick='WxSdk.voice("upload")'>上传语音</button>
+                <button onclick='WxSdk.voice("download")'>下载语音</button>
+            </div>
+            
+        </div>
+    </body>
+</html>
