@@ -124,7 +124,8 @@ const SearchBar: React.FC<ScSearchBarProps> = props => {
           _data = onLoad(_data);
         }
       } else if (onSubmit) {
-        onSubmit(values);
+        const params = await wrapForm.validateFields();
+        onSubmit && onSubmit(params);
       }
     },
     [onSubmit, request, onLoad],

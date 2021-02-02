@@ -11,5 +11,6 @@ export interface FormComponentProps {
   name?: string;
   form?: FormInstance;
   initialValues?: any;
+  formItemProps?: any;
 }
 export default CForm;

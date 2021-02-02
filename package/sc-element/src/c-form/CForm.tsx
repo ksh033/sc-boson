@@ -150,12 +150,14 @@ const CForm: React.FC<any> = props => {
                     readonly: true,
                     initialValues,
                     value: itValue,
+                    formItemProps: formItemProps,
                   })
                 : React.cloneElement(component, {
                     ...item.props,
                     readonly: true,
                     initialValues,
                     value: itValue,
+                    formItemProps: formItemProps,
                   })
               : null}
           </ViewItem>
@@ -174,9 +176,15 @@ const CForm: React.FC<any> = props => {
   // 创建表单
   const createForm = (_formConfig: any) => {
     return _formConfig.map((item: any) => {
-      const { groupTitle, group, items, gutter = { xs: 0, sm: 0, md: 0, lg: 0 }, col = 4 } = item;
+      const {
+        groupTitle,
+        group,
+        items,
+        gutter = { xs: 0, sm: 0, md: 0, lg: 0 },
+        col = 4,
+      } = item;
       const colSpan = 24 / col;
-      const defColProp = { span: colSpan, push: 0, pull: 0, offset:0 };
+      const defColProp = { span: colSpan, push: 0, pull: 0, offset: 0 };
       let cols: any[] = [];
       const rows = [];
       let rowIndex = 0;
@@ -199,14 +207,19 @@ const CForm: React.FC<any> = props => {
               display: 'none',
             };
           } else {
-            colCount = colCount + (_props.span|0) + (_props.push|0)+ (_props.pull|0)+ (_props.offset|0);
+            colCount =
+              colCount +
+              (_props.span | 0) +
+              (_props.push | 0) +
+              (_props.pull | 0) +
+              (_props.offset | 0);
 
             itemCount++;
           }
           // 设置默认的 栅格比例
           if (!itemProps.formItemProps || _.isEmpty(itemProps.formItemProps)) {
             itemProps.formItemProps = {
-              labelCol:  item.labelCol || labelCol,
+              labelCol: item.labelCol || labelCol,
               wrapperCol: item.wrapperCol || wrapperCol,
             };
           } else {
@@ -215,7 +228,8 @@ const CForm: React.FC<any> = props => {
               itemProps.formItemProps['labelCol'] = item.labelCol || labelCol;
             }
             if (!itemProps.formItemProps.wrapperCol) {
-              itemProps.formItemProps['wrapperCol'] = item.wrapperCol || wrapperCol;
+              itemProps.formItemProps['wrapperCol'] =
+                item.wrapperCol || wrapperCol;
             }
           }
           if (itemProps.component) {
