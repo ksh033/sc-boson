@@ -172,6 +172,7 @@ const SearchBar: React.FC<ScSearchBarProps> = props => {
               style: { width: '100%' },
               key: `form-item-component-${index}`,
               ...restProps,
+              formItemProps: formItemProps,
             },
             _children,
           );
@@ -180,6 +181,7 @@ const SearchBar: React.FC<ScSearchBarProps> = props => {
             style: { width: '100%' },
             key: `form-item-component-${index}`,
             ...restProps,
+            formItemProps: formItemProps,
           });
         }
       }
