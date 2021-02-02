@@ -124,8 +124,7 @@ const SearchBar: React.FC<ScSearchBarProps> = props => {
           _data = onLoad(_data);
         }
       } else if (onSubmit) {
-        const params = await wrapForm.validateFields();
-        onSubmit && onSubmit(params);
+        onSubmit(values);
       }
     },
     [onSubmit, request, onLoad],
@@ -163,6 +162,9 @@ const SearchBar: React.FC<ScSearchBarProps> = props => {
         createCmp = component;
       } else {
         const { defaultValue, ...restProps } = item.props || {};
+        if (component.customView) {
+          restProps['formItemProps'] = formItemProps;
+        }
         // 把form设置进组件中
         restProps.form = wrapForm;
         if (_children.length > 0) {
@@ -172,7 +174,6 @@ const SearchBar: React.FC<ScSearchBarProps> = props => {
               style: { width: '100%' },
               key: `form-item-component-${index}`,
               ...restProps,
-              formItemProps: formItemProps,
             },
             _children,
           );
@@ -181,7 +182,6 @@ const SearchBar: React.FC<ScSearchBarProps> = props => {
             style: { width: '100%' },
             key: `form-item-component-${index}`,
             ...restProps,
-            formItemProps: formItemProps,
           });
         }
       }
