@@ -1,0 +1,66 @@
+{
+  "name": "@scboson/sc-element",
+  "version": "1.1.2",
+  "description": "基于ReactJS+Antd+Dva组成",
+  "scripts": {
+    "start": "dumi dev",
+    "docs:build": "dumi build",
+    "build": "father build",
+    "link": "yarn link"
+  },
+  "keywords": [
+    "ant",
+    "design",
+    "react",
+    "react-component",
+    "component",
+    "components",
+    "ui",
+    "framework",
+    "frontend"
+  ],
+  "contributors": [
+    "ant"
+  ],
+  "publishConfig": {
+    "registry": "http://172.18.169.70:8081/repository/bsnpm/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://192.168.10.60/sc-dva-antd-pro.git"
+  },
+  "main": "./es/index.js",
+  "module": "./es/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "dist",
+    "lib",
+    "es"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@ant-design/icons": "4.0.0",
+    "immutability-helper": "^3.1.1",
+    "moment": "^2.24.0",
+    "react-dnd": "^10.0.2",
+    "react-dnd-html5-backend": "^10.0.2",
+    "react-resizable": "^1.10.1",
+    "use-media-antd-query": "^1.0.1"
+  },
+  "sideEffects": [
+    "es/**/style/*",
+    "lib/**/style/*"
+  ],
+  "peerDependencies": {
+    "antd": "^4.x",
+    "react": ">=16.0.0",
+    "@umijs/hooks": "^1.5.3"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ],
+  "title": "sc-element",
+  "author": ""
+}

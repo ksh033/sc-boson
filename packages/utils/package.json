@@ -1,0 +1,28 @@
+{
+  "name": "@scboson/utils",
+  "version": "1.0.0",
+  "description": "utils",
+  "keywords": [
+    "utils"
+  ],
+  "main": "./lib/index.js",
+  "publishConfig": {
+    "registry": "http://172.18.169.70:8081/repository/bsnpm/"
+  },
+  "license": "MIT",
+  "files": [
+    "lib",
+    "es",
+    "src"
+  ],
+  "dependencies": {
+    "crypto-js": "^3.1.9-1",
+    "md5": "^2.2.1",
+    "sockjs-client": "^1.3.0",
+    "stompjs": "^2.3.3"
+  },
+  "devDependencies": {
+    "@types/sockjs-client": "^1.5.0",
+    "@types/stompjs": "^2.3.4"
+  }
+}

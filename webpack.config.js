@@ -4,10 +4,10 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const { readdirSync } = require('fs');
+const { readdirSync, existsSync} = require('fs');
 
-const tailPkgs = readdirSync(path.join(__dirname, 'package')).filter(
-  (pkg) => pkg.charAt(0) !== '.'&& pkg==="sc-layout",
+const tailPkgs = readdirSync(path.join(__dirname, 'packages')).filter(
+  (pkg) => pkg.charAt(0) !== '.',
 );
 
 // const tailPkgs = ['table'];
@@ -18,36 +18,40 @@ const externals = isCI
   ? tailPkgs.reduce((pre, value) => {
       return {
         ...pre,
-        [`@ant-design/pro-${value}`]: `Pro${value
+        [`@scboson/${value}`]: `${value
           .toLowerCase()
           .replace(/( |^)[a-z]/g, (L) => L.toUpperCase())}`,
       };
     }, {})
   : {};
 
-// console.log(externals);
+
 
 const webPackConfigList = [];
 
+const findEntry=(path)=>{
+var indexFile=["index.ts","index.js","index.tsx"];
+let file=indexFile.find((filename)=>{
+
+  return existsSync(path+filename)
+})
+return file;
+}
 tailPkgs.forEach((pkg) => {
   const entry = {};
-  //if (pkg==="sc-utils"){
-    entry[`${pkg}`] = `./package/${pkg}/src/index.tsx`;
+  let entryFile=findEntry(`./packages/${pkg}/src/`);
 
-  //}
-  if (pkg==="sc-utils"){
-    entry[`${pkg}`] = `./package/${pkg}/src/index.js`;
-  }
+  entry[`${pkg}`] = `./packages/${pkg}/src/${entryFile}`;
   if (!isCI) {
-    entry[`${pkg}.min`] = `./package/${pkg}/src/index.tsx`;
+    entry[`${pkg}.min`] = `./packages/${pkg}/src/${entryFile}`;
   }
   const config = {
     entry,
     output: {
       filename: '[name].js',
-      library: `Pro${pkg.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase())}`,
+      library: `${pkg.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase())}`,
       libraryTarget: 'umd',
-      path: path.resolve(__dirname, 'package', pkg, 'dist'),
+      path: path.resolve(__dirname, 'packages', pkg, 'dist'),
       globalObject: 'this',
     },
     mode: 'production',
@@ -156,6 +160,7 @@ tailPkgs.forEach((pkg) => {
         'react-dom': 'ReactDOM',
         antd: 'antd',
         moment: 'moment',
+        'net':'net',
         ...externals,
       },
     ],

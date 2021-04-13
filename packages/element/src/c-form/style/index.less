@@ -1,0 +1,103 @@
+
+@import  '../../style/index.less';
+.@{sc-prefix}-form {
+  margin: 0px 8px;
+  // 因为 light-filter 不需要定宽
+ div:not(.@{sc-prefix}-pro-form-light-filter) {
+    .@{sc-prefix}-field {
+      // 适用于短数字，短文本或者选项
+       max-width: 100%;
+      &-xs {
+        width: 104px;
+      }
+      &-s {
+        width: 216px;
+      }
+      // 适用于较短字段录入、如姓名、电话、ID 等。
+      &-sm {
+        width: 216px;
+      }
+      &-m {
+        width: 328px;
+      }
+      // 标准宽度，适用于大部分字段长度
+      &-md {
+        width: 328px;
+      }
+      &-l {
+        width: 440px;
+      }
+      // 适用于较长字段录入，如长网址、标签组、文件路径等。
+      &-lg {
+        width: 440px;
+      }
+      // 适用于长文本录入，如长链接、描述、备注等，通常搭配自适应多行输入框或定高文本域使用。
+      &-xl {
+        width: 552px;
+      }
+    }
+  }
+}
+
+.sc-form-nav {
+    .ant-anchor {
+      position: relative;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      background: #fff;
+      &::before{
+        content: '';
+        position: absolute;
+        z-index: 2;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 0;
+        border-bottom: 1px solid #ebedf0;
+      }
+      .ant-anchor-ink {
+        display: none;
+      }
+      .ant-anchor-link {
+        position: relative;
+        flex-grow: 1;
+        flex-shrink: 1;
+        padding: 18px 20px;
+        overflow: hidden;
+        line-height: 1;
+        font-size: 14px;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #000;
+        cursor: pointer;
+        transition: all 0.5s;
+      }
+    }
+
+}
+.sc-form-group-container {
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+.sc-form-fieldset {
+  position: relative;
+  &-title{
+    padding: 8px 16px;
+    position: relative;
+    border-bottom: solid 1px #ebedf0;
+   // margin-bottom: 20px;
+   // margin-top: 40px;
+   // padding-bottom: 4px;
+    font-size: 14px;
+  }
+}
+.sc-viem-item-item {
+  padding: 8px 0;
+}
+.sc-viem-item-label {
+  font-weight: 700;
+  text-align: right;
+}
+

@@ -9,7 +9,7 @@ const { yParser } = require('@umijs/utils');
   const pkgs = readdirSync(join(__dirname, '../packages')).filter((pkg) => pkg.charAt(0) !== '.');
 
   pkgs.forEach((shortName) => {
-    const name = `@ant-design/pro-${shortName}`;
+    const name = `@@scboson/sc-${shortName}`;
 
     const pkgJSONPath = join(__dirname, '..', 'packages', shortName, 'package.json');
     const pkgJSONExists = existsSync(pkgJSONPath);
@@ -30,12 +30,12 @@ const { yParser } = require('@umijs/utils');
         browserslist: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 11'],
         keywords: ['antd', 'admin', 'ant-design', 'ant-design-pro'],
         authors: [
-          'chencheng <sorrycc@gmail.com> (https://github.com/sorrycc)',
-          'chenshuai2144 <qixian.cs@outlook.com> (https://github.com/chenshuai2144)',
+          //'chencheng <sorrycc@gmail.com> (https://github.com/sorrycc)',
+          //'chenshuai2144 <qixian.cs@outlook.com> (https://github.com/chenshuai2144)',
         ],
         license: 'MIT',
-        bugs: 'http://github.com/umijs/plugins/issues',
-        homepage: `https://github.com/ant-design/pro-components/tree/master/packages/${shortName}#readme`,
+       // bugs: 'http://github.com/umijs/plugins/issues',
+       // homepage: `https://github.com/ant-design/pro-components/tree/master/packages/${shortName}#readme`,
         peerDependencies: {
           umi: '3.x',
         },

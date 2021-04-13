@@ -5,12 +5,12 @@ import { join } from 'path';
 const headPkgList = [];
 // utils must build before core
 // runtime must build before renderer-react
-const pkgList = readdirSync(join(__dirname, 'package')).filter(
+const pkgList = readdirSync(join(__dirname, 'packages')).filter(
   (pkg) => pkg.charAt(0) !== '.' && !headPkgList.includes(pkg),
 );
 
 const alias = pkgList.reduce((pre, pkg) => {
-  pre[`@scboson/${pkg}`] = join(__dirname, 'package', pkg, 'src');
+  pre[`@scboson/${pkg}`] = join(__dirname, 'packages', pkg, 'src');
   return {
     ...pre,
   };
@@ -19,7 +19,7 @@ const alias = pkgList.reduce((pre, pkg) => {
 console.log(`🌼 alias list \n${chalk.blue(Object.keys(alias).join('\n'))}`);
 
 const tailPkgList = pkgList
-  .map((path) => [join('package', path, 'src'), join('package', path, 'src', 'components')])
+  .map((path) => [join('packages', path, 'src'), join('packages', path, 'src', 'components')])
   .reduce((acc, val) => acc.concat(val), []);
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -118,7 +118,6 @@ export default {
       : [],
   menus: {
     '/components': [
-  
       {
         title: '布局',
         children: [

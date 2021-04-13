@@ -3,8 +3,7 @@
   "npmClient": "yarn",
   "useWorkspaces": true,
   "changelog": {
-    "repo": "@scboson",
-    "cacheDir": ".changelog"
+    
   },
   "ignoreChanges": [
     "**/*.md",
