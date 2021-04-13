@@ -12,9 +12,11 @@
     "suppressImplicitAnyIndexErrors": true,
     "declaration": true,
     "skipLibCheck": true,
+  
     "paths": {
-      "@scboson/sc-layout": ["./packages/sc-layout/src/index.tsx"],
-     
+      "@scboson/sc-layout": ["./packages/layout/src/index.tsx"],
+      "@scboson/sc-h5sdk": ["./packages/h5skd/src/index.tsx"],
+      "@scboson/sc-schema": ["./packages/schema/src/index.tsx"],
     }
   },
   "include": [
@@ -27,5 +29,5 @@
     "jest.config.js",
     "**/fixtures",
     "./tests/no-duplicated.ts"
-  ]
+, "packages/element/BindEventUtil.ts"  ]
 }
