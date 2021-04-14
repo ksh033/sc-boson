@@ -2,12 +2,18 @@ import type { ColumnType  } from 'antd/es/table/interface';
 
 import  type { Field,FieldGroup,FiledProp,FormConfig,FormItemProp } from '@scboson/sc-element/es/c-form'
 
+import type  { cmps  } from './register';
+
 
 
 import type React from 'react';
 import type { ButtonType, ButtonProps } from 'antd/lib/button';
 
-export {Field,FieldGroup,FiledProp,FormConfig,FormItemProp as FormItem }
+export {Field,FieldGroup,FiledProp,FormConfig }
+export interface FormItem<T extends keyof typeof cmps > extends Omit<FormItemProp, 'component'> {
+  component?: T|string;
+}
+ 
 export interface DialogOptions {
   url?: string; // 去的页面
   width?: string | number; // 页面宽度

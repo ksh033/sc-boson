@@ -21,7 +21,7 @@ export interface SearchConfig {
   /**
    * 直接合并不行时使用此方法
    */
-  callback?: ((column: FormItem) => void) | undefined;
+  callback?: ((column: FormItem<any>) => void) | undefined;
   /**
    * 当前页状态
    */

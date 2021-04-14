@@ -61,7 +61,7 @@ const getConfig = (nodeType: string, pageConfig: PageConfig) => {
  * @param group 
  * @returns 
  */
-const converFormItem=(it: FormItem, filter: FormFilterProp,group: any,pageConfig: PageConfig)=>{
+const converFormItem=(it: FormItem<any>, filter: FormFilterProp,group: any,pageConfig: PageConfig)=>{
 
   const {  action, fieldsProp, callBack } = filter
 
@@ -182,8 +182,8 @@ const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
         items.forEach((it: Field) => {
           if (it.items&&it.items.length>0){
             newItem=it;
-            const newItems: (FormItem | null)[]=[];
-            it.items.forEach((groupItem: FormItem) => {
+            const newItems: (FormItem<any> | null)[]=[];
+            it.items.forEach((groupItem: FormItem<any>) => {
               newItems.push(converFormItem(groupItem,filter,group,pageConfig))
             });
             newItem.items=newItems;
