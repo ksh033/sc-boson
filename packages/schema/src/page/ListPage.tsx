@@ -7,7 +7,7 @@ import usePageList from '../hooks/useListPage';
 import {ListPageContext} from '../context'
 import type { UseListPageProp } from '../hooks/useListPage';
 
-import type { PageConfig } from '@scboson/schema/es/interface';
+import type { PageConfig } from '../interface';
 
 export interface IPageListOptions {
   readonly forwardRef?: boolean;
@@ -85,4 +85,5 @@ function copyStaticProperties(base: any, target: any) {
       }
   })
 }
+
 export default ListPage

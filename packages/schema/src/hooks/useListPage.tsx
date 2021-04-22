@@ -5,7 +5,7 @@ import type { ProColumn, FormItem,ButtonTypeProps, ProColumnType } from '../inte
 import type { BaseResult } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
 
-import { PageType, PageConfig } from '@scboson/schema/es/interface';
+import { PageType, PageConfig } from '../interface';
 import { useSetState, useUpdateEffect } from 'ahooks';
 import type {TableInfoProps} from '../page/TableInfo'
 import type {SearchInfoProps} from '../page/SearchInfo'
