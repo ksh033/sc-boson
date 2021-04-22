@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable func-names */
 /* eslint-disable react-hooks/rules-of-hooks */
-import type { PageConfig } from '@scboson/schema/lib/interface';
+import type { PageConfig } from '../interface';
 import { useRequest } from 'ahooks';
 import { BaseResult } from '@ahooksjs/use-request/lib/types';
 import defaultEvents from './DefaultEvents';

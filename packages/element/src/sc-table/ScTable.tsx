@@ -22,7 +22,10 @@ export interface ScTableProps<T> extends TableProps<T> {
   selectedRows?: any[]; // 选中的对象
   pagination?: false | TablePaginationConfig;
   saveRef?: any; // React.MutableRefObject<any> | ((saveRef: any) => void) 获取组件对外暴露的参数
-  getRecord?: () => any; // 获取选中行的表单对象
+  getRecord?: (record: any,
+    selected: any,
+    _selectedRows: any,
+    nativeEvent: any) => any; // 获取选中行的表单对象
   rowSelected?: boolean; // 列选中
   onRowSelect?: (record: any) => void;
   onCustomRow?: (record: any, index: number) => {}; // 自定义行事件为了合并现有的方法
