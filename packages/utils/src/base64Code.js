@@ -1,3 +1,12 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable prefer-const */
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-multi-assign */
+/* eslint-disable eqeqeq */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-plusplus */
+/* eslint-disable no-bitwise */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /** ****************** base64编码和解码 ******************* */
 
 const keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
@@ -47,6 +56,7 @@ export function utf8ToEncode64(H) {
     A = ((F & 15) << 2) | (G >> 6)
     I = G & 63
     if (isNaN(F)) {
+      // eslint-disable-next-line no-multi-assign
       A = I = 64
     } else if (isNaN(G)) {
         I = 64
@@ -57,7 +67,9 @@ export function utf8ToEncode64(H) {
       keyStr.charAt(J) +
       keyStr.charAt(A) +
       keyStr.charAt(I)
+    // eslint-disable-next-line no-multi-assign
     E = F = G = ''
+    // eslint-disable-next-line no-multi-assign
     B = J = A = I = ''
   } while (C < H.length)
   return D
@@ -82,6 +94,7 @@ export function encode64(H) {
     A = ((F & 15) << 2) | (G >> 6)
     I = G & 63
     if (isNaN(F)) {
+      // eslint-disable-next-line no-multi-assign
       A = I = 64
     } else if (isNaN(G)) {
         I = 64
@@ -92,7 +105,9 @@ export function encode64(H) {
       keyStr.charAt(J) +
       keyStr.charAt(A) +
       keyStr.charAt(I)
+    // eslint-disable-next-line no-multi-assign
     E = F = G = ''
+    // eslint-disable-next-line no-multi-assign
     B = J = A = I = ''
   } while (C < H.length)
   return D

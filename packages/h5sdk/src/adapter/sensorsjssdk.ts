@@ -1,3 +1,7 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable spaced-comment */
+/* eslint-disable @typescript-eslint/no-useless-constructor */
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/dot-notation */
@@ -74,8 +78,8 @@ export default class SensorsSdk extends AbsJsSdk {
         successfn(data: any) {
           // wgs2gcj坐标转换
           const lng_lat = CoordinateConvert.wgs2gcj(data.data.longitude, data.data.latitude);
-          console.log('转换后lng_lat:');
-          console.log(lng_lat);
+         //  console.log('转换后lng_lat:');
+          // console.log(lng_lat);
           resolve(
             _this.getSuccess({
               ...data.data,

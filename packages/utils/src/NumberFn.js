@@ -1,16 +1,27 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable @typescript-eslint/no-redeclare */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-new-wrappers */
+/* eslint-disable no-plusplus */
+/* eslint-disable eqeqeq */
+/* eslint-disable default-case */
+/* eslint-disable prefer-destructuring */
+/* eslint-disable no-var */
+/* eslint-disable block-scoped-var */
+/* eslint-disable vars-on-top */
 export default {
-  /*随机数范围*/
+  /* 随机数范围 */
   random(min, max) {
     if (arguments.length === 2) {
       return Math.floor(min + Math.random() * (max + 1 - min))
-    } else {
+    } 
       return null
-    }
+    
   },
 
-  /*将阿拉伯数字翻译成中文的大写数字*/
+  /* 将阿拉伯数字翻译成中文的大写数字 */
   numberToChinese(num) {
-    var AA = new Array(
+    const AA = new Array(
       '零',
       '一',
       '二',
@@ -23,17 +34,17 @@ export default {
       '九',
       '十'
     )
-    var BB = new Array('', '十', '百', '仟', '萬', '億', '点', '')
-    var a = ('' + num).replace(/(^0*)/g, '').split('.'),
-      k = 0,
-      re = ''
+    const BB = new Array('', '十', '百', '仟', '萬', '億', '点', '')
+    const a = (`${  num}`).replace(/(^0*)/g, '').split('.');
+      let k = 0;
+      let re = ''
     for (var i = a[0].length - 1; i >= 0; i--) {
       switch (k) {
         case 0:
           re = BB[7] + re
           break
         case 4:
-          if (!new RegExp('0{4}//d{' + (a[0].length - i - 1) + '}$').test(a[0]))
+          if (!new RegExp(`0{4}//d{${  a[0].length - i - 1  }}$`).test(a[0]))
             re = BB[4] + re
           break
         case 8:
@@ -58,98 +69,98 @@ export default {
     return re
   },
 
-  /*将数字转换为大写金额*/
+  /* 将数字转换为大写金额 */
   changeToChinese(Num) {
-    //判断如果传递进来的不是字符的话转换为字符
-    if (typeof Num == 'number') {
+    // 判断如果传递进来的不是字符的话转换为字符
+    if (typeof Num === 'number') {
       Num = new String(Num)
     }
-    Num = Num.replace(/,/g, '') //替换tomoney()中的“,”
-    Num = Num.replace(/ /g, '') //替换tomoney()中的空格
-    Num = Num.replace(/￥/g, '') //替换掉可能出现的￥字符
+    Num = Num.replace(/,/g, '') // 替换tomoney()中的“,”
+    Num = Num.replace(/ /g, '') // 替换tomoney()中的空格
+    Num = Num.replace(/￥/g, '') // 替换掉可能出现的￥字符
     if (isNaN(Num)) {
-      //验证输入的字符是否为数字
-      //alert("请检查小写金额是否正确");
+      // 验证输入的字符是否为数字
+      // alert("请检查小写金额是否正确");
       return ''
     }
-    //字符处理完毕后开始转换，采用前后两部分分别转换
-    var part = String(Num).split('.')
+    // 字符处理完毕后开始转换，采用前后两部分分别转换
+    const part = String(Num).split('.')
     var newchar = ''
-    //小数点前进行转化
+    // 小数点前进行转化
     for (var i = part[0].length - 1; i >= 0; i--) {
       if (part[0].length > 10) {
         return ''
-        //若数量超过拾亿单位，提示
+        // 若数量超过拾亿单位，提示
       }
       var tmpnewchar = ''
       var perchar = part[0].charAt(i)
       switch (perchar) {
         case '0':
-          tmpnewchar = '零' + tmpnewchar
+          tmpnewchar = `零${  tmpnewchar}`
           break
         case '1':
-          tmpnewchar = '壹' + tmpnewchar
+          tmpnewchar = `壹${  tmpnewchar}`
           break
         case '2':
-          tmpnewchar = '贰' + tmpnewchar
+          tmpnewchar = `贰${  tmpnewchar}`
           break
         case '3':
-          tmpnewchar = '叁' + tmpnewchar
+          tmpnewchar = `叁${  tmpnewchar}`
           break
         case '4':
-          tmpnewchar = '肆' + tmpnewchar
+          tmpnewchar = `肆${  tmpnewchar}`
           break
         case '5':
-          tmpnewchar = '伍' + tmpnewchar
+          tmpnewchar = `伍${  tmpnewchar}`
           break
         case '6':
-          tmpnewchar = '陆' + tmpnewchar
+          tmpnewchar = `陆${  tmpnewchar}`
           break
         case '7':
-          tmpnewchar = '柒' + tmpnewchar
+          tmpnewchar = `柒${  tmpnewchar}`
           break
         case '8':
-          tmpnewchar = '捌' + tmpnewchar
+          tmpnewchar = `捌${  tmpnewchar}`
           break
         case '9':
-          tmpnewchar = '玖' + tmpnewchar
+          tmpnewchar = `玖${  tmpnewchar}`
           break
       }
       switch (part[0].length - i - 1) {
         case 0:
-          tmpnewchar = tmpnewchar + '元'
+          tmpnewchar += '元'
           break
         case 1:
-          if (perchar != 0) tmpnewchar = tmpnewchar + '拾'
+          if (perchar != 0) tmpnewchar += '拾'
           break
         case 2:
-          if (perchar != 0) tmpnewchar = tmpnewchar + '佰'
+          if (perchar != 0) tmpnewchar += '佰'
           break
         case 3:
-          if (perchar != 0) tmpnewchar = tmpnewchar + '仟'
+          if (perchar != 0) tmpnewchar += '仟'
           break
         case 4:
-          tmpnewchar = tmpnewchar + '万'
+          tmpnewchar += '万'
           break
         case 5:
-          if (perchar != 0) tmpnewchar = tmpnewchar + '拾'
+          if (perchar != 0) tmpnewchar += '拾'
           break
         case 6:
-          if (perchar != 0) tmpnewchar = tmpnewchar + '佰'
+          if (perchar != 0) tmpnewchar += '佰'
           break
         case 7:
-          if (perchar != 0) tmpnewchar = tmpnewchar + '仟'
+          if (perchar != 0) tmpnewchar += '仟'
           break
         case 8:
-          tmpnewchar = tmpnewchar + '亿'
+          tmpnewchar += '亿'
           break
         case 9:
-          tmpnewchar = tmpnewchar + '拾'
+          tmpnewchar += '拾'
           break
       }
       var newchar = tmpnewchar + newchar
     }
-    //小数点之后进行转化
+    // 小数点之后进行转化
     if (Num.indexOf('.') != -1) {
       if (part[1].length > 2) {
         // alert("小数点之后只能保留两位,系统将自动截断");
@@ -160,42 +171,42 @@ export default {
         perchar = part[1].charAt(i)
         switch (perchar) {
           case '0':
-            tmpnewchar = '零' + tmpnewchar
+            tmpnewchar = `零${  tmpnewchar}`
             break
           case '1':
-            tmpnewchar = '壹' + tmpnewchar
+            tmpnewchar = `壹${  tmpnewchar}`
             break
           case '2':
-            tmpnewchar = '贰' + tmpnewchar
+            tmpnewchar = `贰${  tmpnewchar}`
             break
           case '3':
-            tmpnewchar = '叁' + tmpnewchar
+            tmpnewchar = `叁${  tmpnewchar}`
             break
           case '4':
-            tmpnewchar = '肆' + tmpnewchar
+            tmpnewchar = `肆${  tmpnewchar}`
             break
           case '5':
-            tmpnewchar = '伍' + tmpnewchar
+            tmpnewchar = `伍${  tmpnewchar}`
             break
           case '6':
-            tmpnewchar = '陆' + tmpnewchar
+            tmpnewchar = `陆${  tmpnewchar}`
             break
           case '7':
-            tmpnewchar = '柒' + tmpnewchar
+            tmpnewchar = `柒${  tmpnewchar}`
             break
           case '8':
-            tmpnewchar = '捌' + tmpnewchar
+            tmpnewchar = `捌${  tmpnewchar}`
             break
           case '9':
-            tmpnewchar = '玖' + tmpnewchar
+            tmpnewchar = `玖${  tmpnewchar}`
             break
         }
-        if (i == 0) tmpnewchar = tmpnewchar + '角'
-        if (i == 1) tmpnewchar = tmpnewchar + '分'
-        newchar = newchar + tmpnewchar
+        if (i == 0) tmpnewchar += '角'
+        if (i == 1) tmpnewchar += '分'
+        newchar += tmpnewchar
       }
     }
-    //替换所有无用汉字
+    // 替换所有无用汉字
     while (newchar.search('零零') != -1) newchar = newchar.replace('零零', '零')
     newchar = newchar.replace('零亿', '亿')
     newchar = newchar.replace('亿万', '亿')
@@ -204,7 +215,7 @@ export default {
     newchar = newchar.replace('零角', '')
     newchar = newchar.replace('零分', '')
     if (newchar.charAt(newchar.length - 1) == '元') {
-      newchar = newchar + '整'
+      newchar += '整'
     }
     return newchar
   },

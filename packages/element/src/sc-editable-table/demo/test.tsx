@@ -81,7 +81,7 @@ export default () => {
       ],
     },
   ];
-  console.log(actionRef);
+  // console.log(actionRef);
 
   return (
     <ScEditableTable<DataProps>

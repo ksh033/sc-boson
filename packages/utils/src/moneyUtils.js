@@ -1,33 +1,40 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable radix */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-plusplus */
+/* eslint-disable eqeqeq */
+/* eslint-disable consistent-return */
 import { isEmpty } from './validateUtil'
 // 格式化金额
 export function convertMoney(s) {
   if (isEmpty(s)) {
     return formatMoney(s)
-  } else {
+  } 
     if (s % 100 === 0) {
       return formatMoney(s / 100)
-    } else {
-      return formatMoney(s / 100 + '.' + (s % 100))
-    }
-  }
+    } 
+      return formatMoney(`${s / 100  }.${  s % 100}`)
+    
+  
 }
 
 // 金额单位分转换为元
 export function transformMoney(num, count) {
-  let money = 0.0,
-    integer = [],
-    digits = /^\d+$/.test(count) ? count : 2
+  let money = 0.0;
+    let integer = [];
+    const digits = /^\d+$/.test(count) ? count : 2
   if (num) {
-    money = (num * 0.01).toFixed(digits) //分到元，保留两位小数
+    money = (num * 0.01).toFixed(digits) // 分到元，保留两位小数
     if (digits) {
       integer = money.toString().split('.')
       if (integer.length === 1) {
-        money = money.toString() + '.00'
+        money = `${money.toString()  }.00`
         return money
       }
       if (integer.length > 1) {
         if (integer[1].length < 2) {
-          money = money.toString() + '0'
+          money = `${money.toString()  }0`
         }
         return money
       }
@@ -50,24 +57,24 @@ export function formatMoney(s) {
   if (s === null || s === undefined || s === 'null') {
     return ''
   }
-  var n = 2
-  s = parseFloat((s + '').replace(/[^\d\.-]/g, '')).toFixed(n) + ''
-  var l = s
+  const n = 2
+  s = `${parseFloat((`${s  }`).replace(/[^\d\.-]/g, '')).toFixed(n)  }`
+  const l = s
       .split('.')[0]
       .split('')
-      .reverse(),
-    r = s.split('.')[1]
-  var t = ''
-  for (var i = 0; i < l.length; i++) {
+      .reverse();
+    const r = s.split('.')[1]
+  let t = ''
+  for (let i = 0; i < l.length; i++) {
     t += l[i] + ((i + 1) % 3 === 0 && i + 1 !== l.length ? ',' : '')
   }
   return (
-    t
+    `${t
       .split('')
       .reverse()
-      .join('') +
-    '.' +
-    r
+      .join('') 
+    }.${ 
+    r}`
   )
 }
 
@@ -113,16 +120,16 @@ export function digitUppercase(n) {
  * @returns {string}
  */
 export function toChinesNum(num) {
-  let changeNum = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'] //changeNum[0] = "零"
-  let unit = ['', '十', '百', '千', '万']
+  const changeNum = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'] // changeNum[0] = "零"
+  const unit = ['', '十', '百', '千', '万']
   num = parseInt(num)
-  let getWan = (temp) => {
-    let strArr = temp
+  const getWan = (temp) => {
+    const strArr = temp
       .toString()
       .split('')
       .reverse()
     let newNum = ''
-    for (var i = 0; i < strArr.length; i++) {
+    for (let i = 0; i < strArr.length; i++) {
       newNum =
         (i == 0 && strArr[i] == 0
           ? ''
@@ -133,10 +140,10 @@ export function toChinesNum(num) {
     }
     return newNum
   }
-  let overWan = Math.floor(num / 10000)
+  const overWan = Math.floor(num / 10000)
   let noWan = num % 10000
-  if (noWan.toString().length < 4) noWan = '0' + noWan
-  return overWan ? getWan(overWan) + '万' + getWan(noWan) : getWan(num)
+  if (noWan.toString().length < 4) noWan = `0${  noWan}`
+  return overWan ? `${getWan(overWan)  }万${  getWan(noWan)}` : getWan(num)
 }
 
 /**

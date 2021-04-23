@@ -1,10 +1,8 @@
 declare module 'coordinate-convert'
+declare module 'loadjs'
+
 interface Window {
-  ga: (
-    command: 'send',
-    hitType: 'event' | 'pageview',
-    fieldsObject: GAFieldsObject | string,
-  ) => void;
+
   reloadAuthorized: () => void;
 }
 
