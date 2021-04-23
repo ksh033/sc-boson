@@ -22,9 +22,9 @@
     "src"
   ],
   "peerDependencies": {
- 
+    "@scboson/sc-element": "^1.x",
     "lodash": "^4.x",
-    "antd": "4.x",
+    "antd": "^4.x",
     "react": "^16.x"
   },
 
