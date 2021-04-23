@@ -37,11 +37,11 @@ async function release() {
   // Check npm registry
   logStep('check npm registry');
   const userRegistry = execa.sync('npm', ['config', 'get', 'registry']).stdout;
-  if (userRegistry.includes('https://registry.yarnpkg.com/')) {
+  if (userRegistry.includes('http://172.18.169.70:8081/repository/npm/')) {
     printErrorAndExit(`Release failed, please use ${chalk.blue('npm run release')}.`);
   }
-  if (!userRegistry.includes('https://registry.npmjs.org/')) {
-    const registry = chalk.blue('https://registry.npmjs.org/');
+  if (!userRegistry.includes('http://172.18.169.70:8081/repository/npm/')) {
+    const registry = chalk.blue('http://172.18.169.70:8081/repository/npm/');
     printErrorAndExit(`Release failed, npm registry must be ${registry}.`);
   }
 
