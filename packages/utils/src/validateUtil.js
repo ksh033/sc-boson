@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-plusplus */
 /* eslint-disable no-useless-escape */
 /**
  * 验证身份证号是否正确
@@ -66,9 +68,9 @@ export function isEmpty(source) {
   const str = source.replace(/(^\s*)|(\s*$)/g, '')
   if (str === '' || str.toLowerCase() === 'null' || str.length <= 0) {
     return true
-  } else {
+  } 
     return false
-  }
+  
 }
 
 /**
@@ -96,9 +98,9 @@ export function isEmail(source) {
     ) !== -1
   ) {
     return true
-  } else {
+  } 
     return false
-  }
+  
 }
 /**
  * 判断是否为空

@@ -35,7 +35,7 @@ function isEditableCell<T>(
  */
 export const spellNamePath = (
   base: React.Key,
-  dataIndex: React.Key | React.Key[],
+  dataIndex: React.Key | React.Key[] | any,
 ): React.Key[] | React.Key | undefined => {
   if (Array.isArray(dataIndex)) {
     return [base, ...dataIndex];

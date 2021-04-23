@@ -1,4 +1,4 @@
-import { IType } from "../interface";
+import type { IType } from "../interface";
 
 interface ISdkType {
   readonly WX_PAY: IType;

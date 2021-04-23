@@ -18,14 +18,8 @@
     "es",
     "lib"
   ],
-  "scripts": {
-    "start": "npm run dev",
-    "dev": "father doc dev",
-    "build": "father-build",
-    "test": "npm run build && node  test/server.js"
-  },
+ 
   "dependencies": {
-    "@babel/runtime": "^7.5.5",
     "axios": "^0.19.0",
     "coordinate-convert": "^1.2.4",
     "loadjs": "^4.0.1"
@@ -33,9 +27,6 @@
   "peerDependencies": {
     "axios": "^0.19.0",
     "loadjs": "^4.0.1"
-  },
-  "devDependencies": {
-    "@types/loadjs": "^4.0.0"
-
   }
+
 }

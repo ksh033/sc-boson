@@ -12,7 +12,7 @@
     "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx  --fix --format=pretty ./packages && npm run lint:prettier",
     "lint:prettier": "npm run prettier &&  git diff && prettier --version && prettier --check \"packages/**/**.{js,jsx,tsx,ts,less,md,json}\" --end-of-line auto",
     "prettier": "prettier --write \"**/**.{js,jsx,tsx,ts,less,md,json}\"",
-    "release": "npm run test && node ./scripts/release.js",
+    "release": "node ./scripts/release.js",
     "site": "dumi build",
     "size": "npm run build && size-limit",
     "size:build": "cross-env PRO_COMPONENTS_CI='CI' webpack",
@@ -31,6 +31,7 @@
     "react-dom": "16"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.165",
     "@babel/core": "^7.8.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
@@ -122,7 +123,8 @@
     "webpack-cli": "^4.5.0",
     "write-pkg": "^4.0.0",
     "xhr-mock": "^2.5.1",
-    "yorkie": "^2.0.0"
+    "yorkie": "^2.0.0",
+    "ahooks":"^2.9.6"
 
   },
   "name": "sc-boson"

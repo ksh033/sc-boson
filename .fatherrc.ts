@@ -5,7 +5,7 @@ import { join } from 'path';
 // runtime must build before renderer-react
 // components dependencies order: form -> table -> list
 const headPkgs: string[] = [
- // 'utils',
+  'element',
  
 ];
 const tailPkgs = readdirSync(join(__dirname, 'packages')).filter(
@@ -20,7 +20,7 @@ export default {
   },
   cssModules:true,
   
-  pkgs: ["schema"],
+  pkgs: [...headPkgs,...tailPkgs],
   extraBabelPlugins: [
     ['babel-plugin-import', { libraryName: 'antd', libraryDirectory: 'es', style: true }, 'antd'],
     [require('./scripts/replaceLib')],

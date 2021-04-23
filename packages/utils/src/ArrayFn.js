@@ -1,7 +1,7 @@
 export default {
-  /*判断一个元素是否在数组中*/
+  /* 判断一个元素是否在数组中 */
   contains(arr, val) {
-    return arr.indexOf(val) != -1 ? true : false
+    return arr.indexOf(val) != -1
   },
 
   /**
@@ -11,10 +11,10 @@ export default {
    */
   each(arr, fn) {
     fn = fn || Function
-    var a = []
-    var args = Array.prototype.slice.call(arguments, 1)
-    for (var i = 0; i < arr.length; i++) {
-      var res = fn.apply(arr, [arr[i], i].concat(args))
+    const a = []
+    const args = Array.prototype.slice.call(arguments, 1)
+    for (let i = 0; i < arr.length; i++) {
+      const res = fn.apply(arr, [arr[i], i].concat(args))
       if (res != null) a.push(res)
     }
   },
@@ -26,10 +26,10 @@ export default {
    * @return {Array}
    */
   map(arr, fn, thisObj) {
-    var scope = thisObj || window
-    var a = []
-    for (var i = 0, j = arr.length; i < j; ++i) {
-      var res = fn.call(scope, arr[i], i, this)
+    const scope = thisObj || window
+    const a = []
+    for (let i = 0, j = arr.length; i < j; ++i) {
+      const res = fn.call(scope, arr[i], i, this)
       if (res != null) a.push(res)
     }
     return a
@@ -55,21 +55,21 @@ export default {
     })
   },
 
-  /*去重*/
+  /* 去重 */
   unique(arr) {
     if (Array.hasOwnProperty('from')) {
       return Array.from(new Set(arr))
-    } else {
-      var n = {},
-        r = []
-      for (var i = 0; i < arr.length; i++) {
+    } 
+      const n = {};
+        const r = []
+      for (let i = 0; i < arr.length; i++) {
         if (!n[arr[i]]) {
           n[arr[i]] = true
           r.push(arr[i])
         }
       }
       return r
-    }
+    
     // 注：上面 else 里面的排重并不能区分 2 和 '2'，但能减少用indexOf带来的性能,暂时没找到替代的方法。。。
     /* 正确排重
       if ( Array.hasOwnProperty('from') ) {
@@ -91,33 +91,33 @@ export default {
        */
   },
 
-  /*求两个集合的并集*/
+  /* 求两个集合的并集 */
   union(a, b) {
-    var newArr = a.concat(b)
+    const newArr = a.concat(b)
     return this.unique(newArr)
   },
 
-  /*求两个集合的交集*/
+  /* 求两个集合的交集 */
   intersect(a, b) {
-    var _this = this
+    const _this = this
     a = this.unique(a)
     return this.map(a, function(o) {
       return _this.contains(b, o) ? o : null
     })
   },
 
-  /*删除其中一个元素*/
+  /* 删除其中一个元素 */
   remove(arr, ele) {
-    var index = arr.indexOf(ele)
+    const index = arr.indexOf(ele)
     if (index > -1) {
       arr.splice(index, 1)
     }
     return arr
   },
 
-  /*将类数组转换为数组的方法*/
+  /* 将类数组转换为数组的方法 */
   formArray(ary) {
-    var arr = []
+    let arr = []
     if (Array.isArray(ary)) {
       arr = ary
     } else {
@@ -126,24 +126,24 @@ export default {
     return arr
   },
 
-  /*最大值*/
+  /* 最大值 */
   max(arr) {
     return Math.max.apply(null, arr)
   },
 
-  /*最小值*/
+  /* 最小值 */
   min(arr) {
     return Math.min.apply(null, arr)
   },
 
-  /*求和*/
+  /* 求和 */
   sum(arr) {
     return arr.reduce((pre, cur) => {
       return pre + cur
     })
   },
 
-  /*平均值*/
+  /* 平均值 */
   average(arr) {
     return this.sum(arr) / arr.length
   },
