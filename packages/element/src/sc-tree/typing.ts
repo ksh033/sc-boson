@@ -1,7 +1,7 @@
 import type { TreeProps, DataNode } from 'antd/lib/tree';
 import type React from 'react';
 
-
+export type TreeDataNode = DataNode;
 
 export type ActionBaseFunction<T> = (key: any, row: T) => void;
 
@@ -10,15 +10,16 @@ export type ActionFunctionVO<T> = {
   delete?: (row: T) => void;
   edit?: (row: T) => void;
   extendAction?: () => React.ReactNode[] | React.ReactNode;
+  alwaysShow?: boolean;
 };
 
 export type DefaultAction<T> = {
   add: ActionBaseFunction<T>;
   delete: ActionBaseFunction<T>;
   edit: ActionBaseFunction<T>;
-}
+};
 
-export type ActionType = DefaultAction<DataNode> & {
+export type ActionType = DefaultAction<TreeDataNode> & {
   /** @name 刷新 */
   reload?: () => void;
 };
@@ -29,7 +30,7 @@ export type ActionRenderFunction<T> = (
 ) => ActionFunctionVO<T>;
 
 export interface ScTreeProps extends TreeProps {
-  data?: DataNode[];
+  data?: TreeDataNode[];
   textField?: string;
   valueField?: string;
   params?: any;

@@ -49,6 +49,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         }
         return {
           title,
+          show: false,
           isLeaf,
           key: item[valueField || 'key'],
           ...otherAttr,
@@ -65,6 +66,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
       return formatTreeData(value);
     },
   });
+  const [showKey, setShowKey] = useState<string | null>(null);
 
   const actionFunction = useCallback(
     (key: any, rowData: DataNode, fun: (arg0: any[], arg1: any, arg2: any) => any): void => {
@@ -91,6 +93,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
       let action: ActionFunctionVO<DataNode> | null = null;
 
       let extendRender: React.ReactNode[] = [];
+      let alwaysShow = false;
       if (props.actionRender) {
         action = props.actionRender(rowData, allAction);
         const extendAction = action?.extendAction ? action?.extendAction() : [];
@@ -99,19 +102,28 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         } else {
           extendRender = [extendAction];
         }
+        alwaysShow = action?.alwaysShow ? action?.alwaysShow : false;
       }
+      const show = rowData.key === showKey;
+
+      const actionDom =
+        alwaysShow || show ? (
+          <>
+            {action?.add ? defaultNode(rowData, 'add', action?.add) : null}
+            {action?.delete ? defaultNode(rowData, 'del', action?.delete) : null}
+            {action?.edit ? defaultNode(rowData, 'edit', action?.edit) : null}
+            {extendRender}
+          </>
+        ) : null;
 
       return (
         <Space>
           {rowData.title}
-          {action?.add ? defaultNode(rowData, 'add', action?.add) : null}
-          {action?.delete ? defaultNode(rowData, 'del', action?.delete) : null}
-          {action?.edit ? defaultNode(rowData, 'edit', action?.edit) : null}
-          {extendRender}
+          {actionDom}
         </Space>
       );
     },
-    [allAction, props.actionRender],
+    [allAction, props.actionRender, showKey],
   );
 
   useUpdateEffect(() => {
@@ -249,6 +261,15 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     return inTreeProps;
   }, [treeData, defaultExpandAll, defaultExpandParent, titleRender, async, onLoadData]);
 
+  const handleMouseEnter = (e: any) => {
+    const { node } = e;
+    setShowKey(node.key);
+  };
+
+  const handleMouseLeave = () => {
+    setShowKey(null);
+  };
+
   return (
     <div>
       {canSearch ? (
@@ -262,7 +283,14 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
           }}
         />
       ) : null}
-      {treeData && treeData.length > 0 ? <Tree {...treeProps} {...restProps} /> : null}
+      {treeData && treeData.length > 0 ? (
+        <Tree
+          {...treeProps}
+          {...restProps}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        />
+      ) : null}
     </div>
   );
 };
