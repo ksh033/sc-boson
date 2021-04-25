@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-element",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "基于ReactJS+Antd组成",
 
   "keywords": [
@@ -33,6 +33,7 @@
     "react-dnd-html5-backend": "^10.0.2",
     "react-resizable": "^1.10.1",
     "use-media-antd-query": "^1.0.1"
+    
   },
   "sideEffects": [
     "es/**/style/*",

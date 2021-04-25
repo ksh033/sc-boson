@@ -7,7 +7,7 @@ export interface FiledProp {
     style?: React.CSSProperties;
     className?: string;
     id?: string;
-    hasFeedback?: boolean | 'string';
+    hasFeedback?: boolean;
     rules?: Rule[];
     required?: boolean;
     labelCol?: ColProps;
@@ -24,14 +24,14 @@ export interface FiledProp {
      */
     id?: string;
     /**
-     * 表单项属性 filedProps替换
+     * 表单项属性 fieldProps
      * @deprecated
      */
     formItemProps?: FiledProp;
     /**
     * 表单项属性
     */
-    filedProps?: FiledProp;
+    fieldProps?: FiledProp;
     /**
      * 子集
      */

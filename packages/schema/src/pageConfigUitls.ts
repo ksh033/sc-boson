@@ -66,7 +66,7 @@ const converFormItem=(it: FormItem<any>, filter: FormFilterProp,group: any,pageC
   const {  action, fieldsProp, callBack } = filter
 
   let item = it
-  item.filedProps=item.filedProps||item.formItemProps;
+  item.fieldProps=item.fieldProps||item.formItemProps;
   if (!item) {
    // groupItems.push(item)
     return item
@@ -76,8 +76,8 @@ const converFormItem=(it: FormItem<any>, filter: FormFilterProp,group: any,pageC
     item.props = {}
   }
   // 获取组建表单属性,用于getFieldDecorator(id, options)
-  if (!item.filedProps) {
-    item.filedProps = {}
+  if (!item.fieldProps) {
+    item.fieldProps = {}
   }
   // 有不同操作时覆盖对应不同的值
   if (action && item[action]) {
@@ -126,11 +126,11 @@ const converFormItem=(it: FormItem<any>, filter: FormFilterProp,group: any,pageC
   item = getRequest(item, pageConfig)
   // 业务字段属性覆盖，用于事件或其它需要根据业务需要控制组建属性
   if (extProps) {
-    extProps.filedProps=extProps.filedProps||extProps.formItemProps
+    extProps.fieldProps=extProps.fieldProps||extProps.formItemProps
     if (extProps.formItemProps) {
-      item.filedProps = {
-        ...item.filedProps,
-        ...extProps.filedProps,
+      item.fieldProps = {
+        ...item.fieldProps,
+        ...extProps.fieldProps,
       }
     }
     if (extProps.props) {
