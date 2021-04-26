@@ -1,7 +1,7 @@
-import type { BasicLayoutProps } from "./BasicLayout";
-import BasicLayout from "./BasicLayout";
-import MasterLayout from "./MasterLayout";
-import DefaultHeader from "./Header";
+import type { BasicLayoutProps } from './BasicLayout';
+import BasicLayout from './BasicLayout';
+import MasterLayout from './MasterLayout';
+import DefaultHeader from './Header';
 import type {
   TopNavHeaderProps,
   FooterProps,
@@ -9,13 +9,12 @@ import type {
   PageContainerProps,
   HeaderProps,
   SettingDrawerProps,
-  ProSettings
-,
-  SettingDrawerState} from "@ant-design/pro-layout";
+  ProSettings,
+  SettingDrawerState,
+} from '@ant-design/pro-layout';
 import {
   TopNavHeader,
   GridContent,
-  PageContainer,
   SettingDrawer,
   DefaultFooter,
   RouteContext,
@@ -23,11 +22,10 @@ import {
   getPageTitle,
   PageLoading,
   FooterToolbar,
-  WaterMark
-} from "@ant-design/pro-layout";
+  WaterMark,
+} from '@ant-design/pro-layout';
 
-
-
+import PageContainer from './components/PageContainer';
 
 // import type { SettingDrawerProps, SettingDrawerState } from './components/SettingDrawer';
 // import SettingDrawer from './components/SettingDrawer';
@@ -46,7 +44,7 @@ import {
 
 // export type { ProSettings as Settings, ProSettings } from "./defaultSettings";
 
-export type { MenuDataItem } from "./typings";
+export type { MenuDataItem } from './typings';
 
 const PageHeaderWrapper = PageContainer;
 
@@ -57,7 +55,7 @@ export {
   GridContent,
   DefaultHeader,
   TopNavHeader,
-   DefaultFooter,
+  DefaultFooter,
   SettingDrawer,
   getPageTitle,
   PageHeaderWrapper,
@@ -65,7 +63,7 @@ export {
   PageContainer,
   FooterToolbar,
   WaterMark,
-  MasterLayout
+  MasterLayout,
 };
 
 export type {
@@ -77,7 +75,7 @@ export type {
   HeaderProps,
   SettingDrawerProps,
   SettingDrawerState,
-  ProSettings
+  ProSettings,
 };
 
 export default BasicLayout;
