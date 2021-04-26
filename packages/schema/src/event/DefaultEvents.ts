@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CModal } from '@scboson/sc-element';
 import type { ButtonTypeProps } from '../interface';
-import {umi} from '../context'
-
-
-
+import { umi } from '../context';
+// @ts-ignore
+import { history } from 'umi';
 
 const defaultOptions = {
   showFull: false,
@@ -27,7 +27,7 @@ function add(props: ButtonTypeProps) {
       }
     }
     if (url) {
-      umi.history?.push({
+      history.push({
         pathname: url,
         query: options.pageProps,
       });
@@ -58,7 +58,7 @@ function edit(props: ButtonTypeProps) {
       }
     }
     if (url) {
-      umi.history?.push({
+      history.push({
         pathname: url,
         query: options.pageProps,
       });
@@ -83,7 +83,7 @@ function view(props: ButtonTypeProps) {
     const { showFull, title, url } = options;
     newOptions.title = title || '查看';
     if (url) {
-      umi.history?.push({
+      history.push({
         pathname: url,
         query: options.pageProps,
       });
@@ -95,9 +95,7 @@ function view(props: ButtonTypeProps) {
   }
 }
 
-/**
- * 删除
- */
+/** 删除 */
 function remove(props: ButtonTypeProps) {
   const { options, callBack } = props;
   if (options) {
@@ -119,9 +117,7 @@ function remove(props: ButtonTypeProps) {
     });
   }
 }
-/**
- * 停用
- */
+/** 停用 */
 async function disabled(props: ButtonTypeProps) {
   const { options, callBack } = props;
   if (options) {
@@ -158,14 +154,12 @@ function formBack(props: ButtonTypeProps) {
     if (close) {
       close();
     } else {
-      umi.history?.go(-1);
+      history.go(-1);
     }
   }
 }
 
-/**
- * 提交
- */
+/** 提交 */
 function formSubmit(props: ButtonTypeProps) {
   const { options, callBack, preHandle } = props;
   if (options) {
@@ -194,9 +188,7 @@ function formSubmit(props: ButtonTypeProps) {
   }
 }
 
-/**
- * 修改
- */
+/** 修改 */
 function formUpdate(props: ButtonTypeProps) {
   const { options, callBack, preHandle } = props;
   if (options) {
@@ -224,16 +216,14 @@ function formUpdate(props: ButtonTypeProps) {
     }
   }
 }
-const  defaultEvent={
- 
-    add,
-    disabled,
-    edit,
-    view,
-    remove,
-    formBack,
-    formSubmit,
-    formUpdate,
- 
-}
-export default defaultEvent
+const defaultEvent = {
+  add,
+  disabled,
+  edit,
+  view,
+  remove,
+  formBack,
+  formSubmit,
+  formUpdate,
+};
+export default defaultEvent;
