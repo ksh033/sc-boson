@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import * as React from 'react';
-import { SelectProps } from 'antd/lib/select';
+import type { SelectProps } from 'antd/lib/select';
 import { Select, Tooltip } from 'antd';
 import { useUpdateEffect, useDebounceFn } from '@umijs/hooks';
 
@@ -24,7 +25,7 @@ export interface ScSelectProps extends SelectProps<any> {
   openReloadData?: boolean;
 }
 
-const ScSelect: React.FC<ScSelectProps> = props => {
+const ScSelect: React.FC<ScSelectProps> = (props) => {
   const {
     data = [],
     params = null,
@@ -64,30 +65,29 @@ const ScSelect: React.FC<ScSelectProps> = props => {
     if (!request && data) {
       setDataSource(data || []);
     }
-  }, [data]);
+  }, [JSON.stringify(data)]);
 
   const loadData = async (searchParam?: any) => {
     if (!request) {
-      throw 'no remote request method';
+      throw new Error('no remote request method');
     }
     setLoading(true);
     try {
-      let _data = await request({ ...params, ...searchParam });
+      let rdata = await request({ ...params, ...searchParam });
 
       if (isGone.current) return;
-      if (_data) {
+      if (rdata) {
         if (onLoad) {
-          _data = onLoad(_data);
+          rdata = onLoad(rdata);
         }
-        setDataSource(_data || []);
+        setDataSource(rdata || []);
       }
-    } catch (error) {
     } finally {
       setLoading(false);
     }
   };
 
-  const debounce = useDebounceFn(value => {
+  const debounce = useDebounceFn((value) => {
     const searchParam: any = {};
     searchParam[searchField] = value;
     loadData(searchParam);
@@ -109,17 +109,16 @@ const ScSelect: React.FC<ScSelectProps> = props => {
     };
   }, []);
 
-  const renderList = (dataSource: any[],level:string = '1') => {
+  const renderList = (dataSource: any[], level: string = '1') => {
     const list: any[] = [];
     dataSource.forEach((item: any, index: number) => {
       if (valueField && textField) {
-        let text =
-          typeof textField === 'string' ? item[textField] : textField(item);
+        let text = typeof textField === 'string' ? item[textField] : textField(item);
         if (tip) {
           text = <Tooltip title={text}>{text}</Tooltip>;
         }
         list.push(
-          <Option key={level+index.toString()} value={item[valueField]}>
+          <Option key={level + index.toString()} value={item[valueField]}>
             {text}
           </Option>,
         );
@@ -140,18 +139,22 @@ const ScSelect: React.FC<ScSelectProps> = props => {
       if (!group) {
         list = renderList(dataSource);
       } else {
-        let groupMap: any = {};
-        dataSource.forEach((item: any, index) => {
-          if (item['group']) {
-            if (!groupMap[item['group']]) {
-              groupMap[item['group']] = [];
+        const groupMap: any = {};
+        dataSource.forEach((item: any) => {
+          if (item.group) {
+            if (!groupMap[item.group]) {
+              groupMap[item.group] = [];
             }
-            groupMap[item['group']].push(item);
+            groupMap[item.group].push(item);
           }
         });
-        list = Object.keys(groupMap).map((key,i) => {
+        list = Object.keys(groupMap).map((key, i) => {
           const childList = renderList(groupMap[key], `${i}`);
-          return <OptGroup key={i} label={key}>{childList}</OptGroup>;
+          return (
+            <OptGroup key={i} label={key}>
+              {childList}
+            </OptGroup>
+          );
         });
       }
     }
@@ -185,12 +188,7 @@ const ScSelect: React.FC<ScSelectProps> = props => {
 
   const onDropdownVisibleChange = (open: boolean) => {
     if (open) {
-      if (
-        !autoload &&
-        request &&
-        Array.isArray(dataSource) &&
-        dataSource.length === 0
-      ) {
+      if (!autoload && request && Array.isArray(dataSource) && dataSource.length === 0) {
         if (!remoteSearch) {
           loadData();
         }
