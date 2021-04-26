@@ -66,7 +66,7 @@ export interface TableInfoProps {
         } else {
           newCol = col;
         }
-        newCol = { ...item, ...newCol };
+        newCol=_.merge(item,newCol)
         if (colIndex!==null) this.tableInfo.columns[colIndex] = newCol;
       }
   

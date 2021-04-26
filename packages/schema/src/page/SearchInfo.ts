@@ -70,7 +70,9 @@ class SearchInfo {
       } else {
         newFormItem = item;
       }
-      newFormItem = { ...searchItem, ...newFormItem };
+
+      newFormItem=_.merge(searchItem,newFormItem)
+    
       if (itemIndex!==null) this.searchInfo.queryList[itemIndex] = newFormItem;
     }
     return this;

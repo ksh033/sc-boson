@@ -1,8 +1,10 @@
 import type { FormConfig, Field, FieldGroup, FormItem } from '../interface';
+import type {RefObject} from 'react';
+import type {FormInstance} from 'antd'
 import _ from 'lodash';
 
 export interface FormInfoProps {
-  form: any;
+  form: RefObject<FormInstance>;
   formConfig: FormConfig[];
   initialValues: any;
 }
@@ -109,7 +111,8 @@ class FormInfo {
       } else {
         newFormItem = item;
       }
-      newFormItem = { ...formItem, ...newFormItem };
+      newFormItem=_.merge(formItem,newFormItem)
+      // newFormItem = _.{ ...formItem, ...newFormItem };
       if (groupIndex >= 0){
         if (itemIndex>= 0) this.formInfo.formConfig[fieldSetIndex].items[groupIndex].items[itemIndex] = newFormItem;
       }else if (itemIndex>= 0) this.formInfo.formConfig[fieldSetIndex].items[itemIndex] = newFormItem;
