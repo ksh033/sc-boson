@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef, useMemo } from 'react'
-import { useUpdateEffect } from '@umijs/hooks'
+import { useUpdateEffect } from 'ahooks'
 import { Input, Form, Table } from 'antd'
 import { TableProps } from 'antd/es/table/Table'
 

@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import { TreeSelect } from 'antd';
 import type { TreeSelectProps } from 'antd/lib/tree-select/index';
 import type { TreeNodeProps } from 'rc-tree-select/lib/TreeNode';
-import { useUpdateEffect } from '@umijs/hooks';
+import { useUpdateEffect } from 'ahooks';
 import useFetchData from '../_util/useFetchData';
 
 const { useState, useEffect, useMemo, useCallback } = React;

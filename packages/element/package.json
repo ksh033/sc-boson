@@ -49,7 +49,8 @@
   "peerDependencies": {
     "antd": "^4.x",
     "react": ">=16.0.0",
-    "@umijs/hooks": "^1.5.3"
+    "ahooks": "^2.9.6"
+ 
   },
   "browserslist": [
     "> 1%",

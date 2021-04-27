@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import type { CascaderProps } from 'antd/lib/cascader';
 import { Cascader } from 'antd';
-import { useUpdateEffect } from '@umijs/hooks';
+import { useUpdateEffect } from 'ahooks';
 
 const { useCallback, useState, useLayoutEffect } = React;
 

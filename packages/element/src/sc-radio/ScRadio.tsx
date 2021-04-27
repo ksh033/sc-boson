@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { useUpdateEffect } from '@umijs/hooks';
+import { useUpdateEffect } from 'ahooks';
 import { Radio } from 'antd';
 import { RadioGroupProps } from 'antd/lib/radio';
 import { DataComponentProps } from '../Component';

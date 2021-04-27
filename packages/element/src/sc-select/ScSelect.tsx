@@ -2,7 +2,7 @@
 import * as React from 'react';
 import type { SelectProps } from 'antd/lib/select';
 import { Select, Tooltip } from 'antd';
-import { useUpdateEffect, useDebounceFn } from '@umijs/hooks';
+import { useUpdateEffect, useDebounceFn } from 'ahooks';
 
 const { useMemo, useLayoutEffect, useState, useRef } = React;
 const { Option, OptGroup } = Select;

@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Table, Tooltip, Divider } from 'antd';
 import type { TableProps, TablePaginationConfig } from 'antd/lib/table/Table';
-import { useUpdateEffect, useRequest } from '@umijs/hooks';
+import { useUpdateEffect, useRequest } from 'ahooks';
 
 const { useState, useEffect, useRef } = React;
 

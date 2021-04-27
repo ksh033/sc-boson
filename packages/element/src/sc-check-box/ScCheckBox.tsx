@@ -5,7 +5,7 @@ import { Checkbox } from 'antd';
 import type { CheckboxGroupProps } from 'antd/lib/checkbox';
 import type { DataComponentProps } from '../Component';
 import useFetchData from '../_util/useFetchData';
-import { useUpdateEffect } from '@umijs/hooks';
+import { useUpdateEffect } from 'ahooks';
 
 const { useEffect, useMemo, useCallback, useState } = React;
 

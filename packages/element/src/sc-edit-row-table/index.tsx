@@ -15,7 +15,7 @@ import {
   ConfigProvider,
   InputNumber,
 } from 'antd';
-import { useUpdateEffect } from '@umijs/hooks';
+import { useUpdateEffect } from 'ahooks';
 import { TableProps } from 'antd/lib/table/Table';
 
 const EditableContext = React.createContext<any>(null);

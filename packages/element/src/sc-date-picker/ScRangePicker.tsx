@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as moment from 'moment'
 import { DatePicker, Select } from 'antd'
-import { useUpdateEffect } from '@umijs/hooks'
+import { useUpdateEffect } from 'ahooks'
 
 const { useState, useEffect, useCallback } = React
 
