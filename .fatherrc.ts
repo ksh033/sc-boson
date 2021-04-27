@@ -15,15 +15,9 @@ export default {
     type: 'babel',
     importLibToEs: true,
   },
-<<<<<<< Updated upstream
   cssModules:true,
   
   pkgs: ['element','schema','layout'],
-=======
-  cssModules: true,
-
-  pkgs: ['schema', 'layout', 'element'],
->>>>>>> Stashed changes
   extraBabelPlugins: [
     ['babel-plugin-import', { libraryName: 'antd', libraryDirectory: 'es', style: true }, 'antd'],
     [require('./scripts/replaceLib')],
