@@ -4,13 +4,13 @@
 import type React from 'react';
 import { useRef, useState } from 'react';
 // import { history } from 'umi';
-import type { FormFilterProp } from '../interface';
-import { PageConfig, PageType,ToolButtons, Action } from '../interface';
+import type { FormFilterProp, DialogOptions } from '../interface';
+import { PageConfig, PageType, ToolButtons, Action } from '../interface';
 import schema from '../pageConfigUitls';
 import type { UseListPageProp } from './useListPage';
 import ListPage from './useListPage';
 import FormInfo from '../page/FormInfo';
-import {Schema} from '../context'
+import { Schema } from '../context';
 import _ from 'lodash';
 
 export { PageConfig, Action };
@@ -36,7 +36,6 @@ export interface UseEditPageProp extends UseListPageProp {
 
 const defaultConfig: PageConfig = {
   pageType: 'page',
-
 };
 
 export default function useEditPage(
@@ -44,17 +43,17 @@ export default function useEditPage(
   props: any,
 ): UseEditPageProp {
   const config = { ...defaultConfig, ...pageConfig };
-  const {umi, dataTypeFormat}=Schema
+  const { umi, dataTypeFormat } = Schema;
   const Page = ListPage(config, props);
   // const { service } = config;
   const { pageProps = {}, match, location } = props;
   let record: any = '';
   if (config.pageType === PageType.modal) {
     record = pageProps.params;
-  } else if (location&&location.query){
-      record = location.query;
-    }
-    
+  } else if (location && location.query) {
+    record = location.query;
+  }
+
   // const { formatEvent, format } = useFormatEvent(config);
   const form: React.MutableRefObject<any> = useRef();
   const [loading, setLoading] = useState(false);
@@ -94,11 +93,13 @@ export default function useEditPage(
         if (Array.isArray(item.items)) {
           item.items.forEach((element: any) => {
             if (action === 'view' && element.dataType) {
-              values[element.name] = dataTypeFormat&&dataTypeFormat(
-                values[element.name],
-                element.dataType || element.name || '',
-                values,
-              );
+              values[element.name] =
+                dataTypeFormat &&
+                dataTypeFormat(
+                  values[element.name],
+                  element.dataType || element.name || '',
+                  values,
+                );
               // const list: Array<DictDataItem> = dict[`${element.name}`];
               // if (list) {
               //   values[element.name] = cacheRender(values[element.name], list);
@@ -117,10 +118,10 @@ export default function useEditPage(
     const { callback, name = 'queryById', params, defaultValues, key = 'id' } = initConfig;
 
     if (getAction() !== Action.ADD) {
-      if (config.service&&config.service[name]) {
+      if (config.service && config.service[name]) {
         const _params = params || { id: _.isObject(record) ? record[key] : record };
         setLoading(true);
-        
+
         config.service[name](_params).then((res: any) => {
           if (callback) {
             setInitialValues(toDefaultValueChuange(callback(res)));
@@ -137,16 +138,20 @@ export default function useEditPage(
     }
   };
 
-  /**
-   * 获取网格列
-   */
+  /** 获取网格列 */
   const getFormConfig = (_props?: FormFilterProp) => {
     const { formKey, fieldsProp, callBack, action } = _props || {};
     const formConfig = schema.getFormInfo(config, formKey, fieldsProp, callBack, action);
     return { form, formConfig, initialValues };
   };
 
-  const getModalBtns = (_action?: string, options?: any): any[] => {
+  const getModalBtns = (
+    rAction?: string,
+    options?: DialogOptions & {
+      preHandle?: (values: any) => any;
+    },
+  ): any[] => {
+    const { preHandle, ...restOptions } = options || {};
     const defaultOptions = {
       ...props,
       form,
@@ -158,22 +163,24 @@ export default function useEditPage(
       };
     }
     const buttons = [];
-    const newAction = _action || getAction();
+    const newAction = rAction || getAction();
     if (newAction === Action.ADD) {
       buttons.push({
         ...ToolButtons.formSubmit, // 提交按钮
+        preHandle,
         options: {
           ...defaultOptions,
-          ...options,
+          ...restOptions,
         },
       });
     }
     if (newAction === Action.EDIT) {
       buttons.push({
         ...ToolButtons.formUpdate, // 更新按钮
+        preHandle,
         options: {
           ...defaultOptions,
-          ...options,
+          ...restOptions,
         },
       });
     }
@@ -189,24 +196,23 @@ export default function useEditPage(
 
     return new FormInfo(formInfo);
   };
-  const getTitle = (action: string) => {
-    return '';
-    // const newAction = _action || getAction();
-    // let title: string = '';
-    // switch (newAction) {
-    //   case 'add':
-    //     title = '新增';
-    //     break;
-    //   case 'edit':
-    //     title = '修改';
-    //     break;
-    //   case 'view':
-    //     title = '详情';
-    //     break;
-    //   default:
-    //     title = '新增';
-    // }
-    // return title;
+  const getTitle = (rAction: string) => {
+    const newAction = rAction || getAction();
+    let title: string = '';
+    switch (newAction) {
+      case 'add':
+        title = '新增';
+        break;
+      case 'edit':
+        title = '修改';
+        break;
+      case 'view':
+        title = '详情';
+        break;
+      default:
+        title = '';
+    }
+    return title;
   };
   return {
     ...Page,
@@ -217,6 +223,6 @@ export default function useEditPage(
     getAction,
     getPageParam,
     getFormInfo,
-    getTitle
+    getTitle,
   };
 }

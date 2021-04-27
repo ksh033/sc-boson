@@ -166,14 +166,15 @@ function formSubmit(props: ButtonTypeProps) {
     const { form, service, close } = options;
     if (form && form.current) {
       form.current.validateFields().then(async (values: any) => {
+        let newValue = values;
         if (preHandle) {
-          const result = preHandle(values);
-          if (!result) {
+          newValue = preHandle(values);
+          if (newValue === null || newValue === false) {
             return;
           }
         }
         if (service) {
-          const data = await service(values);
+          const data = await service(newValue);
           if (callBack) {
             callBack(data);
           }
@@ -195,14 +196,15 @@ function formUpdate(props: ButtonTypeProps) {
     const { form, service, close } = options;
     if (form && form.current) {
       form.current.validateFields().then(async (values: any) => {
+        let newValue = values;
         if (preHandle) {
-          const result = preHandle(values);
-          if (!result) {
+          newValue = preHandle(values);
+          if (newValue === null || newValue === false) {
             return;
           }
         }
         if (service) {
-          const data = await service(values);
+          const data = await service(newValue);
           if (callBack) {
             callBack(data);
           }
