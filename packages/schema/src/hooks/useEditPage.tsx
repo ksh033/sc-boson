@@ -13,7 +13,7 @@ import ListPage from './useListPage';
 import FormInfo from '../page/FormInfo';
 import { Schema } from '../context';
 import _ from 'lodash';
-import {useSetState} from 'ahooks';
+import { useSetState } from 'ahooks';
 
 export { PageConfig, Action };
 interface initProps {
@@ -34,7 +34,6 @@ export interface UseEditPageProp<S> extends UseListPageProp<S> {
   getAction: () => any;
   getFormInfo: (_props?: FormFilterProp) => FormInfo;
   getTitle: (action: string) => any;
-
 }
 
 const defaultConfig: PageConfig = {
@@ -58,14 +57,13 @@ export default function useEditPage(
   }
   const [pageData, setPageData] = useSetState<any>();
 
-  
-  const setData=(data: any)=>{
-    setPageData(data)
-  }
+  const setData = (data: any) => {
+    setPageData(data);
+  };
 
-  const getData=(key: any): Partial<any>=>{
-    return pageData[key]
-  }
+  const getData = (key: any): Partial<any> => {
+    return pageData[key];
+  };
   // const { formatEvent, format } = useFormatEvent(config);
   const form: React.MutableRefObject<any> = useRef();
   const [loading, setLoading] = useState(false);
@@ -238,6 +236,6 @@ export default function useEditPage(
     getTitle,
     setData,
     getData,
-    data:pageData
+    data: pageData,
   };
 }
