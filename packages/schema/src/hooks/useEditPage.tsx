@@ -150,7 +150,8 @@ export default function useEditPage(
 
   /** 获取网格列 */
   const getFormConfig = (_props?: FormFilterProp) => {
-    const { formKey, fieldsProp, callBack, action } = _props || {};
+    const { formKey, fieldsProp, callBack } = _props || {};
+    const action = getAction();
     const formConfig = schema.getFormInfo(config, formKey, fieldsProp, callBack, action);
     return { form, formConfig, initialValues };
   };
