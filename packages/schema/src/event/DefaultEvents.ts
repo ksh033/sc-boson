@@ -179,7 +179,8 @@ function formSubmit(props: ButtonTypeProps) {
             callBack(data);
           }
           if (data === null || data.success === undefined || data.success === null) {
-            close?.();
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            close && close();
           }
         } else if (close) {
           close();
@@ -209,7 +210,8 @@ function formUpdate(props: ButtonTypeProps) {
             callBack(data);
           }
           if (data === null || data.success === undefined || data.success === null) {
-            close?.();
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            close && close();
           }
         } else if (close) {
           close();

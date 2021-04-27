@@ -201,7 +201,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     if (autoload) {
       loadData(params);
     }
-  }, [params]);
+  }, [JSON.stringify(params)]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   function addChilList(list: any[], key: React.Key, children: any[]): any[] {

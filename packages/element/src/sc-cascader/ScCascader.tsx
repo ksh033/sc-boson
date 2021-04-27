@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-throw-literal */
+/* eslint-disable no-param-reassign */
 import React, { useRef } from 'react';
-import { CascaderProps } from 'antd/lib/cascader';
+import type { CascaderProps } from 'antd/lib/cascader';
 import { Cascader } from 'antd';
 import { useUpdateEffect } from '@umijs/hooks';
 
@@ -18,13 +20,12 @@ export interface ScCascaderProps extends CascaderProps {
   params?: any;
 }
 
-const ScCascader: React.FC<ScCascaderProps> = props => {
+const ScCascader: React.FC<ScCascaderProps> = (props) => {
   const {
     data = [],
     textField = 'label',
     valueField = 'value',
     pIdField = 'pid',
-    loading = false,
     request,
     autoload = false,
     asyn = false,
@@ -43,12 +44,11 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
     let newValue: any[] = pValue || [];
     // if (!asyn) {
     if (Array.isArray(pValue)) {
-      newValue = pValue.map((item: any, i) => {
+      newValue = pValue.map((item: any) => {
         if (typeof item === 'string') {
           return item;
-        } else {
-          return item[`${valueField}`];
         }
+        return item[`${valueField}`];
       });
     }
     // }
@@ -69,9 +69,8 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
         newItem = { ...item, ...newItem };
         return newItem;
       });
-    } else {
-      return [];
     }
+    return [];
   };
 
   const temData = data || [];
@@ -81,12 +80,12 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
     if (!request) {
       throw 'no remote request method';
     }
-    let _data = await request(params);
+    let rdata = await request(params);
     if (isGone.current) return;
     if (onLoad) {
-      _data = onLoad(_data);
+      rdata = onLoad(rdata);
     }
-    setTreeData(convertData(_data));
+    setTreeData(convertData(rdata));
   }, [params]);
 
   const handleChange = (newValue: any[], _options: any[]) => {
@@ -102,23 +101,23 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
       const targetOption = selectedOptions[selectedOptions.length - 1];
       targetOption.loading = true;
       const payload = { ...params };
-      payload[`${pIdField}`] = targetOption['value'];
+      payload[`${pIdField}`] = targetOption.value;
       if (!request) {
         throw 'no remote request method';
       }
       request(payload)
-        .then((_data: any) => {
+        .then((rdata: any) => {
           if (isGone.current) return;
           if (onLoad) {
-            _data = onLoad(_data);
+            rdata = onLoad(rdata);
           }
-          const newData = convertData(_data);
+          const newData = convertData(rdata);
           targetOption.loading = false;
           if (targetOption && targetOption !== null) {
             if (newData && Array.isArray(newData) && newData.length > 0) {
               const children = newData;
               if (Array.isArray(children) && children.length > 0) {
-                targetOption['children'] = newData;
+                targetOption.children = newData;
               }
               setTreeData([...treeData]);
             } else {
@@ -141,7 +140,7 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
               handleChange(newvalue, selectedOptions);
             }
           } else {
-            setTreeData(_data);
+            setTreeData(rdata);
           }
         })
         .finally(() => {
@@ -150,7 +149,7 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
     }
   };
 
-  const displayRender = (labels: any[], selectedOptions: any[]) => {
+  const displayRender = (labels: any[]) => {
     if (labels.length > 0) {
       return labels.map((item: any, i) => {
         if (typeof item === 'string') {
@@ -158,33 +157,29 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
             return <span key={i}>{item}</span>;
           }
           return <span key={i}>{item} / </span>;
-        } else {
-          if (i === labels.length - 1) {
-            return <span key={i}>{item[`${textField}`]}</span>;
-          }
-          return <span key={i}>{item[`${textField}`]} / </span>;
         }
+        if (i === labels.length - 1) {
+          return <span key={i}>{item[`${textField}`]}</span>;
+        }
+        return <span key={i}>{item[`${textField}`]} / </span>;
       });
-    } else {
-      if (Array.isArray(_value)) {
-        const { length } = _value;
-        return _value.map((item: any, i) => {
-          if (typeof item === 'string') {
-            if (i === length - 1) {
-              return <span key={i}>{item}</span>;
-            }
-            return <span key={i}>{item} / </span>;
-          } else {
-            if (i === length - 1) {
-              return <span key={i}>{item[`${textField}`]}</span>;
-            }
-            return <span key={i}>{item[`${textField}`]} / </span>;
-          }
-        });
-      } else {
-        return null;
-      }
     }
+    if (Array.isArray(_value)) {
+      const { length } = _value;
+      return _value.map((item: any, i) => {
+        if (typeof item === 'string') {
+          if (i === length - 1) {
+            return <span key={i}>{item}</span>;
+          }
+          return <span key={i}>{item} / </span>;
+        }
+        if (i === length - 1) {
+          return <span key={i}>{item[`${textField}`]}</span>;
+        }
+        return <span key={i}>{item[`${textField}`]} / </span>;
+      });
+    }
+    return null;
   };
 
   useLayoutEffect(() => {
@@ -208,8 +203,8 @@ const ScCascader: React.FC<ScCascaderProps> = props => {
 
   const otherProps: any = {};
   if (asyn) {
-    otherProps['loadData'] = loadTreeData;
-    otherProps['displayRender'] = displayRender;
+    otherProps.loadData = loadTreeData;
+    otherProps.displayRender = displayRender;
   }
   return (
     <Cascader

@@ -1,14 +1,17 @@
+/* eslint-disable @typescript-eslint/no-throw-literal */
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useRef } from 'react';
 import { Checkbox } from 'antd';
-import { CheckboxGroupProps } from 'antd/lib/checkbox';
-import { DataComponentProps } from '../Component';
+import type { CheckboxGroupProps } from 'antd/lib/checkbox';
+import type { DataComponentProps } from '../Component';
 import useFetchData from '../_util/useFetchData';
 import { useUpdateEffect } from '@umijs/hooks';
-const { useEffect, useMemo, useCallback, useLayoutEffect, useState } = React;
+
+const { useEffect, useMemo, useCallback, useState } = React;
 
 export interface ScCheckProps extends CheckboxGroupProps, DataComponentProps {}
 
-const ScCheck: React.FC<ScCheckProps> = props => {
+const ScCheck: React.FC<ScCheckProps> = (props) => {
   const {
     textField = 'label',
     valueField = 'value',
@@ -38,22 +41,22 @@ const ScCheck: React.FC<ScCheckProps> = props => {
     if (!request) {
       throw 'no remote request method';
     }
-    let _data = await useFetchData(request, params);
+    let rdata = await useFetchData(request, params);
     if (isGone.current) return;
     if (onLoad) {
-      _data = onLoad(_data);
+      rdata = onLoad(rdata);
     }
-    setDataSource(_data);
+    setDataSource(rdata);
   }, [params]);
 
   useEffect(() => {
     if (request && autoload) {
       loadData();
     }
-  }, [params]);
+  }, [JSON.stringify(params)]);
 
-  let children: any[] = useMemo(() => {
-    let list: any[] = [];
+  const children: any[] = useMemo(() => {
+    const list: any[] = [];
     if (dataSource && dataSource.length > 0) {
       dataSource.forEach((item: any) => {
         if (valueField && textField) {

@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useRef } from 'react';
 import { TreeSelect } from 'antd';
 import type { TreeSelectProps } from 'antd/lib/tree-select/index';
-import type  { TreeNodeProps } from 'rc-tree-select/lib/TreeNode';
+import type { TreeNodeProps } from 'rc-tree-select/lib/TreeNode';
 import { useUpdateEffect } from '@umijs/hooks';
 import useFetchData from '../_util/useFetchData';
 
@@ -24,7 +25,7 @@ export interface ScTreeSelectProps extends TreeSelectProps<TreeNodeProps> {
 const defaultKey = 'key';
 const defaultText = 'title';
 
-const ScTreeSelect: React.FC<ScTreeSelectProps> = props => {
+const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
   const {
     data,
     textField = 'title',
@@ -39,7 +40,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = props => {
   } = props;
   const isGone = useRef(false);
   const formatTreeData = (_data: any) => {
-    return _data.map((item: any, index: number) => {
+    return _data.map((item: any) => {
       const value = valueField ? item[valueField] : item[defaultKey];
       // const key = keyField ? item[keyField] : 1 + '_' + index
       const title = textField ? item[textField] : item[defaultText];
@@ -48,7 +49,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = props => {
       if (nodeTransform) {
         nodeProps = nodeTransform(item);
       }
-      let children = item.children;
+      let { children } = item;
       if (children && children.length > 0) {
         children = formatTreeData(children);
       }
@@ -86,6 +87,24 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = props => {
     }
   }, [data]);
 
+  const loadData = useCallback(
+    async (_params) => {
+      if (!request) {
+        throw Error('no remote request method');
+      }
+      let payload = _params || null;
+      payload = params ? { ...params, ..._params } : payload;
+
+      let rdata = await useFetchData(request, payload);
+      if (isGone.current) return;
+      if (onLoad) {
+        rdata = onLoad(rdata);
+      }
+      setTreeData(formatTreeData(getData(rdata)));
+    },
+    [params],
+  );
+
   useEffect(() => {
     if (autoload && !root) {
       loadData(null);
@@ -99,48 +118,27 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = props => {
     if (!root && autoload) {
       loadData(null);
     }
-  }, [params]);
-
-  const loadData = useCallback(
-    async _params => {
-      if (!request) {
-        throw 'no remote request method';
-      }
-      let payload = _params ? _params : null;
-      payload = params ? { ...params, ..._params } : payload;
-
-      let _data = await useFetchData(request, payload);
-      if (isGone.current) return;
-      if (onLoad) {
-        _data = onLoad(_data);
-      }
-      setTreeData(formatTreeData(getData(_data)));
-    },
-    [params],
-  );
+  }, [JSON.stringify(params)]);
 
   const onLoadData = (treeNode: any) => {
     // eslint-disable-next-line no-async-promise-executor
-    return new Promise<void>(async resolve => {
-      if (
-        treeNode.props.data.children &&
-        treeNode.props.data.children.length > 0
-      ) {
+    return new Promise<void>(async (resolve) => {
+      if (treeNode.props.data.children && treeNode.props.data.children.length > 0) {
         resolve();
         return;
       }
       if (!request) {
-        throw 'no remote request method';
+        throw Error('no remote request method');
       }
-      
-      let _data = await useFetchData(request, treeNode.props.data);
+
+      let rdata = await useFetchData(request, treeNode.props.data);
       if (isGone.current) return;
       if (onLoad) {
-        _data = onLoad(_data);
+        rdata = onLoad(rdata);
       }
 
       // eslint-disable-next-line no-param-reassign
-      treeNode.props.data.children = formatTreeData(_data);
+      treeNode.props.data.children = formatTreeData(rdata);
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       setTreeData(connetData(treeData, treeNode.props.data));
       resolve();
@@ -149,13 +147,14 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = props => {
 
   const connetData = (_data: any, treeNode: any) => {
     return _data.map((item: any) => {
+      let citem = item;
       if (item.key === treeNode.key) {
-        item = treeNode;
+        citem = treeNode;
       }
       if (item.children) {
-        item.children = connetData(item.children, treeNode);
+        citem.children = connetData(item.children, treeNode);
       }
-      return item;
+      return citem;
     });
   };
 
@@ -170,14 +169,12 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = props => {
       treeData,
       loadData: onLoadData,
       style: { width: '100%' },
-      onDropdownVisibleChange: onDropdownVisibleChange,
+      onDropdownVisibleChange,
       ...restProps,
     };
   }, [restProps, treeData]);
 
-  return treeData && treeData.length > 0 ? (
-    <TreeSelect {...treeProps}></TreeSelect>
-  ) : null;
+  return treeData && treeData.length > 0 ? <TreeSelect {...treeProps}></TreeSelect> : null;
 };
 
 export default ScTreeSelect;

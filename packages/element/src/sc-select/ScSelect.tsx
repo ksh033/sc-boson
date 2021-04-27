@@ -97,7 +97,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     if (autoload) {
       loadData();
     }
-  }, [params]);
+  }, [JSON.stringify(params)]);
 
   useLayoutEffect(() => {
     setCustomRef();
@@ -109,9 +109,9 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     };
   }, []);
 
-  const renderList = (dataSource: any[], level: string = '1') => {
+  const renderList = (cData: any[], level: string = '1') => {
     const list: any[] = [];
-    dataSource.forEach((item: any, index: number) => {
+    cData.forEach((item: any, index: number) => {
       if (valueField && textField) {
         let text = typeof textField === 'string' ? item[textField] : textField(item);
         if (tip) {

@@ -119,7 +119,7 @@ export default function useEditPage(
 
     if (getAction() !== Action.ADD) {
       if (config.service && config.service[name]) {
-        const _params = params || { id: _.isObject(record) ? record[key] : record };
+        const _params = params || { [key]: _.isObject(record) ? record[key] : record };
         setLoading(true);
 
         config.service[name](_params).then((res: any) => {
@@ -158,7 +158,7 @@ export default function useEditPage(
       callBack: pageProps.callBack,
     };
     if (config.pageType === PageType.page) {
-      defaultOptions.callBack = () => {
+      defaultOptions.close = () => {
         umi.history?.go(-1);
       };
     }
