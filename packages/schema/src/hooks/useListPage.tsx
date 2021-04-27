@@ -1,15 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
 import { useRef } from 'react';
-import type { ProColumn, FormItem,ButtonTypeProps, ProColumnType, HButtonType } from '../interface';
+import type {
+  ProColumn,
+  FormItem,
+  ButtonTypeProps,
+  ProColumnType,
+  HButtonType,
+} from '../interface';
 import type { BaseResult } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
 
 import { PageType, PageConfig } from '../interface';
 import { useSetState, useUpdateEffect } from 'ahooks';
-import type {TableInfoProps} from '../page/TableInfo'
-import type {SearchInfoProps} from '../page/SearchInfo'
-import TableInfo from'../page/TableInfo'
+import type { TableInfoProps } from '../page/TableInfo';
+import type { SearchInfoProps } from '../page/SearchInfo';
+import TableInfo from '../page/TableInfo';
 import SearchInfo from '../page/SearchInfo';
 import _ from 'lodash';
 import schema from '../pageConfigUitls';
@@ -18,21 +24,13 @@ export { PageConfig, PageType };
 export interface SearchConfig {
   tableKey?: string;
 
-  /**
-   * 直接合并不行时使用此方法
-   */
+  /** 直接合并不行时使用此方法 */
   callback?: ((column: FormItem<any>) => void) | undefined;
-  /**
-   * 当前页状态
-   */
+  /** 当前页状态 */
   action?: string;
-  /**
-   *  合并配置参数
-   */
+  /** 合并配置参数 */
   mergeProps?: Record<string, ProColumn>;
-  /**
-   * 初始查询参数
-   */
+  /** 初始查询参数 */
   initialValues?: any;
 }
 
@@ -48,36 +46,19 @@ export interface TableConfig {
 const OpColKey = '_OperateKey';
 
 export interface UseListPageProp<S> {
-  /**
-   * 获取表单配置
-   */
-  getSearchConfig: (
-    searchConfig?: SearchConfig | undefined,
-  ) => SearchInfoProps;
-  /**
-   * 获取表格配置
-   */
+  /** 获取表单配置 */
+  getSearchConfig: (searchConfig?: SearchConfig | undefined) => SearchInfoProps;
+  /** 获取表格配置 */
   getTableConfig: (tableConfig: TableConfig) => TableInfoProps;
-  /**
-   * 获取表格对象
-   */
+  /** 获取表格对象 */
   getTable: (tableConfig?: TableConfig) => TableInfo;
-    /**
-   * 获取查询对象
-   */
-   getSearch: (searchConfig?: SearchConfig | undefined,
-      ) => SearchInfo;
-  /**
-   * 绑定默认事件
-   */
+  /** 获取查询对象 */
+  getSearch: (searchConfig?: SearchConfig | undefined) => SearchInfo;
+  /** 绑定默认事件 */
   bindEvent: (button: ButtonTypeProps) => any;
-  /**
-   * 批量绑定默认事件
-   */
+  /** 批量绑定默认事件 */
   bindEvents: (buttons: ButtonTypeProps[]) => any;
-  /**
-   * 获取useRequest
-   */
+  /** 获取useRequest */
   formatUseReq: <R = any, P extends any[] = any>(serviveName: string) => BaseResult<R, P> | null;
 
   setParams: (value: any) => void;
@@ -87,6 +68,7 @@ export interface UseListPageProp<S> {
   getData: (key: keyof S) => Partial<S>;
   data: S;
   // reload: () => void;
+  reload: () => void;
 }
 
 export default function ListPage<S>(config: PageConfig, props: any): UseListPageProp<S> {
@@ -111,14 +93,17 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
 
   const [pageData, setPageData] = useSetState<any>();
 
-  
-  const setData=(data: any)=>{
-    setPageData(data)
-  }
+  const setData = (data: any) => {
+    setPageData(data);
+  };
 
-  const getData=(key: any): Partial<any>=>{
-    return pageData[key]
-  }
+  const getData = (key: any): Partial<any> => {
+    return pageData[key];
+  };
+  const reload = () => {
+    saveRef.current?.reload();
+  };
+
   const getPagination = () => {
     const _params = getSearchParams();
     return {
@@ -188,9 +173,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       },
     });
   };
-  /**
-   * 获取查询条件配置
-   */
+  /** 获取查询条件配置 */
   const getSearchConfig = (searchConfig?: SearchConfig) => {
     const { tableKey, callback, mergeProps, initialValues } = searchConfig || {
       tableKey: undefined,
@@ -199,7 +182,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     };
     const initParams_ = {};
     // const action = this.action;
-    const searchInfo =  schema.getSearchInfo(config, tableKey, callback, '');
+    const searchInfo = schema.getSearchInfo(config, tableKey, callback, '');
     let newSearchInfo: any = [];
     if (mergeProps) {
       searchInfo.forEach((item: any) => {
@@ -220,8 +203,8 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
           }
         }
       });
-    }else{
-      newSearchInfo=[...searchInfo]
+    } else {
+      newSearchInfo = [...searchInfo];
     }
     const hisParams = getSearchParams();
     const initValue = { ...initParams_, ...hisParams, ...initialValues };
@@ -243,12 +226,10 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       setSearchParams(state.params, state.pagination);
     }
   }, [JSON.stringify(state)]);
-  /**
-   * 获取网格列
-   */
+  /** 获取网格列 */
   const getTableConfig = (tableConfig: TableConfig = {}) => {
     const { getOperateColumn, mergeCol, tableKey, callback, action } = tableConfig;
-    const columns =  schema.getTableInfo(config, tableKey, callback, action);
+    const columns = schema.getTableInfo(config, tableKey, callback, action);
     let newCol: any = [];
 
     columns.forEach((col: ProColumnType<any>) => {
@@ -287,7 +268,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       pagination,
       request,
       onChange: pageChange,
-      toolbar:[],
+      toolbar: [],
       scroll: { x: 900 },
     };
   };
@@ -295,14 +276,14 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const getTable = (tableConfig?: TableConfig) => {
     const tableInfo = getTableConfig(tableConfig);
 
-    return new TableInfo(tableInfo,config);
+    return new TableInfo(tableInfo, config);
   };
 
-  const getSearch= (searchConfig?: SearchConfig) => {
-    const search=getSearchConfig(searchConfig)
+  const getSearch = (searchConfig?: SearchConfig) => {
+    const search = getSearchConfig(searchConfig);
 
-    return new SearchInfo(search)
-  }
+    return new SearchInfo(search);
+  };
   const getPageParam = () => {
     // @ts-ignore
     if (location && location.query) {
@@ -335,7 +316,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     setParams,
     setData,
     getData,
-    data:pageData
+    data: pageData,
+    reload,
   };
 }
-

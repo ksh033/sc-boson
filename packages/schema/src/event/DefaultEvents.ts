@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { CModal } from '@scboson/sc-element';
 import type { ButtonTypeProps } from '../interface';
-import { umi } from '../context';
 // @ts-ignore
 import { history } from 'umi';
 
