@@ -9,6 +9,7 @@ function camelCase(name: any) {
 }
 
 // Just import style for https://github.com/ant-design/ant-design/issues/3745
+// @ts-ignore
 const req = require.context(
   './src',
   true,
