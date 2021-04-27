@@ -3,7 +3,8 @@
 /* eslint-disable prefer-destructuring */
 import type React from 'react';
 import { useRef, useState } from 'react';
-// import { history } from 'umi';
+// @ts-ignore
+import { history } from 'umi';
 import type { FormFilterProp, DialogOptions } from '../interface';
 import { PageConfig, PageType, ToolButtons, Action } from '../interface';
 import schema from '../pageConfigUitls';
@@ -12,6 +13,7 @@ import ListPage from './useListPage';
 import FormInfo from '../page/FormInfo';
 import { Schema } from '../context';
 import _ from 'lodash';
+import {useSetState} from 'ahooks';
 
 export { PageConfig, Action };
 interface initProps {
@@ -21,7 +23,7 @@ interface initProps {
   params?: any; // 服务的参数，默认参数为 { id: record }
   defaultValues?: any; // 默认初始化值
 }
-export interface UseEditPageProp extends UseListPageProp {
+export interface UseEditPageProp<S> extends UseListPageProp<S> {
   getFormConfig: (
     _props?: FormFilterProp,
   ) => { form: React.MutableRefObject<any>; formConfig: any[]; initialValues: any };
@@ -32,6 +34,7 @@ export interface UseEditPageProp extends UseListPageProp {
   getAction: () => any;
   getFormInfo: (_props?: FormFilterProp) => FormInfo;
   getTitle: (action: string) => any;
+
 }
 
 const defaultConfig: PageConfig = {
@@ -41,9 +44,9 @@ const defaultConfig: PageConfig = {
 export default function useEditPage(
   pageConfig: PageConfig = { pageType: 'page' },
   props: any,
-): UseEditPageProp {
+): UseEditPageProp<any> {
   const config = { ...defaultConfig, ...pageConfig };
-  const { umi, dataTypeFormat } = Schema;
+  const { dataTypeFormat } = Schema;
   const Page = ListPage(config, props);
   // const { service } = config;
   const { pageProps = {}, match, location } = props;
@@ -53,7 +56,16 @@ export default function useEditPage(
   } else if (location && location.query) {
     record = location.query;
   }
+  const [pageData, setPageData] = useSetState<any>();
 
+  
+  const setData=(data: any)=>{
+    setPageData(data)
+  }
+
+  const getData=(key: any): Partial<any>=>{
+    return pageData[key]
+  }
   // const { formatEvent, format } = useFormatEvent(config);
   const form: React.MutableRefObject<any> = useRef();
   const [loading, setLoading] = useState(false);
@@ -159,7 +171,7 @@ export default function useEditPage(
     };
     if (config.pageType === PageType.page) {
       defaultOptions.close = () => {
-        umi.history?.go(-1);
+        history?.go(-1);
       };
     }
     const buttons = [];
@@ -224,5 +236,8 @@ export default function useEditPage(
     getPageParam,
     getFormInfo,
     getTitle,
+    setData,
+    getData,
+    data:pageData
   };
 }

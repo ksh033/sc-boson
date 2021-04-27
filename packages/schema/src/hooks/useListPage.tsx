@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
 import { useRef } from 'react';
-import type { ProColumn, FormItem,ButtonTypeProps, ProColumnType } from '../interface';
+import type { ProColumn, FormItem,ButtonTypeProps, ProColumnType, HButtonType } from '../interface';
 import type { BaseResult } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
 
@@ -47,7 +47,7 @@ export interface TableConfig {
 
 const OpColKey = '_OperateKey';
 
-export interface UseListPageProp {
+export interface UseListPageProp<S> {
   /**
    * 获取表单配置
    */
@@ -82,10 +82,14 @@ export interface UseListPageProp {
 
   setParams: (value: any) => void;
   getPageParam: () => any;
+
+  setData: (data: Partial<S>) => any;
+  getData: (key: keyof S) => Partial<S>;
+  data: S;
   // reload: () => void;
 }
 
-export default function ListPage(config: PageConfig, props: any): UseListPageProp {
+export default function ListPage<S>(config: PageConfig, props: any): UseListPageProp<S> {
   const { service } = config;
   const { location = {} } = props || {};
   // 查询表单
@@ -105,6 +109,16 @@ export default function ListPage(config: PageConfig, props: any): UseListPagePro
     return searchParam[key];
   };
 
+  const [pageData, setPageData] = useSetState<any>();
+
+  
+  const setData=(data: any)=>{
+    setPageData(data)
+  }
+
+  const getData=(key: any): Partial<any>=>{
+    return pageData[key]
+  }
   const getPagination = () => {
     const _params = getSearchParams();
     return {
@@ -307,18 +321,21 @@ export default function ListPage(config: PageConfig, props: any): UseListPagePro
     getSearchConfig,
     getTableConfig,
     getTable,
-    bindEvent: (button) => {
+    bindEvent: (button: HButtonType) => {
       return bindEvent(button, config);
     },
-    bindEvents: (buttons) => {
+    bindEvents: (buttons: HButtonType[]) => {
       return bindEvents(buttons, config);
     },
-    formatUseReq: (serviceName) => {
+    formatUseReq: (serviceName: string) => {
       return formatUseReq(serviceName, service);
     },
     getSearch,
     getPageParam,
     setParams,
+    setData,
+    getData,
+    data:pageData
   };
 }
 

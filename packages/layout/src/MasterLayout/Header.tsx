@@ -8,7 +8,6 @@ import GlobalHeader from '@ant-design/pro-layout/es/components/GlobalHeader';
 import {TopNavHeader} from '@ant-design/pro-layout';
 import type { WithFalse } from '@ant-design/pro-layout/es/typings';
 import type { PrivateSiderMenuProps } from '@ant-design/pro-layout/es/components/SiderMenu/SiderMenu';
-import { clearMenuItem } from '../utils/utils';
 
 const { Header } = Layout;
 export interface AppMenuProps{
@@ -72,12 +71,7 @@ class HeaderView extends Component<HeaderViewProps & PrivateSiderMenuProps, Head
       headerContentRender,
       appsMenu,
     } = this.props;
-   // const appkey=findAppCode(location.pathname,appsMenu)
-    // const selected=this.state?.selectedKeys || appkey || appSelectKeys
-    // const isTop = layout === 'top';
-   //  const clearMenuData = clearMenuItem(this.props.menuData || []);
-    
-   
+
     let defaultDom = (
       <GlobalHeader onCollapse={onCollapse} {...this.props} menuData={appsMenu}>
         {headerContentRender && headerContentRender(this.props)}
@@ -85,16 +79,7 @@ class HeaderView extends Component<HeaderViewProps & PrivateSiderMenuProps, Head
     );
   
     if (appsMenu&& appsMenu.length>0 && !isMobile) {
-     // const {onSelect,...resProps}=appMenuProps||{}
-      //const menuProps={...resProps,onSelect:({selectedKeys}: any)=>{
-        //if (selectedKeys){
-         // this.setState({selectedKeys})
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-           //onSelect&&onSelect(selectedKeys)
-       // }
-        
-      
-     // } }
+  
       defaultDom = (
         <TopNavHeader
           theme={navTheme as 'light' | 'dark'}
@@ -120,9 +105,8 @@ class HeaderView extends Component<HeaderViewProps & PrivateSiderMenuProps, Head
       className: propsClassName,
       style,
       collapsed,
-      siderWidth,
-      hasSiderMenu,
-      isMobile,
+      // hasSiderMenu,
+      // isMobile,
       prefixCls,
       headerHeight,
     } = this.props;
@@ -130,7 +114,7 @@ class HeaderView extends Component<HeaderViewProps & PrivateSiderMenuProps, Head
     const needFixedHeader = fixedHeader || layout === 'mix';
     const isTop = layout === 'top';
 
-    const needSettingWidth = needFixedHeader && hasSiderMenu && !isTop && !isMobile;
+    // const needSettingWidth = needFixedHeader && hasSiderMenu && !isTop && !isMobile;
 
     const className = classNames(propsClassName, {
       [`${prefixCls}-fixed-header`]: needFixedHeader,

@@ -30,7 +30,7 @@ export function EditPage<P extends object>(
 ): React.FunctionComponent<P>
 
 // n.b. base case is not used for actual typings or exported in the typing files
-export function EditPage<P extends object & { scope: UseEditPageProp }, TRef = {}>(
+export function EditPage<P extends object & { scope: UseEditPageProp<any> } , TRef = {}>(
   baseComponent: React.FunctionComponent<any>,
   pageConfig: PageConfig,
   options?: IModalPageOptions,

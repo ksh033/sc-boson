@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-schema",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "sc-schema",
 
   "keywords": [
@@ -22,13 +22,12 @@
     "src"
   ],
   "peerDependencies": {
-    "@scboson/sc-element": "^1.x",
     "lodash": "^4.x",
-    "antd": "^4.x",
+    "antd": "4.x",
     "react": "^16.x"
   },
-
+ 
   "dependencies": {
-    "@scboson/sc-element": "^1.0.0"
+    "@scboson/sc-element": "^1.0.2"
   }
 }

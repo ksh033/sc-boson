@@ -28,6 +28,8 @@ export interface FiledProp {
      * @deprecated
      */
     formItemProps?: FiledProp;
+
+    colProps?: ColProps;
     /**
     * 表单项属性
     */

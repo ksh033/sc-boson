@@ -20,7 +20,7 @@ export default {
   },
   cssModules:true,
   
-  pkgs: [...headPkgs,...tailPkgs],
+  pkgs: ['element','schema','layout'],
   extraBabelPlugins: [
     ['babel-plugin-import', { libraryName: 'antd', libraryDirectory: 'es', style: true }, 'antd'],
     [require('./scripts/replaceLib')],

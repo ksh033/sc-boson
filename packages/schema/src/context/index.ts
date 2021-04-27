@@ -29,8 +29,8 @@ export const Schema: SchemaContextProp = {
 
 export const ListPageContext = React.createContext<any>({});
 
-export const useListPageContext = (): UseListPageProp => {
-  return React.useContext<UseListPageProp>(ListPageContext);
+export const useListPageContext = <T>(): UseListPageProp<T> => {
+  return React.useContext<UseListPageProp<T>>(ListPageContext);
 };
 
 const SchemaContext = React.createContext<SchemaContextProp>(Schema);
@@ -41,8 +41,8 @@ export const useSchemaContext = (): SchemaContextProp => {
 
 const EditPageContext = React.createContext<any>({});
 
-export const useEditPageContext = (): UseEditPageProp => {
-  return React.useContext<UseEditPageProp>(EditPageContext);
+export const useEditPageContext = <T>(): UseEditPageProp<T> => {
+  return React.useContext<UseEditPageProp<T>>(EditPageContext);
 };
 
 export { SchemaContext, EditPageContext };
