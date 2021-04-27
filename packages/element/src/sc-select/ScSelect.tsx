@@ -91,7 +91,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     const searchParam: any = {};
     searchParam[searchField] = value;
     loadData(searchParam);
-  }, 500);
+  }, {wait:500});
 
   useUpdateEffect(() => {
     if (autoload) {
