@@ -303,10 +303,10 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     getTableConfig,
     getTable,
     bindEvent: (button: HButtonType) => {
-      return bindEvent(button, config);
+      return bindEvent(button, config, reload);
     },
     bindEvents: (buttons: HButtonType[]) => {
-      return bindEvents(buttons, config);
+      return bindEvents(buttons, config, reload);
     },
     formatUseReq: (serviceName: string) => {
       return formatUseReq(serviceName, service);

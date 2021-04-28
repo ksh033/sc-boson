@@ -24,7 +24,11 @@ function formatUseReq<R = any, P extends any[] = any>(
   return null;
 }
 
-const bindEvent = (btn: HButtonType, config: PageConfig): HButtonType => {
+const bindEvent = (
+  btn: HButtonType,
+  config: PageConfig,
+  defaultCallback?: (values: any) => void,
+): HButtonType => {
   if (React.isValidElement(btn)) {
     return btn;
   }
@@ -62,7 +66,11 @@ const bindEvent = (btn: HButtonType, config: PageConfig): HButtonType => {
     if (!newBtn.onClick && defaultEvents[newBtn.buttonType]) {
       const itemEvent = defaultEvents[newBtn.buttonType];
       let callBack: ((values: any) => void) | null = null;
-        let preHandle: ((values: any) => boolean) | null = null;
+      let preHandle: ((values: any) => boolean) | null = null;
+      // 默认的回调方法
+      if (defaultCallback) {
+        callBack = defaultCallback;
+      }
 
       if (newBtn.callBack) {
         callBack = newBtn.callBack;
@@ -92,9 +100,13 @@ const bindEvent = (btn: HButtonType, config: PageConfig): HButtonType => {
   return newBtn;
 };
 
-const bindEvents = (toolbar: HButtonType[], config: PageConfig): HButtonType[] => {
+const bindEvents = (
+  toolbar: HButtonType[],
+  config: PageConfig,
+  callback?: (values: any) => void,
+): HButtonType[] => {
   return toolbar.map((item: any) => {
-    const newItem = bindEvent(item, config);
+    const newItem = bindEvent(item, config, callback);
     return newItem;
   });
 };

@@ -125,11 +125,14 @@ export default function useEditPage(
   };
 
   const toInitialValues = (initConfig: initProps) => {
-    const { callback, name = 'queryById', params, defaultValues, key = 'id' } = initConfig;
+    const { callback, name = 'queryById', params, defaultValues, key } = initConfig;
 
     if (getAction() !== Action.ADD) {
       if (config.service && config.service[name]) {
-        const _params = params || { [key]: _.isObject(record) ? record[key] : record };
+        let _params = params;
+        if (_.isObject(record)) {
+          _params = key ? { [key]: record[key] } : record;
+        }
         setLoading(true);
 
         config.service[name](_params).then((res: any) => {
