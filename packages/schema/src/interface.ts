@@ -30,7 +30,7 @@ export interface DialogOptions {
   onOk?: () => Promise<any>;
   onCancel?: () => Promise<any>;
   service?: (...args: any[]) => Promise<any>;
-  close: () => void | null; // 弹窗关闭
+  close?: () => void | null; // 弹窗关闭
   form?: any;
   backUrl?: string;
 }

@@ -36,24 +36,24 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
   const formatTreeData = (_data: any): any => {
     if (Array.isArray(_data) && _data.length > 0) {
       return _data.map((item: any) => {
-        const { disabled, metaInfo } = item;
-        const otherAttr = { disabled: disabled || false, metaInfo };
-        let { children } = item;
-        let { isLeaf } = item;
-        const title = item[textField || 'title'];
+        const { disabled, metaInfo, children, ...restItem } = item;
+        let rChildren = children;
+        let rIsLeaf = item.isLeaf;
+        const otherAttr = { disCabled: disabled || false, metaInfo, dataRef: restItem };
+        const title = item[textField || 'title'] || item.title;
         if (Array.isArray(children) && children.length > 0) {
-          children = formatTreeData(children);
+          rChildren = formatTreeData(children);
         }
         if (isLeafFormat && (item.isLeaf === undefined || item.isLeaf === null)) {
-          isLeaf = isLeafFormat(item);
+          rIsLeaf = isLeafFormat(item);
         }
         return {
           title,
           show: false,
-          isLeaf,
-          key: item[valueField || 'key'],
+          isLeaf: rIsLeaf,
+          key: item[valueField || 'key'] || item.key,
           ...otherAttr,
-          children,
+          children: rChildren,
         };
       });
     }
@@ -207,9 +207,15 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
   function addChilList(list: any[], key: React.Key, children: any[]): any[] {
     return list.map((node) => {
       if (node.key === key) {
+        if (Array.isArray(children) && children.length > 0) {
+          return {
+            ...node,
+            children,
+          };
+        }
         return {
           ...node,
-          children,
+          isLeaf: true,
         };
       }
       if (node.children) {
@@ -234,9 +240,9 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         if (!request) {
           throw new Error('no remote request method');
         }
-        let newparams = node;
+        let newparams = node.dataRef;
         if (loadDataPramsFormat) {
-          newparams = loadDataPramsFormat(node);
+          newparams = loadDataPramsFormat(node.dataRef);
         }
         const rData: any[] = await request(newparams);
         if (isGone.current) return;
@@ -285,6 +291,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
       ) : null}
       {treeData && treeData.length > 0 ? (
         <Tree
+          blockNode
           {...treeProps}
           {...restProps}
           onMouseEnter={handleMouseEnter}
