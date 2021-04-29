@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-schema",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "sc-schema",
 
   "keywords": [
@@ -28,6 +28,6 @@
   },
  
   "dependencies": {
-    "@scboson/sc-element": "^1.0.2"
+    "@scboson/sc-element": "^1.0.3"
   }
 }
