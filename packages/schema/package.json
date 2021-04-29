@@ -28,6 +28,6 @@
   },
  
   "dependencies": {
-    "@scboson/sc-element": "^1.0.3"
+    "@scboson/sc-element": "^1.0.4"
   }
 }
