@@ -21,3 +21,4 @@ export { default as CForm } from './c-form';
 export { default as CModal } from './c-modal';
 export { default as ScTextArea } from './sc-textarea';
 export { default as ScCaptcha } from './sc-captcha';
+export { default as ScUpload } from './sc-upload';

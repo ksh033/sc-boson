@@ -40,6 +40,7 @@
     "react-dnd": "^10.0.2",
     "react-dnd-html5-backend": "^10.0.2",
     "react-resizable": "^1.10.1",
+    "react-sortable-hoc": "^1.11.0",
     "use-media-antd-query": "^1.0.1"
   },
   "sideEffects": [
@@ -50,7 +51,6 @@
     "antd": "^4.x",
     "react": ">=16.0.0",
     "ahooks": "^2.9.6"
- 
   },
   "browserslist": [
     "> 1%",
