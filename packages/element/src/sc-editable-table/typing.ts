@@ -134,3 +134,13 @@ export type ProTableProps<T> = {
   /** @name 初始化的参数，可以操作 table */
   actionRef?: React.MutableRefObject<ActionType | undefined> | ((actionRef: ActionType) => void);
 } & Omit<TableProps<T>, 'columns' | 'rowSelection' | 'onChange'>;
+
+export interface TableComponent<P> extends React.FC<P> {
+  customView?: boolean;
+}
+
+export interface TableComponentProps {
+  name?: string;
+  form?: FormInstance;
+  rowData?: any;
+}

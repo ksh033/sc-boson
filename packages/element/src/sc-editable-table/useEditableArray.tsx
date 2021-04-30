@@ -266,7 +266,7 @@ export const DeleteEditableAction: React.FC<ActionRenderConfig<any> & { row: any
   deletePopconfirmMessage,
   cancelEditable,
 }) => {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useMountMergeState<boolean>(false);
   const onConfirm = async () => {
     try {
       setLoading(true);
@@ -445,14 +445,14 @@ function useEditableArray<RecordType>(
           data: dataSource,
           getRowKey: props.getRowKey,
           row: editRow,
-          key: toNumber(recordKey),
+          key: recordKey,
           childrenColumnName: props.childrenColumnName || 'children',
         },
         'update',
       );
     });
 
-    const recordKey = toNumber(Object.keys(value).pop() as string);
+    const recordKey = Object.keys(value).pop() as string;
     if (recordKey === newLineRecord?.options.recordKey) {
       cancelEditable(recordKey);
       startEditable(recordKey);

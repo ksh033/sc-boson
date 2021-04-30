@@ -20,6 +20,7 @@ export interface ScTreeSelectProps extends TreeSelectProps<TreeNodeProps> {
   params: any;
   autoload: boolean;
   nodeTransform?: Function;
+  loadDataPramsFormat?: (data: any) => any;
 }
 
 const defaultKey = 'key';
@@ -36,6 +37,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
     nodeTransform = null,
     request,
     onLoad,
+    loadDataPramsFormat,
     ...restProps
   } = props;
   const isGone = useRef(false);
@@ -102,7 +104,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
       }
       setTreeData(formatTreeData(getData(rdata)));
     },
-    [params],
+    [JSON.stringify(params)],
   );
 
   useEffect(() => {
@@ -130,8 +132,11 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
       if (!request) {
         throw Error('no remote request method');
       }
-
-      let rdata = await useFetchData(request, treeNode.props.data);
+      let rParams = treeNode.props.data;
+      if (loadDataPramsFormat) {
+        rParams = loadDataPramsFormat(treeNode.props.data);
+      }
+      let rdata = await useFetchData(request, rParams);
       if (isGone.current) return;
       if (onLoad) {
         rdata = onLoad(rdata);

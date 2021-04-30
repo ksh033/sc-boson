@@ -67,7 +67,10 @@ export function columnRender<T>({
     columnProps?.key || columnProps?.dataIndex || index,
   );
 
-  const textDom = defaultComponent(columnProps, name, text);
+  const textDom = defaultComponent(columnProps, name, text, {
+    ...rowData,
+    index: columnProps.index || index,
+  });
 
   const dom: React.ReactNode = mode === 'edit' ? textDom : <React.Fragment>{text}</React.Fragment>;
 

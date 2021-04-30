@@ -16,7 +16,7 @@ export { default as ScTableTransfer } from './sc-table-transfer';
 export { default as ScTree } from './sc-tree';
 export { default as ScTreeSelect } from './sc-tree-select';
 export { default as ScEditRowTable } from './sc-edit-row-table';
-export { default as scEditableTable } from './sc-editable-table';
+export { default as ScEditableTable } from './sc-editable-table';
 export { default as CForm } from './c-form';
 export { default as CModal } from './c-modal';
 export { default as ScTextArea } from './sc-textarea';

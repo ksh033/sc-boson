@@ -141,6 +141,10 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   const editableDataSource = (): T[] => {
     const { defaultValue: row } = editableUtils.newLineRecord || {};
 
+    // 如果有分页的功能，我们加到这一页的末尾
+    if (pagination && pagination?.current && pagination?.pageSize) {
+      return [...value].splice(pagination?.current * pagination?.pageSize - 1, 0, row);
+    }
     return [...value, row];
   };
 
@@ -193,7 +197,12 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       }
     },
   });
-  const { record, creatorButtonText, newRecordType, ...restButtonProps } = recordCreatorProps || {
+  const {
+    record,
+    creatorButtonText,
+    newRecordType = 'dataSource',
+    ...restButtonProps
+  } = recordCreatorProps || {
     onClick: () => {},
   };
 
