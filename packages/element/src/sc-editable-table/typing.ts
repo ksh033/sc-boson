@@ -123,7 +123,7 @@ export type ProColumns<T = unknown> = Omit<ColumnProps<T>, 'render'> & {
     entity: T,
     index: number,
     action: ProCoreActionType,
-  ) => React.ReactNode;
+  ) => React.ReactNode | null;
 };
 export type ProTableProps<T> = {
   columns?: ProColumns<T>[];
