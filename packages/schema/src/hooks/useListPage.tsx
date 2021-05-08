@@ -83,7 +83,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
 
   const getSearchParams = () => {
     if (!location) {
-      return null;
+      return {};
     }
     const { pathname, search } = location;
     const key = pathname + search;
