@@ -118,6 +118,7 @@ export type ProColumns<T = unknown> = Omit<ColumnProps<T>, 'render'> & {
   component?: FunctionComponent<any> | ComponentClass<any, any> | any;
   /** 自定义的 formItemProps render */
   formItemProps?: FormItemProps;
+  props?: any;
   render?: (
     dom: React.ReactNode,
     entity: T,

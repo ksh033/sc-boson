@@ -10,10 +10,12 @@ const defaultComponent = (_columnProps: ProColumns<any>, name: any, text: any, r
     <Form.Item shouldUpdate noStyle>
       {(form: any) => {
         const initVal = text || formItemProps?.initialValue;
+        const props = _columnProps.props || {};
         const newProps = {
           form,
           name,
           rowData,
+          ...props,
         };
         // eslint-disable-next-line @typescript-eslint/no-shadow
         const defaultComponent: any = <Input></Input>;
