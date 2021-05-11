@@ -9,7 +9,7 @@ import type { TablePaginationConfig } from 'antd/lib/table';
 import type { SorterResult, TableCurrentDataSource } from 'antd/lib/table/interface';
 import { columnRender } from './utils';
 import useEditableArray from './useEditableArray';
-import useMountMergeState from './useMountMergeState';
+import useMountMergeState from '../_util/useMountMergeState';
 
 export type RecordCreatorProps<T> = {
   record: T | ((index: number) => T);

@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { PageContainer as APageContainer } from '@ant-design/pro-layout';
 import type { PageContainerProps } from '@ant-design/pro-layout';
 import { Button } from 'antd';
+import "./index.less";
 
 const PageContainer: React.FC<PageContainerProps> = (props) => {
   const { children, footer } = props;

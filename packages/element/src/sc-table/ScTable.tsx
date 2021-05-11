@@ -1,10 +1,19 @@
 /* eslint-disable no-underscore-dangle */
 import * as React from 'react';
-import { Table, Tooltip, Divider } from 'antd';
+import { Table, Tooltip, Divider, CardProps,Card } from 'antd';
 import type { TableProps, TablePaginationConfig } from 'antd/lib/table/Table';
 import { useUpdateEffect, useRequest } from 'ahooks';
 
-const { useState, useEffect, useRef } = React;
+import type { OptionConfig, ToolBarProps } from './components/ToolBar';
+
+import Toolbar from './components/ToolBar';
+
+import Container from './container'
+import { ListToolBarProps } from './components/ListToolBar';
+import {genColumnList, tableColumnSort,genColumnKey} from './utils'
+import useDeepCompareEffect from '../_util/useDeepCompareEffect'
+const { useState, useEffect, useRef,useMemo } = React;
+
 
 export interface ScTableProps<T> extends TableProps<T> {
   onSelectRow?: (selectedRowKeys: string[], selectedRows: any[]) => void; // 当选中时触发
@@ -29,6 +38,20 @@ export interface ScTableProps<T> extends TableProps<T> {
   rowSelected?: boolean; // 列选中
   onRowSelect?: (record: any) => void;
   onCustomRow?: (record: any, index: number) => {}; // 自定义行事件为了合并现有的方法
+    /** @name 渲染操作栏 */
+    toolBarRender?: ToolBarProps<T>['toolBarRender'] | false;
+      /** @name 左上角的 title */
+  headerTitle?: React.ReactNode;
+  /** @name 操作栏配置 */
+  options?: OptionConfig | false;
+   /** @name 标题旁边的 tooltip */
+   tooltip?: string;
+     /** @name ListToolBar 的属性 */
+  toolbar?: ListToolBarProps;
+    /** @name 查询表单和 Table 的卡片 border 配置 */
+    cardBordered?: boolean;
+      /** @name table 外面卡片的设置 */
+  cardProps?: CardProps;
 }
 
 const getValue = (obj: any) =>
@@ -39,7 +62,7 @@ const getValue = (obj: any) =>
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const {
     data,
-    columns,
+    columns: propsColumns = [],
     rowKey = 'key',
     prefixCls = 'sc-table',
     className = '',
@@ -55,9 +78,19 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     onCustomRow,
     onRowSelect,
     pagination,
+    toolBarRender,
+    options,
+    headerTitle,
+    tooltip,
+    toolbar,
+    cardProps,
+    cardBordered=false,
     ...restPros
   } = props;
 
+  const counter = Container.useContainer();
+
+  
   const {
     selectedRows = [],
     params = null,
@@ -170,6 +203,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     if (saveRef && typeof saveRef !== 'function') {
       saveRef.current = userAction;
     }
+    return 
   };
 
   useEffect(() => {
@@ -254,7 +288,36 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     changeRowSelect(_rowKeys, _rows);
     onRowSelect && onRowSelect(record);
   };
+  // ---------- 列计算相关 start  -----------------
+  const tableColumn = useMemo(() => {
+    return genColumnList({
+      columns: propsColumns,
+      map: counter.columnsMap,
+      counter,
+    
+    }).sort(tableColumnSort(counter.columnsMap));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [propsColumns, counter, ]);
+  /** Table Column 变化的时候更新一下，这个参数将会用于渲染 */
 
+  useDeepCompareEffect(() => {
+    if (tableColumn && tableColumn.length > 0) {
+      // 重新生成key的字符串用于排序
+      const columnKeys = tableColumn.map((item) => genColumnKey(item.key, item.index));
+      counter.setSortKeyColumns(columnKeys);
+    }
+  }, [tableColumn]);
+  const columns = useMemo(() => {
+    return tableColumn.filter((item) => {
+      // 删掉不应该显示的
+      const columnKey = genColumnKey(item.key, item.index);
+      const config = counter.columnsMap[columnKey];
+      if (config && config.show === false) {
+        return false;
+      }
+      return true;
+    });
+  }, [counter.columnsMap, tableColumn]);
   const tableProp: any = () => {
     let _row = [];
     let total = 0;
@@ -352,10 +415,117 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     };
   };
 
+  const toolbarDom = React.useMemo(() => {
+    // 不展示 toolbar
+    if (toolBarRender === false) {
+      return null;
+    }
+    if (options === false && !headerTitle && !toolBarRender && !toolbar) {
+      return null;
+    }
+    /** 根据表单类型的不同决定是否生成 toolbarProps */
+    const toolbarProps = toolbar;
+
+    // const onSearch = (keyword: string) => {
+    //   if (!options || !options.search) {
+    //     return;
+    //   }
+    //   const { name = 'keyword' } = options.search === true ? {} : options.search;
+
+    //   // 查询的时候的回到第一页
+    //   action.setPageInfo({
+    //     current: 1,
+    //   });
+
+    //   setFormSearch(
+    //     omitUndefined({
+    //       ...formSearch,
+    //       _timestamp: Date.now(),
+    //       [name]: keyword,
+    //     }),
+    //   );
+    // };
+
+    return (
+      <Toolbar
+        tooltip={tooltip}
+        columns={tableColumn||[]}
+        options={options}
+        headerTitle={headerTitle}
+        action={saveRef}
+       // onSearch={rows}
+        selectedRows={selectedRows}
+        selectedRowKeys={rowKeys}
+        toolBarRender={toolBarRender}
+        toolbar={toolbarProps}
+      />
+    );
+  }, [
+    tooltip,
+    saveRef,
+   // formSearch,
+    headerTitle,
+   // isLightFilter,
+    //lightForm,
+    options,
+    rows,
+   rowKeys,
+   // setFormSearch,
+   tableColumn,
+    toolBarRender,
+    toolbar,
+  ]);
+  counter.setAction(saveRef.current);
+  counter.propsRef.current = props;
+
+
+   /** Table 区域的 dom，为了方便 render */
+   const tableAreaDom = (
+    <Card
+      bordered={cardBordered}
+      style={{
+        height: '100%',
+      }}
+      bodyStyle={
+        toolbarDom
+          ? {
+              paddingTop: 0,
+              paddingBottom: 0,
+            }
+          : {
+              padding: 0,
+            }
+      }
+      {...cardProps}
+    >
+      {toolbarDom}
+
+      <Table {...tableProp()} />
+
+    </Card>
+  );
   return (
     <div className={prefixCls + className}>
-      <Table {...tableProp()} />
+      {tableAreaDom}
     </div>
   );
 };
-export default ScTable;
+
+/**
+ * 🏆 Use Ant Design Table like a Pro! 更快 更好 更方便
+ *
+ * @param props
+ */
+ const ProviderWarp = <
+ T extends Record<string, any>,
+ ValueType = 'text'
+>(
+ props: ScTableProps<T>,
+) => {
+ return (
+   <Container.Provider initialState={props}>
+         <ScTable  {...props} />
+   </Container.Provider>
+ );
+};
+export default ProviderWarp;

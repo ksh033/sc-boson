@@ -1,38 +1,42 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable react/no-array-index-key */
 import React from 'react';
 import { Dropdown, Menu, Divider, Button } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
+
 const { useCallback, useState } = React;
 
 export interface ButtonProps {
   text: string; // 按钮名称
+  loading?: boolean;
   params: any; // 之前按钮的参数
-  onClick: (params: any) => void; //事件
+  onClick: (params: any) => void; // 事件
   icon?: React.ReactNode | string; // 图标
 }
 export interface OperationProps {
   max: number;
   record: any;
-  buttons: Array<ButtonProps>;
+  buttons: ButtonProps[];
 }
 
 const Operation: React.FC<OperationProps> = props => {
   const { max = 3, buttons = [], record } = props;
 
   const renderChild = useCallback(() => {
-    let children: any[] = [];
-    let moreButtons: any[] = [];
-    let moreButtonsClick: any = {};
-    const length = buttons.length;
-    buttons.forEach(function(item: ButtonProps, index) {
-      const { text, icon, onClick, params, ...props } = item;
-      let iconObj = null;
+    const children: any[] = [];
+    const moreButtons: any[] = [];
+    const moreButtonsClick: any = {};
+    const {length} = buttons;
+    buttons.forEach((item: ButtonProps, index: number)=> {
+      const { text, icon, onClick, params, ...buttonProps } = item;
+      const iconObj = null;
       if (index < max) {
         children.push(
           <Button
             type="link"
             key={index}
             icon={icon}
-            {...props}
+            {...buttonProps}
             onClick={() => {
               onClick({ ...params, record });
             }}
@@ -41,18 +45,21 @@ const Operation: React.FC<OperationProps> = props => {
           </Button>,
         );
         if (index !== length - 1) {
-          children.push(<Divider key={'d_' + index} type="vertical" />);
+          // eslint-disable-next-line react/no-array-index-key
+          children.push(<Divider key={`d_${index}`} type="vertical" />);
         }
       } else {
+       delete buttonProps.loading;
         moreButtonsClick[index] = {
           onClick: () => {
             onClick({ ...params, record });
           },
           params,
-          ...props,
+          ...buttonProps,
         };
         moreButtons.push(
-          <Menu.Item key={index} {...props}>
+          // eslint-disable-next-line react/no-array-index-key
+          <Menu.Item key={index} {...buttonProps}>
             {iconObj}
             {text}
           </Menu.Item>,

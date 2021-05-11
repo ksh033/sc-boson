@@ -19,12 +19,14 @@ export interface SchemaContextProp {
     record: Record<any, any>,
   ) => any;
   dictFormat?: (value: any, dictKey: string) => any;
+  tableOpColCmp?: any
 }
 
 export const Schema: SchemaContextProp = {
   umi,
   dataTypeFormat: () => {},
   dictFormat: () => {},
+  tableOpColCmp:null
 };
 
 export const ListPageContext = React.createContext<any>({});

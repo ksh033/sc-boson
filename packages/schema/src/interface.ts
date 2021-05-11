@@ -47,6 +47,8 @@ export interface ButtonTypeProps extends ButtonProps {
   options?: DialogOptions;
   /** 调用远程服务方法 */
   serverName?: string;
+  // 是否可见
+  visible?: ((value: any, record: any, index: number) => boolean|ButtonTypeProps)|boolean
   //
   /**
    * 返回true 表示继续 ，false 表示中断, values: 在表单中是表单数据 在页面调整和弹出是对应的参数
@@ -55,7 +57,9 @@ export interface ButtonTypeProps extends ButtonProps {
    */
   preHandle?: (values: any) => any;
   callBack?: (values: any) => void; // 回调函数
+
 }
+
 export enum Action {
   ADD = 'add',
   EDIT = 'edit',

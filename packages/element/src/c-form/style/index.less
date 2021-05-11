@@ -1,7 +1,7 @@
 
 @import  '../../style/index.less';
 .@{sc-prefix}-form {
-  margin: 0px 8px;
+  margin: 0px 16px;
   // 因为 light-filter 不需要定宽
  div:not(.@{sc-prefix}-pro-form-light-filter) {
     .@{sc-prefix}-field {
@@ -81,16 +81,20 @@
   flex-wrap: wrap;
   max-width: 100%;
 }
+.sc-form-group{
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
 .sc-form-fieldset {
   position: relative;
   &-title{
-    padding: 8px 16px;
+    padding: 16px 0px 8px 8px;
     position: relative;
-    border-bottom: solid 1px #ebedf0;
-   // margin-bottom: 20px;
-   // margin-top: 40px;
-   // padding-bottom: 4px;
+    border-bottom: solid 1px #f0f0f0;
     font-size: 14px;
+    margin-bottom: 8px;
+    font-weight: 900;
+ 
   }
 }
 .sc-viem-item-item {

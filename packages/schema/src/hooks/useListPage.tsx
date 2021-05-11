@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import type {
   ProColumn,
   FormItem,
@@ -10,7 +10,7 @@ import type {
 } from '../interface';
 import type { BaseResult } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
-
+import {useSchemaContext} from '../context'
 import { PageType, PageConfig } from '../interface';
 import { useSetState, useUpdateEffect } from 'ahooks';
 import type { TableInfoProps } from '../page/TableInfo';
@@ -80,7 +80,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const saveRef = useRef<any>();
 
   const searchInitParams = useRef<any>();
-
+  const schemaContext=useSchemaContext()
   const getSearchParams = () => {
     if (!location) {
       return {};
@@ -276,7 +276,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const getTable = (tableConfig?: TableConfig) => {
     const tableInfo = getTableConfig(tableConfig);
 
-    return new TableInfo(tableInfo, config);
+    return new TableInfo(tableInfo, config,schemaContext.tableOpColCmp,reload);
   };
 
   const getSearch = (searchConfig?: SearchConfig) => {

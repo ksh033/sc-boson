@@ -27,7 +27,7 @@ export function deepGet(obj: any, keys: any, defaultVal?: any): any {
 
 export interface CFormProps extends FormProps {
   formConfig: FormConfig[];
-  anchor: boolean|any;
+  anchor?: boolean|any;
   action: 'edit' | 'add' | 'view';
   form: any;
 }
@@ -186,7 +186,7 @@ const CForm: React.FC<CFormProps> = (props) => {
             initialValue={initialValues}
           >
             {viewUseComponent || component.customView
-              ? typeof component === 'function'
+              ? (typeof component === 'function'|| component.render)
                 ? React.createElement(component, {
                     ...item.props,
                     readonly: true,
@@ -208,7 +208,7 @@ const CForm: React.FC<CFormProps> = (props) => {
           </ViewItem>
         ) : (
           <FormItem key={`form-item-${name}`} name={_name} {...itemProps} >
-            {typeof component === 'function'
+            {(typeof component === 'function'|| component.render)
               ? React.createElement(component, { ...item.props,className,style:{...item.props.style,width:newWidth}})
               : React.cloneElement(component, { ...item.props,className,style:{...item.props.style,width:newWidth}})}
           </FormItem>
