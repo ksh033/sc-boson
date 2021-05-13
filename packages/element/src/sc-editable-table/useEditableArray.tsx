@@ -11,6 +11,13 @@ import set from 'rc-util/lib/utils/set';
 import useMountMergeState from '../_util/useMountMergeState';
 import { removeDeletedData } from './utils';
 
+export function genNonDuplicateID() {
+  let str = '';
+  str = Math.random().toString(36).substr(3);
+  str += Date.now().toString(16).substr(4);
+  return str;
+}
+
 export type RowEditableType = 'single' | 'multiple';
 
 export type RecordKey = React.Key | React.Key[];
@@ -353,6 +360,7 @@ export function defaultActionRender<T>(row: T, config: ActionRenderConfig<T, New
 function useEditableArray<RecordType>(
   props: RowEditableConfig<RecordType> & {
     containsDeletedData: boolean;
+    rowKey: string;
     getRowKey: GetRowKey<RecordType>;
     dataSource: RecordType[];
     oldKeyMap: Map<React.Key, any>;
@@ -509,6 +517,7 @@ function useEditableArray<RecordType>(
 
     // 防止多次渲染
     ReactDOM.unstable_batchedUpdates(() => {
+      tRow[props.rowKey] = genNonDuplicateID();
       const recordKey = props.getRowKey(tRow, props.dataSource.length);
       editableKeysSet.add(recordKey);
       setEditableRowKeys(Array.from(editableKeysSet));

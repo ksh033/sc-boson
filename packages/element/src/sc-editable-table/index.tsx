@@ -30,7 +30,7 @@ export function runFunction<T extends any[]>(valueEnum: any, ...rest: T) {
   return valueEnum;
 }
 
-export type EditableProTableProps<T> = ProTableProps<T> & {
+export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
   value?: T[];
   onChange?: (value: T[]) => void;
   /** @name 原先的 table OnChange */
@@ -48,6 +48,7 @@ export type EditableProTableProps<T> = ProTableProps<T> & {
   maxLength?: number;
   /** Table 的值发生改变，为了适应 Form 调整了顺序 */
   onValuesChange?: (values: T[], record: T) => void;
+  rowKey?: string;
 };
 
 function EditableTable<T extends Record<string, any>>(props: EditableProTableProps<T>) {
@@ -140,6 +141,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     ...props.editable,
     containsDeletedData,
     getRowKey,
+    rowKey,
     childrenColumnName: props.expandable?.childrenColumnName,
     dataSource: value || [],
     oldKeyMap: oldValueRef.current || new Map(),
