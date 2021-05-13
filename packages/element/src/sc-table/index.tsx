@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-redeclare */
 import ScTable from './ScTable';
 import Operation from './Operation';
+
 export { ScTableProps } from './ScTable';
 export { OperationProps } from './Operation';
 
