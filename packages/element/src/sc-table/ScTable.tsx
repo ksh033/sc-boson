@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
 import * as React from 'react';
-import { Table, Tooltip, Divider, CardProps,Card } from 'antd';
+import type { CardProps } from 'antd';
+import { Table, Tooltip, Divider, Card } from 'antd';
 import type { TableProps, TablePaginationConfig } from 'antd/lib/table/Table';
 import { useUpdateEffect, useRequest } from 'ahooks';
 
@@ -8,12 +10,12 @@ import type { OptionConfig, ToolBarProps } from './components/ToolBar';
 
 import Toolbar from './components/ToolBar';
 
-import Container from './container'
-import { ListToolBarProps } from './components/ListToolBar';
-import {genColumnList, tableColumnSort,genColumnKey} from './utils'
-import useDeepCompareEffect from '../_util/useDeepCompareEffect'
-const { useState, useEffect, useRef,useMemo } = React;
+import Container from './container';
+import type { ListToolBarProps } from './components/ListToolBar';
+import { genColumnList, tableColumnSort, genColumnKey } from './utils';
+import useDeepCompareEffect from '../_util/useDeepCompareEffect';
 
+const { useState, useEffect, useRef, useMemo } = React;
 
 export interface ScTableProps<T> extends TableProps<T> {
   onSelectRow?: (selectedRowKeys: string[], selectedRows: any[]) => void; // 当选中时触发
@@ -31,32 +33,29 @@ export interface ScTableProps<T> extends TableProps<T> {
   selectedRows?: any[]; // 选中的对象
   pagination?: false | TablePaginationConfig;
   saveRef?: any; // React.MutableRefObject<any> | ((saveRef: any) => void) 获取组件对外暴露的参数
-  getRecord?: (record: any,
-    selected: any,
-    _selectedRows: any,
-    nativeEvent: any) => any; // 获取选中行的表单对象
+  getRecord?: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => any; // 获取选中行的表单对象
   rowSelected?: boolean; // 列选中
   onRowSelect?: (record: any) => void;
-  onCustomRow?: (record: any, index: number) => {}; // 自定义行事件为了合并现有的方法
-    /** @name 渲染操作栏 */
-    toolBarRender?: ToolBarProps<T>['toolBarRender'] | false;
-      /** @name 左上角的 title */
+  onCustomRow?: (record: any, index: number) => any; // 自定义行事件为了合并现有的方法
+  /** @name 渲染操作栏 */
+  toolBarRender?: ToolBarProps<T>['toolBarRender'] | false;
+  /** @name 左上角的 title */
   headerTitle?: React.ReactNode;
   /** @name 操作栏配置 */
   options?: OptionConfig | false;
-   /** @name 标题旁边的 tooltip */
-   tooltip?: string;
-     /** @name ListToolBar 的属性 */
+  /** @name 标题旁边的 tooltip */
+  tooltip?: string;
+  /** @name ListToolBar 的属性 */
   toolbar?: ListToolBarProps;
-    /** @name 查询表单和 Table 的卡片 border 配置 */
-    cardBordered?: boolean;
-      /** @name table 外面卡片的设置 */
+  /** @name 查询表单和 Table 的卡片 border 配置 */
+  cardBordered?: boolean;
+  /** @name table 外面卡片的设置 */
   cardProps?: CardProps;
 }
 
 const getValue = (obj: any) =>
   Object.keys(obj)
-    .map(key => obj[key])
+    .map((key) => obj[key])
     .join(',');
 
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
@@ -84,19 +83,13 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     tooltip,
     toolbar,
     cardProps,
-    cardBordered=false,
+    cardBordered = false,
     ...restPros
   } = props;
 
   const counter = Container.useContainer();
 
-  
-  const {
-    selectedRows = [],
-    params = null,
-    pageSize = 10,
-    autoload = false,
-  } = restPros;
+  const { selectedRows = [], params = null, pageSize = 10, autoload = false } = restPros;
   const isGone = useRef(false);
   const { loading, run } = useRequest(
     request ||
@@ -124,7 +117,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   });
 
   const getDataKeys = (_data: any[]) => {
-    const dataKey = _data.map(item => item[rowKey]);
+    const dataKey = _data.map((item) => item[rowKey]);
     dataKeys.current = new Set(dataKey);
   };
 
@@ -161,15 +154,13 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     let crowKeys = [...(action.current.rowKeys || [])];
     let crows = [...(action.current.rows || [])];
     // 先过滤掉当前有数据的选择项
-    crowKeys = crowKeys.filter(item => !_dataKeys.has(item));
-    crows = crows.filter(item => !_dataKeys.has(item[rowKey]));
+    crowKeys = crowKeys.filter((item) => !_dataKeys.has(item));
+    crows = crows.filter((item) => !_dataKeys.has(item[rowKey]));
 
-    crowKeys = [...crowKeys, ..._rowKeys].filter(
-      item => item !== undefined && item !== null,
-    );
+    crowKeys = [...crowKeys, ..._rowKeys].filter((item) => item !== undefined && item !== null);
     const srowKeys = new Set(crowKeys);
     crows = [...crows, ..._rows].filter(
-      item => item !== undefined && item !== null && srowKeys.has(item[rowKey]),
+      (item) => item !== undefined && item !== null && srowKeys.has(item[rowKey]),
     );
 
     changeRowSelect(crowKeys, crows);
@@ -203,7 +194,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     if (saveRef && typeof saveRef !== 'function') {
       saveRef.current = userAction;
     }
-    return 
   };
 
   useEffect(() => {
@@ -246,16 +236,13 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     _sorter: any,
     extra: { currentDataSource: []; action: any },
   ) => {
-    const _filters = Object.keys(_filtersArg).reduce(
-      (obj: any, key: string) => {
-        const newObj = { ...obj };
-        if (_filtersArg[key]) {
-          newObj[key] = getValue(_filtersArg[key]);
-        }
-        return newObj;
-      },
-      {},
-    );
+    const _filters = Object.keys(_filtersArg).reduce((obj: any, key: string) => {
+      const newObj = { ...obj };
+      if (_filtersArg[key]) {
+        newObj[key] = getValue(_filtersArg[key]);
+      }
+      return newObj;
+    }, {});
     setPagination(_pagination);
     setFilters(_filters);
     setSorter(_sorter);
@@ -271,12 +258,12 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         _rows = [record];
       }
       if (rowSelection?.type === 'checkbox') {
-        const index = _rowKeys.findIndex(item => item === key);
+        const index = _rowKeys.findIndex((item) => item === key);
         if (index > -1) {
-          _rowKeys = _rowKeys.filter(item => {
+          _rowKeys = _rowKeys.filter((item) => {
             return item !== key;
           });
-          _rows = _rows.filter(item => {
+          _rows = _rows.filter((item) => {
             return item[rowKey] !== key;
           });
         } else {
@@ -294,10 +281,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       columns: propsColumns,
       map: counter.columnsMap,
       counter,
-    
     }).sort(tableColumnSort(counter.columnsMap));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [propsColumns, counter, ]);
+  }, [propsColumns, counter]);
   /** Table Column 变化的时候更新一下，这个参数将会用于渲染 */
 
   useDeepCompareEffect(() => {
@@ -371,12 +357,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
           getCheckboxProps: (record: any) => ({
             disabled: record.disabled,
           }),
-          onSelect: (
-            record: any,
-            selected: any,
-            _selectedRows: any,
-            nativeEvent: any,
-          ) => {
+          onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
             if (getRecord) {
               getRecord(record, selected, _selectedRows, nativeEvent);
             }
@@ -449,11 +430,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     return (
       <Toolbar
         tooltip={tooltip}
-        columns={tableColumn||[]}
+        columns={tableColumn || []}
         options={options}
         headerTitle={headerTitle}
         action={saveRef}
-       // onSearch={rows}
+        // onSearch={rows}
         selectedRows={selectedRows}
         selectedRowKeys={rowKeys}
         toolBarRender={toolBarRender}
@@ -463,28 +444,28 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   }, [
     tooltip,
     saveRef,
-   // formSearch,
+    // formSearch,
     headerTitle,
-   // isLightFilter,
-    //lightForm,
+    // isLightFilter,
+    // lightForm,
     options,
     rows,
-   rowKeys,
-   // setFormSearch,
-   tableColumn,
+    rowKeys,
+    // setFormSearch,
+    tableColumn,
     toolBarRender,
     toolbar,
   ]);
   counter.setAction(saveRef.current);
   counter.propsRef.current = props;
 
-
-   /** Table 区域的 dom，为了方便 render */
-   const tableAreaDom = (
+  /** Table 区域的 dom，为了方便 render */
+  const tableAreaDom = (
     <Card
       bordered={cardBordered}
       style={{
         height: '100%',
+        padding: 0,
       }}
       bodyStyle={
         toolbarDom
@@ -501,14 +482,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       {toolbarDom}
 
       <Table {...tableProp()} />
-
     </Card>
   );
-  return (
-    <div className={prefixCls + className}>
-      {tableAreaDom}
-    </div>
-  );
+  return <div className={prefixCls + className}>{tableAreaDom}</div>;
 };
 
 /**
@@ -516,16 +492,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
  *
  * @param props
  */
- const ProviderWarp = <
- T extends Record<string, any>,
- ValueType = 'text'
->(
- props: ScTableProps<T>,
-) => {
- return (
-   <Container.Provider initialState={props}>
-         <ScTable  {...props} />
-   </Container.Provider>
- );
+const ProviderWarp = <T extends Record<string, any>>(props: ScTableProps<T>) => {
+  return (
+    <Container.Provider initialState={props}>
+      <ScTable {...props} />
+    </Container.Provider>
+  );
 };
 export default ProviderWarp;

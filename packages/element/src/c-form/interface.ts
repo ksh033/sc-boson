@@ -1,7 +1,7 @@
-import type { Rule } from "antd/es/form";
+import type { Rule , FormItemProps} from "antd/es/form";
 import type { ColProps } from "antd/es/grid/col";
 
-export interface FiledProp {
+export interface FiledProp extends FormItemProps {
     prefixCls?: string;
     noStyle?: boolean;
     style?: React.CSSProperties;

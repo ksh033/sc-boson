@@ -1,21 +1,36 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import { ConfigProvider } from 'antd'
-import zhCN from 'antd/es/locale/zh_CN'
-import classNames from 'classnames'
-import ScModal from '../sc-modal'
-import ModalPageTpl from './ModalPageTpl'
-import ActionButton from './ActionButton'
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import type { ButtonProps, ModalFuncProps } from 'antd';
+import { ConfigProvider } from 'antd';
+import zhCN from 'antd/es/locale/zh_CN';
+import classNames from 'classnames';
+import ScModal from '../sc-modal';
 
-export const destroyFns: any[] = []
+import type { ScModalProps } from '../sc-modal';
 
-const IS_REACT_16 = !!ReactDOM.createPortal
+import ModalPageTpl from './ModalPageTpl';
+import ActionButton from './ActionButton';
 
-const CModalDialog = (props: any) => {
+export const destroyFns: any[] = [];
+
+const IS_REACT_16 = !!ReactDOM.createPortal;
+
+export type CModalDialogProps = ModalFuncProps &
+  Omit<ScModalProps, 'children'> & {
+    afterClose?: () => void;
+    close?: (...args: any[]) => void;
+    autoFocusButton?: null | 'ok' | 'cancel';
+    rootPrefixCls?: string;
+    customToolbar?: ButtonProps[];
+    pageProps?: any;
+    content: any;
+  };
+
+const CModalDialog = (props: CModalDialogProps) => {
   const {
     onCancel,
     onOk,
-    close,
+    close = () => {},
     fullscreen,
     showFullscreen,
     zIndex,
@@ -32,34 +47,29 @@ const CModalDialog = (props: any) => {
     closable,
     footer,
     onToggleFullscreen,
+
     // iconType = 'question-circle',
-  } = props
+  } = props;
 
   // 支持传入{ icon: null }来隐藏`Modal.confirm`默认的Icon
   // const icon = props.icon === undefined ? iconType : props.icon;
-  const okType = props.okType || 'primary'
-  const prefixCls = props.prefixCls || 'ant-modal'
-  const contentPrefixCls = `${prefixCls}-custom`
+  const okType = props.okType || 'primary';
+  const prefixCls = props.prefixCls || 'ant-modal';
+  const contentPrefixCls = `${prefixCls}-custom`;
   // 默认为 true，保持向下兼容
-  const okCancel = 'okCancel' ? props.okCancel : true
-  const width = props.width || 416
-  const style = props.style || {}
-  const mask = props.mask === undefined ? true : props.mask
+  const okCancel = 'okCancel' ? props.okCancel : true;
+  const width = props.width || 416;
+  const style = props.style || {};
+  const mask = props.mask === undefined ? true : props.mask;
   // 默认为 false，保持旧版默认行为
-  const maskClosable =
-    props.maskClosable === undefined ? false : props.maskClosable
-  const okText = props.okText || (okCancel ? '确定' : '确定')
-  const cancelText = props.cancelText || '取消'
-  const autoFocusButton =
-    props.autoFocusButton === null ? false : props.autoFocusButton || 'ok'
-  const transitionName = props.transitionName || 'ant-zoom'
-  const maskTransitionName = props.maskTransitionName || 'ant-fade'
+  const maskClosable = props.maskClosable === undefined ? false : props.maskClosable;
+  const okText = props.okText || (okCancel ? '确定' : '确定');
+  const cancelText = props.cancelText || '取消';
+  const autoFocusButton = props.autoFocusButton === null ? false : props.autoFocusButton || 'ok';
+  const transitionName = props.transitionName || 'ant-zoom';
+  const maskTransitionName = props.maskTransitionName || 'ant-fade';
 
-  const classString = classNames(
-    contentPrefixCls,
-    `${contentPrefixCls}`,
-    props.className
-  )
+  const classString = classNames(contentPrefixCls, `${contentPrefixCls}`, props.className);
 
   const cancelButton = okCancel && (
     <ActionButton
@@ -71,9 +81,9 @@ const CModalDialog = (props: any) => {
     >
       {cancelText}
     </ActionButton>
-  )
-  const customButton = []
-  customButton.push(cancelButton)
+  );
+  const customButton = [];
+  customButton.push(cancelButton);
   customButton.push(
     <ActionButton
       key="button-ok"
@@ -84,11 +94,11 @@ const CModalDialog = (props: any) => {
       buttonProps={okButtonProps}
     >
       {okText}
-    </ActionButton>
-  )
+    </ActionButton>,
+  );
   if (customToolbar && customToolbar.length > 0) {
     customToolbar.map((item: any, index: number) => {
-      const { text, onClick, buttonProps } = item
+      const { text, onClick, buttonProps } = item;
       customButton.push(
         <ActionButton
           key={`ActionButton-${index}`}
@@ -97,23 +107,25 @@ const CModalDialog = (props: any) => {
           buttonProps={buttonProps}
         >
           {text}
-        </ActionButton>
-      )
-      return item
-    })
+        </ActionButton>,
+      );
+      return item;
+    });
   }
 
-  let custFooter = null
+  let custFooter = null;
   if (footer === null) {
-    custFooter = null
+    custFooter = null;
   } else {
-    custFooter = !fullscreen ? <div>{customButton}</div> : null
+    custFooter = !fullscreen ? <div>{customButton}</div> : null;
   }
   // let customFooter=hideFooter
-  const dlgContent = React.createElement(props.content, {
-    close,
-    pageProps: props.pageProps,
-  })
+  const isElement= React.isValidElement(props.content)
+  const dlgContent =
+    !isElement
+      ? React.createElement(props.content, { close, pageProps: props.pageProps })
+      : React.cloneElement(props.content,{close, pageProps: props.pageProps});
+
   return (
     <ScModal
       prefixCls={prefixCls}
@@ -122,7 +134,7 @@ const CModalDialog = (props: any) => {
         [`${contentPrefixCls}-centered`]: !!props.centered,
       })}
       onCancel={() => {
-        return close && close({ triggerCancel: true })
+        return close && close({ triggerCancel: true });
       }}
       visible={visible}
       title={props.title}
@@ -159,25 +171,25 @@ const CModalDialog = (props: any) => {
         </div>
       </ConfigProvider>
     </ScModal>
-  )
-}
+  );
+};
 export default function CModal(config: any) {
-  const div = document.createElement('div')
-  document.body.appendChild(div)
-  let currentConfig = { ...config, close, onToggleFullscreen, visible: true }
+  const div = document.createElement('div');
+  document.body.appendChild(div);
+  let currentConfig = { ...config, close, onToggleFullscreen, visible: true };
 
   function close(...args: any[]) {
     currentConfig = {
       ...currentConfig,
       visible: false,
       afterClose: () => {
-        destroy(...args)
+        destroy(...args);
       },
-    }
+    };
     if (IS_REACT_16) {
-      render(currentConfig)
+      render(currentConfig);
     } else {
-      destroy(...args)
+      destroy(...args);
     }
   }
 
@@ -185,47 +197,47 @@ export default function CModal(config: any) {
     currentConfig = {
       ...currentConfig,
       fullscreen: !fullscreen,
-    }
-    render(currentConfig)
+    };
+    render(currentConfig);
   }
 
   function update(newConfig: any) {
     currentConfig = {
       ...currentConfig,
       ...newConfig,
-    }
-    render(currentConfig)
+    };
+    render(currentConfig);
   }
 
   function destroy(...args: any[]) {
-    const unmountResult = ReactDOM.unmountComponentAtNode(div)
+    const unmountResult = ReactDOM.unmountComponentAtNode(div);
     if (unmountResult && div.parentNode) {
-      div.parentNode.removeChild(div)
+      div.parentNode.removeChild(div);
     }
-    const triggerCancel = args.some((param) => param && param.triggerCancel)
+    const triggerCancel = args.some((param) => param && param.triggerCancel);
     if (config.onCancel && triggerCancel) {
-      config.onCancel(...args)
+      config.onCancel(...args);
     }
     for (let i = 0; i < destroyFns.length; i = +1) {
-      const fn = destroyFns[i]
+      const fn = destroyFns[i];
       if (fn === close) {
-        destroyFns.splice(i, 1)
-        break
+        destroyFns.splice(i, 1);
+        break;
       }
     }
   }
 
   function render(props: any) {
     // const app = getDvaApp();
-    ReactDOM.render(<CModalDialog {...props} />, div)
+    ReactDOM.render(<CModalDialog {...props} />, div);
   }
 
-  render(currentConfig)
+  render(currentConfig);
 
-  destroyFns.push(close)
+  destroyFns.push(close);
 
   return {
     destroy: close,
     update,
-  }
+  };
 }

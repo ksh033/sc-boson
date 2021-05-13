@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Modal } from 'antd';
-import { ModalProps } from 'antd/lib/modal';
+import type { ModalProps } from 'antd/lib/modal';
 import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import './style';
 
@@ -58,18 +58,18 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
 
   const handleMove = (e: any) => {
     const { x, y, mouseX, mouseY } = state;
-    let _moveDom: any = moveDom;
+    const _moveDom: any = moveDom;
     if (enabledMove && _moveDom) {
-      //模态窗的宽高
-      const winW = document.body.offsetWidth,
-        winH = document.body.offsetHeight;
-      const w = _moveDom.offsetWidth,
-        h = _moveDom.offsetHeight;
+      // 模态窗的宽高
+      const winW = document.body.offsetWidth;
+        const winH = document.body.offsetHeight;
+      const w = _moveDom.offsetWidth;
+        const h = _moveDom.offsetHeight;
 
-      let offsetX = e.screenX - mouseX,
-        offsetY = e.screenY - mouseY;
-      let targetX = x + offsetX,
-        targetY = y + offsetY;
+      const offsetX = e.screenX - mouseX;
+        const offsetY = e.screenY - mouseY;
+      let targetX = x + offsetX;
+        let targetY = y + offsetY;
       if (targetX < (-winW + w) / 2) {
         targetX = (-winW + w) / 2;
       }
@@ -83,8 +83,8 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
         targetY = winH - h;
       }
 
-      _moveDom.style.left = targetX + 'px';
-      _moveDom.style.top = targetY + 'px';
+      _moveDom.style.left = `${targetX  }px`;
+      _moveDom.style.top = `${targetY  }px`;
 
       setDoveDom(_moveDom);
     }
@@ -94,11 +94,11 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
     const { className } = e.target;
     if (className && className === 'ant-modal-title') {
       e.preventDefault();
-      const parentNode = e.target.parentNode.parentNode.parentNode;
-      //console.log('startMove')
-      //启动移动，并初始化偏移值
-      let _x = 0,
-        _y = 100;
+      const {parentNode} = e.target.parentNode.parentNode;
+      // console.log('startMove')
+      // 启动移动，并初始化偏移值
+      let _x = 0;
+        let _y = 100;
       if (parentNode.style.top) {
         _x = parseInt(parentNode.style.left);
         _y = parseInt(parentNode.style.top);
@@ -117,7 +117,7 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
     }
   };
 
-  let fullsreenControl = useMemo(() => {
+  const fullsreenControl = useMemo(() => {
     let _fullsreenControl = null;
     if (showFullscreen) {
       const iconProps = {
@@ -144,10 +144,10 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
     let _className = wrapClassName;
     if (showFullscreen) {
       _className =
-        _className + ' ' + (fullscreen ? 'fullscreen-modal' : '') + ' c-modal';
+        `${_className  } ${  fullscreen ? 'fullscreen-modal' : ''  } c-modal`;
     }
     if (!showHeader) {
-      _className = _className + ' ' + 'c-modal-hide-header';
+      _className = `${_className  } ` + `c-modal-hide-header`;
     }
     return _className;
   }, [wrapClassName, showFullscreen, fullscreen]);

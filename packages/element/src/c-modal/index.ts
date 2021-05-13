@@ -1,16 +1,17 @@
 import React from 'react'
 import CModal from './CModal'
+import type {CModalDialogProps} from './CModal'
 import { Modal } from 'antd'
 
 export default {
-  show: (props: any) => {
+  show: (props: CModalDialogProps) => {
     const config = {
       okCancel: true,
       ...props,
     }
     return CModal(config)
   },
-  showFull: (props: any) => {
+  showFull: (props: CModalDialogProps&{component?: any}) => {
     const { component, pageProps, ...restPops } = props
     if (component) {
       restPops.content = React.createElement(component, pageProps)
@@ -29,7 +30,7 @@ export default {
 
     return CModal(config)
   },
-  confirm: (props: any) => {
+  confirm: (props: CModalDialogProps) => {
     return Modal.confirm(props)
   },
 }
