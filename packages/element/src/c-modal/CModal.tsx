@@ -23,7 +23,7 @@ export type CModalDialogProps = ModalFuncProps &
     rootPrefixCls?: string;
     customToolbar?: ButtonProps[];
     pageProps?: any;
-    content: any;
+    content?: any;
   };
 
 const CModalDialog = (props: CModalDialogProps) => {
