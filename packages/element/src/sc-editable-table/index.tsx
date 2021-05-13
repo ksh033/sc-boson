@@ -53,7 +53,7 @@ export type EditableProTableProps<T> = ProTableProps<T> & {
 function EditableTable<T extends Record<string, any>>(props: EditableProTableProps<T>) {
   const {
     actionRef: propsActionRef,
-    rowKey,
+    rowKey = 'id',
     columns: propsColumns,
     rowSelection: propsRowSelection = false,
     containsDeletedData = false,
@@ -65,17 +65,29 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   } = props;
 
   const actionRef = useRef<ActionType>();
+
+  const oldValueRef = useRef<Map<React.Key, any> | undefined>();
+
+  // ============================ RowKey ============================
+  const getRowKey = React.useMemo<any>(() => {
+    if (typeof rowKey === 'function') {
+      return rowKey;
+    }
+    return (record: T, index: number) => (record as any)?.[rowKey as string] ?? index;
+  }, [rowKey]);
+
   const [value, setValue] = useMergedState<T[]>(() => props.value || [], {
     value: props.value,
     onChange: props.onChange,
     postState: (data: any[]) => {
       if (Array.isArray(data)) {
         return data.map((item: any) => {
+          const newItem = item;
           if (typeof item.deleted === 'number') {
-            return item;
+            return newItem;
           }
           return {
-            ...item,
+            ...newItem,
             deleted: 0,
           };
         });
@@ -97,13 +109,18 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     [setSelectedRowKeys, setSelectedRows],
   );
 
-  // ============================ RowKey ============================
-  const getRowKey = React.useMemo<any>(() => {
-    if (typeof rowKey === 'function') {
-      return rowKey;
+  useEffect(() => {
+    if (oldValueRef.current === undefined) {
+      if (Array.isArray(props.value) && props.value.length > 0) {
+        const kvMap = new Map<React.Key, any>();
+        props.value.forEach((item, index) => {
+          const recordKey = `${getRowKey(item, index)}`;
+          kvMap.set(recordKey, item);
+        });
+        oldValueRef.current = kvMap;
+      }
     }
-    return (record: T, index: number) => (record as any)?.[rowKey as string] ?? index;
-  }, [rowKey]);
+  }, [props.value]);
 
   /* 绑定actionRef */
 
@@ -125,6 +142,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     getRowKey,
     childrenColumnName: props.expandable?.childrenColumnName,
     dataSource: value || [],
+    oldKeyMap: oldValueRef.current || new Map(),
     setDataSource: (_data) => {
       props.editable?.onValuesChange?.(undefined as any, _data);
       setValue(_data);

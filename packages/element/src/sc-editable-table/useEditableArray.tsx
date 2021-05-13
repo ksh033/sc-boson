@@ -117,15 +117,16 @@ export type ActionRenderConfig<T, LineConfig = NewLineConfig<T>> = {
 function editableRowByKey<RecordType>(
   params: {
     data: RecordType[];
+    oldKeyMap: Map<React.Key, any>;
     childrenColumnName: string;
+    containsDeletedData: boolean;
     getRowKey: GetRowKey<RecordType>;
     key: RecordKey;
     row: RecordType;
-    containsDeletedData: boolean;
   },
   action: 'update' | 'delete',
 ) {
-  const { getRowKey, row, data, childrenColumnName, containsDeletedData } = params;
+  const { getRowKey, row, data, childrenColumnName, oldKeyMap, containsDeletedData } = params;
   const key = recordKeyToString(params.key);
   const kvMap = new Map<React.Key, RecordType & { parentKey?: React.Key }>();
   /**
@@ -164,12 +165,15 @@ function editableRowByKey<RecordType>(
     });
   }
   if (action === 'delete') {
-    // kvMap.delete(`${key}`);
-    kvMap.set(`${key}`, {
-      ...kvMap.get(`${key}`),
-      ...row,
-      deleted: 1,
-    });
+    if (oldKeyMap.get(`${key}`)) {
+      kvMap.set(`${key}`, {
+        ...kvMap.get(`${key}`),
+        ...row,
+        deleted: 1,
+      });
+    } else {
+      kvMap.delete(`${key}`);
+    }
   }
 
   const fill = (map: Map<React.Key, RecordType & { map_row_parentKey?: React.Key }>) => {
@@ -351,6 +355,7 @@ function useEditableArray<RecordType>(
     containsDeletedData: boolean;
     getRowKey: GetRowKey<RecordType>;
     dataSource: RecordType[];
+    oldKeyMap: Map<React.Key, any>;
     onValuesChange?: (record: RecordType, dataSource: RecordType[]) => void;
     childrenColumnName: string | undefined;
     setDataSource: (dataSource: RecordType[]) => void;
@@ -451,12 +456,13 @@ function useEditableArray<RecordType>(
       const editRow = values[recordKey];
       dataSource = editableRowByKey(
         {
+          childrenColumnName,
+          containsDeletedData: props.containsDeletedData,
+          oldKeyMap: props.oldKeyMap,
           data: dataSource,
           getRowKey: props.getRowKey,
           row: editRow,
           key: recordKey,
-          childrenColumnName,
-          containsDeletedData: props.containsDeletedData,
         },
         'update',
       );
@@ -559,6 +565,7 @@ function useEditableArray<RecordType>(
           row: editRow,
           key: recordKey,
           childrenColumnName: props.childrenColumnName || 'children',
+          oldKeyMap: props.oldKeyMap,
           containsDeletedData: props.containsDeletedData,
         };
         const res = await props?.onDelete?.(recordKey, editRow);
@@ -585,6 +592,7 @@ function useEditableArray<RecordType>(
           row: editRow,
           key: recordKey,
           childrenColumnName: props.childrenColumnName || 'children',
+          oldKeyMap: props.oldKeyMap,
           containsDeletedData: props.containsDeletedData,
         };
         props.setDataSource(editableRowByKey(actionProps, 'update'));
