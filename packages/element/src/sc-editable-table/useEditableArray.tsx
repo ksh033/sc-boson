@@ -9,6 +9,7 @@ import { message, Popconfirm } from 'antd';
 import ReactDOM from 'react-dom';
 import set from 'rc-util/lib/utils/set';
 import useMountMergeState from '../_util/useMountMergeState';
+import { removeDeletedData } from './utils';
 
 export type RowEditableType = 'single' | 'multiple';
 
@@ -120,10 +121,11 @@ function editableRowByKey<RecordType>(
     getRowKey: GetRowKey<RecordType>;
     key: RecordKey;
     row: RecordType;
+    containsDeletedData: boolean;
   },
   action: 'update' | 'delete',
 ) {
-  const { getRowKey, row, data, childrenColumnName } = params;
+  const { getRowKey, row, data, childrenColumnName, containsDeletedData } = params;
   const key = recordKeyToString(params.key);
   const kvMap = new Map<React.Key, RecordType & { parentKey?: React.Key }>();
   /**
@@ -162,7 +164,12 @@ function editableRowByKey<RecordType>(
     });
   }
   if (action === 'delete') {
-    kvMap.delete(`${key}`);
+    // kvMap.delete(`${key}`);
+    kvMap.set(`${key}`, {
+      ...kvMap.get(`${key}`),
+      ...row,
+      deleted: 1,
+    });
   }
 
   const fill = (map: Map<React.Key, RecordType & { map_row_parentKey?: React.Key }>) => {
@@ -171,11 +178,10 @@ function editableRowByKey<RecordType>(
     map.forEach((value: any) => {
       if (value.map_row_parentKey) {
         // @ts-ignore
-        const { map_row_parentKey, map_row_key, ...reset } = value;
+        const { map_row_parentKey, map_row_key, deleted, ...reset } = value;
         if (reset && kvArrayMap.has(map_row_key)) {
           reset[childrenColumnName] = kvArrayMap.get(map_row_key);
         }
-
         kvArrayMap.set(map_row_parentKey, [
           ...(kvArrayMap.get(map_row_parentKey) || []),
           reset as RecordType,
@@ -199,7 +205,8 @@ function editableRowByKey<RecordType>(
     });
     return kvSource;
   };
-  const source = fill(kvMap);
+  let source = fill(kvMap);
+  source = removeDeletedData(source, childrenColumnName, containsDeletedData);
   return source;
 }
 
@@ -341,6 +348,7 @@ export function defaultActionRender<T>(row: T, config: ActionRenderConfig<T, New
  */
 function useEditableArray<RecordType>(
   props: RowEditableConfig<RecordType> & {
+    containsDeletedData: boolean;
     getRowKey: GetRowKey<RecordType>;
     dataSource: RecordType[];
     onValuesChange?: (record: RecordType, dataSource: RecordType[]) => void;
@@ -436,6 +444,7 @@ function useEditableArray<RecordType>(
       return;
     }
     let { dataSource } = props;
+    const childrenColumnName = props.childrenColumnName || 'children';
     // 这里是把正在编辑中的所有表单数据都修改掉
     // 不然会用 props 里面的 dataSource，数据只有正在编辑中的
     Object.keys(values).forEach((recordKey) => {
@@ -446,7 +455,8 @@ function useEditableArray<RecordType>(
           getRowKey: props.getRowKey,
           row: editRow,
           key: recordKey,
-          childrenColumnName: props.childrenColumnName || 'children',
+          childrenColumnName,
+          containsDeletedData: props.containsDeletedData,
         },
         'update',
       );
@@ -476,6 +486,10 @@ function useEditableArray<RecordType>(
    * @name 增加新的行
    */
   const addEditRecord = (row: RecordType, options?: AddLineOptions) => {
+    const tRow = {
+      ...row,
+      deleted: 0,
+    };
     // 暂时不支持多行新增
     if (newLineRecordRef.current) {
       message.warn(props.onlyAddOneLineAlertMessage || '只能新增一行');
@@ -489,14 +503,14 @@ function useEditableArray<RecordType>(
 
     // 防止多次渲染
     ReactDOM.unstable_batchedUpdates(() => {
-      const recordKey = props.getRowKey(row, props.dataSource.length);
+      const recordKey = props.getRowKey(tRow, props.dataSource.length);
       editableKeysSet.add(recordKey);
       setEditableRowKeys(Array.from(editableKeysSet));
       if (options?.newRecordType === 'dataSource') {
-        props.setDataSource?.([...props.dataSource, row]);
+        props.setDataSource?.([...props.dataSource, tRow]);
       } else {
         setNewLineRecord({
-          defaultValue: row,
+          defaultValue: tRow,
           options: {
             ...options,
             recordKey,
@@ -545,8 +559,10 @@ function useEditableArray<RecordType>(
           row: editRow,
           key: recordKey,
           childrenColumnName: props.childrenColumnName || 'children',
+          containsDeletedData: props.containsDeletedData,
         };
         const res = await props?.onDelete?.(recordKey, editRow);
+
         props.setDataSource(editableRowByKey(actionProps, 'delete'));
         return res;
       },
@@ -569,6 +585,7 @@ function useEditableArray<RecordType>(
           row: editRow,
           key: recordKey,
           childrenColumnName: props.childrenColumnName || 'children',
+          containsDeletedData: props.containsDeletedData,
         };
         props.setDataSource(editableRowByKey(actionProps, 'update'));
         return res;

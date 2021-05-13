@@ -108,3 +108,29 @@ export function columnRender<T>({
   }
   return !isNil(dom) ? dom : null;
 }
+
+export function removeDeletedData(
+  records: any[],
+  childrenColumnName: string,
+  containsDeletedData: boolean,
+) {
+  const list: any[] = [];
+  records.forEach((record) => {
+    if (containsDeletedData) {
+      // children 取在前面方便拼的时候按照反顺序放回去
+      list.push(record);
+    } else if (!containsDeletedData && record.deleted === 0) {
+      // children 取在前面方便拼的时候按照反顺序放回去
+      const newValue = record;
+      if (record && typeof record === 'object' && childrenColumnName in record) {
+        newValue[childrenColumnName] = removeDeletedData(
+          record[childrenColumnName] || [],
+          childrenColumnName,
+          containsDeletedData,
+        );
+      }
+      list.push(record);
+    }
+  });
+  return list;
+}

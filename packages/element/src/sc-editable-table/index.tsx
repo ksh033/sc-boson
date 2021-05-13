@@ -7,7 +7,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Form, Table, Button } from 'antd';
 import type { TablePaginationConfig } from 'antd/lib/table';
 import type { SorterResult, TableCurrentDataSource } from 'antd/lib/table/interface';
-import { columnRender } from './utils';
+import { columnRender, removeDeletedData } from './utils';
 import useEditableArray from './useEditableArray';
 import useMountMergeState from '../_util/useMountMergeState';
 
@@ -35,7 +35,8 @@ export type EditableProTableProps<T> = ProTableProps<T> & {
   onChange?: (value: T[]) => void;
   /** @name 原先的 table OnChange */
   onTableChange?: TableProps<T>['onChange'];
-
+  /** @name 是否包含删除数据 */
+  containsDeletedData?: boolean;
   /** @name 新建按钮的设置 */
   recordCreatorProps?:
     | (RecordCreatorProps<T> &
@@ -55,6 +56,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     rowKey,
     columns: propsColumns,
     rowSelection: propsRowSelection = false,
+    containsDeletedData = false,
     recordCreatorProps = false,
     maxLength,
     pagination = false,
@@ -66,6 +68,20 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   const [value, setValue] = useMergedState<T[]>(() => props.value || [], {
     value: props.value,
     onChange: props.onChange,
+    postState: (data: any[]) => {
+      if (Array.isArray(data)) {
+        return data.map((item: any) => {
+          if (typeof item.deleted === 'number') {
+            return item;
+          }
+          return {
+            ...item,
+            deleted: 0,
+          };
+        });
+      }
+      return data;
+    },
   });
 
   const [selectedRowKeys, setSelectedRowKeys] = useMountMergeState<React.ReactText[]>([], {
@@ -101,9 +117,11 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     // @ts-ignore
     propsActionRef.current = actionRef.current;
   }
+
   /** 可编辑行的相关配置 */
   const editableUtils = useEditableArray<any>({
     ...props.editable,
+    containsDeletedData,
     getRowKey,
     childrenColumnName: props.expandable?.childrenColumnName,
     dataSource: value || [],
@@ -180,23 +198,28 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     },
   };
 
-  const getTableProps = () => ({
-    ...rest,
-    columns,
-    rowSelection: propsRowSelection === false ? undefined : rowSelection,
-    dataSource: editableUtils.newLineRecord ? editableDataSource() : value,
-    pagination,
-    onChange: (
-      changePagination: TablePaginationConfig,
-      filters: Record<string, (React.Key | boolean)[] | null>,
-      sorter: SorterResult<T> | SorterResult<T>[],
-      extra: TableCurrentDataSource<T>,
-    ) => {
-      if (rest.onTableChange) {
-        rest.onTableChange(changePagination, filters, sorter, extra);
-      }
-    },
-  });
+  const getTableProps = () => {
+    let tData = editableUtils.newLineRecord ? editableDataSource() : value;
+    const childrenColumnName = props.childrenColumnName || 'children';
+    tData = removeDeletedData(tData, childrenColumnName, false);
+    return {
+      ...rest,
+      columns,
+      rowSelection: propsRowSelection === false ? undefined : rowSelection,
+      dataSource: tData,
+      pagination,
+      onChange: (
+        changePagination: TablePaginationConfig,
+        filters: Record<string, (React.Key | boolean)[] | null>,
+        sorter: SorterResult<T> | SorterResult<T>[],
+        extra: TableCurrentDataSource<T>,
+      ) => {
+        if (rest.onTableChange) {
+          rest.onTableChange(changePagination, filters, sorter, extra);
+        }
+      },
+    };
+  };
   const {
     record,
     creatorButtonText,
