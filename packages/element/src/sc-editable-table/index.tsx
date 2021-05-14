@@ -84,12 +84,12 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       if (Array.isArray(data)) {
         return data.map((item: any) => {
           const newItem = item;
-          if (typeof item.updated === 'number') {
+          if (typeof item.editableAction === 'string') {
             return newItem;
           }
           return {
             ...newItem,
-            updated: 0,
+            editableAction: 'ADD',
           };
         });
       }
