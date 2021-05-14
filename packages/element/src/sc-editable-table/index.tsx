@@ -89,7 +89,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           }
           return {
             ...newItem,
-            deleted: 0,
+            updated: 0,
           };
         });
       }

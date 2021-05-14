@@ -166,11 +166,18 @@ function editableRowByKey<RecordType>(
   dig(data);
 
   if (action === 'update') {
-    kvMap.set(`${key}`, {
-      ...kvMap.get(`${key}`),
-      ...row,
-      updated: 1,
-    });
+    if (oldKeyMap.get(`${key}`)) {
+      kvMap.set(`${key}`, {
+        ...kvMap.get(`${key}`),
+        ...row,
+        updated: 1,
+      });
+    } else {
+      kvMap.set(`${key}`, {
+        ...kvMap.get(`${key}`),
+        ...row,
+      });
+    }
   }
   if (action === 'delete') {
     if (oldKeyMap.get(`${key}`)) {
@@ -381,8 +388,20 @@ function useEditableArray<RecordType>(
   const editableType = props.type || 'single';
   const [getRecordByKey] = useLazyKVMap(props.dataSource, 'children', props.getRowKey);
 
+  const setAllEditable = useCallback(
+    (rdata: any[]) => {
+      if (editableType === 'multiple' && Array.isArray(rdata)) {
+        return rdata.map((item: RecordType) => {
+          return item[props.rowKey];
+        });
+      }
+      return [];
+    },
+    [editableType],
+  );
+
   const [editableKeys, setEditableRowKeys] = useMergedState<React.Key[]>([], {
-    value: props.editableKeys,
+    value: props.editableKeys || setAllEditable(props.dataSource),
     onChange: props.onChange
       ? (keys) => {
           props?.onChange?.(
