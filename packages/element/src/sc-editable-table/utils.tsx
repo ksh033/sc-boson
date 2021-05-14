@@ -119,7 +119,7 @@ export function removeDeletedData(
     if (containsDeletedData) {
       // children 取在前面方便拼的时候按照反顺序放回去
       list.push(record);
-    } else if (!containsDeletedData && record.deleted === 0) {
+    } else if (!containsDeletedData && record.updated !== -1) {
       // children 取在前面方便拼的时候按照反顺序放回去
       const newValue = record;
       if (record && typeof record === 'object' && childrenColumnName in record) {

@@ -169,6 +169,7 @@ function editableRowByKey<RecordType>(
     kvMap.set(`${key}`, {
       ...kvMap.get(`${key}`),
       ...row,
+      updated: 1,
     });
   }
   if (action === 'delete') {
@@ -176,7 +177,7 @@ function editableRowByKey<RecordType>(
       kvMap.set(`${key}`, {
         ...kvMap.get(`${key}`),
         ...row,
-        deleted: 1,
+        updated: -1,
       });
     } else {
       kvMap.delete(`${key}`);
@@ -189,7 +190,7 @@ function editableRowByKey<RecordType>(
     map.forEach((value: any) => {
       if (value.map_row_parentKey) {
         // @ts-ignore
-        const { map_row_parentKey, map_row_key, deleted, ...reset } = value;
+        const { map_row_parentKey, map_row_key, ...reset } = value;
         if (reset && kvArrayMap.has(map_row_key)) {
           reset[childrenColumnName] = kvArrayMap.get(map_row_key);
         }
@@ -502,7 +503,7 @@ function useEditableArray<RecordType>(
   const addEditRecord = (row: RecordType, options?: AddLineOptions) => {
     const tRow = {
       ...row,
-      deleted: 0,
+      updated: 0,
     };
     // 暂时不支持多行新增
     if (newLineRecordRef.current) {
