@@ -27,7 +27,12 @@ export interface UseEditPageProp<S> extends UseListPageProp<S> {
   getFormConfig: (
     _props?: FormFilterProp,
   ) => { form: React.MutableRefObject<any>; formConfig: any[]; initialValues: any };
-  getModalBtns: (_action?: string, options?: any) => any[];
+  getModalBtns: (
+    rAction?: string,
+    options?: DialogOptions & {
+      preHandle?: (values: any) => any;
+    },
+  ) => any[];
   toInitialValues: (initConfig: initProps) => void;
   loading: boolean;
   getPageParam: () => any;
