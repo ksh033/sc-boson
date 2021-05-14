@@ -164,7 +164,6 @@ function editableRowByKey<RecordType>(
   }
 
   dig(data);
-
   if (action === 'update') {
     if (oldKeyMap.get(`${key}`)) {
       kvMap.set(`${key}`, {
