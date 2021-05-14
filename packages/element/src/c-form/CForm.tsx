@@ -175,6 +175,7 @@ const CForm: React.FC<CFormProps> = (props) => {
       [`sc-field-${width}`]: width && WIDTH_SIZE_ENUM[width],
     })
  
+    const isElemnet=React.isValidElement(component);
     return (
       <>
         {action === 'view' || readonly ? (
@@ -186,7 +187,7 @@ const CForm: React.FC<CFormProps> = (props) => {
             initialValue={initialValues}
           >
             {viewUseComponent || component.customView
-              ? (typeof component === 'function'|| component.render)
+              ? !isElemnet
                 ? React.createElement(component, {
                     ...item.props,
                     readonly: true,
@@ -208,7 +209,7 @@ const CForm: React.FC<CFormProps> = (props) => {
           </ViewItem>
         ) : (
           <FormItem key={`form-item-${name}`} name={_name} {...itemProps} >
-            {(typeof component === 'function'|| component.render)
+            {!isElemnet
               ? React.createElement(component, { ...item.props,className,style:{...item.props.style,width:newWidth}})
               : React.cloneElement(component, { ...item.props,className,style:{...item.props.style,width:newWidth}})}
           </FormItem>
@@ -419,7 +420,7 @@ const CForm: React.FC<CFormProps> = (props) => {
         groups.push({ fieldset, fieldsetTitle });
       }
       return itemCount > 0 ? (
-        <div key={`form-group-${fieldset}`} className="sc-form-group" id={`${fieldset}`}>
+        <div key={`form-group-${fieldset}`} className={fieldsetTitle?"sc-form-fieldset":'sc-form-fieldset sc-form-fieldset-hide-title'} id={`${fieldset}`}>
           {fieldsetTitle ? <div className="sc-form-fieldset-title">{fieldsetTitle}</div> : null}
           {rows}
         </div>
