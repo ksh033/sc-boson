@@ -10,6 +10,7 @@ import type { SorterResult, TableCurrentDataSource } from 'antd/lib/table/interf
 import { columnRender, removeDeletedData } from './utils';
 import useEditableArray from './useEditableArray';
 import useMountMergeState from '../_util/useMountMergeState';
+import { useMount } from 'ahooks';
 
 export type RecordCreatorProps<T> = {
   record: T | ((index: number) => T);
@@ -80,21 +81,6 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   const [value, setValue] = useMergedState<T[]>(() => props.value || [], {
     value: props.value,
     onChange: props.onChange,
-    postState: (data: any[]) => {
-      if (Array.isArray(data)) {
-        return data.map((item: any) => {
-          const newItem = item;
-          if (typeof item.editableAction === 'string') {
-            return newItem;
-          }
-          return {
-            ...newItem,
-            editableAction: 'ADD',
-          };
-        });
-      }
-      return data;
-    },
   });
 
   const [selectedRowKeys, setSelectedRowKeys] = useMountMergeState<React.ReactText[]>([], {
@@ -109,6 +95,8 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     },
     [setSelectedRowKeys, setSelectedRows],
   );
+
+  useMount(() => {});
 
   useEffect(() => {
     if (oldValueRef.current === undefined) {

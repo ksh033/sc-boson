@@ -135,7 +135,10 @@ function editableRowByKey<RecordType>(
 ) {
   const { getRowKey, row, data, childrenColumnName, oldKeyMap, containsDeletedData } = params;
   const key = recordKeyToString(params.key);
-  const kvMap = new Map<React.Key, RecordType & { parentKey?: React.Key }>();
+  const kvMap = new Map<
+    React.Key,
+    RecordType & { parentKey?: React.Key; editableAction?: string }
+  >();
   /**
    * 打平这个数组
    *
@@ -164,13 +167,21 @@ function editableRowByKey<RecordType>(
   }
 
   dig(data);
+  const oldItem = kvMap.get(`${key}`);
   if (action === 'update') {
     if (oldKeyMap.get(`${key}`)) {
-      kvMap.set(`${key}`, {
-        ...kvMap.get(`${key}`),
-        ...row,
-        editableAction: 'UPDATE',
-      });
+      if (typeof oldItem?.editableAction !== 'string') {
+        kvMap.set(`${key}`, {
+          ...kvMap.get(`${key}`),
+          ...row,
+          editableAction: 'UPDATE',
+        });
+      } else {
+        kvMap.set(`${key}`, {
+          ...kvMap.get(`${key}`),
+          ...row,
+        });
+      }
     } else {
       kvMap.set(`${key}`, {
         ...kvMap.get(`${key}`),
@@ -180,11 +191,15 @@ function editableRowByKey<RecordType>(
   }
   if (action === 'delete') {
     if (oldKeyMap.get(`${key}`)) {
-      kvMap.set(`${key}`, {
-        ...kvMap.get(`${key}`),
-        ...row,
-        editableAction: 'DELETE',
-      });
+      if (typeof oldItem?.editableAction !== 'string' || oldItem?.editableAction === 'UPDATE') {
+        kvMap.set(`${key}`, {
+          ...kvMap.get(`${key}`),
+          ...row,
+          editableAction: 'DELETE',
+        });
+      } else {
+        kvMap.delete(`${key}`);
+      }
     } else {
       kvMap.delete(`${key}`);
     }
