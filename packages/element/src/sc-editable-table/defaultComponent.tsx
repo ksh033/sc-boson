@@ -21,18 +21,16 @@ const defaultComponent = (_columnProps: ProColumns<any>, name: any, text: any, r
         const defaultComponent: any = <Input></Input>;
 
         let component: any = defaultComponent;
-        const isElement=React.isValidElement(_columnProps.component)
+        const isElement = React.isValidElement(_columnProps.component);
         if (_columnProps.component) {
           if (_columnProps.component.customView) {
-            component =
-             !isElement
-                ? React.createElement(_columnProps.component, newProps)
-                : React.cloneElement(_columnProps.component, newProps);
+            component = !isElement
+              ? React.createElement(_columnProps.component, newProps)
+              : React.cloneElement(_columnProps.component, newProps);
           } else {
-            component =
-            !isElement
-                ? React.createElement(_columnProps.component)
-                : React.cloneElement(_columnProps.component);
+            component = !isElement
+              ? React.createElement(_columnProps.component, props)
+              : React.cloneElement(_columnProps.component, props);
           }
         }
 
