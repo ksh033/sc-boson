@@ -10,7 +10,7 @@ import type {
 } from '../interface';
 import type { BaseResult } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
-import {useSchemaContext} from '../context'
+import { useSchemaContext } from '../context';
 import { PageType, PageConfig } from '../interface';
 import { useSetState, useUpdateEffect } from 'ahooks';
 import type { TableInfoProps } from '../page/TableInfo';
@@ -80,7 +80,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const saveRef = useRef<any>();
 
   const searchInitParams = useRef<any>();
-  const schemaContext=useSchemaContext()
+  const schemaContext = useSchemaContext();
   const getSearchParams = () => {
     if (!location) {
       return {};
@@ -135,10 +135,14 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
 
   const onSubmitSearchForm = (_params: any) => {
     const newParams = { ...state.params, ..._params };
-    setState({
-      params: newParams,
-      pagination: { ...state.pagination, current: 1 },
-    });
+    if (JSON.stringify(newParams) !== JSON.stringify(state.params)) {
+      setState({
+        params: newParams,
+        pagination: { ...state.pagination, current: 1 },
+      });
+    } else {
+      reload();
+    }
   };
 
   const onLoad = (data: any) => {
@@ -276,7 +280,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const getTable = (tableConfig?: TableConfig) => {
     const tableInfo = getTableConfig(tableConfig);
 
-    return new TableInfo(tableInfo, config,schemaContext.tableOpColCmp,reload);
+    return new TableInfo(tableInfo, config, schemaContext.tableOpColCmp, reload);
   };
 
   const getSearch = (searchConfig?: SearchConfig) => {
