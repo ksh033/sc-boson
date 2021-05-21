@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import type {
   ProColumn,
   FormItem,
@@ -210,8 +210,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     } else {
       newSearchInfo = [...searchInfo];
     }
-    const hisParams = getSearchParams();
-    const initValue = { ...initParams_, ...hisParams, ...initialValues };
+    const initValue = { ...initParams_, ...initialValues };
     // searchInitialValues=initValue;
     // const _initParams = getInitialValues(newSearchInfo);
     if (!searchInitParams.current) {
@@ -224,6 +223,13 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       initialValues: initValue,
     };
   };
+
+  useEffect(() => {
+    const locSearchParams = getSearchParams();
+    if (searchForm.current && searchForm.current.setFieldsValue) {
+      searchForm.current.setFieldsValue(locSearchParams);
+    }
+  }, [searchForm.current]);
 
   useUpdateEffect(() => {
     if (location) {
