@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
-import _ from 'lodash'
+import _ from 'lodash';
 import type {
   PageConfig,
-   FormItem,
+  FormItem,
   FormConfig,
   QueryConfigItem,
   ProColumn,
@@ -12,186 +12,188 @@ import type {
   ProColumns,
   TableFilterProp,
   Field,
-} from './interface'
-import { cmps } from './register'
+} from './interface';
+import { cmps } from './register';
 
 const getRequest = (item: any, pageConfig: PageConfig) => {
-  const { service } = pageConfig
-  const { props } = item
+  const { service } = pageConfig;
+  const { props } = item;
   if (props && props.request) {
     if (service && service[props.request]) {
       item.props = {
         ...item.props,
         request: service[props.request],
-      }
+      };
     }
   }
 
-  return item
-}
+  return item;
+};
 
 const getConfig = (nodeType: string, pageConfig: PageConfig) => {
-  let typeConfig: any = null
+  let typeConfig: any = null;
   switch (nodeType) {
     case 'event':
-      typeConfig = pageConfig.event
-      break
+      typeConfig = pageConfig.event;
+      break;
     case 'formConfig':
-      typeConfig = pageConfig.formConfig
-      break
+      typeConfig = pageConfig.formConfig;
+      break;
     case 'queryConfig':
-      typeConfig = pageConfig.queryConfig
-      break
+      typeConfig = pageConfig.queryConfig;
+      break;
     case 'service':
-      typeConfig = pageConfig.service
-      break
+      typeConfig = pageConfig.service;
+      break;
     case 'tableConfig':
-      typeConfig = pageConfig.tableConfig
-      break
+      typeConfig = pageConfig.tableConfig;
+      break;
     default:
-      break
+      break;
   }
-  return typeConfig
-}
+  return typeConfig;
+};
 
 /**
  * 表单项转换
- * @param it 
- * @param filter 
- * @param group 
- * @returns 
+ *
+ * @param it
+ * @param filter
+ * @param group
+ * @returns
  */
-const converFormItem=(it: FormItem<any>, filter: FormFilterProp,group: any,pageConfig: PageConfig)=>{
+const converFormItem = (
+  it: FormItem<any>,
+  filter: FormFilterProp,
+  group: any,
+  pageConfig: PageConfig,
+) => {
+  const { action, fieldsProp, callBack } = filter;
 
-  const {  action, fieldsProp, callBack } = filter
-
-  let item = it
-  item.fieldProps=item.fieldProps||item.formItemProps;
+  let item = it;
+  item.fieldProps = item.fieldProps || item.formItemProps;
   if (!item) {
-   // groupItems.push(item)
-    return item
+    // groupItems.push(item)
+    return item;
   }
   // 获取组建属性
   if (!item.props) {
-    item.props = {}
+    item.props = {};
   }
   // 获取组建表单属性,用于getFieldDecorator(id, options)
   if (!item.fieldProps) {
-    item.fieldProps = {}
+    item.fieldProps = {};
   }
   // 有不同操作时覆盖对应不同的值
   if (action && item[action]) {
-    const itenOtherProps = item[`${action}`] || {}
-    item = _.defaultsDeep(item, itenOtherProps)
+    const itenOtherProps = item[`${action}`] || {};
+    item = _.defaultsDeep(item, itenOtherProps);
   }
 
   // 查找注册组建
   if (item.component && cmps[item.component]) {
-    item.component = cmps[item.component]
+    item.component = cmps[item.component];
   } else {
-    item.component = cmps.Input
+    item.component = cmps.Input;
   }
 
   if (Array.isArray(item.children) && item.children.length > 0) {
     item.children.forEach((ite: any) => {
       if (ite.component && cmps[ite.component]) {
-        ite.component = cmps[ite.component]
+        ite.component = cmps[ite.component];
       } else {
-        ite.component = cmps.Input
+        ite.component = cmps.Input;
       }
-    })
+    });
   }
 
-  let extProps = null
+  let extProps = null;
   if (typeof item.name === 'string') {
     if (fieldsProp && fieldsProp[item.name]) {
       if (_.isFunction(fieldsProp[item.name])) {
-        extProps = fieldsProp[item.name](item)
+        extProps = fieldsProp[item.name](item);
       } else {
-        extProps = fieldsProp[item.name]
+        extProps = fieldsProp[item.name];
       }
     }
   }
   if (Array.isArray(item.name)) {
-    const fieldsName = item.name.join('.')
+    const fieldsName = item.name.join('.');
     if (fieldsProp && fieldsProp[fieldsName]) {
       if (_.isFunction(fieldsProp[fieldsName])) {
-        extProps = fieldsProp[fieldsName](item)
+        extProps = fieldsProp[fieldsName](item);
       } else {
-        extProps = fieldsProp[fieldsName]
+        extProps = fieldsProp[fieldsName];
       }
     }
   }
   // 查找注册远程请求
-  item = getRequest(item, pageConfig)
+  item = getRequest(item, pageConfig);
   // 业务字段属性覆盖，用于事件或其它需要根据业务需要控制组建属性
   if (extProps) {
-    extProps.fieldProps=extProps.fieldProps||extProps.formItemProps
+    extProps.fieldProps = extProps.fieldProps || extProps.formItemProps;
     if (extProps.formItemProps) {
       item.fieldProps = {
         ...item.fieldProps,
         ...extProps.fieldProps,
-      }
+      };
     }
     if (extProps.props) {
-      item.props = { ...item.props, ...extProps.props }
+      item.props = { ...item.props, ...extProps.props };
     }
   }
 
   // item={...item,{...props,...otherprops}}
   // 自由控制属性
   if (callBack) {
-    const re = callBack(item, group || '')
+    const re = callBack(item, group || '');
     if (re !== false) {
       // 为false时字段不返回
-     return item;
+      return item;
     }
-    return null
-    
+    return null;
   }
   return item;
-}
+};
 
 // 过滤表单项
 /**
- *
  * @param pageConfig 页面配置对象
- * @param filter  过滤条件
+ * @param filter 过滤条件
  */
 
 const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
-  let newFormInfos: any[] = []
-  const { nodeType = 'formConfig',  key } = filter
-  const typeConfig: any = getConfig(nodeType, pageConfig)
+  let newFormInfos: any[] = [];
+  const { nodeType = 'formConfig', key } = filter;
+  const typeConfig: any = getConfig(nodeType, pageConfig);
   if (typeConfig) {
-    let itemInfos: FormConfig[] = []
+    let itemInfos: FormConfig[] = [];
     if (_.isArray(typeConfig)) {
-      itemInfos = _.cloneDeep(typeConfig)
+      itemInfos = _.cloneDeep(typeConfig);
     } else {
-      itemInfos = _.cloneDeep(typeConfig[key || ''])
+      itemInfos = _.cloneDeep(typeConfig[key || '']);
     }
     if (itemInfos && itemInfos.length > 0) {
       newFormInfos = itemInfos.map((element: FormConfig) => {
-        const groupItems: any[] = []
-        const { fieldset, items } = element
-        const group= fieldset;
-        element.fieldset=element.fieldset||element.group;
-        element.fieldsetTitle=element.fieldsetTitle||element.groupTitle;
+        const groupItems: any[] = [];
+        const { fieldset, items } = element;
+        const group = fieldset;
+        element.fieldset = element.fieldset || element.group;
+        element.fieldsetTitle = element.fieldsetTitle || element.groupTitle;
 
-         let newItem=null;
+        let newItem = null;
         items.forEach((it: Field) => {
-          if (it.items&&it.items.length>0){
-            newItem=it;
-            const newItems: (FormItem<any> | null)[]=[];
+          if (it.items && it.items.length > 0) {
+            newItem = it;
+            const newItems: (FormItem<any> | null)[] = [];
             it.items.forEach((groupItem: FormItem<any>) => {
-              newItems.push(converFormItem(groupItem,filter,group,pageConfig))
+              newItems.push(converFormItem(groupItem, filter, group, pageConfig));
             });
-            newItem.items=newItems;
-          }else{
-            newItem =converFormItem(it,filter,group,pageConfig);
+            newItem.items = newItems;
+          } else {
+            newItem = converFormItem(it, filter, group, pageConfig);
           }
-          if (newItem)
-          groupItems.push(newItem)
+          if (newItem) groupItems.push(newItem);
           // let item = it
           // if (!item) {
           //   groupItems.push(item)
@@ -275,90 +277,87 @@ const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
           // } else {
           //   groupItems.push(item)
           // }
-        })
-        element.items = groupItems
-        return element
-      })
+        });
+        element.items = groupItems;
+        return element;
+      });
     }
   }
-  return newFormInfos
-}
+  return newFormInfos;
+};
 
-const filterSearchConfig = (
-  pageConfig: PageConfig,
-  filter: SearchFilterProp
-) => {
-  const newSearchInfos: any = []
-  const { nodeType = 'queryConfig', action } = filter
-  let typeConfig: any = getConfig(nodeType, pageConfig)
-  typeConfig = action ? typeConfig[action] : typeConfig
+const filterSearchConfig = (pageConfig: PageConfig, filter: SearchFilterProp) => {
+  const newSearchInfos: any = [];
+  const { nodeType = 'queryConfig', key } = filter;
+  let typeConfig: any = getConfig(nodeType, pageConfig);
+  typeConfig = key ? typeConfig[key] : typeConfig;
 
   if (typeConfig) {
-    const typeConfigCopy = _.cloneDeep(typeConfig)
+    const typeConfigCopy = _.cloneDeep(typeConfig);
     typeConfigCopy.forEach((item: QueryConfigItem) => {
-      const { component, props } = item
+      const { component, props } = item;
       // 查找注册组建
       if (component && cmps[component]) {
-        item.component = cmps[component]
+        item.component = cmps[component];
       }
       if (Array.isArray(item.children) && item.children.length > 0) {
         item.children.forEach((ite) => {
           if (ite.component && cmps[ite.component]) {
-            ite.component = cmps[ite.component]
+            ite.component = cmps[ite.component];
           }
-        })
+        });
       }
 
       // 查找注册远程请求
-      item = getRequest(item, pageConfig)
+      item = getRequest(item, pageConfig);
       // 获取组建属性
       if (!props) {
-        item.props = {}
+        item.props = {};
       }
-      newSearchInfos.push(item)
-    })
+      newSearchInfos.push(item);
+    });
   }
-  return newSearchInfos
-}
+  return newSearchInfos;
+};
 const filterPageConfig = (pageConfig: PageConfig, filter: TableFilterProp) => {
-  const { nodeType = 'tableConfig', key, callBack } = filter
-  const newFormInfos: any = []
-  const typeConfig: any = getConfig(nodeType, pageConfig)
+  const { nodeType = 'tableConfig', key, callBack } = filter;
+  const newFormInfos: any = [];
+  const typeConfig: any = getConfig(nodeType, pageConfig);
   if (typeConfig) {
-    let itemInfos = []
+    let itemInfos = [];
     if (_.isArray(typeConfig)) {
-      itemInfos = _.cloneDeep(typeConfig)
+      itemInfos = _.cloneDeep(typeConfig);
     } else {
-      itemInfos = _.cloneDeep(typeConfig[key || ''])
+      itemInfos = _.cloneDeep(typeConfig[key || '']);
     }
     if (itemInfos) {
       itemInfos.forEach((element: ProColumn) => {
-        const { component } = element
+        const { component } = element;
         if (component && cmps[component]) {
-          element.component = cmps[component]
+          element.component = cmps[component];
         }
         // 查找注册远程请求
-        element = getRequest(element, pageConfig)
+        element = getRequest(element, pageConfig);
         if (callBack) {
-          const re = callBack(element)
+          const re = callBack(element);
           if (re !== false) {
-            newFormInfos.push(re)
+            newFormInfos.push(re);
           }
         } else {
-          newFormInfos.push(element)
+          newFormInfos.push(element);
         }
-      })
+      });
     }
   }
-  return newFormInfos
-}
+  return newFormInfos;
+};
 
 export const getFormInfo = (
   pageConfig: PageConfig,
   key: string | undefined,
   fieldsProp: any = {},
   callBack: any = null,
-  action: any = null
+  action: any = null,
 ) =>
   filterFormConfig(pageConfig, {
     nodeType: 'formConfig',
@@ -366,41 +365,41 @@ export const getFormInfo = (
     callBack,
     action,
     fieldsProp,
-  })
+  });
 export const getTableInfo = (
   pageConfig: PageConfig,
   key: string | undefined,
   callBack: any,
-  action: any
+  action: any,
 ): ProColumns =>
   filterPageConfig(pageConfig, {
     nodeType: 'tableConfig',
     key,
     callBack,
     action,
-  })
+  });
 export const getSearchInfo = (
   pageConfig: PageConfig,
   key: string | undefined,
   callBack: any,
-  action: any
+  action: any,
 ) =>
   filterSearchConfig(pageConfig, {
     nodeType: 'queryConfig',
     key,
     callBack,
     action,
-  })
-  /**
-   * 获取组建
-   * @param name 组建名
-   */
-const getCmp=(name?: string)=>{
-  const cpmName=name||"Input"
-  const cmp=cmps[cpmName]
+  });
+/**
+ * 获取组建
+ *
+ * @param name 组建名
+ */
+const getCmp = (name?: string) => {
+  const cpmName = name || 'Input';
+  const cmp = cmps[cpmName];
   return cmp;
-  
-}
+};
 // const getFormInfo = (pageConfig:PageConfig,formFilter:FormFilterProp={nodeType:"formConfig"}) => filterFormConfig(pageConfig, formFilter)
 // const getTableInfo = (pageConfig:PageConfig, tableFilter:TableFilterProp={nodeType:"tableConfig"}) => filterPageConfig(pageConfig, tableFilter)
 // const getSearchInfo = (pageConfig:PageConfig, searchFilter:SearchFilterProp={nodeType:"queryConfig"}) => filterSearchConfig(pageConfig, searchFilter)
@@ -409,6 +408,6 @@ const schema = {
   getFormInfo,
   getTableInfo,
   getSearchInfo,
-  getCmp
-}
-export default schema
+  getCmp,
+};
+export default schema;
