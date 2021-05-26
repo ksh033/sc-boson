@@ -257,7 +257,7 @@ export interface QueryConfigItem extends FiledProp {
   columnSize?: number;
 }
 
-export interface FormSearchItem extends FormItemProp {
+export interface FormSearchItem extends FormItem<any> {
   /** 是否隐藏 */
   hiddenExpend?: boolean;
 }
