@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import type {
   ProColumn,
   FormItem,
@@ -12,7 +12,7 @@ import type { BaseResult } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
 import { useSchemaContext } from '../context';
 import { PageType, PageConfig } from '../interface';
-import { useSetState, useUpdateEffect } from 'ahooks';
+import { useSetState, useUpdateEffect, useMount } from 'ahooks';
 import type { TableInfoProps } from '../page/TableInfo';
 import type { SearchInfoProps } from '../page/SearchInfo';
 import TableInfo from '../page/TableInfo';
@@ -73,7 +73,7 @@ export interface UseListPageProp<S> {
 
 export default function ListPage<S>(config: PageConfig, props: any): UseListPageProp<S> {
   const { service } = config;
-  const { location = {} } = props || {};
+  const { location } = props || {};
   // 查询表单
   const searchForm = useRef<any>();
   // 查询表格保存表单
@@ -83,7 +83,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const schemaContext = useSchemaContext();
   const getSearchParams = () => {
     if (!location) {
-      return {};
+      return null;
     }
     const { pathname, search } = location;
     const key = pathname + search;
@@ -134,10 +134,9 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   });
 
   const onSubmitSearchForm = (_params: any) => {
-    const newParams = { ...state.params, ..._params };
-    if (JSON.stringify(newParams) !== JSON.stringify(state.params)) {
+    if (JSON.stringify(_params) !== JSON.stringify(state.params)) {
       setState({
-        params: newParams,
+        params: _params,
         pagination: { ...state.pagination, current: 1 },
       });
     } else {
@@ -224,12 +223,12 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     };
   };
 
-  useEffect(() => {
+  useMount(() => {
     const locSearchParams = getSearchParams();
     if (searchForm.current && searchForm.current.setFieldsValue) {
       searchForm.current.setFieldsValue(locSearchParams);
     }
-  }, [searchForm.current]);
+  });
 
   useUpdateEffect(() => {
     if (location) {
