@@ -401,7 +401,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     if (toolBarRender === false) {
       return null;
     }
-    if (options === false && !headerTitle && !toolBarRender && !toolbar) {
+    if (options === false || (!headerTitle && !toolBarRender && !toolbar)) {
       return null;
     }
     /** 根据表单类型的不同决定是否生成 toolbarProps */
