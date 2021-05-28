@@ -4,7 +4,8 @@ import schema from './pageConfigUitls';
 export { ListPage } from './page/ListPage';
 export { EditPage } from './page/EditPage';
 
-export { PageConfig, FormItem, ToolButtons } from './interface';
+export { PageConfig, FormItem, ToolButtons,ButtonTypeProps } from './interface';
+
 export {
   SchemaContext,
   useSchemaContext,

@@ -26,7 +26,7 @@ export interface DialogOptions {
   pageProps?: any; // 弹出页面接收参数
   params?: any; // 参数
   record?: any; // 表格单个数据
-  content?: React.ReactNode; // 显示的页面
+  content?: React.ReactNode| string; // 显示的页面
   onOk?: () => Promise<any>;
   onCancel?: () => Promise<any>;
   service?: (...args: any[]) => Promise<any>;
@@ -84,6 +84,8 @@ interface ToolButtonsProps {
   formBack: ButtonTypeProps;
   formUpdate: ButtonTypeProps;
   formSubmit: ButtonTypeProps;
+  confirm: ButtonTypeProps;
+  link: ButtonTypeProps;
 }
 
 /** 工具栏按钮类型 */
@@ -190,6 +192,15 @@ export const ToolButtons: ToolButtonsProps = {
     buttonType: 'formSubmit',
     serverName: 'formSubmit',
   },
+  confirm: {
+    text: '确认',
+    buttonType: 'confirm',
+    serverName: 'confirm',
+  },
+  link: {
+    text: '跳转',
+    buttonType: 'link',
+  }
 };
 
 export const ColumnDataType = {

@@ -5,7 +5,7 @@ import type React from 'react';
 import { useRef, useState } from 'react';
 // @ts-ignore
 import { history } from 'umi';
-import type { FormFilterProp, DialogOptions } from '../interface';
+import type { FormFilterProp, DialogOptions,} from '../interface';
 import { PageConfig, PageType, ToolButtons, Action } from '../interface';
 import schema from '../pageConfigUitls';
 import type { UseListPageProp } from './useListPage';
@@ -14,6 +14,8 @@ import FormInfo from '../page/FormInfo';
 import { Schema } from '../context';
 import _ from 'lodash';
 import { useSetState } from 'ahooks';
+
+// import ButtonTool from '../page/OpColButton';
 
 export { PageConfig, Action };
 interface initProps {
@@ -39,6 +41,7 @@ export interface UseEditPageProp<S> extends UseListPageProp<S> {
   getAction: () => any;
   getFormInfo: (_props?: FormFilterProp) => FormInfo;
   getTitle: (action: string) => any;
+  
 }
 
 const defaultConfig: PageConfig = {
@@ -52,6 +55,9 @@ export default function useEditPage(
   const config = { ...defaultConfig, ...pageConfig };
   const { dataTypeFormat } = Schema;
   const Page = ListPage(config, props);
+
+  // const toolbar = new ButtonTool();
+
   // const { service } = config;
   const { pageProps = {}, match, location } = props;
   let record: any = '';
@@ -164,11 +170,14 @@ export default function useEditPage(
     return { form, formConfig, initialValues };
   };
 
+
+
   const getModalBtns = (
     rAction?: string,
     options?: DialogOptions & {
       preHandle?: (values: any) => any;
     },
+    serviceName?: string
   ): any[] => {
     const { preHandle, ...restOptions } = options || {};
     const defaultOptions = {
@@ -181,27 +190,38 @@ export default function useEditPage(
         history?.go(-1);
       };
     }
-    const buttons = [];
+    const buttons: any[] = [];
     const newAction = rAction || getAction();
     if (newAction === Action.ADD) {
-      buttons.push({
+      const btn1={
         ...ToolButtons.formSubmit, // 提交按钮
         preHandle,
+   
         options: {
           ...defaultOptions,
           ...restOptions,
         },
-      });
+      }
+      if (serviceName){
+        btn1.serverName=serviceName
+      }
+      buttons.push(btn1);
     }
     if (newAction === Action.EDIT) {
-      buttons.push({
+
+      const btn2={
         ...ToolButtons.formUpdate, // 更新按钮
         preHandle,
+        serviceName,
         options: {
           ...defaultOptions,
           ...restOptions,
         },
-      });
+      }
+      if (serviceName){
+        btn2.serverName=serviceName
+      }
+      buttons.push(btn2);
     }
     buttons.push({
       ...ToolButtons.formBack, // 返回按钮
@@ -246,5 +266,6 @@ export default function useEditPage(
     setData,
     getData,
     data: pageData,
+   
   };
 }

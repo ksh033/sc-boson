@@ -1,5 +1,5 @@
 import React from "react";
-import type { ButtonTypeProps, PageConfig,HButtonType } from "../interface";
+import type { ButtonTypeProps, HButtonType } from "../interface";
 import { ToolButtons } from "../interface";
 import _ from "lodash";
 

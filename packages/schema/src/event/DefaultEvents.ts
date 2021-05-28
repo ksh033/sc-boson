@@ -38,6 +38,37 @@ function add(props: ButtonTypeProps) {
   }
 }
 
+
+/**
+ * 页面跳转
+ * @param props 
+ * @returns 
+ */
+function link(props: ButtonTypeProps) {
+  const { preHandle, options } = props;
+  if (options) {
+    let { pageProps} = options;
+ 
+    if (!pageProps) {
+      pageProps = {};
+    }
+    // const newOptions = { ...defaultOptions, ...resProps, pageProps: tempageProps };
+    const { url } = options;;
+    if (preHandle) {
+      const result = preHandle(pageProps);
+      if (!result) {
+        return;
+      }
+    }
+    if (url) {
+      history.push({
+        pathname: url,
+        query: options.params,
+      });
+    }
+  }
+}
+
 function edit(props: ButtonTypeProps) {
   const { preHandle, options } = props;
   if (options) {
@@ -110,6 +141,31 @@ function remove(props: ButtonTypeProps) {
           if (callBack) {
             callBack(data);
           }
+        }
+      },
+      onCancel() {},
+    });
+  }
+}
+/** @param props */
+function confirm(props: ButtonTypeProps) {
+  const { options, callBack } = props;
+  if (options) {
+    const { params } = options;
+    CModal.confirm({
+      title: options.title,
+      //   content: 'Some descriptions',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: async () => {
+        if (options.service) {
+          try {
+            const data = await options.service(params);
+
+            if (callBack) {
+              callBack(data);
+            }
+          } catch (ex) {}
         }
       },
       onCancel() {},
@@ -228,5 +284,7 @@ const defaultEvent = {
   formBack,
   formSubmit,
   formUpdate,
+  confirm,
+  link
 };
 export default defaultEvent;

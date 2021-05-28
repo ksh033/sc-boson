@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
-import React, { useRef } from 'react';
+import  { useRef } from 'react';
 import type {
   ProColumn,
   FormItem,
-  ButtonTypeProps,
   ProColumnType,
   HButtonType,
 } from '../interface';
@@ -55,9 +54,9 @@ export interface UseListPageProp<S> {
   /** 获取查询对象 */
   getSearch: (searchConfig?: SearchConfig | undefined) => SearchInfo;
   /** 绑定默认事件 */
-  bindEvent: (button: ButtonTypeProps) => any;
+  bindEvent: (button: HButtonType) => any;
   /** 批量绑定默认事件 */
-  bindEvents: (buttons: ButtonTypeProps[]) => any;
+  bindEvents: (buttons: HButtonType[]) => any;
   /** 获取useRequest */
   formatUseReq: <R = any, P extends any[] = any>(serviveName: string) => BaseResult<R, P> | null;
 

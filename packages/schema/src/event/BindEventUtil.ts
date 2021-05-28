@@ -84,6 +84,12 @@ const bindEvent = (
       }
 
       newBtn.onClick = () => {
+        // 彈出框处理
+        if (options.content) {
+          if (!options.pageProps?.callBack) {
+            options.pageProps.callBack = callBack;
+          }
+        }
         itemEvent({
           ...newBtn,
           options,
