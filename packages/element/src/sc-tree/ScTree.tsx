@@ -77,8 +77,9 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
   );
 
   const allAction: DefaultAction<DataNode> = {
-    add: (key: any, _rowData: DataNode) => {
-      actionFunction(key, _rowData, addTreeData);
+    add: (key: any, _rowData: DataNode, isRoot?: boolean) => {
+      const newTreeData = addTreeData(treeData, key, _rowData, isRoot);
+      setTreeData(newTreeData);
     },
     delete: (key: any, _rowData: DataNode) => {
       actionFunction(key, _rowData, deleteTreeData);

@@ -31,7 +31,10 @@ export function deleteTreeData(list: any[], key: React.Key, node: any): any[] {
     .filter((item) => item != null);
 }
 
-export function addTreeData(list: any[], key: React.Key, node: any): any[] {
+export function addTreeData(list: any[], key: React.Key, node: any, isRoot?: boolean): any[] {
+  if (isRoot) {
+    return [...list, node];
+  }
   return list.map((item) => {
     if (item.children) {
       item.children = addTreeData(item.children, key, node);
