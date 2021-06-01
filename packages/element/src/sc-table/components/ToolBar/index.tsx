@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-pattern */
 import React, { useEffect, useMemo } from 'react';
 import { ReloadOutlined, SettingOutlined } from '@ant-design/icons';
 import type { TableColumnType } from 'antd';

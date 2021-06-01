@@ -26,7 +26,7 @@ export interface DialogOptions {
   pageProps?: any; // 弹出页面接收参数
   params?: any; // 参数
   record?: any; // 表格单个数据
-  content?: React.ReactNode| string; // 显示的页面
+  content?: React.ReactNode | string; // 显示的页面
   onOk?: () => Promise<any>;
   onCancel?: () => Promise<any>;
   service?: (...args: any[]) => Promise<any>;
@@ -56,7 +56,7 @@ export interface ButtonTypeProps extends ButtonProps {
    * 提交前处理
    */
   preHandle?: (values: any) => any;
-  callBack?: (values: any) => void; // 回调函数
+  callBack?: (values: any,requestData?: any) => void; // 回调函数
 }
 
 export enum Action {
@@ -200,7 +200,7 @@ export const ToolButtons: ToolButtonsProps = {
   link: {
     text: '跳转',
     buttonType: 'link',
-  }
+  },
 };
 
 export const ColumnDataType = {

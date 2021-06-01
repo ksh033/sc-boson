@@ -27,6 +27,8 @@ import {
 
 import PageContainer from './components/PageContainer';
 
+export  { default as ScCard } from '@ant-design/pro-card';
+
 // import type { SettingDrawerProps, SettingDrawerState } from './components/SettingDrawer';
 // import SettingDrawer from './components/SettingDrawer';
 

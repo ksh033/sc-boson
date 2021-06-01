@@ -16,7 +16,7 @@ import { genColumnList, tableColumnSort, genColumnKey } from './utils';
 import useDeepCompareEffect from '../_util/useDeepCompareEffect';
 
 const { useState, useEffect, useRef, useMemo } = React;
-
+export  type { ColumnsType } from 'antd/lib/table/Table'
 export interface ScTableProps<T> extends TableProps<T> {
   onSelectRow?: (selectedRowKeys: string[], selectedRows: any[]) => void; // 当选中时触发
   data?: { rows: any[]; total: number; current: number; size: number }; // 列表数据
@@ -78,7 +78,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     onRowSelect,
     pagination,
     toolBarRender,
-    options,
+    options=false,
     headerTitle,
     tooltip,
     toolbar,
@@ -401,7 +401,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     if (toolBarRender === false) {
       return null;
     }
-    if (options === false || (!headerTitle && !toolBarRender && !toolbar)) {
+    if (options === false && (!headerTitle && !toolBarRender && !toolbar)) {
       return null;
     }
     /** 根据表单类型的不同决定是否生成 toolbarProps */
@@ -456,7 +456,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     toolBarRender,
     toolbar,
   ]);
-  counter.setAction(saveRef.current);
+  counter.setAction(saveRef?.current);
   counter.propsRef.current = props;
 
   /** Table 区域的 dom，为了方便 render */

@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { CModal } from '@scboson/sc-element';
 import type { ButtonTypeProps } from '../interface';
@@ -139,7 +140,7 @@ function remove(props: ButtonTypeProps) {
         if (options.service) {
           const data = await options.service(params);
           if (callBack) {
-            callBack(data);
+            callBack(data,params);
           }
         }
       },
@@ -163,7 +164,7 @@ function confirm(props: ButtonTypeProps) {
             const data = await options.service(params);
 
             if (callBack) {
-              callBack(data);
+              callBack(data,params);
             }
           } catch (ex) {}
         }
@@ -231,7 +232,7 @@ function formSubmit(props: ButtonTypeProps) {
         if (service) {
           const data = await service(newValue);
           if (callBack) {
-            callBack(data);
+            callBack(data,newValue);
           }
           if (data === null || data.success === undefined || data.success === null) {
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -262,7 +263,7 @@ function formUpdate(props: ButtonTypeProps) {
         if (service) {
           const data = await service(newValue);
           if (callBack) {
-            callBack(data);
+            callBack(data,newValue);
           }
           if (data === null || data.success === undefined || data.success === null) {
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions

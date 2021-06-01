@@ -177,7 +177,7 @@ export default function useEditPage(
     options?: DialogOptions & {
       preHandle?: (values: any) => any;
     },
-    serviceName?: string
+    serverName?: string
   ): any[] => {
     const { preHandle, ...restOptions } = options || {};
     const defaultOptions = {
@@ -202,8 +202,8 @@ export default function useEditPage(
           ...restOptions,
         },
       }
-      if (serviceName){
-        btn1.serverName=serviceName
+      if (serverName){
+        btn1.serverName=serverName
       }
       buttons.push(btn1);
     }
@@ -212,14 +212,14 @@ export default function useEditPage(
       const btn2={
         ...ToolButtons.formUpdate, // 更新按钮
         preHandle,
-        serviceName,
+
         options: {
           ...defaultOptions,
           ...restOptions,
         },
       }
-      if (serviceName){
-        btn2.serverName=serviceName
+      if (serverName){
+        btn2.serverName=serverName
       }
       buttons.push(btn2);
     }

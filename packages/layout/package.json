@@ -37,6 +37,7 @@
     "@ant-design/icons": "^4.0.0",
     "@ant-design/pro-provider": "^1.4.8",
     "@ant-design/pro-utils": "^1.14.2",
+    "@ant-design/pro-card": "^1.13.2",
     "@ant-design/pro-layout":"^6.15.2",
     "@umijs/route-utils": "^1.0.35",
     "@umijs/use-params": "^1.0.2",
