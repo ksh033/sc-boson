@@ -16,13 +16,25 @@ const FormItem = Form.Item;
 const { Link } = Anchor;
 // const Panel = Page.PagePanel;
 
-export function deepGet(obj: any, keys: any, defaultVal?: any): any {
-  return (
-    (!Array.isArray(keys) ? keys.replace(/\[/g, '.').replace(/\]/g, '').split('.') : keys).reduce(
-      (o: any, k: any) => (o || {})[k],
-      obj,
-    ) || defaultVal
-  );
+// export function deepGet(obj: any, keys: any, defaultVal?: any): any {
+//   return (
+//     (!Array.isArray(keys) ? keys.replace(/\[/g, '.').replace(/\]/g, '').split('.') : keys).reduce(
+//       (o: any, k: any) => (o || {})[k],
+//       obj,
+//     ) || defaultVal
+//   );
+// }
+
+export function deepGet(object: any, path: string | any[]): any {
+  let keyPath: any[] = [];
+  if (Array.isArray(path)) keyPath = [...path];
+  else if (typeof path === 'string' || typeof path === 'number') keyPath = [path];
+  if (keyPath.length) {
+    const key = keyPath.shift();
+    if (object && object[key] !== undefined) return deepGet(object[key], keyPath);
+    return undefined;
+  }
+  return object;
 }
 
 export interface CFormProps extends FormProps {
