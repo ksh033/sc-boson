@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
 import * as React from 'react';
@@ -16,7 +17,7 @@ import { genColumnList, tableColumnSort, genColumnKey } from './utils';
 import useDeepCompareEffect from '../_util/useDeepCompareEffect';
 
 const { useState, useEffect, useRef, useMemo } = React;
-export  type { ColumnsType } from 'antd/lib/table/Table'
+export type { ColumnsType } from 'antd/lib/table/Table';
 export interface ScTableProps<T> extends TableProps<T> {
   onSelectRow?: (selectedRowKeys: string[], selectedRows: any[]) => void; // 当选中时触发
   data?: { rows: any[]; total: number; current: number; size: number }; // 列表数据
@@ -35,7 +36,6 @@ export interface ScTableProps<T> extends TableProps<T> {
   saveRef?: any; // React.MutableRefObject<any> | ((saveRef: any) => void) 获取组件对外暴露的参数
   getRecord?: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => any; // 获取选中行的表单对象
   rowSelected?: boolean; // 列选中
-  onRowSelect?: (record: any) => void;
   onCustomRow?: (record: any, index: number) => any; // 自定义行事件为了合并现有的方法
   /** @name 渲染操作栏 */
   toolBarRender?: ToolBarProps<T>['toolBarRender'] | false;
@@ -75,10 +75,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     saveRef,
     rowSelected = true,
     onCustomRow,
-    onRowSelect,
     pagination,
     toolBarRender,
-    options=false,
+    options = false,
     headerTitle,
     tooltip,
     toolbar,
@@ -93,7 +92,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const isGone = useRef(false);
   const { loading, run } = useRequest(
     request ||
-      new Promise((resolve, reject) => {
+      new Promise((resolve) => {
         resolve(null);
       }),
     {
@@ -116,25 +115,25 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     rows: selectedRows || [],
   });
 
+  const dataKeys = useRef<Set<any>>(new Set([]));
+
   const getDataKeys = (_data: any[]) => {
     const dataKey = _data.map((item) => item[rowKey]);
     dataKeys.current = new Set(dataKey);
   };
 
-  const dataKeys = useRef<Set<any>>(new Set([]));
-
   const loadData = async () => {
-    const { current, pageSize } = innerPagination;
+    const { current } = innerPagination;
 
     const payload = {
-      size: pageSize,
+      size: innerPagination.pageSize,
       current,
       ...params,
       ...filters,
       ...sorter,
     };
     if (!request) {
-      throw 'no remote request method';
+      throw new Error('no remote request method');
     }
 
     let _data = await run(payload);
@@ -146,6 +145,18 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       setDataSource(_data);
       getDataKeys(_data.rows || []);
     }
+  };
+
+  const changeRowSelect = (_rowKeys: string[], _rows: any[] = []) => {
+    if (onSelectRow) {
+      onSelectRow(_rowKeys, _rows);
+    }
+    action.current = {
+      rowKeys: _rowKeys,
+      rows: _rows,
+    };
+    setRowKeys(_rowKeys);
+    setRows(_rows);
   };
 
   const handleRowSelectChange = (_rowKeys: string[], _rows: any[] = []) => {
@@ -164,18 +175,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     );
 
     changeRowSelect(crowKeys, crows);
-  };
-
-  const changeRowSelect = (_rowKeys: string[], _rows: any[] = []) => {
-    if (onSelectRow) {
-      onSelectRow(_rowKeys, _rows);
-    }
-    action.current = {
-      rowKeys: _rowKeys,
-      rows: _rows,
-    };
-    setRowKeys(_rowKeys);
-    setRows(_rows);
   };
 
   const updateAction = () => {
@@ -230,12 +229,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
   }, [data]);
 
-  const handleTableChange = (
-    _pagination: any,
-    _filtersArg: any,
-    _sorter: any,
-    extra: { currentDataSource: []; action: any },
-  ) => {
+  const handleTableChange = (_pagination: any, _filtersArg: any, _sorter: any) => {
     const _filters = Object.keys(_filtersArg).reduce((obj: any, key: string) => {
       const newObj = { ...obj };
       if (_filtersArg[key]) {
@@ -248,33 +242,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     setSorter(_sorter);
   };
 
-  const handleRowSelect = (record: any) => {
-    const key = record[rowKey];
-    let _rowKeys = [...(action.current.rowKeys || [])];
-    let _rows = [...(action.current.rows || [])];
-    if (key !== undefined && key !== null) {
-      if (rowSelection?.type === 'radio') {
-        _rowKeys = [key];
-        _rows = [record];
-      }
-      if (rowSelection?.type === 'checkbox') {
-        const index = _rowKeys.findIndex((item) => item === key);
-        if (index > -1) {
-          _rowKeys = _rowKeys.filter((item) => {
-            return item !== key;
-          });
-          _rows = _rows.filter((item) => {
-            return item[rowKey] !== key;
-          });
-        } else {
-          _rowKeys = _rowKeys.concat(key);
-          _rows = _rows.concat(record);
-        }
-      }
-    }
-    changeRowSelect(_rowKeys, _rows);
-    onRowSelect && onRowSelect(record);
-  };
   // ---------- 列计算相关 start  -----------------
   const tableColumn = useMemo(() => {
     return genColumnList({
@@ -304,6 +271,54 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       return true;
     });
   }, [counter.columnsMap, tableColumn]);
+
+  const _rowSelection = checkbox
+    ? {
+        selectedRowKeys: rowKeys,
+        onChange: handleRowSelectChange,
+        getCheckboxProps: (record: any) => ({
+          disabled: record.disabled,
+        }),
+        onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
+          if (getRecord) {
+            getRecord(record, selected, _selectedRows, nativeEvent);
+          }
+        },
+        ...rowSelection,
+      }
+    : undefined;
+
+  const handleRowSelect = (record: any) => {
+    const key = record[rowKey];
+    let _rowKeys = [...(action.current.rowKeys || [])];
+    let _rows = [...(action.current.rows || [])];
+    if (key !== undefined && key !== null) {
+      if (rowSelection?.type === 'radio') {
+        _rowKeys = [key];
+        _rows = [record];
+      }
+      if (rowSelection?.type === 'checkbox') {
+        const { disabled } = _rowSelection?.getCheckboxProps(record) || { disabled: false };
+        if (disabled) {
+          return;
+        }
+        const index = _rowKeys.findIndex((item) => item === key);
+        if (index > -1) {
+          _rowKeys = _rowKeys.filter((item) => {
+            return item !== key;
+          });
+          _rows = _rows.filter((item) => {
+            return item[rowKey] !== key;
+          });
+        } else {
+          _rowKeys = _rowKeys.concat(key);
+          _rows = _rows.concat(record);
+        }
+      }
+    }
+    changeRowSelect(_rowKeys, _rows);
+  };
+
   const tableProp: any = () => {
     let _row = [];
     let total = 0;
@@ -312,8 +327,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       _row = dataSource.rows || [];
     }
 
-    _row.forEach((item: any, index: number) => {
-      item.key = index;
+    _row.forEach((it: any, index: number) => {
+      it.key = index;
     });
 
     let paginationProps: any = {
@@ -350,22 +365,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       };
     }
 
-    const _rowSelection = checkbox
-      ? {
-          selectedRowKeys: rowKeys,
-          onChange: handleRowSelectChange,
-          getCheckboxProps: (record: any) => ({
-            disabled: record.disabled,
-          }),
-          onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
-            if (getRecord) {
-              getRecord(record, selected, _selectedRows, nativeEvent);
-            }
-          },
-          ...rowSelection,
-        }
-      : undefined;
-
     const key = rowKey || 'key';
     updateAction();
     return {
@@ -401,7 +400,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     if (toolBarRender === false) {
       return null;
     }
-    if (options === false && (!headerTitle && !toolBarRender && !toolbar)) {
+    if (options === false && !headerTitle && !toolBarRender && !toolbar) {
       return null;
     }
     /** 根据表单类型的不同决定是否生成 toolbarProps */
