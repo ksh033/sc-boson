@@ -9,7 +9,7 @@ const defaultComponent = (_columnProps: ProColumns<any>, name: any, text: any, r
   return (
     <Form.Item shouldUpdate noStyle>
       {(form: any) => {
-        const initVal = text || formItemProps?.initialValue;
+        const initVal = text !== undefined && text != null ? text : formItemProps?.initialValue;
         const props = _columnProps.props || {};
         const newProps = {
           form,
