@@ -302,7 +302,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         if (typeof _rowSelection?.getCheckboxProps === 'function') {
           checkConfig = _rowSelection?.getCheckboxProps(record);
         }
-        if (checkConfig.disabled) {
+        if (checkConfig?.disabled) {
           return;
         }
         const index = _rowKeys.findIndex((item) => item === key);
