@@ -159,11 +159,21 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     setRows(_rows);
   };
 
+  const getCheckboxProps = useMemo(() => {
+    if (rowSelection.getCheckboxProps) {
+      return rowSelection.getCheckboxProps;
+    }
+    return (record: any) => ({
+      disabled: record.disabled,
+    });
+  }, [rowSelection.getCheckboxProps]);
+
   const handleRowSelectChange = (_rowKeys: string[], _rows: any[] = []) => {
     const _dataKeys = dataKeys.current;
 
     let crowKeys = [...(action.current.rowKeys || [])];
     let crows = [...(action.current.rows || [])];
+
     // 先过滤掉当前有数据的选择项
     crowKeys = crowKeys.filter((item) => !_dataKeys.has(item));
     crows = crows.filter((item) => !_dataKeys.has(item[rowKey]));
@@ -173,6 +183,19 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     crows = [...crows, ..._rows].filter(
       (item) => item !== undefined && item !== null && srowKeys.has(item[rowKey]),
     );
+
+    crows = crows.filter((item) => {
+      let checkConfig: any = { disabled: false };
+      if (typeof getCheckboxProps === 'function') {
+        checkConfig = getCheckboxProps(item);
+      }
+      if (checkConfig?.disabled) {
+        return false;
+      }
+      return true;
+    });
+
+    crowKeys = crows.map((item) => item[`${rowKey}`]);
 
     changeRowSelect(crowKeys, crows);
   };
@@ -272,19 +295,17 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     });
   }, [counter.columnsMap, tableColumn]);
 
-  const _rowSelection = checkbox
+  const cRowSelection = checkbox
     ? {
         selectedRowKeys: rowKeys,
         onChange: handleRowSelectChange,
-        getCheckboxProps: (record: any) => ({
-          disabled: record.disabled,
-        }),
         onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
           if (getRecord) {
             getRecord(record, selected, _selectedRows, nativeEvent);
           }
         },
         ...rowSelection,
+        getCheckboxProps,
       }
     : undefined;
 
@@ -299,8 +320,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       }
       if (rowSelection?.type === 'checkbox') {
         let checkConfig: any = { disabled: false };
-        if (typeof _rowSelection?.getCheckboxProps === 'function') {
-          checkConfig = _rowSelection?.getCheckboxProps(record);
+        if (typeof getCheckboxProps === 'function') {
+          checkConfig = getCheckboxProps(record);
         }
         if (checkConfig?.disabled) {
           return;
@@ -389,7 +410,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       },
       loading,
       rowKey: key,
-      rowSelection: _rowSelection,
+      rowSelection: cRowSelection,
       dataSource: dataSource ? dataSource.rows : dataSource,
       columns,
       pagination: paginationProps,
