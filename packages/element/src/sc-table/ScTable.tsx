@@ -100,8 +100,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     },
   );
   const [dataSource, setDataSource] = useState(data);
-  const [rowKeys, setRowKeys] = useState(selectedRowKeys || []);
-  const [rows, setRows] = useState<any[]>(selectedRows || []);
   const [innerPagination, setPagination] = useState({
     current: data ? data.current : 1,
     pageSize,
@@ -114,6 +112,13 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     rowKeys: selectedRowKeys || [],
     rows: selectedRows || [],
   });
+
+  if (Array.isArray(selectedRowKeys)) {
+    action.current = {
+      rowKeys: selectedRowKeys || [],
+      rows: selectedRows || [],
+    };
+  }
 
   const dataKeys = useRef<Set<any>>(new Set([]));
 
@@ -155,8 +160,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       rowKeys: _rowKeys,
       rows: _rows,
     };
-    setRowKeys(_rowKeys);
-    setRows(_rows);
   };
 
   const getCheckboxProps = useMemo(() => {
@@ -178,12 +181,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     crowKeys = crowKeys.filter((item) => !_dataKeys.has(item));
     crows = crows.filter((item) => !_dataKeys.has(item[rowKey]));
 
-    crowKeys = [...crowKeys, ..._rowKeys].filter((item) => item !== undefined && item !== null);
-    const srowKeys = new Set(crowKeys);
-    crows = [...crows, ..._rows].filter(
-      (item) => item !== undefined && item !== null && srowKeys.has(item[rowKey]),
-    );
-
     crows = crows.filter((item) => {
       let checkConfig: any = { disabled: false };
       if (typeof getCheckboxProps === 'function') {
@@ -197,6 +194,12 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
     crowKeys = crows.map((item) => item[`${rowKey}`]);
 
+    crowKeys = [...crowKeys, ..._rowKeys].filter((item) => item !== undefined && item !== null);
+    const srowKeys = new Set(crowKeys);
+    crows = [...crows, ..._rows].filter(
+      (item) => item !== undefined && item !== null && srowKeys.has(item[rowKey]),
+    );
+
     changeRowSelect(crowKeys, crows);
   };
 
@@ -204,8 +207,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     const userAction = {
       pagination: innerPagination,
       data: dataSource,
-      selectedRowKeys: action.current.rowKeys || rowKeys,
-      selectedRows: action.current.rows || rows,
+      selectedRowKeys: action.current.rowKeys,
+      selectedRows: action.current.rows,
       reload: () => {
         loadData();
       },
@@ -297,7 +300,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
   const cRowSelection = checkbox
     ? {
-        selectedRowKeys: rowKeys,
+        selectedRowKeys: action.current.rowKeys,
         onChange: handleRowSelectChange,
         onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
           if (getRecord) {
@@ -430,26 +433,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     /** 根据表单类型的不同决定是否生成 toolbarProps */
     const toolbarProps = toolbar;
 
-    // const onSearch = (keyword: string) => {
-    //   if (!options || !options.search) {
-    //     return;
-    //   }
-    //   const { name = 'keyword' } = options.search === true ? {} : options.search;
-
-    //   // 查询的时候的回到第一页
-    //   action.setPageInfo({
-    //     current: 1,
-    //   });
-
-    //   setFormSearch(
-    //     omitUndefined({
-    //       ...formSearch,
-    //       _timestamp: Date.now(),
-    //       [name]: keyword,
-    //     }),
-    //   );
-    // };
-
     return (
       <Toolbar
         tooltip={tooltip}
@@ -459,7 +442,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         action={saveRef}
         // onSearch={rows}
         selectedRows={selectedRows}
-        selectedRowKeys={rowKeys}
+        selectedRowKeys={action.current.rowKeys}
         toolBarRender={toolBarRender}
         toolbar={toolbarProps}
       />
@@ -472,8 +455,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     // isLightFilter,
     // lightForm,
     options,
-    rows,
-    rowKeys,
+    action.current.rowKeys,
     // setFormSearch,
     tableColumn,
     toolBarRender,
