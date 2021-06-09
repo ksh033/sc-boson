@@ -5,7 +5,7 @@ import * as React from 'react';
 import type { CardProps } from 'antd';
 import { Table, Tooltip, Divider, Card } from 'antd';
 import type { TableProps, TablePaginationConfig } from 'antd/lib/table/Table';
-import { useUpdateEffect, useRequest } from 'ahooks';
+import { useUpdateEffect, useRequest, useSetState } from 'ahooks';
 
 import type { OptionConfig, ToolBarProps } from './components/ToolBar';
 
@@ -100,10 +100,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     },
   );
   const [dataSource, setDataSource] = useState(data);
-  const [innerPagination, setPagination] = useState({
-    current: data ? data.current : 1,
-    pageSize,
-    total: 0,
+  const [innerPagination, setPagination] = useSetState({
+    current: pagination && pagination.current ? pagination.current : 1,
+    pageSize: pagination && pagination.pageSize ? pagination.pageSize : pageSize,
   });
   const [filters, setFilters] = useState({});
   const [sorter, setSorter] = useState({});
@@ -263,7 +262,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       }
       return newObj;
     }, {});
-    setPagination(_pagination);
+    setPagination({
+      current: _pagination.current,
+      pageSize: _pagination.pageSize,
+    });
     setFilters(_filters);
     setSorter(_sorter);
   };
@@ -361,7 +363,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     let paginationProps: any = {
       showSizeChanger: true,
       showQuickJumper: true,
-      ...innerPagination,
       total,
       showTotal: (rowTotal: any, range: any[]) => {
         return (
@@ -385,10 +386,15 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
     if (pagination === false) {
       paginationProps = false;
-    } else {
+    } else if (typeof pagination === 'object' && pagination !== null) {
       paginationProps = {
         ...paginationProps,
         ...pagination,
+      };
+    } else {
+      paginationProps = {
+        ...paginationProps,
+        ...innerPagination,
       };
     }
 
