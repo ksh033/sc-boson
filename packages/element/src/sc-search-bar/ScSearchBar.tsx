@@ -13,7 +13,7 @@ import SearchButtons from './SearchButton';
 import isBrowser from '../_util/isBrowser';
 import { MyContext } from './context-manager';
 import RcResizeObserver from 'rc-resize-observer';
-import { FormItemProp } from '../c-form/interface';
+import type { FormItemProp } from '../c-form/interface';
 
 import useMountMergeState from '../_util/useMountMergeState';
 import './style';
@@ -162,7 +162,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     ...resProps
   } = props;
 
-  //const windowSize = useMediaQuery();
+  // const windowSize = useMediaQuery();
   // const windowSize = 'xl'
   const [expandForm, setExpandForm] = useState<boolean>(false);
   const [width, setWidth] = useMountMergeState(
@@ -182,16 +182,16 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
   const handleFormReset = () => {
     wrapForm.resetFields();
-    onReset && onReset(wrapForm.getFieldsValue());
+    onReset?.(wrapForm.getFieldsValue());
   };
 
   const onFinish = useCallback(
     async (fieldsValue) => {
       const values = { ...fieldsValue };
       if (request) {
-        let _data = await request(values);
+        let rdata = await request(values);
         if (onLoad) {
-          _data = onLoad(_data);
+          rdata = onLoad(rdata);
         }
       } else if (onSubmit) {
         onSubmit(values);
@@ -219,10 +219,10 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     const { label, name, component, hasFormItem = true, fieldProps } = item;
     const fieldName = name;
 
-    const _children: React.ReactNode[] = [];
+    const rchildren: React.ReactNode[] = [];
     if (Array.isArray(item.children) && item.children.length > 0) {
       item.children.forEach((element: any, idx: number) => {
-        _children.push(renderFormItem(element, idx));
+        rchildren.push(renderFormItem(element, idx));
       });
     }
 
@@ -237,7 +237,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
         }
         // 把form设置进组件中
         restProps.form = wrapForm;
-        if (_children.length > 0) {
+        if (rchildren.length > 0) {
           createCmp = React.createElement(
             component,
             {
@@ -245,7 +245,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
               key: `form-item-component-${index}`,
               ...restProps,
             },
-            _children,
+            rchildren,
           );
         } else {
           createCmp = React.createElement(component, {
@@ -268,7 +268,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
       }
       return (
         <FormItem label={label} name={fieldName} {...fromConfig} key={`form-item-${index}`}>
-          {_children}
+          {rchildren}
         </FormItem>
       );
     }
@@ -313,21 +313,24 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
     const cols: any[] = [];
     items.forEach((item: FormItemProp, index: number) => {
-      const createCmp = renderFormItem(item, index);
-      // 如果 formItem 自己配置了 hidden，默认使用它自己的
-      const colSize = React.isValidElement<any>(item) ? item?.props?.colSize : 1;
-      const colSpan = Math.min(spanSize.span * (colSize || 1), 24);
-      // 计算总的 totalSpan 长度
-      totalSpan += colSpan;
       const hidden: boolean =
         (item as React.ReactElement<{ hidden: boolean }>)?.props?.hidden ||
+        item.hidden ||
         // 如果收起了
         (expandForm &&
           // 如果 超过显示长度 且 总长度超过了 24
           // index >= showLength - 1 &&
           !!index &&
           totalSpan >= 24);
-
+      if (hidden) {
+        return;
+      }
+      const createCmp = renderFormItem(item, index);
+      // 如果 formItem 自己配置了 hidden，默认使用它自己的
+      const colSize = React.isValidElement<any>(item) ? item?.props?.colSize : 1;
+      const colSpan = Math.min(spanSize.span * (colSize || 1), 24);
+      // 计算总的 totalSpan 长度
+      totalSpan += colSpan;
       itemLength += 1;
 
       // 每一列的key, 一般是存在的
