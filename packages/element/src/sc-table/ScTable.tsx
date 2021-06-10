@@ -100,6 +100,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     },
   );
   const [dataSource, setDataSource] = useState(data);
+  const [rowKeys, setRowKeys] = useState(selectedRowKeys || []);
+  const [rows, setRows] = useState<any[]>(selectedRows || []);
   const [innerPagination, setPagination] = useSetState({
     current: pagination && pagination.current ? pagination.current : 1,
     pageSize: pagination && pagination.pageSize ? pagination.pageSize : pageSize,
@@ -111,13 +113,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     rowKeys: selectedRowKeys || [],
     rows: selectedRows || [],
   });
-
-  if (Array.isArray(selectedRowKeys)) {
-    action.current = {
-      rowKeys: selectedRowKeys || [],
-      rows: selectedRows || [],
-    };
-  }
 
   const dataKeys = useRef<Set<any>>(new Set([]));
 
@@ -159,6 +154,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       rowKeys: _rowKeys,
       rows: _rows,
     };
+    setRowKeys(_rowKeys);
+    setRows(_rows);
   };
 
   const getCheckboxProps = useMemo(() => {
@@ -176,10 +173,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     let crowKeys = [...(action.current.rowKeys || [])];
     let crows = [...(action.current.rows || [])];
 
-    // 先过滤掉当前有数据的选择项
-    crowKeys = crowKeys.filter((item) => !_dataKeys.has(item));
-    crows = crows.filter((item) => !_dataKeys.has(item[rowKey]));
-
     crows = crows.filter((item) => {
       let checkConfig: any = { disabled: false };
       if (typeof getCheckboxProps === 'function') {
@@ -188,10 +181,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       if (checkConfig?.disabled) {
         return false;
       }
-      return true;
+      return !_dataKeys.has(item[rowKey]);
     });
 
-    crowKeys = crows.map((item) => item[`${rowKey}`]);
+    crowKeys = crows.map((item) => item[`${rowKey}`] && !_dataKeys.has(item));
 
     crowKeys = [...crowKeys, ..._rowKeys].filter((item) => item !== undefined && item !== null);
     const srowKeys = new Set(crowKeys);
@@ -206,8 +199,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     const userAction = {
       pagination: innerPagination,
       data: dataSource,
-      selectedRowKeys: action.current.rowKeys,
-      selectedRows: action.current.rows,
+      selectedRowKeys: action.current.rowKeys || rowKeys,
+      selectedRows: action.current.rows || rows,
       reload: () => {
         loadData();
       },
@@ -300,19 +293,21 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     });
   }, [counter.columnsMap, tableColumn]);
 
-  const cRowSelection = checkbox
-    ? {
-        selectedRowKeys: action.current.rowKeys,
-        onChange: handleRowSelectChange,
-        onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
-          if (getRecord) {
-            getRecord(record, selected, _selectedRows, nativeEvent);
-          }
-        },
-        ...rowSelection,
-        getCheckboxProps,
-      }
-    : undefined;
+  const cRowSelection = useMemo(() => {
+    return checkbox
+      ? {
+          selectedRowKeys: rowKeys,
+          onChange: handleRowSelectChange,
+          onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
+            if (getRecord) {
+              getRecord(record, selected, _selectedRows, nativeEvent);
+            }
+          },
+          ...rowSelection,
+          getCheckboxProps,
+        }
+      : undefined;
+  }, [JSON.stringify(rowKeys), handleRowSelectChange, getRecord, getCheckboxProps, rowSelection]);
 
   const handleRowSelect = (record: any) => {
     const key = record[rowKey];
@@ -448,25 +443,12 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         action={saveRef}
         // onSearch={rows}
         selectedRows={selectedRows}
-        selectedRowKeys={action.current.rowKeys}
+        selectedRowKeys={rowKeys}
         toolBarRender={toolBarRender}
         toolbar={toolbarProps}
       />
     );
-  }, [
-    tooltip,
-    saveRef,
-    // formSearch,
-    headerTitle,
-    // isLightFilter,
-    // lightForm,
-    options,
-    action.current.rowKeys,
-    // setFormSearch,
-    tableColumn,
-    toolBarRender,
-    toolbar,
-  ]);
+  }, [tooltip, saveRef, headerTitle, options, rows, rowKeys, tableColumn, toolBarRender, toolbar]);
   counter.setAction(saveRef?.current);
   counter.propsRef.current = props;
 
