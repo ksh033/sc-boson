@@ -146,18 +146,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
   };
 
-  const changeRowSelect = (_rowKeys: string[], _rows: any[] = []) => {
-    if (onSelectRow) {
-      onSelectRow(_rowKeys, _rows);
-    }
-    action.current = {
-      rowKeys: _rowKeys,
-      rows: _rows,
-    };
-    setRowKeys(_rowKeys);
-    setRows(_rows);
-  };
-
   const getCheckboxProps = useMemo(() => {
     if (rowSelection.getCheckboxProps) {
       return rowSelection.getCheckboxProps;
@@ -167,24 +155,40 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     });
   }, [rowSelection.getCheckboxProps]);
 
+  const changeRowSelect = (_rowKeys: string[], _rows: any[] = []) => {
+    if (onSelectRow) {
+      // 过滤不可选择的数据
+      const crows = _rows.filter((item) => {
+        let checkConfig: any = { disabled: false };
+        if (typeof getCheckboxProps === 'function') {
+          checkConfig = getCheckboxProps(item);
+        }
+        if (checkConfig?.disabled) {
+          return false;
+        }
+        return true;
+      });
+
+      const crowKeys = crows.map((item) => item[`${rowKey}`]);
+
+      onSelectRow(crowKeys, crows);
+    }
+    action.current = {
+      rowKeys: _rowKeys,
+      rows: _rows,
+    };
+    setRowKeys(_rowKeys);
+    setRows(_rows);
+  };
+
   const handleRowSelectChange = (_rowKeys: string[], _rows: any[] = []) => {
     const _dataKeys = dataKeys.current;
 
     let crowKeys = [...(action.current.rowKeys || [])];
     let crows = [...(action.current.rows || [])];
-
-    crows = crows.filter((item) => {
-      let checkConfig: any = { disabled: false };
-      if (typeof getCheckboxProps === 'function') {
-        checkConfig = getCheckboxProps(item);
-      }
-      if (checkConfig?.disabled) {
-        return false;
-      }
-      return !_dataKeys.has(item[rowKey]);
-    });
-
-    crowKeys = crows.map((item) => item[`${rowKey}`] && !_dataKeys.has(item));
+    // 先过滤掉当前有数据的选择项
+    crowKeys = crowKeys.filter((item) => !_dataKeys.has(item));
+    crows = crows.filter((item) => !_dataKeys.has(item[rowKey]));
 
     crowKeys = [...crowKeys, ..._rowKeys].filter((item) => item !== undefined && item !== null);
     const srowKeys = new Set(crowKeys);
