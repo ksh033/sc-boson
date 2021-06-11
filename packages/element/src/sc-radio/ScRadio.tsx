@@ -1,9 +1,10 @@
 import React, { useRef } from 'react';
 import { useUpdateEffect } from 'ahooks';
 import { Radio } from 'antd';
-import { RadioGroupProps } from 'antd/lib/radio';
-import { DataComponentProps } from '../Component';
+import type { RadioGroupProps } from 'antd/es/radio';
+import type { DataComponentProps } from '../Component';
 import useFetchData from '../_util/useFetchData';
+
 const RadioButton = Radio.Button;
 const { useEffect, useMemo, useCallback, useLayoutEffect, useState } = React;
 
@@ -12,7 +13,7 @@ const RADIO_TYPE: any = {
   button: RadioButton,
 };
 export interface ScRadioProps extends RadioGroupProps, DataComponentProps {
-  radioType: string;
+  radioType?: "button" | 'radio';
 }
 
 const ScRadio: React.FC<ScRadioProps> = props => {
@@ -77,7 +78,7 @@ const ScRadio: React.FC<ScRadioProps> = props => {
 
   const Cmp = RADIO_TYPE[radioType];
   const children: any[] = useMemo(() => {
-    let list: any[] = [];
+    const list: any[] = [];
     if (dataSource && dataSource.length > 0) {
       dataSource.forEach((item: any, index: number) => {
         if (valueField && textField) {

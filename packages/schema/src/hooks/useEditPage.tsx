@@ -5,7 +5,7 @@ import type React from 'react';
 import { useRef, useState } from 'react';
 // @ts-ignore
 import { history } from 'umi';
-import type { FormFilterProp, DialogOptions,} from '../interface';
+import type { FormFilterProp, DialogOptions } from '../interface';
 import { PageConfig, PageType, ToolButtons, Action } from '../interface';
 import schema from '../pageConfigUitls';
 import type { UseListPageProp } from './useListPage';
@@ -41,7 +41,6 @@ export interface UseEditPageProp<S> extends UseListPageProp<S> {
   getAction: () => any;
   getFormInfo: (_props?: FormFilterProp) => FormInfo;
   getTitle: (action: string) => any;
-  
 }
 
 const defaultConfig: PageConfig = {
@@ -177,7 +176,7 @@ export default function useEditPage(
     options?: DialogOptions & {
       preHandle?: (values: any) => any;
     },
-    serverName?: string
+    serverName?: string,
   ): any[] => {
     const { preHandle, ...restOptions } = options || {};
     const defaultOptions = {
@@ -193,23 +192,22 @@ export default function useEditPage(
     const buttons: any[] = [];
     const newAction = rAction || getAction();
     if (newAction === Action.ADD) {
-      const btn1={
+      const btn1 = {
         ...ToolButtons.formSubmit, // 提交按钮
         preHandle,
-   
+
         options: {
           ...defaultOptions,
           ...restOptions,
         },
-      }
-      if (serverName){
-        btn1.serverName=serverName
+      };
+      if (serverName) {
+        btn1.serverName = serverName;
       }
       buttons.push(btn1);
     }
     if (newAction === Action.EDIT) {
-
-      const btn2={
+      const btn2 = {
         ...ToolButtons.formUpdate, // 更新按钮
         preHandle,
 
@@ -217,9 +215,9 @@ export default function useEditPage(
           ...defaultOptions,
           ...restOptions,
         },
-      }
-      if (serverName){
-        btn2.serverName=serverName
+      };
+      if (serverName) {
+        btn2.serverName = serverName;
       }
       buttons.push(btn2);
     }
@@ -266,6 +264,5 @@ export default function useEditPage(
     setData,
     getData,
     data: pageData,
-   
   };
 }

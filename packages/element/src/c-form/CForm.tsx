@@ -195,6 +195,7 @@ const CForm: React.FC<CFormProps> = (props) => {
           <ViewItem
             key={`form-item-${name}`}
             name={viewName}
+            fieldProps
             value={itValue}
             {...itemProps}
             initialValue={initialValues}

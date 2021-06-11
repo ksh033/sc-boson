@@ -75,6 +75,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     try {
       let rdata = await request({ ...params, ...searchParam });
 
+      console.log(rdata)
       if (isGone.current) return;
       if (rdata) {
         if (onLoad) {

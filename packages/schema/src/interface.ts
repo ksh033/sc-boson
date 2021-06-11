@@ -159,6 +159,8 @@ export const ToolButtons: ToolButtonsProps = {
   remove: {
     text: '删除',
     buttonType: 'remove',
+    serverName: 'remove',
+
   },
   /** 详情 */
   view: {

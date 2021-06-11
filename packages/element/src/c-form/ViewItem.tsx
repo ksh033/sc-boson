@@ -9,13 +9,15 @@ export default class ViewItem extends PureComponent<any> {
       wrapperCol,
       initialValue,
       value,
+      fieldProps,
       render,
     } = this.props;
 
+    const {colon=true}=fieldProps
     return (
       <Row className="ant-form-item sc-viem-item-item">
         <Col {...labelCol}>
-          <div className="sc-viem-item-label">{label}：</div>
+          <div className="sc-viem-item-label">{label}{colon?':':''} </div>
         </Col>
         <Col {...wrapperCol}>
           {this.props.children

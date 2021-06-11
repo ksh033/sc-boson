@@ -108,17 +108,18 @@ const converFormItem = (
   }
 
   let extProps = null;
-  if (typeof item.name === 'string') {
-    if (fieldsProp && fieldsProp[item.name]) {
-      if (_.isFunction(fieldsProp[item.name])) {
-        extProps = fieldsProp[item.name](item);
+  const  temName=item.name ||item.id
+  if (typeof temName === 'string') {
+    if (fieldsProp && fieldsProp[temName]) {
+      if (_.isFunction(fieldsProp[temName])) {
+        extProps = fieldsProp[temName](item);
       } else {
-        extProps = fieldsProp[item.name];
+        extProps = fieldsProp[temName];
       }
     }
   }
-  if (Array.isArray(item.name)) {
-    const fieldsName = item.name.join('.');
+  if (Array.isArray(temName)) {
+    const fieldsName = temName.join('.');
     if (fieldsProp && fieldsProp[fieldsName]) {
       if (_.isFunction(fieldsProp[fieldsName])) {
         extProps = fieldsProp[fieldsName](item);
