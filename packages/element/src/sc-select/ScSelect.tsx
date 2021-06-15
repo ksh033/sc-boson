@@ -75,7 +75,6 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     try {
       let rdata = await request({ ...params, ...searchParam });
 
-      console.log(rdata)
       if (isGone.current) return;
       if (rdata) {
         if (onLoad) {
@@ -88,11 +87,14 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     }
   };
 
-  const debounce = useDebounceFn((value) => {
-    const searchParam: any = {};
-    searchParam[searchField] = value;
-    loadData(searchParam);
-  }, {wait:500});
+  const debounce = useDebounceFn(
+    (value) => {
+      const searchParam: any = {};
+      searchParam[searchField] = value;
+      loadData(searchParam);
+    },
+    { wait: 500 },
+  );
 
   useUpdateEffect(() => {
     if (autoload) {
