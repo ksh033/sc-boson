@@ -91,11 +91,10 @@ const CForm: React.FC<CFormProps> = (props) => {
   }, [initialValues]);
 
   const convertData = (name: string | string[], dataName: string, _props: any, data: any) => {
-  
     let itemValue;
     if (_.isArray(name)) {
       name.forEach((key) => {
-        itemValue = data?data[key] : null;
+        itemValue = data ? data[key] : null;
       });
     } else {
       itemValue = data ? data[name] : null;
@@ -198,6 +197,7 @@ const CForm: React.FC<CFormProps> = (props) => {
             name={viewName}
             fieldProps
             value={itValue}
+            layout={layout}
             {...itemProps}
             initialValue={initialValues}
           >
