@@ -135,7 +135,7 @@ export default class TableInfo {
     return this;
   }
   toConfig() {
-    this.tableInfo.toolbar = bindEvents(this.tableInfo.toolbar, this.config);
+    this.tableInfo.toolbar = bindEvents(this.tableInfo.toolbar, this.config,this.reload);
     let { colIndex } = this.findCol(OpColKey) || {};
     const opColButtons = this.opColButton.toButtons();
     if (opColButtons.length>0){

@@ -70,6 +70,7 @@ const CForm: React.FC<CFormProps> = (props) => {
     initialValues,
     action,
     form,
+    children,
     ...respPorps
   } = props;
   const formProps = { layout, labelCol, wrapperCol, labelAlign, ...respPorps };
@@ -497,7 +498,7 @@ const CForm: React.FC<CFormProps> = (props) => {
     <div className="sc-form">
       <Form form={waForm} {...formProps}>
         {anchor ? anchorRender : null}
-        {formChildren}
+        { formConfig.length>0 ?formChildren:children}
       </Form>
     </div>
   );
