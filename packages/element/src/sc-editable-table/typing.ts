@@ -83,7 +83,7 @@ export type RowEditableConfig<T> = {
   /** 正在编辑的列修改的时候 */
   onChange?: (editableKeys: React.Key[], editableRows: T[] | T) => void;
   /** 正在编辑的列修改的时候 */
-  onValuesChange?: (record: T, dataSource: T[]) => void;
+  onValuesChange?: (record: T, dataSource: T[], index: number) => void;
   /** @name 自定义编辑的操作 */
   actionRender?: ActionRenderFunction<T>;
   /** 行保存的时候 */

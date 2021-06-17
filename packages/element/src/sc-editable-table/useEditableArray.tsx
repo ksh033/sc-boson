@@ -67,7 +67,7 @@ export type RowEditableConfig<T> = {
   /** 正在编辑的列修改的时候 */
   onChange?: (editableKeys: React.Key[], editableRows: T[] | T) => void;
   /** 正在编辑的列修改的时候 */
-  onValuesChange?: (record: T, dataSource: T[]) => void;
+  onValuesChange?: (record: T, dataSource: T[], index: number) => void;
   /** @name 自定义编辑的操作 */
   actionRender?: ActionRenderFunction<T>;
   /** 行保存的时候 */
@@ -386,7 +386,7 @@ function useEditableArray<RecordType>(
     getRowKey: GetRowKey<RecordType>;
     dataSource: RecordType[];
     oldKeyMap: Map<React.Key, any>;
-    onValuesChange?: (record: RecordType, dataSource: RecordType[]) => void;
+    onValuesChange?: (record: RecordType, dataSource: RecordType[], index: number) => void;
     childrenColumnName: string | undefined;
     setDataSource: (dataSource: RecordType[]) => void;
   },
@@ -515,15 +515,19 @@ function useEditableArray<RecordType>(
       cancelEditable(recordKey);
       startEditable(recordKey);
     }
+    let idx = 0;
     const editRow = dataSource.find((item, index) => {
       const key = props.getRowKey(item, index);
+      if (key === recordKey) {
+        idx = index;
+      }
       return key === recordKey;
     }) || {
       ...newLineRecord?.defaultValue,
       ...values[recordKey],
     };
 
-    props.onValuesChange(editRow, dataSource);
+    props.onValuesChange(editRow, dataSource, idx);
   };
 
   /**

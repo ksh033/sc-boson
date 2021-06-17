@@ -48,7 +48,7 @@ export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
   /** 最大行数 */
   maxLength?: number;
   /** Table 的值发生改变，为了适应 Form 调整了顺序 */
-  onValuesChange?: (values: T[], record: T) => void;
+  onValuesChange?: (values: T[], record: T, index: number) => void;
   rowKey?: string;
 };
 
@@ -134,7 +134,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     dataSource: value || [],
     oldKeyMap: oldValueRef.current || new Map(),
     setDataSource: (_data) => {
-      props.editable?.onValuesChange?.(undefined as any, _data);
+      props.editable?.onValuesChange?.(undefined as any, _data, 0);
       setValue(_data);
     },
   });
