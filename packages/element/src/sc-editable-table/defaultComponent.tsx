@@ -29,8 +29,8 @@ const defaultComponent = (_columnProps: ProColumns<any>, name: any, text: any, r
               : React.cloneElement(_columnProps.component, newProps);
           } else {
             component = !isElement
-              ? React.createElement(_columnProps.component, props)
-              : React.cloneElement(_columnProps.component, props);
+              ? React.createElement(_columnProps.component, {...props,"data-row":rowData})
+              : React.cloneElement(_columnProps.component, {...props,"data-row":rowData});
           }
         }
 

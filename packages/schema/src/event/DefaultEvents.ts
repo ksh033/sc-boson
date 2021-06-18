@@ -64,7 +64,7 @@ function link(props: ButtonTypeProps) {
     if (url) {
       history.push({
         pathname: url,
-        query: options.params,
+        query: options.pageProps,
       });
     }
   }
