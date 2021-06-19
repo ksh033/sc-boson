@@ -121,7 +121,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
           text = <Tooltip title={text}>{text}</Tooltip>;
         }
         list.push(
-          <Option key={level + index.toString()} value={item[valueField]}>
+          <Option key={level + index.toString()} value={item[valueField]} data={item}>
             {text}
           </Option>,
         );
@@ -133,7 +133,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     let list: any[] = [];
     if (singleInput && input !== '') {
       list.push(
-        <Option key={inputKey} value={inputKey}>
+        <Option key={inputKey} value={inputKey} >
           {input}
         </Option>,
       );

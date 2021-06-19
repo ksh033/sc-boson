@@ -72,7 +72,7 @@ export function columnRender<T>({
     index: columnProps.index || index,
   });
 
-  const dom: React.ReactNode = mode === 'edit' ? textDom : <React.Fragment>{text}</React.Fragment>;
+  const dom: React.ReactNode = mode === 'edit' ? textDom : <React.Fragment>{typeof text==="object"?JSON.stringify(text):text}</React.Fragment>;
 
   /** 如果是编辑模式，并且 renderFormItem 存在直接走 renderFormItem */
   if (mode === 'edit') {
@@ -97,7 +97,7 @@ export function columnRender<T>({
   }
 
   if (columnProps.render) {
-    const renderDom = columnProps.render(text, rowData, index, {
+    const renderDom = columnProps.render(dom, rowData, index, {
       ...editableUtils,
     });
 

@@ -355,6 +355,7 @@ const CForm: React.FC<CFormProps> = (props) => {
           colCount = 0;
         }
       };
+      let colIndex=0;
       items.forEach((formItem: any, index: number) => {
         let colItem;
         if (formItem.items && formItem.items.length > 0) {
@@ -379,6 +380,12 @@ const CForm: React.FC<CFormProps> = (props) => {
           cols.push(colItem.col);
           // eslint-disable-next-line no-plusplus
           itemCount++;
+          if (!formItem.hidden){
+            colIndex+=1;
+          }
+          if (colIndex!==0&&(colIndex)%col===0){
+                colCount = 24;
+          }
           createRow();
         }
 
