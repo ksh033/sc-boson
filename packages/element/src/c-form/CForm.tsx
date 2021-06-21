@@ -70,6 +70,7 @@ const CForm: React.FC<CFormProps> = (props) => {
     initialValues,
     action,
     form,
+    children,
     ...respPorps
   } = props;
   const formProps = { layout, labelCol, wrapperCol, labelAlign, ...respPorps };
@@ -354,6 +355,7 @@ const CForm: React.FC<CFormProps> = (props) => {
           colCount = 0;
         }
       };
+      let colIndex=0;
       items.forEach((formItem: any, index: number) => {
         let colItem;
         if (formItem.items && formItem.items.length > 0) {
@@ -378,6 +380,12 @@ const CForm: React.FC<CFormProps> = (props) => {
           cols.push(colItem.col);
           // eslint-disable-next-line no-plusplus
           itemCount++;
+          if (!formItem.hidden){
+            colIndex+=1;
+          }
+          if (colIndex!==0&&(colIndex)%col===0){
+                colCount = 24;
+          }
           createRow();
         }
 
@@ -497,7 +505,7 @@ const CForm: React.FC<CFormProps> = (props) => {
     <div className="sc-form">
       <Form form={waForm} {...formProps}>
         {anchor ? anchorRender : null}
-        {formChildren}
+        { formConfig.length>0 ?formChildren:children}
       </Form>
     </div>
   );
