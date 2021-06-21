@@ -233,7 +233,9 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
       } else {
         const { defaultValue, ...restProps } = item.props || {};
         if (component.customView) {
-          restProps.fieldProps = fieldProps;
+          if (fieldProps) {
+            restProps.fieldProps = fieldProps;
+          }
         }
         // 把form设置进组件中
         restProps.form = wrapForm;
@@ -334,7 +336,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
       itemLength += 1;
 
       // 每一列的key, 一般是存在的
-      const itemKey = `${item.name}` || index;
+      const itemKey = item.name? `${item.name}` : item.id || index;
 
       if (24 - (currentSpan % 24) < colSpan) {
         // 如果当前行空余位置放不下，那么折行
@@ -344,6 +346,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
       currentSpan += colSpan;
 
+ 
       cols.push(
         <Col key={itemKey} span={colSpan}>
           {createCmp}
