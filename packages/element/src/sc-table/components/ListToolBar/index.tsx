@@ -171,6 +171,9 @@ const ListToolBar: React.FC<ListToolBarProps> = ({
 
   const actionDom = renderActionsDom();
 
+  if (!actionDom&&!searchNode&&!hasTitle){
+    return null;
+  }
   return (
     <div style={style} className={classNames(`${prefixCls}`, className)}>
       <div className={`${prefixCls}-container`}>
