@@ -97,7 +97,7 @@ export function columnRender<T>({
   }
 
   if (columnProps.render) {
-    const renderDom = columnProps.render(dom, rowData, index, {
+    const renderDom = columnProps.render(text, rowData, index, {
       ...editableUtils,
     });
 
