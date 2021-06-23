@@ -42,6 +42,9 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
   } = props;
   const isGone = useRef(false);
   const formatTreeData = (_data: any) => {
+    if (!_data){
+      return null;
+    }
     return _data.map((item: any) => {
       const value = valueField ? item[valueField] : item[defaultKey];
       // const key = keyField ? item[keyField] : 1 + '_' + index

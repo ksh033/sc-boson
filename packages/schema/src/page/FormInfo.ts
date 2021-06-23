@@ -30,7 +30,11 @@ class FormInfo {
           const groupItem: FieldGroup=item;
           groupItem.items.find((gi, giIndex)=>{
             const { id, name } = gi;
-            if (filedName === name || filedName === id) {
+            let temName=name;
+            if (_.isArray(name)){
+              temName=name.join(".")
+            }
+            if (filedName === temName || filedName === id) {
               itemIndex = giIndex;
               findItem=gi;
               groupIndex=j
@@ -42,7 +46,11 @@ class FormInfo {
             // @ts-ignore
             const fitem: FormItem=item;
             const { id, name } = fitem;
-            if (filedName === name || filedName === id) {
+            let temName=name;
+            if (_.isArray(name)){
+              temName=name.join(".")
+            }
+            if (filedName === temName || filedName === id) {
               itemIndex = j;
               findItem=item;
 
