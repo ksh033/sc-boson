@@ -17,7 +17,7 @@ export interface TableInfoProps {
   onLoad: (_data: any) => any;
   saveRef: any;
   size: any;
-  scroll: { x: number };
+  scroll: any;
 }
 export default class TableInfo {
   private tableInfo: TableInfoProps;
