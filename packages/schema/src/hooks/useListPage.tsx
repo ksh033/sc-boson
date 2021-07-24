@@ -138,30 +138,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     }
   };
 
-  const onLoad = (data: any) => {
-    let newData = {};
-    if (data) {
-      let rows = data.records || data.rows || [];
-      const { current = 1, size = 10 } = data;
-      rows = rows.map((item: any, index: number) => {
-        const titem = item;
-        titem.index = index + 1 + (current - 1) * size;
-        return titem;
-      });
-      newData = {
-        rows,
-        total: data.total,
-        current,
-        size,
-      };
-    } else {
-      newData = {
-        total: 0,
-        rows: [],
-      };
-    }
-    return newData;
-  };
+  
   const pageChange = (_pagination: any) => {
     setState({
       pagination: {
@@ -265,7 +242,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     return {
       columns: newCol,
       params: JSON.stringify(_params) !== JSON.stringify(state.params) ? _params : state.params,
-      onLoad,
+
       saveRef,
       size: 'small',
       pagination,

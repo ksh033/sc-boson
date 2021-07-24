@@ -39,6 +39,7 @@
   }
 }
 
+
 .sc-form-nav {
     .ant-anchor {
       position: relative;
@@ -83,6 +84,9 @@
 }
 
 .sc-form-fieldset {
+  &:first{
+    padding-top: 0px;
+  }
   &-hide-title{
     padding-top: 24px;
   }
@@ -99,7 +103,7 @@
  
   }
 }
-.sc-viem-item-item {
+.sc-viem-item {
   padding: 8px 0;
 }
 .sc-viem-item-label {
@@ -107,7 +111,12 @@
 }
 
 .ant-form-vertical{
+  .sc-viem-item {
+margin-bottom: 0px;
+  }
   .sc-viem-item-label{
   text-align: left;
+  font-weight: bold;
+  margin-bottom: 8px;
 }
 }

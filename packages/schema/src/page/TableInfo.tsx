@@ -14,7 +14,6 @@ export interface TableInfoProps {
   columns: ProColumns;
   toolbar: HButtonType[];
   params: any;
-  onLoad: (_data: any) => any;
   saveRef: any;
   size: any;
   scroll: any;

@@ -10,7 +10,10 @@ const defaultOptions = {
   okCancel: false,
   footer: null,
 };
-function add(props: ButtonTypeProps) {
+function add(props: ButtonTypeProps,event?: any) {
+ if (event&&event.stopPropagation){
+  event.stopPropagation();
+ }
   const { options, preHandle } = props;
   const newOptions = {
     ...defaultOptions,
@@ -45,7 +48,10 @@ function add(props: ButtonTypeProps) {
  * @param props 
  * @returns 
  */
-function link(props: ButtonTypeProps) {
+function link(props: ButtonTypeProps,event?: any) {
+  if (event&&event.stopPropagation){
+   event.stopPropagation();
+  }
   const { preHandle, options } = props;
   if (options) {
     let { pageProps} = options;
@@ -70,7 +76,10 @@ function link(props: ButtonTypeProps) {
   }
 }
 
-function edit(props: ButtonTypeProps) {
+function edit(props: ButtonTypeProps,event?: any) {
+  if (event&&event.stopPropagation){
+   event.stopPropagation();
+  }
   const { preHandle, options } = props;
   if (options) {
     const { pageProps, ...resProps } = options;
@@ -101,7 +110,10 @@ function edit(props: ButtonTypeProps) {
   }
 }
 
-function view(props: ButtonTypeProps) {
+function view(props: ButtonTypeProps,event?: any) {
+  if (event&&event.stopPropagation){
+   event.stopPropagation();
+  }
   const { options } = props;
   if (options) {
     const { pageProps, ...resProps } = options;
@@ -127,7 +139,10 @@ function view(props: ButtonTypeProps) {
 }
 
 /** 删除 */
-function remove(props: ButtonTypeProps) {
+function remove(props: ButtonTypeProps,event?: any) {
+  if (event&&event.stopPropagation){
+   event.stopPropagation();
+  }
   const { options, callBack } = props;
   if (options) {
     const { params } = options;
@@ -149,7 +164,10 @@ function remove(props: ButtonTypeProps) {
   }
 }
 /** @param props */
-function confirm(props: ButtonTypeProps) {
+function confirm(props: ButtonTypeProps,event?: any) {
+  if (event&&event.stopPropagation){
+   event.stopPropagation();
+  }
   const { options, callBack } = props;
   if (options) {
     const { params } = options;
@@ -174,7 +192,10 @@ function confirm(props: ButtonTypeProps) {
   }
 }
 /** 停用 */
-async function disabled(props: ButtonTypeProps) {
+async function disabled(props: ButtonTypeProps,event?: any) {
+  if (event&&event.stopPropagation){
+   event.stopPropagation();
+  }
   const { options, callBack } = props;
   if (options) {
     const { params } = options;

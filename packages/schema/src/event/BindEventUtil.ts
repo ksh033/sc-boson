@@ -8,6 +8,7 @@ import defaultEvents from './DefaultEvents';
 import type { HButtonType } from '../interface';
 import React from 'react';
 
+
 // interface useFormatEventProps {
 //   bindEvent: <T extends ButtonTypeProps>(button: T) => T;
 //   bindEvents: <T extends ButtonTypeProps>(buttons: T[]) => T[];
@@ -83,7 +84,9 @@ const bindEvent = (
         preHandle = options.preHandle;
       }
 
-      newBtn.onClick = () => {
+      newBtn.onClick = (...arg) => {
+      
+        const event: any=arg.length>0?arg[arg.length-1]:null;
         // 彈出框处理
         if (options.content) {
           if (!options.pageProps?.callBack) {
@@ -95,7 +98,7 @@ const bindEvent = (
           options,
           callBack,
           preHandle,
-        });
+        },event);
       };
     }
   }

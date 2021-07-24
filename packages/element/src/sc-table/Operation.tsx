@@ -10,7 +10,7 @@ export interface ButtonProps {
   text: string; // 按钮名称
   loading?: boolean;
   params: any; // 之前按钮的参数
-  onClick: (params: any) => void; // 事件
+  onClick: (params: any,e?: any) => void; // 事件
   icon?: React.ReactNode | string; // 图标
 }
 export interface OperationProps {
@@ -37,8 +37,8 @@ const Operation: React.FC<OperationProps> = props => {
             key={index}
             icon={icon}
             {...buttonProps}
-            onClick={() => {
-              onClick({ ...params, record });
+            onClick={(e) => {
+              onClick({ ...params, record },e);
             }}
           >
             {text}
@@ -51,8 +51,8 @@ const Operation: React.FC<OperationProps> = props => {
       } else {
        delete buttonProps.loading;
         moreButtonsClick[index] = {
-          onClick: () => {
-            onClick({ ...params, record });
+          onClick: (e: any) => {
+            onClick({ ...params, record },e);
           },
           params,
           ...buttonProps,

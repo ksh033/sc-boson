@@ -159,6 +159,15 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     setTreeData(rData);
   };
 
+ 
+  const userAction: ActionType = {
+    reload: () => {
+      loadData(params);
+    },
+    ...allAction,
+  };
+
+  actionRef.current = userAction;
   useEffect(() => {
     if (typeof saveRef === 'function' && actionRef.current) {
       saveRef(actionRef.current);
@@ -169,15 +178,6 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     // @ts-ignore
     saveRef.current = actionRef.current;
   }
-
-  const userAction: ActionType = {
-    reload: () => {
-      loadData(params);
-    },
-    ...allAction,
-  };
-
-  actionRef.current = userAction;
 
   /** 绑定 action ref */
   React.useImperativeHandle(

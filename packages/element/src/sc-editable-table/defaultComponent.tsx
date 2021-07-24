@@ -11,12 +11,27 @@ const defaultComponent = (_columnProps: ProColumns<any>, name: any, text: any, r
       {(form: any) => {
         const initVal = text !== undefined && text != null ? text : formItemProps?.initialValue;
         const props = _columnProps.props || {};
+      
+        let customProps={};
+        if (typeof props ==="function"){
+          customProps=props(rowData)
+        }else{
+          customProps=props
+        }
+      // const v={};
+      // v[name.join(".")]=initVal
+      //   form.setFieldsValue(v)
+     
         const newProps = {
           form,
           name,
+        
           rowData,
-          ...props,
+          ...customProps,
         };
+     
+
+        
         // eslint-disable-next-line @typescript-eslint/no-shadow
         const defaultComponent: any = <Input></Input>;
 
@@ -29,8 +44,8 @@ const defaultComponent = (_columnProps: ProColumns<any>, name: any, text: any, r
               : React.cloneElement(_columnProps.component, newProps);
           } else {
             component = !isElement
-              ? React.createElement(_columnProps.component, {...props,"data-row":rowData})
-              : React.cloneElement(_columnProps.component, {...props,"data-row":rowData});
+              ? React.createElement(_columnProps.component, {...customProps,"data-row":rowData})
+              : React.cloneElement(_columnProps.component, {...customProps,"data-row":rowData});
           }
         }
 
@@ -41,6 +56,7 @@ const defaultComponent = (_columnProps: ProColumns<any>, name: any, text: any, r
             }}
             preserve={false}
             name={name}
+            
             {...formItemProps}
             initialValue={initVal}
           >

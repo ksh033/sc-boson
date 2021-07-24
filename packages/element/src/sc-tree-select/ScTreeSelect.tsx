@@ -182,7 +182,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
     };
   }, [restProps, treeData]);
 
-  return treeData && treeData.length > 0 ? <TreeSelect {...treeProps}></TreeSelect> : null;
+  return <TreeSelect {...treeProps}></TreeSelect> ;
 };
 
 export default ScTreeSelect;

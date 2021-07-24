@@ -17,7 +17,7 @@ export default class ViewItem extends PureComponent<any> {
 
     const { colon = true } = fieldProps;
     return (
-      <Row className="ant-form-item sc-viem-item-item">
+      <Row className="ant-form-item sc-viem-item">
         <Col {...labelCol}>
           <div className="sc-viem-item-label">
             {label}
