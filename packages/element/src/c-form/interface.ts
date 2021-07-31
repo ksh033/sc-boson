@@ -59,6 +59,7 @@ export interface FormItemProp {
 
 export interface FieldGroup {
   title?: string;
+  colProps?: ColProps;
   items: FormItemProp[];
 }
 export declare type Field = FormItemProp | FieldGroup;

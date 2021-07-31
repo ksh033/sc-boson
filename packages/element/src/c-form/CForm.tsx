@@ -335,17 +335,22 @@ const CForm: React.FC<CFormProps> = (props) => {
       let rowIndex = 0;
       let colCount = 0;
       let itemCount = 0;
-      const createRow = (isGroup?: boolean) => {
+      const createRow = (isGroup?: boolean, groupItem?: any) => {
         if (colCount >= 24) {
           rowIndex += 1;
 
-          const colsItem = isGroup ? (
-            <Space className="sc-form-group-container" direction="horizontal" align="center">
-              {cols}
-            </Space>
-          ) : (
-            cols
-          );
+          let colsItem = null;
+          if (isGroup) {
+            colsItem = (
+              <Col className="sc-form-group-container" {...groupItem.colProps}>
+                <Space direction="horizontal" align="center">
+                  {cols}
+                </Space>
+              </Col>
+            );
+          } else {
+            colsItem = cols;
+          }
           rows.push(
             <Row gutter={gutter || 0} key={`form-group-row${item.group}-${rowIndex}`}>
               {colsItem}
@@ -355,16 +360,19 @@ const CForm: React.FC<CFormProps> = (props) => {
           colCount = 0;
         }
       };
-      let colIndex=0;
+      let colIndex = 0;
       items.forEach((formItem: any, index: number) => {
         let colItem;
         if (formItem.items && formItem.items.length > 0) {
           // 关闭之前的行
+          //const {items,...groupProps}=formItem;
           if (colCount > 0) {
             colCount = 24;
+         
             createRow();
+            
           }
-
+          cols=[]
           formItem.items.forEach((groupItem: any, groupIndex: any) => {
             const { span, ...newColProp } = defColProp;
             colItem = createCol(groupItem, item, rowIndex, `'${index}${groupIndex}'`, newColProp);
@@ -373,18 +381,18 @@ const CForm: React.FC<CFormProps> = (props) => {
           colCount = 24;
           // eslint-disable-next-line no-plusplus
           itemCount++;
-          createRow(true);
+          createRow(true, formItem);
         } else {
           colItem = createCol(formItem, item, rowIndex, index, defColProp);
           colCount += colItem.colCount;
           cols.push(colItem.col);
           // eslint-disable-next-line no-plusplus
           itemCount++;
-          if (!formItem.hidden){
-            colIndex+=1;
+          if (!formItem.hidden) {
+            colIndex += 1;
           }
-          if (colIndex!==0&&(colIndex)%col===0){
-                colCount = 24;
+          if (colIndex !== 0 && colIndex % col === 0) {
+            colCount = 24;
           }
           createRow();
         }
@@ -505,7 +513,7 @@ const CForm: React.FC<CFormProps> = (props) => {
     <div className="sc-form">
       <Form form={waForm} {...formProps}>
         {anchor ? anchorRender : null}
-        { formConfig.length>0 ?formChildren:children}
+        {formConfig.length > 0 ? formChildren : children}
       </Form>
     </div>
   );
