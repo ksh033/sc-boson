@@ -10,10 +10,10 @@ const defaultOptions = {
   okCancel: false,
   footer: null,
 };
-function add(props: ButtonTypeProps,event?: any) {
- if (event&&event.stopPropagation){
-  event.stopPropagation();
- }
+function add(props: ButtonTypeProps, event?: any) {
+  if (event && event.stopPropagation) {
+    event.stopPropagation();
+  }
   const { options, preHandle } = props;
   const newOptions = {
     ...defaultOptions,
@@ -42,25 +42,25 @@ function add(props: ButtonTypeProps,event?: any) {
   }
 }
 
-
 /**
  * 页面跳转
- * @param props 
- * @returns 
+ *
+ * @param props
+ * @returns
  */
-function link(props: ButtonTypeProps,event?: any) {
-  if (event&&event.stopPropagation){
-   event.stopPropagation();
+function link(props: ButtonTypeProps, event?: any) {
+  if (event && event.stopPropagation) {
+    event.stopPropagation();
   }
   const { preHandle, options } = props;
   if (options) {
-    let { pageProps} = options;
- 
+    let { pageProps } = options;
+
     if (!pageProps) {
       pageProps = {};
     }
     // const newOptions = { ...defaultOptions, ...resProps, pageProps: tempageProps };
-    const { url } = options;;
+    const { url } = options;
     if (preHandle) {
       const result = preHandle(pageProps);
       if (!result) {
@@ -76,9 +76,9 @@ function link(props: ButtonTypeProps,event?: any) {
   }
 }
 
-function edit(props: ButtonTypeProps,event?: any) {
-  if (event&&event.stopPropagation){
-   event.stopPropagation();
+function edit(props: ButtonTypeProps, event?: any) {
+  if (event && event.stopPropagation) {
+    event.stopPropagation();
   }
   const { preHandle, options } = props;
   if (options) {
@@ -110,9 +110,9 @@ function edit(props: ButtonTypeProps,event?: any) {
   }
 }
 
-function view(props: ButtonTypeProps,event?: any) {
-  if (event&&event.stopPropagation){
-   event.stopPropagation();
+function view(props: ButtonTypeProps, event?: any) {
+  if (event && event.stopPropagation) {
+    event.stopPropagation();
   }
   const { options } = props;
   if (options) {
@@ -139,15 +139,15 @@ function view(props: ButtonTypeProps,event?: any) {
 }
 
 /** 删除 */
-function remove(props: ButtonTypeProps,event?: any) {
-  if (event&&event.stopPropagation){
-   event.stopPropagation();
+function remove(props: ButtonTypeProps, event?: any) {
+  if (event && event.stopPropagation) {
+    event.stopPropagation();
   }
   const { options, callBack } = props;
   if (options) {
-    const { params } = options;
+    const { params, title = '您是否确定删除' } = options;
     CModal.confirm({
-      title: '您是否确定删除',
+      title,
       //   content: 'Some descriptions',
       okText: '确定',
       cancelText: '取消',
@@ -155,7 +155,7 @@ function remove(props: ButtonTypeProps,event?: any) {
         if (options.service) {
           const data = await options.service(params);
           if (callBack) {
-            callBack(data,params);
+            callBack(data, params);
           }
         }
       },
@@ -164,9 +164,9 @@ function remove(props: ButtonTypeProps,event?: any) {
   }
 }
 /** @param props */
-function confirm(props: ButtonTypeProps,event?: any) {
-  if (event&&event.stopPropagation){
-   event.stopPropagation();
+function confirm(props: ButtonTypeProps, event?: any) {
+  if (event && event.stopPropagation) {
+    event.stopPropagation();
   }
   const { options, callBack } = props;
   if (options) {
@@ -182,7 +182,7 @@ function confirm(props: ButtonTypeProps,event?: any) {
             const data = await options.service(params);
 
             if (callBack) {
-              callBack(data,params);
+              callBack(data, params);
             }
           } catch (ex) {}
         }
@@ -192,9 +192,9 @@ function confirm(props: ButtonTypeProps,event?: any) {
   }
 }
 /** 停用 */
-async function disabled(props: ButtonTypeProps,event?: any) {
-  if (event&&event.stopPropagation){
-   event.stopPropagation();
+async function disabled(props: ButtonTypeProps, event?: any) {
+  if (event && event.stopPropagation) {
+    event.stopPropagation();
   }
   const { options, callBack } = props;
   if (options) {
@@ -253,7 +253,7 @@ function formSubmit(props: ButtonTypeProps) {
         if (service) {
           const data = await service(newValue);
           if (callBack) {
-            callBack(data,newValue);
+            callBack(data, newValue);
           }
           if (data === null || data.success === undefined || data.success === null) {
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -284,7 +284,7 @@ function formUpdate(props: ButtonTypeProps) {
         if (service) {
           const data = await service(newValue);
           if (callBack) {
-            callBack(data,newValue);
+            callBack(data, newValue);
           }
           if (data === null || data.success === undefined || data.success === null) {
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -307,6 +307,6 @@ const defaultEvent = {
   formSubmit,
   formUpdate,
   confirm,
-  link
+  link,
 };
 export default defaultEvent;
