@@ -42,6 +42,10 @@ export interface ButtonTypeProps extends ButtonProps {
   type?: ButtonType;
   /** 按钮类型 */
   buttonType?: string;
+/**
+ * 功能号
+ */
+  funcode?: string;
   action?: Action;
   /** 弹出框属性配置 */
   options?: DialogOptions;
@@ -96,6 +100,7 @@ export const ToolButtons: ToolButtonsProps = {
     type: 'primary',
     action: Action.ADD,
     buttonType: 'add',
+   
   },
   /** 批量提交 */
   batchSubmit: {
@@ -204,7 +209,16 @@ export const ToolButtons: ToolButtonsProps = {
     buttonType: 'link',
   },
 };
+export const setFuncodes=(toolButtons: any)=>{
+  Object.keys(toolButtons).forEach((key: string) => {
 
+    if (ToolButtons[key]){
+      ToolButtons[key].funcode=toolButtons[key].funcode;
+
+    }
+  })
+
+}
 export const ColumnDataType = {
   amount: 'amount',
   money: 'money',

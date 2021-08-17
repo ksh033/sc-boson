@@ -365,7 +365,7 @@ const CForm: React.FC<CFormProps> = (props) => {
         let colItem;
         if (formItem.items && formItem.items.length > 0) {
           // 关闭之前的行
-          //const {items,...groupProps}=formItem;
+          // const {items,...groupProps}=formItem;
           if (colCount > 0) {
             colCount = 24;
          

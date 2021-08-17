@@ -1,4 +1,4 @@
-import { transformRoute } from '@umijs/route-utils';
+import transformRoute from './transformRoute';
 
 import type { MenuDataItem, Route, MessageDescriptor } from '../typings';
 

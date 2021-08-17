@@ -39,7 +39,7 @@
     "@ant-design/pro-utils": "^1.14.2",
     "@ant-design/pro-card": "^1.13.2",
     "@ant-design/pro-layout":"^6.15.2",
-    "@umijs/route-utils": "^1.0.35",
+    "@umijs/route-utils": "^1.0.37",
     "@umijs/use-params": "^1.0.2",
     "classnames": "^2.2.6",
     "omit.js": "^2.0.2",

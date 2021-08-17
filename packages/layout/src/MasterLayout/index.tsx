@@ -12,7 +12,7 @@ import { stringify } from 'use-json-comparison';
 import useAntdMediaQuery from 'use-media-antd-query';
 import { useDeepCompareEffect, useDocumentTitle, isBrowser } from '@ant-design/pro-utils';
 import Omit from 'omit.js';
-import { getMatchMenu } from '@umijs/route-utils';
+import { getMatchMenu } from '../utils/getMatchMenu';
 import {UnorderedListOutlined} from '@ant-design/icons'
 
 import type { HeaderViewProps } from './Header';
@@ -317,7 +317,7 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props) => {
 
   const { breadcrumb = {}, breadcrumbMap, menuData = [] } = menuInfoData;
 
-  const matchMenus = useMemo(() => getMatchMenu(location.pathname || '/', menuData, true), [
+  const matchMenus = useMemo(() => getMatchMenu(location.pathname || '/', menuData, true,true), [
     location.pathname,
     menuInfoData,
   ]);
