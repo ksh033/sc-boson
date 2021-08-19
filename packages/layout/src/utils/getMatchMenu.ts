@@ -148,9 +148,9 @@ export const getMatchMenu = (
   fullKeys?: boolean,
   exact?: boolean,
 ): MenuDataItem[] => {
-  if (!flatMenus) {
+  // if (!flatMenus) {
     flatMenus = getFlatMenus(menuData);
-  }
+  // }
   const flatMenuKeys = Object.keys(flatMenus);
   let menuPathKeys = getMenuMatches(flatMenuKeys, pathname || '/', exact);
 

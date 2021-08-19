@@ -12,9 +12,9 @@ import classNames from 'classnames';
 import type { ColumnsState } from '../../container';
 import Container from '../../container';
 import type { DataNode } from 'antd/lib/tree';
-import './index.less';
 import { genColumnKey } from '../../utils';
-//import type { ProColumns } from '../../typing';
+
+// import type { ProColumns } from '../../typing';
 // import type { TableColumnType } from 'antd';
 type ColumnSettingProps<T = any> = {
   columns: TableColumnType<T>[];

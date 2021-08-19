@@ -61,13 +61,15 @@ const findAppCode = (pathname: string, appMenu?: AppMenuProps[]) => {
 
 export type MasterLayoutProps = Partial<RouterTypes<Route>> &
   SiderMenuProps &
+  {setCurrentMenu?: (currentMenu: any) => void; }
+  &
   HeaderViewProps & {
     pure?: boolean;
     /** @name logo url */
     logo?: React.ReactNode | WithFalse<() => React.ReactNode>;
 
     /** @name 页面切换的时候触发 */
-    onPageChange?: (location?: RouterTypes<Route>['location']) => void;
+    onPageChange?: (location?: RouterTypes<Route>['location'],currentMenu?: any) => void;
 
     loading?: boolean;
 
@@ -278,6 +280,7 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props) => {
     defaultCollapsed,
     style,
     disableContentMargin,
+    setCurrentMenu,
     siderWidth = 208,
     menu,
     isChildrenLayout: propsIsChildrenLayout,
@@ -323,11 +326,18 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props) => {
   ]);
 
   const matchMenuKeys = useMemo(
-    () => Array.from(new Set(matchMenus.map((item) => item.key || item.path || ''))),
+    () => {
+
+      return Array.from(new Set(matchMenus.map((item) => item.key || item.path || '')))
+    },
     [matchMenus],
   );
   // 当前选中的menu，一般不会为空
-  const currentMenu = (matchMenus[matchMenus.length - 1] || {}) as ProSettings & MenuDataItem;
+  const currentMenu =useMemo(()=>{
+       const menuItem=(matchMenus[matchMenus.length - 1] || {}) as ProSettings & MenuDataItem;
+       setCurrentMenu&&setCurrentMenu(menuItem)
+       return menuItem
+  },[matchMenus])
 
   const currentMenuLayoutProps = useCurrentMenuLayoutProps(currentMenu);
 
@@ -495,7 +505,7 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props) => {
   useEffect(() => {
     const { onPageChange } = props;
     if (onPageChange) {
-      onPageChange(props.location);
+      onPageChange(props.location,currentMenu);
     }
   }, [props.location?.pathname, props.location?.pathname?.search]);
 

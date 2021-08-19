@@ -9,7 +9,6 @@ import { useIntl } from '@ant-design/pro-provider';
 import type { ListToolBarProps } from '../ListToolBar';
 import ListToolBar from '../ListToolBar';
 import ColumnSetting from '../ColumnSetting';
-import './index.less';
 import FullScreenIcon from './FullscreenIcon';
 import DensityIcon from './DensityIcon';
 import Container from '../../container';

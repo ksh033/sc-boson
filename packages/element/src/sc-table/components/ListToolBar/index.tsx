@@ -8,7 +8,6 @@ import { LabelIconTip } from '@ant-design/pro-utils';
 import type { ListToolBarHeaderMenuProps } from './HeaderMenu';
 import HeaderMenu from './HeaderMenu';
 
-import './index.less';
 
 export type ListToolBarSetting = {
   icon: React.ReactNode;
@@ -171,7 +170,7 @@ const ListToolBar: React.FC<ListToolBarProps> = ({
 
   const actionDom = renderActionsDom();
 
-  if (!actionDom&&!searchNode&&!hasTitle){
+  if (!actionDom && !searchNode && !hasTitle) {
     return null;
   }
   return (
