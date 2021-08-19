@@ -148,9 +148,9 @@ export const getMatchMenu = (
   fullKeys?: boolean,
   exact?: boolean,
 ): MenuDataItem[] => {
-  // if (!flatMenus) {
+  if (!flatMenus) {
     flatMenus = getFlatMenus(menuData);
-  // }
+  }
   const flatMenuKeys = Object.keys(flatMenus);
   let menuPathKeys = getMenuMatches(flatMenuKeys, pathname || '/', exact);
 
@@ -164,16 +164,15 @@ if (flatMenus[pathname]){
   menuPathKeys = [menuPathKeys[menuPathKeys.length - 1]];
 }
  // console.log(flatMenus[pathname])
-  //console.log(menuPathKeys)
+  // console.log(menuPathKeys)
  // if
-  let keys= menuPathKeys
+  const keys= menuPathKeys
     .map((menuPathKey) => {
       const menuItem = flatMenus[menuPathKey] || {
         pro_layout_parentKeys: '',
         key: '',
       };
 
-      console.log(menuItem)
       // 去重
       const map = new Map();
       const parentItems = (menuItem.parentKeys || [])
@@ -191,7 +190,6 @@ if (flatMenus[pathname]){
       return parentItems;
     })
     .flat(1);
-    console.log(keys)
     return keys
 };
 
