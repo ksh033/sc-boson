@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { Button, Col, Form, Row, Card } from 'antd';
-import type { FormInstance, FormProps } from 'antd/lib/form';
+import type { FormInstance, FormProps } from 'antd/es/form';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import useMediaQuery from 'use-media-antd-query';
 import classNames from 'classnames';

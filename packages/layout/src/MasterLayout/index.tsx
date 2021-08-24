@@ -4,7 +4,7 @@
 import type { CSSProperties } from 'react';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Layout, ConfigProvider } from 'antd';
-import type { BreadcrumbProps as AntdBreadcrumbProps, BreadcrumbProps } from 'antd/lib/breadcrumb';
+import type { BreadcrumbProps as AntdBreadcrumbProps, BreadcrumbProps } from 'antd/es/breadcrumb';
 import classNames from 'classnames';
 import warning from 'warning';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';

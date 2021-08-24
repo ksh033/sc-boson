@@ -1,8 +1,8 @@
 ﻿/* eslint-disable react-hooks/exhaustive-deps */
 import type { ButtonProps } from 'antd';
 import { Button, Input, Form } from 'antd';
-import type { NamePath } from 'antd/lib/form/interface';
-import type { FormItemProps } from 'antd/lib/form';
+import type { NamePath } from 'antd/es/form/interface';
+import type { FormItemProps } from 'antd/es/form';
 import React, { useState, useCallback, useEffect } from 'react';
 
 export type ProFormCaptchaProps =  {

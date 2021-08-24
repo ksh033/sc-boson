@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import type { GetRowKey } from 'antd/lib/table/interface';
-import type { FormInstance } from 'antd/lib/form/index';
+import type { GetRowKey } from 'antd/es/table/interface';
+import type { FormInstance } from 'antd/es/form/index';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
-import useLazyKVMap from 'antd/lib/table/hooks/useLazyKVMap';
+import useLazyKVMap from 'antd/es/table/hooks/useLazyKVMap';
 import { LoadingOutlined } from '@ant-design/icons';
 import { message, Popconfirm } from 'antd';
 import ReactDOM from 'react-dom';

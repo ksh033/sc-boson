@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormInstance } from 'antd/lib/form'
+import { FormInstance } from 'antd/es/form'
 
 export interface MyContextProps {
   toggleForm?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void

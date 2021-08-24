@@ -1,4 +1,4 @@
-import type { TreeProps, DataNode } from 'antd/lib/tree';
+import type { TreeProps, DataNode } from 'antd/es/tree';
 import type React from 'react';
 
 export type TreeDataNode = DataNode;

@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import type { TableProps } from 'antd/es/table/index';
 import type { ProTableProps, ActionType, TableRowSelection } from './typing';
-import type { ButtonProps } from 'antd/lib/button/index';
+import type { ButtonProps } from 'antd/es/button/index';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
 import { PlusOutlined } from '@ant-design/icons';
 import { Form, Table, Button } from 'antd';
-import type { TablePaginationConfig } from 'antd/lib/table';
-import type { SorterResult, TableCurrentDataSource } from 'antd/lib/table/interface';
+import type { TablePaginationConfig } from 'antd/es/table';
+import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
 import { columnRender, removeDeletedData } from './utils';
 import useEditableArray from './useEditableArray';
 import useMountMergeState from '../_util/useMountMergeState';

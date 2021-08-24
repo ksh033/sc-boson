@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Modal } from 'antd';
-import type { ModalProps } from 'antd/lib/modal';
+import type { ModalProps } from 'antd/es/modal';
 import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import './style';
 

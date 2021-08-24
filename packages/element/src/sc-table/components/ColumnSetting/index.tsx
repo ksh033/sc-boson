@@ -11,7 +11,7 @@ import classNames from 'classnames';
 
 import type { ColumnsState } from '../../container';
 import Container from '../../container';
-import type { DataNode } from 'antd/lib/tree';
+import type { DataNode } from 'antd/es/tree';
 import { genColumnKey } from '../../utils';
 
 // import type { ProColumns } from '../../typing';

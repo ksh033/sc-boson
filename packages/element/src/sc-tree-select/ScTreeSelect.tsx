@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useRef } from 'react';
 import { TreeSelect } from 'antd';
-import type { TreeSelectProps } from 'antd/lib/tree-select/index';
+import type { TreeSelectProps } from 'antd/es/tree-select/index';
 import type { TreeNodeProps } from 'rc-tree-select/lib/TreeNode';
 import { useUpdateEffect } from 'ahooks';
 import useFetchData from '../_util/useFetchData';

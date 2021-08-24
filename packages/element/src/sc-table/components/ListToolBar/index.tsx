@@ -3,7 +3,7 @@ import type { TooltipProps, TabPaneProps } from 'antd';
 import { Tooltip, Space, Input, ConfigProvider, Tabs } from 'antd';
 import { useIntl } from '@ant-design/pro-provider';
 import classNames from 'classnames';
-import type { SearchProps } from 'antd/lib/input';
+import type { SearchProps } from 'antd/es/input';
 import { LabelIconTip } from '@ant-design/pro-utils';
 import type { ListToolBarHeaderMenuProps } from './HeaderMenu';
 import HeaderMenu from './HeaderMenu';

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import * as React from 'react';
-import type { SelectProps } from 'antd/lib/select';
+import type { SelectProps } from 'antd/es/select';
 import { Select, Tooltip } from 'antd';
 import { useUpdateEffect, useDebounceFn } from 'ahooks';
 

@@ -16,7 +16,7 @@ import {
   InputNumber,
 } from 'antd';
 import { useUpdateEffect } from 'ahooks';
-import { TableProps } from 'antd/lib/table/Table';
+import { TableProps } from 'antd/es/table/Table';
 
 const EditableContext = React.createContext<any>(null);
 

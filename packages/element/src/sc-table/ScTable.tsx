@@ -4,7 +4,7 @@
 import * as React from 'react';
 import type { CardProps } from 'antd';
 import { Table, Tooltip, Divider, Card } from 'antd';
-import type { TableProps, TablePaginationConfig } from 'antd/lib/table/Table';
+import type { TableProps, TablePaginationConfig } from 'antd/es/table/Table';
 import { useUpdateEffect, useRequest, useSetState } from 'ahooks';
 
 import type { OptionConfig, ToolBarProps } from './components/ToolBar';
@@ -17,7 +17,7 @@ import { genColumnList, tableColumnSort, genColumnKey } from './utils';
 import useDeepCompareEffect from '../_util/useDeepCompareEffect';
 
 const { useState, useEffect, useRef, useMemo } = React;
-export type { ColumnsType } from 'antd/lib/table/Table';
+export type { ColumnsType } from 'antd/es/table/Table';
 export interface ScTableProps<T> extends TableProps<T> {
   onSelectRow?: (selectedRowKeys: string[], selectedRows: any[]) => void; // 当选中时触发
   data?: { rows: any[]; total: number; current: number; size: number }; // 列表数据

@@ -1,4 +1,4 @@
-import type { MenuTheme } from 'antd/lib/menu/MenuContext';
+import type { MenuTheme } from 'antd/es/menu/MenuContext';
 
 import type {ProSettings} from '@ant-design/pro-layout'
 

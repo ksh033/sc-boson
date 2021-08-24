@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input } from 'antd';
-import { TextAreaProps } from 'antd/lib/input';
+import { TextAreaProps } from 'antd/es/input';
 
 const { TextArea } = Input;
 

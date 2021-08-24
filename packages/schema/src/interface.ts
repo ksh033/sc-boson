@@ -11,7 +11,7 @@ import type {
 import type { cmps } from './register';
 
 import type React from 'react';
-import type { ButtonType, ButtonProps } from 'antd/lib/button';
+import type { ButtonType, ButtonProps } from 'antd/es/button';
 
 export { Field, FieldGroup, FiledProp, FormConfig };
 export interface FormItem<T extends keyof typeof cmps> extends Omit<FormItemProp, 'component'> {

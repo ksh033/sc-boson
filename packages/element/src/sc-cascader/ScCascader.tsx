@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-throw-literal */
 /* eslint-disable no-param-reassign */
 import React, { useRef } from 'react';
-import type { CascaderProps } from 'antd/lib/cascader';
+import type { CascaderProps } from 'antd/es/cascader';
 import { Cascader } from 'antd';
 import { useUpdateEffect } from 'ahooks';
 

@@ -1,6 +1,6 @@
 import type { UploadFile } from 'antd/es/upload/interface';
-import type { UploadProps } from 'antd/lib/upload';
-import type { UploadChangeParam } from 'antd/lib/upload/interface';
+import type { UploadProps } from 'antd/es/upload';
+import type { UploadChangeParam } from 'antd/es/upload/interface';
 import type { ReactNode } from 'react';
 
 export type Props = {

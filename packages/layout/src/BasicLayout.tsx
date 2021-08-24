@@ -4,7 +4,7 @@ import { Layout, ConfigProvider } from "antd";
 import type {
   BreadcrumbProps as AntdBreadcrumbProps,
   BreadcrumbProps,
-} from "antd/lib/breadcrumb";
+} from "antd/es/breadcrumb";
 import type {
   MenuDataItem,
   MessageDescriptor,

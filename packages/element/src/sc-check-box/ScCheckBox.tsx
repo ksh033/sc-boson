@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useRef } from 'react';
 import { Checkbox } from 'antd';
-import type { CheckboxGroupProps } from 'antd/lib/checkbox';
+import type { CheckboxGroupProps } from 'antd/es/checkbox';
 import type { DataComponentProps } from '../Component';
 import useFetchData from '../_util/useFetchData';
 import { useUpdateEffect } from 'ahooks';
