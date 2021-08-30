@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const Config: Record<string, any> = {
   version: '1.0',
   url: 'http://127.0.0.1:13526/',

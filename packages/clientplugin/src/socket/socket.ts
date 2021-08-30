@@ -151,7 +151,7 @@ export default {
       let status = 'pending';
       (<Window>window)[jsonp] = function () {
         status = 'resolved';
-        const args: [({} | PromiseLike<{}> | undefined | unknown)?] = [];
+        const args: any = [];
         for (let i = 0; i < arguments.length; i++) {
           args[i] = arguments[i];
         }
