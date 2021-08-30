@@ -1,0 +1,102 @@
+﻿[
+    {
+        "recordset": [
+            {
+                "A": "a",
+                "CustomerID": "ALFKI",
+                "CompanyName": "三川实业有限公司",
+                "ContactName": "刘小姐",
+                "Address": "大崇明路 50 号",
+                "City": "天津",
+                "Region": "华北",
+                "PostalCode": "343567",
+                "Phone": "(030) 30074321"
+            },
+            {
+                "CustomerID": "ANATR",
+                "CompanyName": "东南实业",
+                "ContactName": "王先生",
+                "Address": "承德西路 80 号",
+                "City": "天津",
+                "Region": "华北",
+                "PostalCode": "234575",
+                "Phone": "(030) 35554729"
+            }
+        ]
+    },
+    {
+        "recordset": [
+            {
+                "A": "a",
+                "CustomerID": "ALFKI",
+                "CompanyName": "三川实业有限公司",
+                "ContactName": "刘小姐",
+                "Address": "大崇明路 50 号",
+                "City": "天津",
+                "Region": "华北",
+                "PostalCode": "343567",
+                "Phone": "(030) 30074321"
+            },
+            {
+                "CustomerID": "ANATR",
+                "CompanyName": "东南实业",
+                "ContactName": "王先生",
+                "Address": "承德西路 80 号",
+                "City": "天津",
+                "Region": "华北",
+                "PostalCode": "234575",
+                "Phone": "(030) 35554729"
+            }
+        ]
+    },
+    {
+        "recordset": [
+            {
+                "A": "a",
+                "CustomerID": "ALFKI",
+                "CompanyName": "三川实业有限公司",
+                "ContactName": "刘小姐",
+                "Address": "大崇明路 50 号",
+                "City": "天津",
+                "Region": "华北",
+                "PostalCode": "343567",
+                "Phone": "(030) 30074321"
+            },
+            {
+                "CustomerID": "ANATR",
+                "CompanyName": "东南实业",
+                "ContactName": "王先生",
+                "Address": "承德西路 80 号",
+                "City": "天津",
+                "Region": "华北",
+                "PostalCode": "234575",
+                "Phone": "(030) 35554729"
+            }
+        ]
+    },
+    {
+        "recordset": [
+            {
+                "A": "a",
+                "CustomerID": "ALFKI",
+                "CompanyName": "三川实业有限公司",
+                "ContactName": "刘小姐",
+                "Address": "大崇明路 50 号",
+                "City": "天津",
+                "Region": "华北",
+                "PostalCode": "343567",
+                "Phone": "(030) 30074321"
+            },
+            {
+                "CustomerID": "ANATR",
+                "CompanyName": "东南实业",
+                "ContactName": "王先生",
+                "Address": "承德西路 80 号",
+                "City": "天津",
+                "Region": "华北",
+                "PostalCode": "234575",
+                "Phone": "(030) 35554729"
+            }
+        ]
+    }
+]

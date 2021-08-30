@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"module": "es6",
+		"target": "es5",
+		"outDir": "dist",
+		"allowJs": true,
+		"experimentalDecorators": true,
+		"strict": true,
+		"lib": [
+			"es5","es2015.promise","dom"
+		],
+		"sourceMap": true,
+		"rootDirs":[
+			"src"
+		]
+	},
+	"exclude": [
+		"dist",
+		"tmp"
+	]
+}

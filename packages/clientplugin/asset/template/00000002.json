@@ -1,0 +1,32 @@
+{
+    "Master": [
+        {
+            "sortingNo": "8900",
+            "deliveryType": "同城",
+            "lineNo": "7889900",
+            "transitWarehouse": "上街仓",
+            "barcode": "8900998877"
+
+        }
+    ],
+    "Detail": [
+        {
+            "productNo": "16256887",
+            "productName": "猪后腿肉500g",
+            "Quantity": "10",
+            "gridNumber": "1【2】、3【3】、4【5】"
+        },
+        {
+            "productNo": "16256887",
+            "productName": "猪后腿肉500g",
+            "Quantity": "5",
+            "gridNumber": "5【1】、6【3】、7【1】"
+        },
+        {
+            "productNo": "16256887",
+            "productName": "闽侯上海青300g",
+            "Quantity": "10",
+            "gridNumber": "1【2】、3【3】、4【5】"
+        }
+    ]
+}

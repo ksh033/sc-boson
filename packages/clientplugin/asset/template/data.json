@@ -1,0 +1,439 @@
+{
+    "ReportDetail": {
+        "FixCols": 1,
+        "Nowrap": true,
+        "PrintAdaptMethod": 7,
+        "HAlign": false,
+        "RowNumber": {
+            "Width": 1,
+            "SummaryText": "合计"
+        },
+        "HeaderBgColor": "#BA55D3",
+        "FooterBgColor": "#BA55D3",
+        "DetailHeaders": [
+            {
+                "Name": "StuentData",
+                "Title": "缴款日期",
+                "Align": 4,
+                "Width": 2
+            },
+            {
+                "Name": "bs_35",
+                "Title": "执收银行",
+                "SubHeaders": [
+                    {
+                        "Name": "EXEBANKCODE",
+                        "Title": "编码",
+                        "Align": 4,
+                        "Width": 5
+                    },
+                    {
+                        "Name": "EXEBANKNAME",
+                        "Title": "名称",
+                        "Align": 4,
+                        "Width": 11,
+                        "Summary": {
+                            "Function": 3
+                        }
+                    }
+                ]
+            },
+            {
+                "Name": "bs_36",
+                "Title": "金额",
+                "Align": 4,
+                "SubHeaders": [
+                    {
+                        "Name": "IMSUM",
+                        "Title": "收入金额",
+                        "Align": 6,
+                        "Width": 6,
+                        "Format": "#,##0.00",
+                        "DataType": "Number",
+                        "Summary": {
+                            "Function": 1
+                        }
+                    },
+                    {
+                        "Name": "ENTERSUM",
+                        "Title": "到账金额",
+                        "Align": 6,
+                        "Width": 7,
+                        "Format": "#,##0.00",
+                        "DataType": "Number",
+                        "Summary": {
+                            "Function": 1
+                        }
+                    },
+                    {
+                        "Name": "diff",
+                        "Title": "未到账金额",
+                        "Align": 6,
+                        "Width": 7,
+                        "Format": "#,##0.00",
+                        "DataType": "Number",
+                        "Summary": {
+                            "Function": 1
+                        }
+                    }
+                ]
+            }
+        ],
+        "DetailDatas": [
+            {
+                "StuentData": "20150130",
+                "EXEBANKCODE": "01",
+                "EXEBANKNAME": "工商银行",
+                "IMSUM": 100,
+                "ENTERSUM": 100,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150130",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 8679,
+                "ENTERSUM": 8679,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150131",
+                "EXEBANKCODE": "01",
+                "EXEBANKNAME": "工商银行",
+                "IMSUM": 450,
+                "ENTERSUM": 450,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "01",
+                "EXEBANKNAME": "工商银行",
+                "IMSUM": 100,
+                "ENTERSUM": 100,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150201",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 1050,
+                "ENTERSUM": 1050,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150202",
+                "EXEBANKCODE": "01",
+                "EXEBANKNAME": "工商银行",
+                "IMSUM": 398672.15,
+                "ENTERSUM": 398672.15,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150202",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 399528.3,
+                "ENTERSUM": 399528.3,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150203",
+                "EXEBANKCODE": "01",
+                "EXEBANKNAME": "工商银行",
+                "IMSUM": 12315266546.6,
+                "ENTERSUM": 2954793.8,
+                "DIFF": 12312311752.800001
+            },
+            {
+                "StuentData": "20150203",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 26533,
+                "ENTERSUM": 26533,
+                "DIFF": 0
+            },
+            {
+                "StuentData": "20150204",
+                "EXEBANKCODE": "01",
+                "EXEBANKNAME": "工商银行",
+                "IMSUM": 84080.3,
+                "ENTERSUM": 57139.2,
+                "DIFF": 26941.100000000006
+            },
+            {
+                "StuentData": "20150204",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 6779797.64,
+                "ENTERSUM": 6777677.64,
+                "DIFF": 2120
+            },
+            {
+                "StuentData": "20150204",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 6779797.64,
+                "ENTERSUM": 6777677.64,
+                "DIFF": 2120
+            },
+            {
+                "StuentData": "20150204",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 6779797.64,
+                "ENTERSUM": 6777677.64,
+                "DIFF": 2120
+            },
+            {
+                "StuentData": "20150204",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 6779797.64,
+                "ENTERSUM": 6777677.64,
+                "DIFF": 2120
+            },
+            {
+                "StuentData": "20150204",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 6779797.64,
+                "ENTERSUM": 6777677.64,
+                "DIFF": 2120
+            },
+            {
+                "StuentData": "20150204",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 6779797.64,
+                "ENTERSUM": 6777677.64,
+                "DIFF": 2120
+            },
+            {
+                "StuentData": "20150204",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 6779797.64,
+                "ENTERSUM": 6777677.64,
+                "DIFF": 2120
+            },
+            {
+                "StuentData": "20150204",
+                "EXEBANKCODE": "02",
+                "EXEBANKNAME": "建设银行",
+                "IMSUM": 6779797.64,
+                "ENTERSUM": 6777677.64,
+                "DIFF": 2120
+            }
+        ]
+    },
+    "ReportHeader": {
+        "MainTitle": {
+            "Title": "主标题示例-{main}"
+        },
+        "SubTitles": [
+            {
+                "Left": {
+                    "Title": "左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}左副标题示例左副标题示例左副标题示例左副标题示例左副标题示例左副标题示ACVVVVA例-{left}"
+                }
+            }
+        ],
+        "Repeat": true
+    },
+    "ReportFooter": {
+        "SubTitles": [
+            {
+                "Left": {
+                    "Title": "左副标题示例-{left}"
+                },
+                "Center": {
+                    "Title": "右副标题示例-{right}"
+                },
+                "Right": {
+                    "Title": "右副标题示例-{right}"
+                }
+            }
+        ],
+        "Repeat": true
+    },
+    "PageFooter": {
+        "Center": {
+            "PageNumber": true
+        }
+    }
+}

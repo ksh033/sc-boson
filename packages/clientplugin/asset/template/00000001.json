@@ -1,0 +1,33 @@
+{
+    "Master": [
+        {
+            "waveNo": "B1234/S1",
+            "barcode": "A234567891",
+            "time": "08:00~10:00",
+            "phone": "13888888888",
+            "person": "张三",
+            "address": "福建省福州市博思软件大厦中海寰宇天下46栋2单元716室加预留一行",
+            "total": "￥100",
+            "deliveryFee": "￥5",
+            "coupon": "-￥9",
+            "pay": "￥99"
+        }
+    ],
+    "Detail": [
+        {
+            "itemName": "藏香猪五花肉藏香猪五花肉250g/盒",
+            "unitPrice": "￥20.8",
+            "itemQuantity": "1"
+        },
+        {
+            "itemName": "藏香猪排骨300g/盒",
+            "unitPrice": "￥20.8",
+            "itemQuantity": "2"
+        },
+        {
+            "itemName": "藏香猪排骨300g/盒",
+            "unitPrice": "￥20.8",
+            "itemQuantity": "2"
+        }
+    ]
+}

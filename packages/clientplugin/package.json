@@ -1,0 +1,35 @@
+{
+  "name": "@scboson/client-plugin",
+  "version": "2.0.0",
+  "description": "博思客户端",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "scripts": {
+    "publish": "npm publish --registry http://192.168.10.60:4873",
+    "dev": "webpack-dev-server --config ./webpack.dev.js",
+    "build": "webpack --config ./webpack.pro.js",
+    "build-demo": "webpack --config ./webpack.dev.js"
+  },
+  "publishConfig": {
+    "registry": "http://172.18.169.70:8081/repository/bsnpm/"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.3.29",
+    "clean-webpack-plugin": "^2.0.1",
+    "copy-webpack-plugin": "^5.0.1",
+    "html-webpack-plugin": "^3.2.0",
+    "jquery": "^3.3.1",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.3.4000",
+    "uglifyjs-webpack-plugin": "^2.1.2",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1",
+    "webpack-merge": "^4.2.1"
+  },
+  "dependencies": {
+    "@types/uuid": "^3.4.4",
+    "uuid": "^3.3.2"
+  },
+  "author": ""
+}
