@@ -169,7 +169,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         return true;
       });
 
-      const crowKeys = crows.map((item) => item[`${rowKey}`]);
+      let crowKeys = crows.map((item) => item[`${rowKey}`]);
+      crowKeys = [...new Set(crowKeys)];
 
       onSelectRow(crowKeys, crows);
     }
@@ -183,20 +184,23 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
   const handleRowSelectChange = (_rowKeys: string[], _rows: any[] = []) => {
     const _dataKeys = dataKeys.current;
-
     let crowKeys = [...(action.current.rowKeys || [])];
     let crows = [...(action.current.rows || [])];
-    // 先过滤掉当前有数据的选择项
-    crowKeys = crowKeys.filter((item) => !_dataKeys.has(item));
-    crows = crows.filter((item) => !_dataKeys.has(item[rowKey]));
+    if (pagination === false) {
+      changeRowSelect(_rowKeys, _rows);
+    } else {
+      // 先过滤掉当前有数据的选择项
+      crowKeys = crowKeys.filter((item) => !_dataKeys.has(item));
+      crows = crows.filter((item) => !_dataKeys.has(item[rowKey]));
 
-    crowKeys = [...crowKeys, ..._rowKeys].filter((item) => item !== undefined && item !== null);
-    const srowKeys = new Set(crowKeys);
-    crows = [...crows, ..._rows].filter(
-      (item) => item !== undefined && item !== null && srowKeys.has(item[rowKey]),
-    );
+      crowKeys = [...crowKeys, ..._rowKeys].filter((item) => item !== undefined && item !== null);
+      const srowKeys = new Set(crowKeys);
+      crows = [...crows, ..._rows].filter(
+        (item) => item !== undefined && item !== null && srowKeys.has(item[rowKey]),
+      );
 
-    changeRowSelect(crowKeys, crows);
+      changeRowSelect(crowKeys, crows);
+    }
   };
 
   const updateAction = () => {
@@ -297,21 +301,19 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     });
   }, [counter.columnsMap, tableColumn]);
 
-  const cRowSelection = useMemo(() => {
-    return checkbox
-      ? {
-          selectedRowKeys: rowKeys,
-          onChange: handleRowSelectChange,
-          onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
-            if (getRecord) {
-              getRecord(record, selected, _selectedRows, nativeEvent);
-            }
-          },
-          ...rowSelection,
-          getCheckboxProps,
-        }
-      : undefined;
-  }, [JSON.stringify(rowKeys), handleRowSelectChange, getRecord, getCheckboxProps, rowSelection]);
+  const cRowSelection = checkbox
+    ? {
+        selectedRowKeys: rowKeys,
+        onChange: handleRowSelectChange,
+        onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
+          if (getRecord) {
+            getRecord(record, selected, _selectedRows, nativeEvent);
+          }
+        },
+        ...rowSelection,
+        getCheckboxProps,
+      }
+    : {};
 
   const handleRowSelect = (record: any) => {
     const key = record[rowKey];
