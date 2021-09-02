@@ -186,7 +186,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     const _dataKeys = dataKeys.current;
     let crowKeys = [...(action.current.rowKeys || [])];
     let crows = [...(action.current.rows || [])];
-    if (pagination === false) {
+    if (pagination === false || request === undefined || request === null) {
       changeRowSelect(_rowKeys, _rows);
     } else {
       // 先过滤掉当前有数据的选择项
