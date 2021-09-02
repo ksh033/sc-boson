@@ -212,6 +212,17 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       reload: () => {
         loadData();
       },
+      clearRowKeys: () => {
+        action.current = {
+          rowKeys: [],
+          rows: [],
+        };
+        setRowKeys([]);
+        setRows([]);
+        if (onSelectRow) {
+          onSelectRow([], []);
+        }
+      },
     };
     if (saveRef && typeof saveRef === 'function') {
       saveRef(userAction);
