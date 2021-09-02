@@ -1,0 +1,34 @@
+{
+    "Master": [
+        {
+            "waveNo": "B1234/S1",
+            "qrCode": "A234567891",
+            "orderNo": "D123456",
+            "phone": "13888888888",
+            "person": "张三",
+            "address": "福建省福州市博思软件大厦中海寰宇天下46栋2单元716室加预留一行",
+            "quantity": "9",
+            "total": "100"
+        }
+    ],
+    "Detail": [
+        {
+            "itemName": "白菜",
+            "itemQuantity": "2",
+            "unitPrice": "2",
+            "subtotal": "2"
+        },
+        {
+            "itemName": "青菜",
+            "itemQuantity": "5",
+            "unitPrice": "2",
+            "subtotal": "2"
+        },
+        {
+            "itemName": "鸡胸肉",
+            "itemQuantity": "1",
+            "unitPrice": "2",
+            "subtotal": "2"
+        }
+    ]
+}

@@ -1,0 +1,89 @@
+<html>
+
+<head>
+    <title>博思客户端测试ts</title>
+    <meta charset="UTF-8" />
+    <style>
+        body {
+            padding: 50px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 15px;
+        }
+
+        hr {
+            display: block;
+            margin: 3px;
+        }
+    </style>
+    <script>
+        var _contextPath = "/bs-client-demo";
+        var initAppJSPath = "index.js";
+        var _cookies = '321456';
+        var _caProvider = 'TJCA';
+    </script>
+</head>
+
+<body>
+
+
+    <button id="update">更新</button>
+    <button id="heartbeat">心跳</button>
+    <button id="start">启动客户端</button>
+    模板：<select id="template">
+        <option value="OnlyDetail">OnlyDetail</option>
+        <option value="113">113</option>
+        <option value="11">11</option>
+        <option value="DetailParameters">DetailParameters</option>
+    </select>
+    &nbsp;&nbsp;&nbsp;&nbsp;是否预览：<select id="preView">
+        <option value="true">是</option>
+        <option value="false">否</option>
+    </select>
+
+    <button id="doPreView">打印</button>
+    <button id="doImage">生成图片</button>
+    <button id="exportMedia">导出</button>
+    <button id="batchPrint1">批量打印</button>
+
+    <div id="imgbox"
+        style="height: 250px;width: 300px;border:1px solid cornflowerblue;position: relative;overflow: auto">
+    </div>
+    <button id="doPrintRemoteImage">打印图片</button>
+    <button id="doCustomPrint">自定义报表</button>
+    <button id="setPrinterBtn">小票打印机</button>
+    <button id="setPrinterBtn1">分揀打印机</button>
+    <button id="getPrinterBtn">获取打印机设置</button>
+    <textarea id="printSet" style="height: 200px;width: 150px;border: solid 1px blue;padding: 5px;overflow: auto">
+        </textarea>
+    <br>
+
+
+    <!-- <hr>
+    <h1>高拍儀</h1>
+    <br>
+    <button id="takePicture">一次性获取</button>
+    <button id="bufferTakePicture">缓存获取</button>
+    <div id="c-imgbox" style="height: 200px;width: 360px;border:1px solid cornflowerblue;display: block;overflow: auto">
+
+    </div>
+
+    <hr>
+    <button id="upload">文件上传</button>
+    <hr>
+
+    <button id="expPd">expPd</button>
+    <button id="impPd">impPd</button>
+    <hr>
+
+    <button id="posBtn">POS</button>
+    <hr>
+    <button id="caBtn">CA认证</button>
+    <button id="validateCaBtn">验签并验证卡信息</button> -->
+    <script type="text/javascript" src="demo.js"></script>
+</body>
+
+</html>

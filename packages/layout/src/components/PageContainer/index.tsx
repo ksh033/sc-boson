@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { PageContainer as APageContainer } from '@ant-design/pro-layout';
 import type { PageContainerProps } from '@ant-design/pro-layout';
 import { Button } from 'antd';
-import "./index.less";
+import './index.less';
 
 const PageContainer: React.FC<PageContainerProps> = (props) => {
   const { children, footer } = props;
@@ -14,6 +14,10 @@ const PageContainer: React.FC<PageContainerProps> = (props) => {
     if (Array.isArray(footer)) {
       mergedFormButtons = footer.map((item: any, index: number) => {
         const buttonProps = item;
+        if (React.isValidElement(item)) {
+          const newProps = { key: `formButton${index}` };
+          return React.cloneElement(item, { ...newProps });
+        }
         const { buttonType, text, ...resprops } = buttonProps;
         return (
           <Button key={`formButton${index}`} {...resprops}>
