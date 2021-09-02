@@ -25,7 +25,7 @@ import {
   WaterMark,
 } from '@ant-design/pro-layout';
 
-import PageContainer from './components/PageContainer';
+import {PageContainer} from '@ant-design/pro-layout';
 
 export  { default as ScCard } from '@ant-design/pro-card';
 
