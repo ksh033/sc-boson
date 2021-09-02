@@ -19,7 +19,7 @@ export interface ScTreeSelectProps extends TreeSelectProps<TreeNodeProps> {
   valueField?: string;
   params: any;
   autoload: boolean;
-  nodeTransform?: Function;
+  nodeTransform?: (node: any) => any;
   loadDataPramsFormat?: (data: any) => any;
 }
 
@@ -70,7 +70,12 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
   };
 
   const getData = (_data: any) => {
-    let privateData = [];
+    let privateData: any[] = [];
+
+    if (!_data){
+      return privateData
+    }
+
     if (root) {
       if (Array.isArray(_data) && _data.length > 0) {
         root.children = _data;
