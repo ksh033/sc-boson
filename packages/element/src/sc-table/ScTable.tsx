@@ -312,19 +312,21 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     });
   }, [counter.columnsMap, tableColumn]);
 
-  const cRowSelection = checkbox
-    ? {
-        selectedRowKeys: rowKeys,
-        onChange: handleRowSelectChange,
-        onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
-          if (getRecord) {
-            getRecord(record, selected, _selectedRows, nativeEvent);
-          }
-        },
-        ...rowSelection,
-        getCheckboxProps,
-      }
-    : {};
+  const cRowSelection = useMemo(() => {
+    return checkbox
+      ? {
+          selectedRowKeys: rowKeys,
+          onChange: handleRowSelectChange,
+          onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
+            if (getRecord) {
+              getRecord(record, selected, _selectedRows, nativeEvent);
+            }
+          },
+          ...rowSelection,
+          getCheckboxProps,
+        }
+      : undefined;
+  }, [JSON.stringify(rowKeys), handleRowSelectChange, getRecord, getCheckboxProps, rowSelection]);
 
   const handleRowSelect = (record: any) => {
     const key = record[rowKey];
