@@ -62,6 +62,28 @@ export const getFlatMenus = (menuData: MenuDataItem[] = []): Record<string, Menu
   return menus;
 };
 
+/**
+ * 获取打平的 menuData 已 path 为 key
+ *
+ * @param menuData
+ */
+ export const getFlatKeyMenus = (menuData: MenuDataItem[] = []): Record<string, MenuDataItem> => {
+  let menus: Record<string, MenuDataItem> = {};
+  menuData.forEach((item) => {
+    if (!item || !item.key) {
+      return;
+    }
+
+    
+    menus[item.key] = { ...item };
+
+    if (item.children) {
+      menus = { ...menus, ...getFlatKeyMenus(item.children) };
+    }
+  });
+  return menus;
+};
+
 export const findMenuItemByPath = (
   menuData: MenuDataItem[] = [],
   path: string,
@@ -150,6 +172,8 @@ export const getMatchMenu = (
 ): MenuDataItem[] => {
  
     flatMenus = getFlatMenus(menuData);
+    
+    const keyMenus=getFlatKeyMenus(menuData)
  
   const flatMenuKeys = Object.keys(flatMenus);
   let menuPathKeys = getMenuMatches(flatMenuKeys, pathname || '/', exact);
@@ -168,10 +192,7 @@ if (flatMenus[pathname]){
  // if
   const keys= menuPathKeys
     .map((menuPathKey) => {
-      const menuItem = flatMenus[menuPathKey] || {
-        pro_layout_parentKeys: '',
-        key: '',
-      };
+      const menuItem = flatMenus[menuPathKey] ;
 
       // 去重
       const map = new Map();
@@ -181,7 +202,7 @@ if (flatMenus[pathname]){
             return null;
           }
           map.set(key, true);
-          return flatMenus[key];
+          return keyMenus[key];
         })
         .filter((item: any) => item) as MenuDataItem[];
       if (menuItem.key) {
