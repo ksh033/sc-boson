@@ -12,10 +12,11 @@
 /* eslint-disable vars-on-top */
 /* eslint-disable no-var */
 /* eslint-disable func-names */
-import defConfig from 'config/default-config';
-import utils from 'utils/index';
+import defConfig from '../config/default-config';
+import utils from '../utils/index';
 
 type Window = Record<string, any>;
+
 
 function createIframe(op: any): HTMLElement {
   const {
@@ -149,7 +150,14 @@ export default {
       let timeconsum = 0;
       let timer: any = -1;
       let status = 'pending';
-      (<Window>window)[jsonp] = function () {
+      // @ts-ignore
+      //const t=window.masterWindow;
+      //console.log(t);
+     // console.log(window["0"]);
+     const temWin=window.masterWindow|| (<Window>window)
+     const headNode = temWin.document.getElementsByTagName('head')[0];
+     const scriptNode = temWin.document.createElement('script');
+     temWin[jsonp] = function () {
         status = 'resolved';
         const args: any = [];
         for (let i = 0; i < arguments.length; i++) {
@@ -157,13 +165,13 @@ export default {
         }
         resolve.apply(defer, args);
         clearInterval(timer);
-        delete (<Window>window)[jsonp];
+        scriptNode.remove()
+        delete temWin[jsonp];
       };
-      const headNode = document.getElementsByTagName('head')[0];
-      const scriptNode = document.createElement('script');
+     
       scriptNode.type = 'text/javascript';
       scriptNode.charset = 'utf-8';
-      scriptNode.async = true;
+       scriptNode.async = true;
       const queryString = Object.keys(data)
         .map((key) => `${key}=${encodeURIComponent(data[key])}`)
         .join('&');
@@ -175,9 +183,10 @@ export default {
       timer = setInterval(function () {
         timeconsum += step;
         if (timeconsum >= timeout) {
-          delete (<Window>window)[jsonp];
+          delete temWin[jsonp];
           clearInterval(timer);
           if (status == 'pending') {
+            scriptNode.remove()
             reject({ code: 'timeout', msg: '超时' });
           }
         }

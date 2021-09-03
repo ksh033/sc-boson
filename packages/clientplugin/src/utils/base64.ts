@@ -22,6 +22,8 @@
  */
 
 // existing version for noConflict()
+
+// @ts-ignore
 const version = '2.1.9';
 // eslint-disable-next-line import/no-mutable-exports
 let Base64: any = {};

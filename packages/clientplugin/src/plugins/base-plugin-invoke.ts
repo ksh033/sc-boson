@@ -2,9 +2,9 @@
 /* eslint-disable consistent-return */
 /* eslint-disable prefer-const */
 /* eslint-disable no-multi-assign */
-import defConfig from 'config/default-config';
-import utils from 'utils/index';
-import socket from 'socket/socket';
+import defConfig from '../config/default-config';
+import utils from '../utils/index';
+import socket from '../socket/socket';
 
 import type { PluginFunConfig, PluginConfig, PluginInvokeOptions } from '../boss-soft-plugin';
 
@@ -37,6 +37,10 @@ export default class BasePluginvoke {
     this.initStateDefer.then(() => {
       BasePluginvoke.clientUpdate();
     });
+  }
+
+  public getConfig=()=>{
+    return this.config
   }
 
   /**
@@ -101,6 +105,7 @@ export default class BasePluginvoke {
                 return this.operate(invokeOP);
               });
             }
+            return null
           });
       };
     });
@@ -117,16 +122,16 @@ export default class BasePluginvoke {
    * @param type
    */
   public static startClient(type: 'url' | 'jsonp' = 'url'): Promise<any> {
-    if (type === 'url') {
-      console.log($.get);
-      $.get(defConfig.startUrl);
-      // let btn = utils.appendHtml(`
-      //     <a href="${defConfig.startUrl}}" style="position:absolute; top:-9999px; left:-9999px" />
-      // `)
-      // btn.click();
-      // btn.remove();
-      return Promise.resolve(true);
-    }
+    // if (type === 'url') {
+    //  // console.log($.get);
+    //   // $.get(defConfig.startUrl);
+    //   // let btn = utils.appendHtml(`
+    //   //     <a href="${defConfig.startUrl}}" style="position:absolute; top:-9999px; left:-9999px" />
+    //   // `)
+    //   // btn.click();
+    //   // btn.remove();
+    //   return Promise.resolve(true);
+    // }
     return socket.jsonp({
       jsonp: `start_${utils.uuid()}`,
       url: `${defConfig.guardUrl}?ct=2`,

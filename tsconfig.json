@@ -12,13 +12,14 @@
     "suppressImplicitAnyIndexErrors": true,
     "declaration": true,
     "skipLibCheck": true,
-  "types": [],
+  "types": ["node"],
     "paths": {
       "@scboson/sc-element": ["./packages/element/src/index.tsx"],
       "@scboson/sc-layout": ["./packages/layout/src/index.tsx"],
       "@scboson/sc-h5sdk": ["./packages/h5skd/src/index.tsx"],
       "@scboson/sc-schema": ["./packages/schema/src/index.tsx"],
       "@scboson/sc-utils": ["./packages/utils/src/index.js"],
+      "@scboson/client-plugin": ["./packages/clientplugin/src/index.ts"],
     }
   },
   "include": [
