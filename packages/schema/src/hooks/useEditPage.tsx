@@ -169,8 +169,6 @@ export default function useEditPage(
     return { form, formConfig, initialValues };
   };
 
-
-
   const getModalBtns = (
     rAction?: string,
     options?: DialogOptions & {
@@ -223,6 +221,7 @@ export default function useEditPage(
     }
     buttons.push({
       ...ToolButtons.formBack, // 返回按钮
+      text: newAction === Action.VIEW ? '返回' : '取消',
       options: defaultOptions,
     });
     return Page.bindEvents(buttons);

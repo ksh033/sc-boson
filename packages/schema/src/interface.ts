@@ -42,9 +42,7 @@ export interface ButtonTypeProps extends ButtonProps {
   type?: ButtonType;
   /** 按钮类型 */
   buttonType?: string;
-/**
- * 功能号
- */
+  /** 功能号 */
   funcode?: string;
   action?: Action;
   /** 弹出框属性配置 */
@@ -60,7 +58,7 @@ export interface ButtonTypeProps extends ButtonProps {
    * 提交前处理
    */
   preHandle?: (values: any) => any;
-  callBack?: (values: any,requestData?: any) => void; // 回调函数
+  callBack?: (values: any, requestData?: any) => void; // 回调函数
 }
 
 export enum Action {
@@ -100,7 +98,6 @@ export const ToolButtons: ToolButtonsProps = {
     type: 'primary',
     action: Action.ADD,
     buttonType: 'add',
-   
   },
   /** 批量提交 */
   batchSubmit: {
@@ -165,7 +162,6 @@ export const ToolButtons: ToolButtonsProps = {
     text: '删除',
     buttonType: 'remove',
     serverName: 'remove',
-
   },
   /** 详情 */
   view: {
@@ -184,7 +180,7 @@ export const ToolButtons: ToolButtonsProps = {
     buttonType: 'disabled',
   },
   formBack: {
-    text: '取消',
+    text: '返回',
     buttonType: 'formBack',
   },
   formUpdate: {
@@ -209,16 +205,13 @@ export const ToolButtons: ToolButtonsProps = {
     buttonType: 'link',
   },
 };
-export const setFuncodes=(toolButtons: any)=>{
+export const setFuncodes = (toolButtons: any) => {
   Object.keys(toolButtons).forEach((key: string) => {
-
-    if (ToolButtons[key]){
-      ToolButtons[key].funcode=toolButtons[key].funcode;
-
+    if (ToolButtons[key]) {
+      ToolButtons[key].funcode = toolButtons[key].funcode;
     }
-  })
-
-}
+  });
+};
 export const ColumnDataType = {
   amount: 'amount',
   money: 'money',
