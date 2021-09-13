@@ -10,7 +10,8 @@ import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interfa
 import { columnRender, removeDeletedData } from './utils';
 import useEditableArray from './useEditableArray';
 import useMountMergeState from '../_util/useMountMergeState';
-import { useMount } from 'ahooks';
+import { useClickAway, useMount } from 'ahooks';
+import { validateRules } from './validateUtil';
 
 export type RecordCreatorProps<T> = {
   record: T | ((index: number) => T);
@@ -34,6 +35,8 @@ export function runFunction<T extends any[]>(valueEnum: any, ...rest: T) {
 export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
   value?: T[];
   onChange?: (value: T[]) => void;
+  /** @name 点击编辑 */
+  clickEdit?: boolean;
   /** @name 原先的 table OnChange */
   onTableChange?: TableProps<T>['onChange'];
   /** @name 是否包含删除数据 */
@@ -58,6 +61,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     rowKey = 'id',
     columns: propsColumns,
     rowSelection: propsRowSelection = false,
+    clickEdit = false,
     containsDeletedData = false,
     recordCreatorProps = false,
     maxLength,
@@ -65,7 +69,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     editable,
     ...rest
   } = props;
-
+  let tableId = 'tableForm';
   const actionRef = useRef<ActionType>();
 
   const oldValueRef = useRef<Map<React.Key, any> | undefined>();
@@ -96,7 +100,9 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     [setSelectedRowKeys, setSelectedRows],
   );
 
-  useMount(() => {});
+  useMount(() => {
+    tableId += Math.ceil(Math.random() * 10);
+  });
 
   useEffect(() => {
     if (oldValueRef.current === undefined) {
@@ -142,6 +148,12 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   const userAction: ActionType = {
     ...editableUtils,
     selectedRows,
+    validateRules: (data: any[]) => {
+      if (props.columns) {
+        return validateRules(props.columns, data);
+      }
+      return Promise.resolve(true);
+    },
   };
 
   actionRef.current = userAction;
@@ -185,6 +197,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
             rowData,
             index,
             editableUtils,
+            clickEdit,
           };
 
           return columnRender<T>(renderProps);
@@ -192,7 +205,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [propsColumns, editableUtils.editableKeys.join(','), editableUtils]);
+  }, [propsColumns, editableUtils.editableKeys.join(','), editableUtils, clickEdit]);
 
   /** 行选择相关的问题 */
   const rowSelection: TableRowSelection = {
@@ -226,8 +239,35 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           rest.onTableChange(changePagination, filters, sorter, extra);
         }
       },
+      onRow: (record: T) => {
+        return {
+          onClick: () => {
+            if (clickEdit) {
+              if (editableUtils.editableKeys.length > 0) {
+                editableUtils.cancelEditable(editableUtils.editableKeys[0]);
+                editableUtils.startEditable(record[rowKey]);
+              } else {
+                editableUtils.startEditable(record[rowKey]);
+              }
+            }
+          },
+        };
+      },
     };
   };
+
+  useClickAway(
+    () => {
+      props.editable?.form?.setFields([{ name: 'quantity', errors: ['123'] }]);
+      if (clickEdit && editableUtils.editableKeys.length > 0) {
+        editableUtils.editableKeys.forEach((key) => {
+          editableUtils.cancelEditable(key);
+        });
+      }
+    },
+    () => document.getElementById(tableId),
+  );
+
   const {
     record,
     creatorButtonText,
@@ -279,15 +319,17 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   ]);
 
   return (
-    <Form
-      component={false}
-      form={props.editable?.form}
-      onValuesChange={editableUtils.onValuesChange}
-      key="table"
-    >
-      <Table {...getTableProps()} rowKey={rowKey} tableLayout={tableLayout} />
-      {creatorButtonDom}
-    </Form>
+    <div id={tableId}>
+      <Form
+        component={false}
+        form={props.editable?.form}
+        onValuesChange={editableUtils.onValuesChange}
+        key="table"
+      >
+        <Table {...getTableProps()} rowKey={rowKey} tableLayout={tableLayout} />
+        {creatorButtonDom}
+      </Form>
+    </div>
   );
 }
 

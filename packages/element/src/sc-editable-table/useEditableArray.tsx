@@ -274,8 +274,6 @@ export const SaveEditableAction: React.FC<ActionRenderConfig<any> & { row: any }
           setLoading(false);
           return res;
         } catch (e) {
-          // eslint-disable-next-line no-console
-          console.log(e);
           setLoading(false);
           return null;
         }
@@ -427,7 +425,6 @@ function useEditableArray<RecordType>(
         }
       : undefined,
   });
-
   /** 一个用来标志的set 提供了方便的 api 来去重什么的 */
   const editableKeysSet = useMemo(() => {
     const keys = editableType === 'single' ? editableKeys.slice(0, 1) : editableKeys;

@@ -11,6 +11,7 @@ type ColumnRenderInterface<T> = {
   rowData: T;
   index: number;
   editableUtils: UseEditableUtilType;
+  clickEdit: boolean;
 };
 const isNil = (value: any) => value === null || value === undefined;
 
@@ -53,6 +54,7 @@ export function columnRender<T>({
   rowData,
   index,
   editableUtils,
+  clickEdit,
 }: ColumnRenderInterface<T>): any {
   const { isEditable, recordKey } = editableUtils.isEditable({
     ...rowData,
@@ -101,6 +103,24 @@ export function columnRender<T>({
       );
     }
     return dom;
+  }
+
+  if (clickEdit && columnProps.dataIndex === 'options') {
+    return (
+      <Form.Item shouldUpdate noStyle>
+        {(form: any) => (
+          <Space size={16}>
+            {editableUtils.actionRender(
+              {
+                ...rowData,
+                index: columnProps.index || index,
+              },
+              form,
+            )}
+          </Space>
+        )}
+      </Form.Item>
+    );
   }
 
   if (columnProps.render) {
