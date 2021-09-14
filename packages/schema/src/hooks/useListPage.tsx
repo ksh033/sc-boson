@@ -138,7 +138,10 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     }
   };
 
-  
+  const onReset = (_params: any) => {
+    onSubmitSearchForm(_params);
+  };
+
   const pageChange = (_pagination: any) => {
     setState({
       pagination: {
@@ -190,6 +193,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       queryList: newSearchInfo,
       form: searchForm,
       onSubmit: onSubmitSearchForm,
+      onReset,
       initialValues: initValue,
     };
   };

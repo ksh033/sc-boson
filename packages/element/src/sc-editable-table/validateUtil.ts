@@ -21,16 +21,17 @@ export function validateRules(columns: ProColumns<any>[], value: any[]) {
   const fileError: string[] = [];
   if (Array.isArray(value)) {
     value.forEach((item, index: number) => {
-      validator.validate(item, { first: true }, (errors: any, fields: any) => {
-        if (errors) {
-          if (fileError.length > 0) {
-            return Promise.resolve(true);
+      if (fileError.length === 0) {
+        validator.validate(item, { first: true }, (errors: any) => {
+          if (errors) {
+            if (fileError.length > 0) {
+              return Promise.resolve(true);
+            }
+            fileError.push(`第${index + 1}行:${errors[0].message}`);
           }
-          fileError.push(`第${index + 1}行:${errors[0].message}`);
-          return Promise.reject(fields);
-        }
-        return Promise.resolve(true);
-      });
+          return Promise.resolve(true);
+        });
+      }
     });
   }
 

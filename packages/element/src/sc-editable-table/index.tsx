@@ -1,4 +1,12 @@
-import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import type { TableProps } from 'antd/es/table/index';
 import type { ProTableProps, ActionType, TableRowSelection } from './typing';
 import type { ButtonProps } from 'antd/es/button/index';
@@ -71,7 +79,6 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   } = props;
   let tableId = 'tableForm';
   const actionRef = useRef<ActionType>();
-
   const oldValueRef = useRef<Map<React.Key, any> | undefined>();
 
   // ============================ RowKey ============================
@@ -86,7 +93,8 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     value: props.value,
     onChange: props.onChange,
   });
-
+  // 处理默认聚焦
+  const [fouceDataIndex, setFouceDataIndex] = useState<string>('');
   const [selectedRowKeys, setSelectedRowKeys] = useMountMergeState<React.ReactText[]>([], {
     value: propsRowSelection ? propsRowSelection.selectedRowKeys : undefined,
   });
@@ -186,10 +194,36 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     return [...value, row];
   };
 
+  const firstEditable = propsColumns?.find((it) => it.editable);
+
   const columns = useMemo(() => {
     return propsColumns?.map((columnProps) => {
+      let fixed: boolean | 'left' | 'right' = !!columnProps.fixed;
+      let { width } = columnProps;
+      if (columnProps.dataIndex === 'options') {
+        if (columnProps.fixed === undefined || columnProps.fixed === null) {
+          fixed = 'right';
+        }
+        if (width === undefined || width === null) {
+          width = 90;
+        }
+      }
+
       return {
         ...columnProps,
+        fixed,
+        width,
+        onCell() {
+          return {
+            onClick: () => {
+              if (columnProps.editable) {
+                setFouceDataIndex(String(columnProps.dataIndex));
+              } else if (firstEditable) {
+                setFouceDataIndex(String(firstEditable.dataIndex));
+              }
+            },
+          };
+        },
         render: (text: any, rowData: T, index: number) => {
           const renderProps = {
             columnProps,
@@ -197,6 +231,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
             rowData,
             index,
             editableUtils,
+            fouceDataIndex,
             clickEdit,
           };
 
@@ -204,8 +239,13 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         },
       };
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [propsColumns, editableUtils.editableKeys.join(','), editableUtils, clickEdit]);
+  }, [
+    propsColumns,
+    editableUtils.editableKeys.join(','),
+    editableUtils,
+    fouceDataIndex,
+    clickEdit,
+  ]);
 
   /** 行选择相关的问题 */
   const rowSelection: TableRowSelection = {
@@ -258,7 +298,6 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
 
   useClickAway(
     () => {
-      props.editable?.form?.setFields([{ name: 'quantity', errors: ['123'] }]);
       if (clickEdit && editableUtils.editableKeys.length > 0) {
         editableUtils.editableKeys.forEach((key) => {
           editableUtils.cancelEditable(key);
@@ -326,7 +365,14 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         onValuesChange={editableUtils.onValuesChange}
         key="table"
       >
-        <Table {...getTableProps()} rowKey={rowKey} tableLayout={tableLayout} />
+        <Table
+          {...getTableProps()}
+          rowKey={rowKey}
+          tableLayout={tableLayout}
+          size="small"
+          rowClassName={() => 'editable-row'}
+          scroll={{ x: '100%' }}
+        />
         {creatorButtonDom}
       </Form>
     </div>

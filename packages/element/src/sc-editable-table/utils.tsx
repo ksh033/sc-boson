@@ -11,6 +11,7 @@ type ColumnRenderInterface<T> = {
   rowData: T;
   index: number;
   editableUtils: UseEditableUtilType;
+  fouceDataIndex: string;
   clickEdit: boolean;
 };
 const isNil = (value: any) => value === null || value === undefined;
@@ -54,6 +55,7 @@ export function columnRender<T>({
   rowData,
   index,
   editableUtils,
+  fouceDataIndex,
   clickEdit,
 }: ColumnRenderInterface<T>): any {
   const { isEditable, recordKey } = editableUtils.isEditable({
@@ -68,18 +70,30 @@ export function columnRender<T>({
     recordKey || index,
     columnProps?.key || columnProps?.dataIndex || index,
   );
-
-  const textDom = defaultComponent(columnProps, name, text, {
-    ...rowData,
-    index: columnProps.index || index,
-  });
+  const autoFocus = columnProps?.dataIndex === fouceDataIndex;
+  const textDom = defaultComponent(
+    columnProps,
+    name,
+    text,
+    {
+      ...rowData,
+      index: columnProps.index || index,
+    },
+    autoFocus,
+  );
 
   const dom: React.ReactNode =
     mode === 'edit' ? (
       textDom
     ) : (
       <React.Fragment>
-        {typeof text === 'object' && text !== null ? JSON.stringify(text) : text}
+        {columnProps.editable ? (
+          <span className="editable-cell-value-wrap">
+            {typeof text === 'object' && text !== null ? JSON.stringify(text) : text}
+          </span>
+        ) : (
+          <span>{typeof text === 'object' && text !== null ? JSON.stringify(text) : text}</span>
+        )}
       </React.Fragment>
     );
 
