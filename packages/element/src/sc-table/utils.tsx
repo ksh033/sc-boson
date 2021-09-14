@@ -225,7 +225,7 @@ export function genColumnList<T>(props: {
         ...columnProps,
        // title: renderColumnsTitle(columnProps),
         filters,
-        ellipsis: false,
+       // ellipsis: false,
         fixed: config.fixed,
         width: columnProps.width || (columnProps.fixed ? 200 : undefined),
         children: (columnProps).children

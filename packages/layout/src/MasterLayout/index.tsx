@@ -407,7 +407,7 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props) => {
 
   const [appSelectedKey, setAppSelectedKey] = useState(null);
   const appkey = findAppCode(location.pathname, appMenuData);
-  const appSelected = appSelectedKey || appkey || appSelectedKeys;
+  const appSelected = appSelectedKey ||appSelectedKeys || appkey ;
 
   // render sider dom
   const siderMenuDom = renderSiderMenu(
