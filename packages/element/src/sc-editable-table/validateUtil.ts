@@ -9,6 +9,18 @@ export function validateRules(columns: ProColumns<any>[], value: any[]) {
       const name = JSON.stringify(item.dataIndex) || '';
       if (Array.isArray(rules)) {
         descriptor[`${name.replace(/"/g, '')}`] = rules.map((it: any) => {
+          if (it.required) {
+            return {
+              ...it,
+              type: it.type ? it.type : 'string',
+              transform(val: any) {
+                if (val !== undefined || val !== null) {
+                  return String(val).trim();
+                }
+                return val;
+              },
+            };
+          }
           return {
             ...it,
             type: it.type ? it.type : 'string',
@@ -19,6 +31,7 @@ export function validateRules(columns: ProColumns<any>[], value: any[]) {
   });
   const validator = new Schema(descriptor);
   const fileError: string[] = [];
+
   if (Array.isArray(value)) {
     value.forEach((item, index: number) => {
       if (fileError.length === 0) {
