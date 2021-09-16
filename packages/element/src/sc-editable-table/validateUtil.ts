@@ -14,7 +14,7 @@ export function validateRules(columns: ProColumns<any>[], value: any[]) {
               ...it,
               type: it.type ? it.type : 'string',
               transform(val: any) {
-                if (val !== undefined || val !== null) {
+                if (val !== undefined && val !== null && val!=='') {
                   return String(val).trim();
                 }
                 return val;
