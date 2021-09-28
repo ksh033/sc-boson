@@ -63,6 +63,11 @@ export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
   rowKey?: string;
 };
 
+export type ErrorLineState = {
+  field: string;
+  index: number;
+} | null;
+
 function EditableTable<T extends Record<string, any>>(props: EditableProTableProps<T>) {
   const {
     actionRef: propsActionRef,
@@ -99,6 +104,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     value: propsRowSelection ? propsRowSelection.selectedRowKeys : undefined,
   });
   const [selectedRows, setSelectedRows] = useMountMergeState<T[]>([]);
+  const [errorLine, setErrorLine] = useMountMergeState<ErrorLineState>(null);
 
   const setSelectedRowsAndKey = useCallback(
     (keys: React.ReactText[], rows: T[]) => {
@@ -158,7 +164,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     selectedRows,
     validateRules: (data: any[]) => {
       if (props.columns) {
-        return validateRules(props.columns, data);
+        return validateRules(props.columns, data, setErrorLine);
       }
       return Promise.resolve(true);
     },
@@ -234,7 +240,17 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
             fouceDataIndex,
             clickEdit,
           };
-
+          const { isEditable } = editableUtils.isEditable({
+            ...rowData,
+            index,
+          });
+          if (
+            errorLine?.index === index &&
+            errorLine?.field === columnProps.dataIndex &&
+            !isEditable
+          ) {
+            return <span className="ant-input-affix-wrapper">{columnRender<T>(renderProps)}</span>;
+          }
           return columnRender<T>(renderProps);
         },
       };
@@ -245,6 +261,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     editableUtils,
     fouceDataIndex,
     clickEdit,
+    JSON.stringify(errorLine),
   ]);
 
   /** 行选择相关的问题 */
