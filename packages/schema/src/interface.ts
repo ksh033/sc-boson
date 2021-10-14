@@ -242,6 +242,7 @@ export interface ProColumnType<RecordType> extends ColumnType<RecordType> {
   hideInTable?: boolean;
   component?: string;
   inputType?: string;
+  canSearch?: boolean;
   props?: any; // 组件的属性
 }
 export interface ProColumnGroupType<RecordType>

@@ -73,8 +73,12 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   // 查询表格保存表单
   const saveRef = useRef<any>();
 
+  const filterRef = useRef<any>({});
+  const ordersRef = useRef<any>({});
+
   const searchInitParams = useRef<any>();
   const schemaContext = useSchemaContext();
+
   const getSearchParams = () => {
     if (!location) {
       return null;
@@ -86,6 +90,11 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   };
 
   const [pageData, setPageData] = useSetState<any>();
+
+  const getValue = (obj: any) =>
+    Object.keys(obj)
+      .map((key) => obj[key])
+      .join(',');
 
   const setData = (data: any) => {
     setPageData(data);
@@ -121,14 +130,17 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     };
     sessionStorage.setItem('SEARCH_PARAMS', JSON.stringify(searchParam));
   };
-
   const [state, setState] = useSetState<any>({
     params: getSearchParams(),
     pagination: getPagination(),
   });
 
   const onSubmitSearchForm = (_params: any) => {
-    if (JSON.stringify(_params) !== JSON.stringify(state.params)) {
+    const newParams = _params;
+    newParams.orders = ordersRef.current;
+    newParams._filters = filterRef.current;
+
+    if (JSON.stringify(newParams) !== JSON.stringify(state.params)) {
       setState({
         params: _params,
         pagination: { ...state.pagination, current: 1 },
@@ -139,10 +151,55 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   };
 
   const onReset = (_params: any) => {
+    filterRef.current = {};
+    ordersRef.current = [];
+    saveRef.current?.setFiltersArg({});
+    saveRef.current?.setSortOrderMap({});
     onSubmitSearchForm(_params);
   };
 
-  const pageChange = (_pagination: any) => {
+  const pageChange = (_pagination: any, _filtersArg: any, _sorter: any) => {
+    const filters = Object.keys(_filtersArg).reduce((obj: any, key: string) => {
+      const newObj = { ...obj };
+      if (_filtersArg[key]) {
+        newObj[key] = getValue(_filtersArg[key]);
+      }
+      return newObj;
+    }, {});
+
+    let orders: any[] = [];
+    if (Array.isArray(_sorter)) {
+      _sorter.forEach((it) => {
+        orders.push({
+          asc: it.order === 'ascend',
+          column: it.field,
+        });
+      });
+    }
+    if (Object.prototype.toString.call(_sorter) === '[object Object]' && _sorter !== null) {
+      const { field, order } = _sorter;
+      orders = [
+        {
+          asc: order === 'ascend',
+          column: field,
+        },
+      ];
+    }
+
+    if (JSON.stringify(orders) !== JSON.stringify(ordersRef.current)) {
+      ordersRef.current = orders;
+      onSubmitSearchForm({
+        ...state.params,
+        orders,
+      });
+    }
+    if (JSON.stringify(filters) !== JSON.stringify(filterRef.current)) {
+      filterRef.current = filters;
+      onSubmitSearchForm({
+        ...state.params,
+        _filters: filters,
+      });
+    }
     setState({
       pagination: {
         current: _pagination.current,
@@ -198,8 +255,43 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     };
   };
 
+  const initFiltersArg = (vals: any) => {
+    if (vals && vals._filters) {
+      const { _filters } = vals;
+      const newFiltersArg = Object.keys(_filters).reduce((obj: any, key: string) => {
+        const newObj = { ...obj };
+        if (_filters[key]) {
+          newObj[key] = [_filters[key]];
+        }
+        return newObj;
+      }, {});
+      filterRef.current = vals._filters;
+      saveRef.current?.setFiltersArg(newFiltersArg);
+    } else {
+      filterRef.current = {};
+    }
+  };
+
+  const initSorter = (vals: any) => {
+    if (vals && Array.isArray(vals.orders) && vals.orders.length > 0) {
+      const { orders } = vals;
+      const newOrderMap = {};
+      orders.forEach((obj: any) => {
+        newOrderMap[obj.column] = obj.asc ? 'ascend' : 'descend';
+      });
+      ordersRef.current = vals.orders;
+      saveRef.current?.setSortOrderMap(newOrderMap);
+    } else {
+      ordersRef.current = [];
+      saveRef.current?.setSortOrderMap({});
+    }
+  };
+
   useMount(() => {
     const locSearchParams = getSearchParams();
+    initSorter(locSearchParams);
+    initFiltersArg(locSearchParams);
+
     if (searchForm.current && searchForm.current.setFieldsValue) {
       searchForm.current.setFieldsValue(locSearchParams);
     }
@@ -209,7 +301,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     if (location) {
       setSearchParams(state.params, state.pagination);
     }
-  }, [JSON.stringify(state)]);
+  }, [JSON.stringify(state.params), JSON.stringify(state.pagination)]);
   /** 获取网格列 */
   const getTableConfig = (tableConfig: TableConfig = {}) => {
     const { getOperateColumn, mergeCol, tableKey, callback, action } = tableConfig;
@@ -235,7 +327,6 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       ...searchInitParams.current,
       ...state.params,
       ...(tableConfig.defaultParams ? tableConfig.defaultParams : {}),
-      // locSearchParams,
       current: pagination.current,
       size: pagination.pageSize,
     };
@@ -246,7 +337,6 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     return {
       columns: newCol,
       params: JSON.stringify(_params) !== JSON.stringify(state.params) ? _params : state.params,
-
       saveRef,
       size: 'small',
       pagination,

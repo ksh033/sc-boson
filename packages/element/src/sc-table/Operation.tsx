@@ -4,13 +4,13 @@ import React from 'react';
 import { Dropdown, Menu, Divider, Button } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 
-const { useCallback, useState } = React;
+const { useCallback } = React;
 
 export interface ButtonProps {
   text: string; // 按钮名称
   loading?: boolean;
   params: any; // 之前按钮的参数
-  onClick: (params: any,e?: any) => void; // 事件
+  onClick: (params: any, e?: any) => void; // 事件
   icon?: React.ReactNode | string; // 图标
 }
 export interface OperationProps {
@@ -19,15 +19,15 @@ export interface OperationProps {
   buttons: ButtonProps[];
 }
 
-const Operation: React.FC<OperationProps> = props => {
+const Operation: React.FC<OperationProps> = (props) => {
   const { max = 3, buttons = [], record } = props;
 
   const renderChild = useCallback(() => {
     const children: any[] = [];
     const moreButtons: any[] = [];
     const moreButtonsClick: any = {};
-    const {length} = buttons;
-    buttons.forEach((item: ButtonProps, index: number)=> {
+    const { length } = buttons;
+    buttons.forEach((item: ButtonProps, index: number) => {
       const { text, icon, onClick, params, ...buttonProps } = item;
       const iconObj = null;
       if (index < max) {
@@ -38,7 +38,7 @@ const Operation: React.FC<OperationProps> = props => {
             icon={icon}
             {...buttonProps}
             onClick={(e) => {
-              onClick({ ...params, record },e);
+              onClick({ ...params, record }, e);
             }}
           >
             {text}
@@ -49,10 +49,10 @@ const Operation: React.FC<OperationProps> = props => {
           children.push(<Divider key={`d_${index}`} type="vertical" />);
         }
       } else {
-       delete buttonProps.loading;
+        delete buttonProps.loading;
         moreButtonsClick[index] = {
           onClick: (e: any) => {
-            onClick({ ...params, record },e);
+            onClick({ ...params, record }, e);
           },
           params,
           ...buttonProps,

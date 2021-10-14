@@ -96,6 +96,14 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     { wait: 500 },
   );
 
+  const setInputValue = useDebounceFn(
+    (value) => {
+      setInput(value);
+      setInputKey(inputKey - 1);
+    },
+    { wait: 500 },
+  );
+
   useUpdateEffect(() => {
     if (autoload) {
       loadData();
@@ -133,14 +141,25 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     let list: any[] = [];
     if (singleInput && input !== '') {
       list.push(
-        <Option key={inputKey} value={inputKey} >
+        <Option key={inputKey} value={inputKey}>
           {input}
         </Option>,
       );
     }
     if (Array.isArray(dataSource) && dataSource.length > 0) {
       if (!group) {
-        list = renderList(dataSource);
+        if (request) {
+          list = renderList(dataSource);
+        } else {
+          const newList =
+            singleInput && input !== ''
+              ? dataSource.filter((it) => {
+                  const text = typeof textField === 'string' ? it[textField] : textField(it);
+                  return text.indexOf(input) === -1;
+                })
+              : dataSource;
+          list = list.concat(renderList(newList));
+        }
       } else {
         const groupMap: any = {};
         dataSource.forEach((item: any) => {
@@ -172,8 +191,8 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
       }
     }
     if (singleInput) {
-      setInput(value);
-      setInputKey(inputKey - 1);
+      setInputValue.cancel();
+      setInputValue.run(value);
     }
     onSearch && onSearch(value);
   };

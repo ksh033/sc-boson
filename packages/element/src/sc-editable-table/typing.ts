@@ -113,16 +113,17 @@ export type RowEditableConfig<T> = {
 
 export type ProTableEditableFnType<T> = (_: any, record: T, index: number) => boolean;
 
-export type ProColumns<T = unknown> = Omit<ColumnProps<T>, 'render'> & {
+export type ProColumns<RecordType = unknown> = Omit<ColumnProps<RecordType>, 'render'> & {
   index?: number;
-  editable?: boolean | ProTableEditableFnType<T>;
+  canSearch?: boolean;
+  editable?: boolean | ProTableEditableFnType<RecordType>;
   component?: FunctionComponent<any> | ComponentClass<any, any> | any;
   /** 自定义的 formItemProps render */
   formItemProps?: FormItemProps;
   props?: any;
   render?: (
     dom: React.ReactNode,
-    entity: T,
+    entity: RecordType,
     index: number,
     action: ProCoreActionType,
   ) => React.ReactNode | null;

@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import type { TablePaginationConfig, TableColumnType } from 'antd';
-import { Space, Form, Typography } from 'antd';
-
-import {ActionType} from './typing'
+import type { TableColumnType } from 'antd';
+import { Button } from 'antd';
+import { Input, Space, Typography } from 'antd';
+import type { ActionType } from './typing';
 import get from 'rc-util/lib/utils/get';
-import omitUndefinedAndEmptyArr from '../_util/omitUndefinedAndEmptyArr'
-import omitBoolean from '../_util/omitBoolean'
-import isNil from '../_util/isNil'
+import omitUndefinedAndEmptyArr from '../_util/omitUndefinedAndEmptyArr';
 
 import type { ColumnsState, useContainer } from './container';
+import { SearchOutlined } from '@ant-design/icons';
+import { ProColumn } from './ScTable';
 
 /**
  * 检查值是否存在 为了 避开 0 和 false
@@ -65,8 +66,6 @@ export const genCopyable = (dom: React.ReactNode, item: any, text: string) => {
   return dom;
 };
 
-
-
 /**
  * 获取用户的 action 信息
  *
@@ -74,7 +73,7 @@ export const genCopyable = (dom: React.ReactNode, item: any, text: string) => {
  * @param counter
  * @param onCleanSelected
  */
-export function useActionType<T>(
+export function useActionType(
   ref: React.MutableRefObject<ActionType | undefined>,
   action: any,
   props: {
@@ -150,8 +149,6 @@ export const tableColumnSort = (columnsMap: Record<string, ColumnsState>) => (a:
   return (a.index || 0) - (b.index || 0);
 };
 
-
-
 export const defaultOnFilter = (value: string, record: any, dataIndex: string | string[]) => {
   const recordElement = Array.isArray(dataIndex)
     ? get(record, dataIndex as string[])
@@ -161,22 +158,65 @@ export const defaultOnFilter = (value: string, record: any, dataIndex: string | 
   return String(itemValue) === String(value);
 };
 
-/** 转化列的定义 */
-type ColumnRenderInterface<T> = {
-  columnProps: any;
-  text: any;
-  rowData: T;
-  index: number;
-  columnEmptyText?: any;
-  type: any;
-  counter: ReturnType<typeof useContainer>;
-  editableUtils: any;
-};
-
-const isMergeCell = (
-  dom: any, // 如果是合并单元格的，直接返回对象
-) => dom && typeof dom === 'object' && dom?.props?.colSpan;
-
+export const getColumnSearchProps = (
+  dataIndex: string,
+  title: string,
+  counter: ReturnType<typeof useContainer>,
+) => ({
+  filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+    <div style={{ padding: 8 }}>
+      <Input
+        // ref={(node) => {
+        //   this.searchInput = node;
+        // }}
+        placeholder={`请输入${title}`}
+        value={selectedKeys[0]}
+        onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        onPressEnter={() => {
+          confirm();
+        }}
+        style={{ marginBottom: 8, display: 'block' }}
+      />
+      <Space>
+        <Button
+          type="primary"
+          onClick={() => {
+            confirm();
+          }}
+          icon={<SearchOutlined />}
+          size="small"
+          style={{ width: 90 }}
+        >
+          查询
+        </Button>
+        <Button
+          onClick={() => {
+            clearFilters();
+          }}
+          size="small"
+          style={{ width: 90 }}
+        >
+          重置
+        </Button>
+      </Space>
+    </div>
+  ),
+  filterIcon: (filtered: any) => (
+    <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+  ),
+  filteredValue: counter.filtersArg[dataIndex] || null,
+  onFilter: counter.whetherRemote
+    ? undefined
+    : (value: string, record: any) =>
+        record[dataIndex]
+          ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+          : '',
+  onFilterDropdownVisibleChange: (visible: any) => {
+    if (visible) {
+      // setTimeout(() => this.searchInput.select(), 100);
+    }
+  },
+});
 
 /**
  * 转化 columns 到 pro 的格式 主要是 render 方法的自行实现
@@ -199,8 +239,8 @@ export function genColumnList<T>(props: {
         valueEnum,
         valueType,
         children,
-        onFilter,
         filters = [],
+        canSearch,
       } = columnProps;
       const columnKey = genColumnKey(key, columnsIndex);
       // 这些都没有，说明是普通的表格不需要 pro 管理
@@ -211,29 +251,50 @@ export function genColumnList<T>(props: {
           ...columnProps,
         };
       }
-      const { propsRef } = counter;
       const config = map[columnKey] || { fixed: columnProps.fixed };
-
-      const genOnFilter = () => {
-        if (!propsRef.current?.request || onFilter === true) {
-          return (value: string, row: T) => defaultOnFilter(value, row, dataIndex as string[]);
+      let extraProps = {};
+      if (canSearch) {
+        extraProps = getColumnSearchProps(dataIndex, columnProps.title, counter);
+      }
+      let sorterProps = {};
+      if (columnProps.sorter && typeof columnProps.sorter === 'boolean') {
+        const sortOrder = counter.sortOrderMap[dataIndex] ? counter.sortOrderMap[dataIndex] : false;
+        if (counter.whetherRemote) {
+          sorterProps = {
+            sorter: {
+              multiple: columnsIndex + 1,
+            },
+            sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
+          };
+        } else {
+          sorterProps = {
+            sorter: {
+              compare: (a: any, b: any) => {
+                const as: string = String(a[dataIndex]);
+                const bs: string = String(b[dataIndex]);
+                return as.localeCompare(bs, 'zh-CN');
+              },
+              multiple: columnsIndex + 1,
+            },
+            sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
+          };
         }
-        return omitBoolean(onFilter);
-      };
-      const tempColumns = {
+      }
+
+      const tempColumns: any = {
         index: columnsIndex,
+        ...extraProps,
         ...columnProps,
-       // title: renderColumnsTitle(columnProps),
+        ...sorterProps,
         filters,
-       // ellipsis: false,
         fixed: config.fixed,
         width: columnProps.width || (columnProps.fixed ? 200 : undefined),
-        children: (columnProps).children
+        children: columnProps.children
           ? genColumnList({
               ...props,
-              columns: (columnProps)?.children,
+              columns: columnProps?.children,
             })
-          : undefined
+          : undefined,
       };
       return omitUndefinedAndEmptyArr(tempColumns);
     })

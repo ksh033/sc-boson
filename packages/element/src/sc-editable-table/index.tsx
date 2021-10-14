@@ -20,6 +20,8 @@ import useEditableArray from './useEditableArray';
 import useMountMergeState from '../_util/useMountMergeState';
 import { useMount } from 'ahooks';
 import { validateRules } from './validateUtil';
+import Container from '../sc-table/container';
+import { genColumnList, tableColumnSort } from '../sc-table/utils';
 
 export type RecordCreatorProps<T> = {
   record: T | ((index: number) => T);
@@ -83,6 +85,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     ...rest
   } = props;
   let tableId = 'tableForm';
+  const counter = Container.useContainer();
   const actionRef = useRef<ActionType>();
   const oldValueRef = useRef<Map<React.Key, any> | undefined>();
 
@@ -203,12 +206,12 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   const firstEditable = propsColumns?.find((it) => it.editable);
 
   const columns = useMemo(() => {
-    return propsColumns?.map((columnProps) => {
-      let fixed: boolean | 'left' | 'right' = !!columnProps.fixed;
+    let newColumns: any = propsColumns?.map((columnProps) => {
+      let newFixed: any = columnProps.fixed;
       let { width } = columnProps;
       if (columnProps.dataIndex === 'options') {
         if (columnProps.fixed === undefined || columnProps.fixed === null) {
-          fixed = 'right';
+          newFixed = 'right';
         }
         if (width === undefined || width === null) {
           width = 90;
@@ -217,7 +220,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
 
       return {
         ...columnProps,
-        fixed,
+        fixed: newFixed,
         width,
         onCell() {
           return {
@@ -255,6 +258,15 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         },
       };
     });
+    if (Array.isArray(newColumns)) {
+      newColumns = genColumnList<any>({
+        columns: newColumns,
+        map: counter.columnsMap,
+        counter,
+      }).sort(tableColumnSort(counter.columnsMap));
+    }
+
+    return newColumns;
   }, [
     propsColumns,
     editableUtils.editableKeys.join(','),
@@ -262,6 +274,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     fouceDataIndex,
     clickEdit,
     JSON.stringify(errorLine),
+    counter,
   ]);
 
   /** 行选择相关的问题 */
@@ -289,9 +302,26 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       onChange: (
         changePagination: TablePaginationConfig,
         filters: Record<string, (React.Key | boolean)[] | null>,
-        sorter: SorterResult<T> | SorterResult<T>[],
+        sorter: SorterResult<any> | SorterResult<any>[],
         extra: TableCurrentDataSource<T>,
       ) => {
+        counter.setFiltersArg(filters);
+        const ordersMap = {};
+        if (Array.isArray(sorter)) {
+          sorter.forEach((it: any) => {
+            ordersMap[it.field] = it.order;
+          });
+        } else if (
+          Object.prototype.toString.call(sorter) === '[object Object]' &&
+          sorter !== null
+        ) {
+          const { field, order } = sorter;
+          if (field) {
+            const rkey: string = `${field}`;
+            ordersMap[rkey] = order;
+          }
+        }
+        counter.setSortOrderMap(ordersMap);
         if (rest.onTableChange) {
           rest.onTableChange(changePagination, filters, sorter, extra);
         }
@@ -394,8 +424,9 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     restButtonProps,
     createClick,
     creatorButtonText,
+    counter,
   ]);
-
+  console.log(getTableProps());
   return (
     <div id={tableId}>
       <Form
@@ -418,4 +449,16 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   );
 }
 
-export default EditableTable;
+/**
+ * 🏆 Use Ant Design Table like a Pro! 更快 更好 更方便
+ *
+ * @param props
+ */
+const ProviderWarp = <T extends Record<string, any>>(props: EditableProTableProps<T>) => {
+  return (
+    <Container.Provider initialState={props}>
+      <EditableTable {...props} />
+    </Container.Provider>
+  );
+};
+export default ProviderWarp;

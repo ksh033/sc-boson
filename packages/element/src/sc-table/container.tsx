@@ -1,14 +1,15 @@
 import { createContainer } from 'unstated-next';
 import { useState, useRef } from 'react';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
-
+import type { FixedType } from 'rc-table/es/interface';
 import type { ScTableProps } from './index';
 import type { DensitySize } from './components/ToolBar/DensityIcon';
 import type { ActionType } from './typing';
+import type { FilterValue } from 'antd/es/table/interface';
 
 export type ColumnsState = {
   show?: boolean;
-  fixed?: 'right' | 'left' | undefined;
+  fixed?: FixedType;
   order?: number;
 };
 
@@ -17,11 +18,19 @@ export type UseContainerProps = {
   onColumnsStateChange?: (map: Record<string, ColumnsState>) => void;
   size?: DensitySize;
   onSizeChange?: (size: DensitySize) => void;
+  params?: any;
+  request?: (params: any) => Promise<any>; // 请求数据的远程方法
+};
+
+export type SearchKeywordState = {
+  dataIndex: string;
+  order: any;
 };
 
 function useContainer(props: UseContainerProps = {}) {
   const actionRef = useRef<ActionType>();
   const propsRef = useRef<ScTableProps<any>>();
+  const whetherRemote = props.request !== undefined && props.request !== null;
 
   // 共享状态比较难，就放到这里了
   const [keyWords, setKeyWords] = useState<string | undefined>('');
@@ -41,6 +50,10 @@ function useContainer(props: UseContainerProps = {}) {
     },
   );
 
+  const [filtersArg, setFiltersArg] = useMergedState<Record<string, FilterValue | null>>({});
+
+  const [sortOrderMap, setSortOrderMap] = useMergedState<Record<string, string>>({});
+
   return {
     action: actionRef,
     setAction: (newAction?: ActionType) => {
@@ -57,6 +70,11 @@ function useContainer(props: UseContainerProps = {}) {
     setTableSize,
     tableSize,
     setColumnsMap,
+    filtersArg,
+    setFiltersArg,
+    sortOrderMap,
+    setSortOrderMap,
+    whetherRemote,
   };
 }
 

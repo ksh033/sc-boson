@@ -6,19 +6,33 @@ import type { CardProps } from 'antd';
 import { Table, Tooltip, Divider, Card } from 'antd';
 import type { TableProps, TablePaginationConfig } from 'antd/es/table/Table';
 import { useUpdateEffect, useRequest, useSetState } from 'ahooks';
-
 import type { OptionConfig, ToolBarProps } from './components/ToolBar';
-
 import Toolbar from './components/ToolBar';
-
 import Container from './container';
 import type { ListToolBarProps } from './components/ListToolBar';
 import { genColumnList, tableColumnSort, genColumnKey } from './utils';
 import useDeepCompareEffect from '../_util/useDeepCompareEffect';
+import type { ColumnType } from 'antd/lib/table';
+import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
 
 const { useState, useEffect, useRef, useMemo } = React;
 export type { ColumnsType } from 'antd/es/table/Table';
-export interface ScTableProps<T> extends TableProps<T> {
+
+export interface ProColumnType<RecordType> extends ColumnType<RecordType> {
+  canSearch?: boolean;
+}
+
+export interface ProColumnGroupType<RecordType>
+  extends Omit<ProColumnType<RecordType>, 'dataIndex'> {
+  children: ProColumn<RecordType>;
+}
+
+export declare type ProColumn<RecordType = unknown> = (
+  | ProColumnGroupType<RecordType>
+  | ProColumnType<RecordType>
+)[];
+
+export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   onSelectRow?: (selectedRowKeys: string[], selectedRows: any[]) => void; // 当选中时触发
   data?: { rows: any[]; total: number; current: number; size: number }; // 列表数据
   request?: (params: any) => Promise<any>; // 请求数据的远程方法
@@ -51,12 +65,9 @@ export interface ScTableProps<T> extends TableProps<T> {
   cardBordered?: boolean;
   /** @name table 外面卡片的设置 */
   cardProps?: CardProps;
+  /** @name table 列属性 */
+  columns?: ProColumn<T>;
 }
-
-const getValue = (obj: any) =>
-  Object.keys(obj)
-    .map((key) => obj[key])
-    .join(',');
 
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const {
@@ -83,12 +94,13 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     toolbar,
     cardProps,
     cardBordered = false,
+    onChange,
     ...restPros
   } = props;
 
-  const counter = Container.useContainer();
-
   const { selectedRows = [], params = null, pageSize = 10, autoload = false } = restPros;
+
+  const counter = Container.useContainer();
   const isGone = useRef(false);
   const { loading, run } = useRequest(
     request ||
@@ -106,8 +118,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     current: pagination && pagination.current ? pagination.current : 1,
     pageSize: pagination && pagination.pageSize ? pagination.pageSize : pageSize,
   });
-  const [filters, setFilters] = useState({});
-  const [sorter, setSorter] = useState({});
 
   const action = useRef<any>({
     rowKeys: selectedRowKeys || [],
@@ -122,27 +132,24 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   };
 
   const loadData = async () => {
-    const { current } = innerPagination;
-
-    const payload = {
-      size: innerPagination.pageSize,
-      current,
-      ...params,
-      ...filters,
-      ...sorter,
-    };
-    if (!request) {
-      throw new Error('no remote request method');
-    }
-
-    let _data = await run(payload);
-    if (isGone.current) return;
-    if (_data) {
-      if (onLoad) {
-        _data = onLoad(_data);
+    if (counter.whetherRemote) {
+      const { current } = innerPagination;
+      const { _filters, ...restParams } = params;
+      const payload = {
+        size: innerPagination.pageSize,
+        current,
+        ..._filters,
+        ...restParams,
+      };
+      let _data = await run(payload);
+      if (isGone.current) return;
+      if (_data) {
+        if (onLoad) {
+          _data = onLoad(_data);
+        }
+        setDataSource(_data);
+        getDataKeys(_data.rows || []);
       }
-      setDataSource(_data);
-      getDataKeys(_data.rows || []);
     }
   };
 
@@ -202,7 +209,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       changeRowSelect(crowKeys, crows);
     }
   };
-
   const updateAction = () => {
     const userAction = {
       pagination: innerPagination,
@@ -212,6 +218,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       reload: () => {
         loadData();
       },
+      setFiltersArg: counter.setFiltersArg,
+      setSortOrderMap: counter.setSortOrderMap,
       clearRowKeys: () => {
         action.current = {
           rowKeys: [],
@@ -266,20 +274,32 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
   }, [data]);
 
-  const handleTableChange = (_pagination: any, _filtersArg: any, _sorter: any) => {
-    const _filters = Object.keys(_filtersArg).reduce((obj: any, key: string) => {
-      const newObj = { ...obj };
-      if (_filtersArg[key]) {
-        newObj[key] = getValue(_filtersArg[key]);
-      }
-      return newObj;
-    }, {});
+  const handleTableChange = (
+    _pagination: TablePaginationConfig,
+    _filtersArg: Record<string, FilterValue | null>,
+    _sorter: any,
+    extra: TableCurrentDataSource<any>,
+  ) => {
     setPagination({
       current: _pagination.current,
       pageSize: _pagination.pageSize,
     });
-    setFilters(_filters);
-    setSorter(_sorter);
+    counter.setFiltersArg(_filtersArg);
+    const ordersMap = {};
+    if (Array.isArray(_sorter)) {
+      _sorter.forEach((it) => {
+        ordersMap[it.field] = it.order;
+      });
+    }
+    if (Object.prototype.toString.call(_sorter) === '[object Object]' && _sorter !== null) {
+      const { field, order } = _sorter;
+      ordersMap[field] = order;
+    }
+    counter.setSortOrderMap(ordersMap);
+
+    if (onChange) {
+      onChange(_pagination, _filtersArg, _sorter, extra);
+    }
   };
 
   // ---------- 列计算相关 start  -----------------
@@ -437,8 +457,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       dataSource: dataSource ? dataSource.rows : dataSource,
       columns,
       pagination: paginationProps,
-      onChange: handleTableChange,
       ...restPros,
+      onChange: handleTableChange,
     };
   };
 

@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { ColumnProps } from 'antd/es/table';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import ScTable from '../sc-table';
 import Search from './search';
 import './style';
+import type { ProColumn } from '../sc-table/ScTable';
+
 const { useState, useCallback, useEffect } = React;
 
 export interface DataSource {
@@ -15,7 +16,7 @@ export interface DataSource {
 }
 
 export interface ScTableTransferfProps<T> {
-  columns?: ColumnProps<T>[];
+  columns?: ProColumn<T>;
   data: DataSource;
   targetData: DataSource;
   targetType: string;
@@ -31,10 +32,7 @@ export interface ScTableTransferfProps<T> {
   targetKeys?: string[];
   prefixCls: string;
   remoteSearch: boolean;
-  onSearchChange?: (
-    direction: TransferDirection,
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => void;
+  onSearchChange?: (direction: TransferDirection, e: React.ChangeEvent<HTMLInputElement>) => void;
   value: string[];
   onChange: any;
   titles: any;
@@ -46,7 +44,7 @@ export interface ScTableTransferfProps<T> {
 
 export type TransferDirection = 'left' | 'right';
 
-const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = props => {
+const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
   const {
     data = { rows: [], total: 0 },
     targetData = { rows: [], total: 0 },
@@ -75,21 +73,38 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = props => {
   const [state, setState] = useState({
     leftFilter: '',
     rightFilter: '',
-    sourceSelectedKeys: selectedKeys.filter(
-      key => targetKeys.indexOf(key) === -1,
-    ),
-    targetSelectedKeys: selectedKeys.filter(
-      key => targetKeys.indexOf(key) > -1,
-    ),
+    sourceSelectedKeys: selectedKeys.filter((key) => targetKeys.indexOf(key) === -1),
+    targetSelectedKeys: selectedKeys.filter((key) => targetKeys.indexOf(key) > -1),
     leftData: data,
     rightData: targetData,
     leftParams: null,
     rightParams: null,
-    value: value,
+    value,
   });
 
+  const triggerChange = useCallback(
+    (changedValue: any) => {
+      if (onChange) {
+        onChange(changedValue);
+      }
+    },
+    [onChange],
+  );
+
+  const getSelectedKeysName = (direction: TransferDirection) => {
+    return direction === 'left' ? 'sourceSelectedKeys' : 'targetSelectedKeys';
+  };
+
+  const getValue = (_data: any[]) => {
+    const selectValues: string[] = [];
+    _data.forEach((item: any) => {
+      selectValues.push(item[valueField]);
+    });
+    return selectValues;
+  };
+
   useEffect(() => {
-    setState(oldState => ({
+    setState((oldState) => ({
       ...oldState,
       ...{
         leftData: data,
@@ -98,15 +113,31 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = props => {
   }, [data]);
 
   useEffect(() => {
-    setState(oldState => ({
+    setState((oldState) => ({
       ...oldState,
       ...{
         rightData: targetData,
       },
     }));
-    const _value = getValue(targetData.rows);
-    triggerChange(_value);
+    const rvalue = getValue(targetData.rows);
+    triggerChange(rvalue);
   }, [targetData]);
+
+  const handleSelect = (direction: TransferDirection, selectedItems: any[]) => {
+    const holder = selectedItems.map((item: any) => {
+      return item && item[valueField];
+    });
+
+    if (!props.selectedKeys) {
+      const key = getSelectedKeysName(direction);
+      const rdata: any = {};
+      rdata[key] = holder;
+      setState((oldState) => ({
+        ...oldState,
+        ...rdata,
+      }));
+    }
+  };
 
   const handleLeftSelect = (selectedItems: any[]) => {
     return handleSelect('left', selectedItems);
@@ -115,97 +146,63 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = props => {
     return handleSelect('right', selectedItems);
   };
 
-  const handleSelect = (direction: TransferDirection, selectedItems: any[]) => {
-    let holder = selectedItems.map((item: any) => {
-      return item && item[valueField];
-    });
-
-    if (!props.selectedKeys) {
-      let key = getSelectedKeysName(direction);
-      let _data: any = {};
-      _data[key] = holder;
-      setState(oldState => ({
-        ...oldState,
-        ..._data,
-      }));
-    }
-  };
-
-  const getValue = (_data: any[]) => {
-    let selectValues: string[] = [];
-    _data.forEach((item: any) => {
-      selectValues.push(item[valueField]);
-    });
-    return selectValues;
-  };
-
   const moveTo = (direction: TransferDirection) => {
-    const {
-      leftData,
-      rightData,
-      sourceSelectedKeys,
-      targetSelectedKeys,
-    } = state;
+    const { leftData, rightData, sourceSelectedKeys, targetSelectedKeys } = state;
 
-    let _leftData = { ...{}, ...leftData };
-    let _rightData = { ...{}, ...rightData };
+    const rleftData = { ...{}, ...leftData };
+    const rrightData = { ...{}, ...rightData };
 
-    const dataSource: any[] = [..._leftData.rows];
-    const targetSource: any[] = [..._rightData.rows];
+    const dataSource: any[] = [...rleftData.rows];
+    const targetSource: any[] = [...rrightData.rows];
 
-    const moveKeys =
-      direction === 'right' ? sourceSelectedKeys : targetSelectedKeys;
+    const moveKeys = direction === 'right' ? sourceSelectedKeys : targetSelectedKeys;
     if (moveKeys.length) {
       const newMoveKeys = moveKeys.filter(
         (key: string) =>
-          !dataSource.some(
-            dataItem => !!(key === dataItem[valueField] && dataItem.disabled),
-          ),
+          !dataSource.some((dataItem) => !!(key === dataItem[valueField] && dataItem.disabled)),
       );
 
       const newTargetKeys: string[] = newMoveKeys.filter(
         (key: string) =>
-          !targetSource.some(
-            dataItem => !!(key === dataItem[valueField] && dataItem.disabled),
-          ),
+          !targetSource.some((dataItem) => !!(key === dataItem[valueField] && dataItem.disabled)),
       );
 
-      let newData: any[] = [];
-      let opData: any[] = direction === 'right' ? dataSource : targetSource;
-      let tgData: any[] = direction === 'right' ? targetSource : dataSource;
+      const newData: any[] = [];
+      const opData: any[] = direction === 'right' ? dataSource : targetSource;
+      const tgData: any[] = direction === 'right' ? targetSource : dataSource;
 
-      newTargetKeys.forEach(key => {
+      newTargetKeys.forEach((key) => {
         const newItem = opData.find((item: any) => {
           return (
             item[valueField] === key &&
-            tgData.findIndex(innerItem => innerItem[valueField] === key) === -1
+            tgData.findIndex((innerItem) => innerItem[valueField] === key) === -1
           );
         });
         if (newItem) {
           newData.push(newItem);
         }
         opData.splice(
-          opData.findIndex(item => item[valueField] === key),
+          opData.findIndex((item) => item[valueField] === key),
           1,
         );
       });
       if (direction === 'right') {
-        _rightData.rows = [..._rightData.rows, ...newData];
-        _leftData.rows = opData;
+        rrightData.rows = [...rrightData.rows, ...newData];
+        rleftData.rows = opData;
       } else {
-        _leftData.rows = [..._leftData.rows, ...newData];
-        _rightData.rows = opData;
+        rleftData.rows = [...rleftData.rows, ...newData];
+        rrightData.rows = opData;
       }
       // const oppositeDirection = direction === 'right' ? 'left' : 'right'
 
-      setState(oldState => ({
+      setState((oldState) => ({
         ...oldState,
         ...{
           sourceSelectedKeys: [],
           targetSelectedKeys: [],
-          rightData: _rightData,
-          leftData: _leftData,
-          value: getValue(_rightData.rows),
+          rightData: rrightData,
+          leftData: rleftData,
+          value: getValue(rrightData.rows),
         },
       }));
       triggerChange(value);
@@ -213,19 +210,20 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = props => {
     }
   };
 
-  const moveToLeft = () => moveTo('left');
-  const moveToRight = () => moveTo('right');
-  const handleLeftFilter = (e: React.ChangeEvent<HTMLInputElement>) =>
-    handleFilter('left', e);
-  const handleRightFilter = (e: React.ChangeEvent<HTMLInputElement>) =>
-    handleFilter('right', e);
-  const handleFilter = (
-    direction: TransferDirection,
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const matchFilter = useCallback(
+    (text: string, item: any, filter: string) => {
+      if (filterOption) {
+        return filterOption(filter, item);
+      }
+      return text.indexOf(filter) >= 0;
+    },
+    [filterOption],
+  );
+
+  const handleFilter = (direction: TransferDirection, e: React.ChangeEvent<HTMLInputElement>) => {
     if (onCustomSearch) {
       onCustomSearch(direction, e.target.value);
-      setState(oldState => ({
+      setState((oldState) => ({
         ...oldState,
         ...{
           [`${direction}Filter`]: e.target.value,
@@ -237,7 +235,7 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = props => {
     if (onSearchChange) {
       params = onSearchChange(direction, e);
     }
-    setState(oldState => ({
+    setState((oldState) => ({
       ...oldState,
       ...{
         [`${direction}Filter`]: e.target.value,
@@ -245,35 +243,32 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = props => {
       },
     }));
   };
-  const handleLeftClear = () => handleClear('left');
-  const handleRightClear = () => handleClear('right');
   const handleClear = useCallback((direction: string) => {
-    setState(oldState => ({
+    setState((oldState) => ({
       ...oldState,
       ...{
         [`${direction}Filter`]: '',
       },
     }));
   }, []);
-  const triggerChange = useCallback(
-    (changedValue: any) => {
-      if (onChange) {
-        onChange(changedValue);
-      }
-    },
-    [onChange],
-  );
+  const moveToLeft = () => moveTo('left');
+  const moveToRight = () => moveTo('right');
+  const handleLeftFilter = (e: React.ChangeEvent<HTMLInputElement>) => handleFilter('left', e);
+  const handleRightFilter = (e: React.ChangeEvent<HTMLInputElement>) => handleFilter('right', e);
+
+  const handleLeftClear = () => handleClear('left');
+  const handleRightClear = () => handleClear('right');
 
   const getFilterdData = () => {
-    let { leftData, rightData, leftFilter, rightFilter } = state;
+    const { leftData, rightData, leftFilter, rightFilter } = state;
     if (remoteSearch) {
       return { leftData, rightData };
     }
 
-    const _leftData = { ...{}, ...leftData };
-    const _rightData = { ...{}, ...rightData };
-    const dataSource: any[] = [..._leftData.rows];
-    const targetSource: any[] = [..._rightData.rows];
+    const cleftData = { ...{}, ...leftData };
+    const crightData = { ...{}, ...rightData };
+    const dataSource: any[] = [...cleftData.rows];
+    const targetSource: any[] = [...crightData.rows];
 
     let letfFilterData: any[] = dataSource;
     let rightFilterData: any[] = targetSource;
@@ -303,24 +298,10 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = props => {
           return item;
         });
     }
-    _leftData.rows = letfFilterData;
-    _rightData.rows = rightFilterData;
+    cleftData.rows = letfFilterData;
+    crightData.rows = rightFilterData;
 
-    return { leftData: _leftData, rightData: _rightData };
-  };
-
-  const matchFilter = useCallback(
-    (text: string, item: any, filter: string) => {
-      if (filterOption) {
-        return filterOption(filter, item);
-      }
-      return text.indexOf(filter) >= 0;
-    },
-    [filterOption],
-  );
-
-  const getSelectedKeysName = (direction: TransferDirection) => {
-    return direction === 'left' ? 'sourceSelectedKeys' : 'targetSelectedKeys';
+    return { leftData: cleftData, rightData: crightData };
   };
 
   const {
@@ -331,9 +312,9 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = props => {
     leftParams,
     rightParams,
   } = state;
-  let filterData: any = getFilterdData();
-  let pri_leftPrams = null,
-    pri_rightParams = null;
+  const filterData: any = getFilterdData();
+  let pri_leftPrams = null;
+  let pri_rightParams = null;
   if (remoteSearch) {
     pri_leftPrams = leftParams;
     pri_rightParams = rightParams;
@@ -361,13 +342,9 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = props => {
     </div>
   ) : null;
   const leftTitle =
-    titles && titles[0] ? (
-      <div className={`${prefixCls}-title`}>{titles[0]}</div>
-    ) : null;
+    titles && titles[0] ? <div className={`${prefixCls}-title`}>{titles[0]}</div> : null;
   const rightTitle =
-    titles && titles[1] ? (
-      <div className={`${prefixCls}-title`}>{titles[1]}</div>
-    ) : null;
+    titles && titles[1] ? <div className={`${prefixCls}-title`}>{titles[1]}</div> : null;
 
   return (
     <div className={`${prefixCls}`}>
@@ -387,12 +364,7 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = props => {
         />
       </div>
       <div className={'sc-table-transfer-operation'}>
-        <Button
-          type="primary"
-          size="small"
-          icon={<LeftOutlined />}
-          onClick={moveToLeft}
-        ></Button>
+        <Button type="primary" size="small" icon={<LeftOutlined />} onClick={moveToLeft}></Button>
         <Button
           type={'primary'}
           size="small"

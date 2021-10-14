@@ -8,12 +8,11 @@ import {
 import type { TableColumnType } from 'antd';
 import { Checkbox, Tree, Popover, ConfigProvider, Tooltip } from 'antd';
 import classNames from 'classnames';
-
+import type { FixedType } from 'rc-table/es/interface';
 import type { ColumnsState } from '../../container';
 import Container from '../../container';
 import type { DataNode } from 'antd/es/tree';
 import { genColumnKey } from '../../utils';
-
 // import type { ProColumns } from '../../typing';
 // import type { TableColumnType } from 'antd';
 type ColumnSettingProps<T = any> = {
@@ -26,7 +25,7 @@ const ToolTipIcon: React.FC<{
   title: string;
   columnKey: string | number;
   show: boolean;
-  fixed: 'left' | 'right' | undefined;
+  fixed?: FixedType;
 }> = ({ title, show, children, columnKey, fixed }) => {
   const { columnsMap, setColumnsMap } = Container.useContainer();
   if (!show) {
@@ -56,7 +55,7 @@ const CheckboxListItem: React.FC<{
   columnKey: string | number;
   className?: string;
   title?: React.ReactNode;
-  fixed?: boolean | 'left' | 'right';
+  fixed?: FixedType;
 }> = ({ columnKey, title, className, fixed }) => {
   return (
     <span className={`${className}-list-item`} key={columnKey}>
@@ -70,12 +69,7 @@ const CheckboxListItem: React.FC<{
         >
           <VerticalAlignTopOutlined />
         </ToolTipIcon>
-        <ToolTipIcon
-          columnKey={columnKey}
-          fixed={undefined}
-          title={'不固定'}
-          show={!!fixed}
-        >
+        <ToolTipIcon columnKey={columnKey} fixed={undefined} title={'不固定'} show={!!fixed}>
           <VerticalAlignMiddleOutlined />
         </ToolTipIcon>
         <ToolTipIcon
@@ -203,7 +197,7 @@ const GroupCheckboxList: React.FC<{
   const rightList: (TableColumnType<any> & { index?: number })[] = [];
   const leftList: (TableColumnType<any> & { index?: number })[] = [];
   const list: (TableColumnType<any> & { index?: number })[] = [];
- // const intl = useIntl();
+  // const intl = useIntl();
 
   localColumns.forEach((item) => {
     const { fixed } = item;
@@ -217,9 +211,9 @@ const GroupCheckboxList: React.FC<{
     }
 
     /** 不在 setting 中展示的 */
-   // if (item.hideInSetting) {
-      //return;
-   // }
+    // if (item.hideInSetting) {
+    // return;
+    // }
     list.push(item);
   });
 
@@ -328,7 +322,7 @@ function ColumnSetting<T>(props: ColumnSettingProps<T>) {
               setColumnsMap(columnRef.current);
             }}
           >
-          重置
+            重置
           </a>
         </div>
       }
