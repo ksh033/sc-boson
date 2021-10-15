@@ -149,7 +149,10 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
 
   /** 可编辑行的相关配置 */
   const editableUtils = useEditableArray<any>({
-    ...props.editable,
+    ...{
+      ...props.editable,
+      clickEdit,
+    },
     containsDeletedData,
     getRowKey,
     rowKey,

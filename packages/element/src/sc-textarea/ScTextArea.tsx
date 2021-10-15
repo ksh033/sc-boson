@@ -1,12 +1,12 @@
 import React from 'react';
 import { Input } from 'antd';
-import { TextAreaProps } from 'antd/es/input';
+import type { TextAreaProps } from 'antd/es/input';
 
 const { TextArea } = Input;
 
-export interface ScTextAreaProps extends TextAreaProps {}
+export type ScTextAreaProps = TextAreaProps;
 
-const ScTextArea: React.FC<ScTextAreaProps> = props => {
+const ScTextArea: React.FC<ScTextAreaProps> = (props) => {
   return <TextArea {...props} />;
 };
 export default ScTextArea;

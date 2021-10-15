@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { GetRowKey } from 'antd/es/table/interface';
 import type { FormInstance } from 'antd/es/form/index';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
@@ -379,6 +379,8 @@ export function defaultActionRender<T>(row: T, config: ActionRenderConfig<T, New
  */
 function useEditableArray<RecordType>(
   props: RowEditableConfig<RecordType> & {
+    /** @name 点击编辑 */
+    clickEdit: boolean;
     containsDeletedData: boolean;
     rowKey: string;
     getRowKey: GetRowKey<RecordType>;
@@ -425,6 +427,15 @@ function useEditableArray<RecordType>(
         }
       : undefined,
   });
+
+  useLayoutEffect(() => {
+    if (Array.isArray(props.editableKeys) && props.editableKeys.length === 0 && props.clickEdit) {
+      if (Array.isArray(props.dataSource) && props.dataSource.length > 0) {
+        setEditableRowKeys([props.dataSource[0][props.rowKey]]);
+      }
+    }
+  }, [props.clickEdit, JSON.stringify(props.dataSource)]);
+
   /** 一个用来标志的set 提供了方便的 api 来去重什么的 */
   const editableKeysSet = useMemo(() => {
     const keys = editableType === 'single' ? editableKeys.slice(0, 1) : editableKeys;
