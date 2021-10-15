@@ -3,6 +3,7 @@ import { Form, Space } from 'antd';
 import type { ProColumns, ProTableEditableFnType } from './typing';
 import type { UseEditableUtilType } from './useEditableArray';
 import { defaultComponent } from './defaultComponent';
+import type { DataIndex } from 'rc-table/es/interface';
 
 /** 转化列的定义 */
 type ColumnRenderInterface<T> = {
@@ -22,7 +23,14 @@ function isEditableCell<T>(
   rowData: T,
   index: number,
   editable?: ProTableEditableFnType<T> | boolean,
+  dataIndex?: DataIndex,
 ) {
+  if (dataIndex === 'options') {
+    return false;
+  }
+  if (editable === undefined || editable === null) {
+    return true;
+  }
   if (typeof editable === 'boolean') {
     return editable === false;
   }
@@ -64,7 +72,10 @@ export function columnRender<T>({
   });
 
   const mode =
-    isEditable && !isEditableCell(text, rowData, index, columnProps?.editable) ? 'edit' : 'read';
+    isEditable &&
+    !isEditableCell(text, rowData, index, columnProps?.editable, columnProps?.dataIndex)
+      ? 'edit'
+      : 'read';
 
   const name = spellNamePath(
     recordKey || index,

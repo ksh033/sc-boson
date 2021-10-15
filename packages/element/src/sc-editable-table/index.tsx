@@ -426,7 +426,6 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     creatorButtonText,
     counter,
   ]);
-  console.log(getTableProps());
   return (
     <div id={tableId}>
       <Form
