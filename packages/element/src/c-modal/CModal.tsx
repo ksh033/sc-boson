@@ -47,7 +47,7 @@ const CModalDialog = (props: CModalDialogProps) => {
     closable,
     footer,
     onToggleFullscreen,
-
+    bodyStyle
     // iconType = 'question-circle',
   } = props;
 
@@ -155,6 +155,7 @@ const CModalDialog = (props: CModalDialogProps) => {
       afterClose={afterClose}
       keyboard={keyboard}
       centered={centered}
+      bodyStyle={bodyStyle}
       getContainer={getContainer}
     >
       <ConfigProvider locale={zhCN}>
