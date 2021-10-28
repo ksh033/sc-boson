@@ -9,7 +9,7 @@ import omitUndefinedAndEmptyArr from '../_util/omitUndefinedAndEmptyArr';
 
 import type { ColumnsState, useContainer } from './container';
 import { SearchOutlined } from '@ant-design/icons';
-import { ProColumn } from './ScTable';
+import { ScProColumn } from './ScTable';
 
 /**
  * 检查值是否存在 为了 避开 0 和 false

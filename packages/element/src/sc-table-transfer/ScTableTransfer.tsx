@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import ScTable from '../sc-table';
 import Search from './search';
 import './style';
-import type { ProColumn } from '../sc-table/ScTable';
+import type { ScProColumn } from '../sc-table/ScTable';
 
 const { useState, useCallback, useEffect } = React;
 
@@ -16,7 +16,7 @@ export interface DataSource {
 }
 
 export interface ScTableTransferfProps<T> {
-  columns?: ProColumn<T>;
+  columns?: ScProColumn<T>;
   data: DataSource;
   targetData: DataSource;
   targetType: string;

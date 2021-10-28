@@ -1,5 +1,3 @@
-import type { ColumnType } from 'antd/es/table/interface';
-
 import type {
   Field,
   FieldGroup,
@@ -7,6 +5,7 @@ import type {
   FormConfig,
   FormItemProp,
 } from '@scboson/sc-element/es/c-form';
+import type { ScProColumnType } from '@scboson/sc-element/es/sc-table';
 
 import type { cmps } from './register';
 
@@ -234,7 +233,7 @@ export interface QueryConfig {
   formItemProps?: any; // 该组件的表单属性
   props?: any; // 组件的属性
 }
-export interface ProColumnType<RecordType> extends ColumnType<RecordType> {
+export interface ProColumnType<RecordType> extends ScProColumnType<RecordType> {
   dataType?: string;
   dataIndex?: string;
   name?: string;
@@ -242,7 +241,6 @@ export interface ProColumnType<RecordType> extends ColumnType<RecordType> {
   hideInTable?: boolean;
   component?: string;
   inputType?: string;
-  canSearch?: boolean;
   props?: any; // 组件的属性
 }
 export interface ProColumnGroupType<RecordType>

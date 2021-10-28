@@ -18,18 +18,18 @@ import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interfac
 const { useState, useEffect, useRef, useMemo } = React;
 export type { ColumnsType } from 'antd/es/table/Table';
 
-export interface ProColumnType<RecordType> extends ColumnType<RecordType> {
+export interface ScProColumnType<RecordType> extends ColumnType<RecordType> {
   canSearch?: boolean;
 }
 
-export interface ProColumnGroupType<RecordType>
-  extends Omit<ProColumnType<RecordType>, 'dataIndex'> {
-  children: ProColumn<RecordType>;
+export interface ScProColumnGroupType<RecordType>
+  extends Omit<ScProColumnType<RecordType>, 'dataIndex'> {
+  children: ScProColumn<RecordType>;
 }
 
-export declare type ProColumn<RecordType = unknown> = (
-  | ProColumnGroupType<RecordType>
-  | ProColumnType<RecordType>
+export declare type ScProColumn<RecordType = unknown> = (
+  | ScProColumnGroupType<RecordType>
+  | ScProColumnType<RecordType>
 )[];
 
 export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
@@ -66,7 +66,7 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   /** @name table 外面卡片的设置 */
   cardProps?: CardProps;
   /** @name table 列属性 */
-  columns?: ProColumn<T>;
+  columns?: ScProColumn<T>;
 }
 
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
