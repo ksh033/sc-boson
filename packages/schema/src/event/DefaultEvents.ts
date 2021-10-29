@@ -245,7 +245,7 @@ function formSubmit(props: ButtonTypeProps) {
       form.current.validateFields().then(async (values: any) => {
         let newValue = values;
         if (preHandle) {
-          newValue = preHandle(values);
+          newValue = await preHandle(values);
           if (newValue === null || newValue === false) {
             return;
           }
@@ -276,7 +276,7 @@ function formUpdate(props: ButtonTypeProps) {
       form.current.validateFields().then(async (values: any) => {
         let newValue = values;
         if (preHandle) {
-          newValue = preHandle(values);
+          newValue = await preHandle(values);
           if (newValue === null || newValue === false) {
             return;
           }

@@ -1,11 +1,11 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable prefer-destructuring */
-import type React from 'react';
+import React from 'react';
 import { useRef, useState } from 'react';
 // @ts-ignore
 import { history } from 'umi';
-import type { FormFilterProp, DialogOptions } from '../interface';
+import type { FormFilterProp, DialogOptions, HButtonType, ButtonTypeProps } from '../interface';
 import { PageConfig, PageType, ToolButtons, Action } from '../interface';
 import schema from '../pageConfigUitls';
 import type { UseListPageProp } from './useListPage';
@@ -41,6 +41,17 @@ export interface UseEditPageProp<S> extends UseListPageProp<S> {
   getAction: () => any;
   getFormInfo: (_props?: FormFilterProp) => FormInfo;
   getTitle: (action: string) => any;
+  addPageButton: <T extends keyof typeof ToolButtons>(
+    btns:
+      | (HButtonType & { buttonType?: T; extraProps?: ButtonTypeProps; options?: DialogOptions })
+      | T,
+  ) => any;
+  getPageButtons: <T extends keyof typeof ToolButtons>(
+    ...btns: (
+      | (HButtonType & { buttonType?: T; extraProps?: ButtonTypeProps; options?: DialogOptions })
+      | T | undefined
+    )[]
+  ) => any[];
 }
 
 const defaultConfig: PageConfig = {
@@ -54,7 +65,7 @@ export default function useEditPage(
   const config = { ...defaultConfig, ...pageConfig };
   const { dataTypeFormat } = Schema;
   const Page = ListPage(config, props);
-
+  // const _editPageButtons: any[] = [];
   // const toolbar = new ButtonTool();
 
   // const { service } = config;
@@ -77,6 +88,13 @@ export default function useEditPage(
   // const { formatEvent, format } = useFormatEvent(config);
   const form: React.MutableRefObject<any> = useRef();
   const [loading, setLoading] = useState(false);
+
+  //const _editPageButtons = useRef<any[]>([]);
+  const defaultOptions = {
+    ...props,
+    form,
+    callBack: pageProps.callBack,
+  };
   // const { dict } = userDictModel();
   const [initialValues, setInitialValues] = useState(() => {
     const values = _.isObject(record) ? record : {};
@@ -169,19 +187,103 @@ export default function useEditPage(
     return { form, formConfig, initialValues };
   };
 
+  const addPageButton = <T extends keyof typeof ToolButtons>(
+    item?:
+      | (HButtonType & { buttonType?: T; extraProps?: ButtonTypeProps; options?: DialogOptions })
+      | T,
+  ): any => {
+    let button: any = null;
+    if (item) {
+   
+      if (config.pageType === PageType.page) {
+        defaultOptions.close = () => {
+          history?.go(-1);
+        };
+      }
+
+      if (React.isValidElement(item)) {
+        button = item;
+      }
+      if (_.isString(item)) {
+        const key: string = item;
+        button = { ...ToolButtons[key], options: defaultOptions };
+      }
+
+      if (_.isObject(item)) {
+        const { buttonType, extraProps, options, ...restProps } = item;
+        if (buttonType) {
+          button = {
+            ...ToolButtons[buttonType],
+            ...extraProps,
+            options: { ...defaultOptions, ...options },
+          };
+        } else {
+          button = { ...restProps, options: { ...defaultOptions, ...options } };
+        }
+      }
+    }
+    return button;
+  };
+  const getPageButtons = <T extends keyof typeof ToolButtons>(
+  ...btns: (
+      | (HButtonType & { buttonType?: T; extraProps?: ButtonTypeProps; options?: DialogOptions })
+      | T | undefined 
+    )[]
+  ): any[] => {
+    const newBtns: any[] = [];
+   const newAction = getAction();
+    const [fisBtn,...otherBtns]=btns
+    const formSubmitBtn=addPageButton('formSubmit')
+    const formUpdateBtn=addPageButton('formUpdate')
+
+
+    if (newAction === Action.ADD) {
+      // btns.push((addPageButton(item))
+       if (fisBtn){
+        const extBtn=addPageButton(fisBtn)
+        newBtns.push({...formSubmitBtn,...extBtn})
+      }
+    }
+    if (newAction === Action.EDIT) {
+      // btns.push((addPageButton(item))
+  
+       if (fisBtn){
+        const extBtn=addPageButton(fisBtn)
+        newBtns.push({...formUpdateBtn,...extBtn})
+      }
+
+    }
+    if (newBtns.length===0){
+      otherBtns.unshift(fisBtn)
+    }
+    
+    if (otherBtns) {
+      otherBtns.forEach((item) => {
+        const temBtn=addPageButton(item);
+        if(temBtn){
+          newBtns.push(temBtn);
+        }
+  
+      });
+    }
+    newBtns.push({
+      ...ToolButtons.formBack, // 返回按钮
+      text: newAction === Action.VIEW ? '返回' : '取消',
+      options: defaultOptions,
+    });
+    return Page.bindEvents(newBtns);
+  };
+
   const getModalBtns = (
     rAction?: string,
     options?: DialogOptions & {
       preHandle?: (values: any) => any;
+      text?: string;
     },
     serverName?: string,
   ): any[] => {
-    const { preHandle, ...restOptions } = options || {};
-    const defaultOptions = {
-      ...props,
-      form,
-      callBack: pageProps.callBack,
-    };
+    const { preHandle, text, ...restOptions } = options || {};
+  
     if (config.pageType === PageType.page) {
       defaultOptions.close = () => {
         history?.go(-1);
@@ -193,7 +295,7 @@ export default function useEditPage(
       const btn1 = {
         ...ToolButtons.formSubmit, // 提交按钮
         preHandle,
-
+        text,
         options: {
           ...defaultOptions,
           ...restOptions,
@@ -263,5 +365,7 @@ export default function useEditPage(
     setData,
     getData,
     data: pageData,
+    getPageButtons,
+    addPageButton,
   };
 }

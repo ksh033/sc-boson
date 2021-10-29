@@ -386,7 +386,7 @@ function useEditableArray<RecordType>(
     getRowKey: GetRowKey<RecordType>;
     dataSource: RecordType[];
     oldKeyMap: Map<React.Key, any>;
-    onValuesChange?: (record: RecordType, dataSource: RecordType[], index: number) => void;
+    onValuesChange?: (record: RecordType, dataSource: RecordType[], index: number,changeValue: RecordType) => void;
     childrenColumnName: string | undefined;
     setDataSource: (dataSource: RecordType[]) => void;
   },
@@ -535,7 +535,7 @@ function useEditableArray<RecordType>(
       ...values[recordKey],
     };
 
-    props.onValuesChange(editRow, dataSource, idx);
+    props.onValuesChange(editRow, dataSource, idx, value);
   };
 
   /**

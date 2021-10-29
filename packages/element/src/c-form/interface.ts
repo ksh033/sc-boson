@@ -26,7 +26,7 @@ export interface FormItemProp {
    */
   formItemProps?: FiledProp;
 
-  colProps?: ColProps;
+  colProps?: ColProps&{newline?: boolean};
   /** 表单项属性 */
   fieldProps?: FiledProp;
   /** 子集 */
@@ -78,6 +78,9 @@ export interface FormConfig {
   fieldset?: string;
   /** 分组名称 */
   fieldsetTitle?: string | React.ReactNode;
+  // 子标题
+  subTitle?: string | React.ReactNode;
+
   /**
    * 分组名称
    *

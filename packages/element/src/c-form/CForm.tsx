@@ -190,6 +190,10 @@ const CForm: React.FC<CFormProps> = (props) => {
     });
 
     const isElemnet = React.isValidElement(component);
+    const widthObj={};
+    if (newWidth){
+      widthObj={"width": newWidth} 
+    }
     return (
       <>
         {action === 'view' || readonly ? (
@@ -211,7 +215,7 @@ const CForm: React.FC<CFormProps> = (props) => {
                     value: itValue,
                     fieldProps,
                     className,
-                    style: { ...item.props.style, width: newWidth },
+                    style: { ...item.props.style,...widthObj},
                   })
                 : React.cloneElement(component, {
                     ...item.props,
@@ -220,7 +224,7 @@ const CForm: React.FC<CFormProps> = (props) => {
                     value: itValue,
                     fieldProps,
                     className,
-                    style: { ...item.props.style, width: newWidth },
+                    style: { ...item.props.style,...widthObj},
                   })
               : null}
           </ViewItem>
@@ -230,12 +234,12 @@ const CForm: React.FC<CFormProps> = (props) => {
               ? React.createElement(component, {
                   ...item.props,
                   className,
-                  style: { ...item.props.style, width: newWidth },
+                  style: { ...item.props.style,...widthObj},
                 })
               : React.cloneElement(component, {
                   ...item.props,
                   className,
-                  style: { ...item.props.style, width: newWidth },
+                  style: { ...item.props.style,...widthObj},
                 })}
           </FormItem>
         )}
@@ -273,6 +277,10 @@ const CForm: React.FC<CFormProps> = (props) => {
         // _props.colCount=colCount
         // itemCount++;
       }
+      if (_props.newline){
+        colCount=24;
+      }
+      delete _props.newline
       // 设置默认的 栅格比例
       if (!itemProps.fieldProps || _.isEmpty(itemProps.fieldProps)) {
         itemProps.fieldProps = {
@@ -324,6 +332,7 @@ const CForm: React.FC<CFormProps> = (props) => {
       const {
         fieldset,
         fieldsetTitle,
+        subTitle,
         items,
         gutter = { xs: 8, sm: 16, md: 24, lg: 32 },
         col = 4,
@@ -484,6 +493,7 @@ const CForm: React.FC<CFormProps> = (props) => {
           id={`${fieldset}`}
         >
           {fieldsetTitle ? <div className="sc-form-fieldset-title">{fieldsetTitle}</div> : null}
+          {subTitle ? <div className="sc-form-fieldset-subtitle">{subTitle}</div> : null}
           {rows}
         </div>
       ) : null;
