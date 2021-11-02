@@ -89,7 +89,7 @@ export default function useEditPage(
   const form: React.MutableRefObject<any> = useRef();
   const [loading, setLoading] = useState(false);
 
-  //const _editPageButtons = useRef<any[]>([]);
+  // const _editPageButtons = useRef<any[]>([]);
   const defaultOptions = {
     ...props,
     form,
@@ -278,11 +278,11 @@ export default function useEditPage(
     rAction?: string,
     options?: DialogOptions & {
       preHandle?: (values: any) => any;
-      text?: string;
+     
     },
     serverName?: string,
   ): any[] => {
-    const { preHandle, text, ...restOptions } = options || {};
+    const { preHandle,  ...restOptions } = options || {};
   
     if (config.pageType === PageType.page) {
       defaultOptions.close = () => {
@@ -295,7 +295,7 @@ export default function useEditPage(
       const btn1 = {
         ...ToolButtons.formSubmit, // 提交按钮
         preHandle,
-        text,
+    
         options: {
           ...defaultOptions,
           ...restOptions,
