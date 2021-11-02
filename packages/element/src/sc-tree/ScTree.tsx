@@ -68,6 +68,27 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
   });
   const [showKey, setShowKey] = useState<string | null>(null);
 
+  /**
+   * 打平这个数组
+   *
+   * @param records
+   * @param parentKey
+   */
+  function dig(records: any[], map: Map<React.Key, any>) {
+    if (Array.isArray(records)) {
+      records.forEach((record) => {
+        const childrenList = record.children;
+        const newRecord = {
+          ...record,
+          children: undefined,
+        };
+        delete newRecord.children;
+        map.set(record.key, newRecord);
+        dig(childrenList, map);
+      });
+    }
+  }
+
   const actionFunction = useCallback(
     (key: any, rowData: DataNode, fun: (arg0: any[], arg1: any, arg2: any) => any): void => {
       const newTreeData = fun(treeData, key, rowData);
@@ -77,8 +98,23 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
   );
 
   const allAction: DefaultAction<DataNode> = {
-    add: (key: any, _rowData: DataNode, isRoot?: boolean) => {
-      const newTreeData = addTreeData(treeData, key, _rowData, isRoot);
+    add: async (key: any, _rowData: DataNode, isRoot?: boolean) => {
+      let oldTreeData = treeData;
+      if (request) {
+        const map = new Map<React.Key, any>();
+        dig(treeData, map);
+
+        let newparams = map.get(key).dataRef;
+        if (loadDataPramsFormat) {
+          newparams = loadDataPramsFormat(map.get(key).dataRef);
+        }
+        let rData: any[] = await request(newparams);
+        if (onLoad) {
+          rData = onLoad(rData);
+        }
+        oldTreeData = addChilList(treeData, key, rData);
+      }
+      const newTreeData = addTreeData(oldTreeData, key, _rowData, isRoot);
       setTreeData(newTreeData);
     },
     delete: (key: any, _rowData: DataNode) => {
@@ -159,7 +195,6 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     setTreeData(rData);
   };
 
- 
   const userAction: ActionType = {
     reload: () => {
       loadData(params);

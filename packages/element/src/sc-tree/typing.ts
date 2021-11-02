@@ -40,7 +40,7 @@ export interface ScTreeProps extends TreeProps {
   onSearch?: any;
   actionRender?: ActionRenderFunction<any>;
   request?: (params: any) => Promise<any>;
-  onLoad?: (data: any) => void;
+  onLoad?: (data: any) => any;
   isLeafFormat?: (data: any) => boolean;
   async?: boolean;
   loadDataPramsFormat?: (data: any) => any;
