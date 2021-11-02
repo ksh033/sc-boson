@@ -190,9 +190,9 @@ const CForm: React.FC<CFormProps> = (props) => {
     });
 
     const isElemnet = React.isValidElement(component);
-    const widthObj={};
-    if (newWidth){
-      widthObj={"width": newWidth} 
+    let widthObj = {};
+    if (newWidth) {
+      widthObj = { width: newWidth };
     }
     return (
       <>
@@ -215,7 +215,7 @@ const CForm: React.FC<CFormProps> = (props) => {
                     value: itValue,
                     fieldProps,
                     className,
-                    style: { ...item.props.style,...widthObj},
+                    style: { ...item.props.style, ...widthObj },
                   })
                 : React.cloneElement(component, {
                     ...item.props,
@@ -224,7 +224,7 @@ const CForm: React.FC<CFormProps> = (props) => {
                     value: itValue,
                     fieldProps,
                     className,
-                    style: { ...item.props.style,...widthObj},
+                    style: { ...item.props.style, ...widthObj },
                   })
               : null}
           </ViewItem>
@@ -234,12 +234,12 @@ const CForm: React.FC<CFormProps> = (props) => {
               ? React.createElement(component, {
                   ...item.props,
                   className,
-                  style: { ...item.props.style,...widthObj},
+                  style: { ...item.props.style, ...widthObj },
                 })
               : React.cloneElement(component, {
                   ...item.props,
                   className,
-                  style: { ...item.props.style,...widthObj},
+                  style: { ...item.props.style, ...widthObj },
                 })}
           </FormItem>
         )}
@@ -277,10 +277,10 @@ const CForm: React.FC<CFormProps> = (props) => {
         // _props.colCount=colCount
         // itemCount++;
       }
-      if (_props.newline){
-        colCount=24;
+      if (_props.newline) {
+        colCount = 24;
       }
-      delete _props.newline
+      delete _props.newline;
       // 设置默认的 栅格比例
       if (!itemProps.fieldProps || _.isEmpty(itemProps.fieldProps)) {
         itemProps.fieldProps = {
@@ -377,11 +377,10 @@ const CForm: React.FC<CFormProps> = (props) => {
           // const {items,...groupProps}=formItem;
           if (colCount > 0) {
             colCount = 24;
-         
+
             createRow();
-            
           }
-          cols=[]
+          cols = [];
           formItem.items.forEach((groupItem: any, groupIndex: any) => {
             const { span, ...newColProp } = defColProp;
             colItem = createCol(groupItem, item, rowIndex, `'${index}${groupIndex}'`, newColProp);
