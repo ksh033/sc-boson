@@ -18,7 +18,7 @@ import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interfa
 import { columnRender, removeDeletedData } from './utils';
 import useEditableArray from './useEditableArray';
 import useMountMergeState from '../_util/useMountMergeState';
-import { useMount } from 'ahooks';
+import { useMount, useSetState } from 'ahooks';
 import { validateRules } from './validateUtil';
 import Container from '../sc-table/container';
 import { genColumnList, tableColumnSort } from '../sc-table/utils';
@@ -96,10 +96,21 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     }
     return (record: T, index: number) => (record as any)?.[rowKey as string] ?? index;
   }, [rowKey]);
-
+  const [innerPagination, setPagination] = useSetState({
+    current: pagination && pagination.current ? pagination.current : 1,
+    pageSize: pagination && pagination.pageSize ? pagination.pageSize : 10,
+  });
   const [value, setValue] = useMergedState<T[]>(() => props.value || [], {
     value: props.value,
     onChange: props.onChange,
+    postState: (list: T[]) => {
+      return list.map((it: T, idx: number) => {
+        return {
+          rowIndex: idx,
+          ...it,
+        };
+      });
+    },
   });
   // 处理默认聚焦
   const [fouceDataIndex, setFouceDataIndex] = useState<string>('');
@@ -245,13 +256,11 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
             editableUtils,
             fouceDataIndex,
             clickEdit,
+            errorLine,
           };
-          const { isEditable } = editableUtils.isEditable({
-            ...rowData,
-            index,
-          });
+          const { isEditable } = editableUtils.isEditable(rowData);
           if (
-            errorLine?.index === index &&
+            errorLine?.index === rowData.rowIndex &&
             errorLine?.field === columnProps.dataIndex &&
             !isEditable
           ) {
@@ -291,6 +300,27 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       setSelectedRowsAndKey(keys, rows);
     },
   };
+  const paginationProps = useMemo(() => {
+    let lPagination: any = {
+      showQuickJumper: true,
+      total: value.length,
+    };
+
+    if (pagination === false) {
+      lPagination = false;
+    } else if (typeof pagination === 'object' && pagination !== null) {
+      lPagination = {
+        ...lPagination,
+        ...pagination,
+      };
+    } else {
+      lPagination = {
+        ...lPagination,
+        ...innerPagination,
+      };
+    }
+    return lPagination;
+  }, [JSON.stringify(innerPagination), JSON.stringify(pagination), value.length]);
 
   const getTableProps = () => {
     let tData = editableUtils.newLineRecord ? editableDataSource() : value;
@@ -301,7 +331,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       columns,
       rowSelection: propsRowSelection === false ? undefined : rowSelection,
       dataSource: tData,
-      pagination,
+      pagination: paginationProps,
       onChange: (
         changePagination: TablePaginationConfig,
         filters: Record<string, (React.Key | boolean)[] | null>,
@@ -325,6 +355,10 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           }
         }
         counter.setSortOrderMap(ordersMap);
+        setPagination({
+          current: changePagination.current,
+          pageSize: changePagination.pageSize,
+        });
         if (rest.onTableChange) {
           rest.onTableChange(changePagination, filters, sorter, extra);
         }

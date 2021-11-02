@@ -20,6 +20,8 @@ export type { ColumnsType } from 'antd/es/table/Table';
 
 export interface ScProColumnType<RecordType> extends ColumnType<RecordType> {
   canSearch?: boolean;
+  /** @deprecated 你可以使用 tooltip，这个更改是为了与 antd 统一 */
+  tip?: string;
 }
 
 export interface ScProColumnGroupType<RecordType>

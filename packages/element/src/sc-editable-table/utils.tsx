@@ -82,16 +82,7 @@ export function columnRender<T>({
     columnProps?.key || columnProps?.dataIndex || index,
   );
   const autoFocus = columnProps?.dataIndex === fouceDataIndex;
-  const textDom = defaultComponent(
-    columnProps,
-    name,
-    text,
-    {
-      ...rowData,
-      index: columnProps.index || index,
-    },
-    autoFocus,
-  );
+  const textDom = defaultComponent(columnProps, name, text, rowData, autoFocus);
 
   const dom: React.ReactNode =
     mode === 'edit' ? (

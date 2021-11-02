@@ -6,10 +6,17 @@ import { Input, Space, Typography } from 'antd';
 import type { ActionType } from './typing';
 import get from 'rc-util/lib/utils/get';
 import omitUndefinedAndEmptyArr from '../_util/omitUndefinedAndEmptyArr';
-
+import LabelIconTip from '../_util/LabelIconTip';
 import type { ColumnsState, useContainer } from './container';
 import { SearchOutlined } from '@ant-design/icons';
-import { ScProColumn } from './ScTable';
+
+export const renderColumnsTitle = (item: any) => {
+  const { title } = item;
+  if (title && typeof title === 'function') {
+    return title(item, 'table', <LabelIconTip label={title} tooltip={item.tooltip || item.tip} />);
+  }
+  return <LabelIconTip label={title} tooltip={item.tooltip || item.tip} />;
+};
 
 /**
  * 检查值是否存在 为了 避开 0 和 false
@@ -283,8 +290,9 @@ export function genColumnList<T>(props: {
 
       const tempColumns: any = {
         index: columnsIndex,
-        ...extraProps,
         ...columnProps,
+        title: renderColumnsTitle(columnProps),
+        ...extraProps,
         ...sorterProps,
         filters,
         fixed: config.fixed,

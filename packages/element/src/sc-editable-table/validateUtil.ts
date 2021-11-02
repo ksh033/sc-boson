@@ -48,7 +48,7 @@ export function validateRules(
             }
             setErrorLine({
               field: errors[0].field,
-              index,
+              index: item.rowIndex,
             });
             fileError.push(`第${index + 1}行:${errors[0].message}`);
           }

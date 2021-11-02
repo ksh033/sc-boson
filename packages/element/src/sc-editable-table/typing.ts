@@ -115,6 +115,8 @@ export type ProTableEditableFnType<T> = (_: any, record: T, index: number) => bo
 
 export type ProColumns<RecordType = unknown> = Omit<ColumnProps<RecordType>, 'render'> & {
   index?: number;
+  /** @deprecated 你可以使用 tooltip，这个更改是为了与 antd 统一 */
+  tip?: string;
   canSearch?: boolean;
   editable?: boolean | ProTableEditableFnType<RecordType>;
   component?: FunctionComponent<any> | ComponentClass<any, any> | any;
