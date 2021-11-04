@@ -61,8 +61,9 @@ export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
   /** 最大行数 */
   maxLength?: number;
   /** Table 的值发生改变，为了适应 Form 调整了顺序 */
-  onValuesChange?: (values: T[], record: T, index: number,changeValue: T) => void;
+  onValuesChange?: (values: T[], record: T, index: number, changeValue: T) => void;
   rowKey?: string;
+  showIndex?: boolean;
 };
 
 export type ErrorLineState = {
@@ -82,6 +83,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     maxLength,
     pagination = false,
     editable,
+    showIndex = false,
     ...rest
   } = props;
   let tableId = 'tableForm';
@@ -219,6 +221,13 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
 
   const firstEditable = propsColumns?.find((it) => it.editable);
 
+  const rowIndexRender = (text: any, rowData: T, index: number) => {
+    if (pagination) {
+      return (innerPagination.current - 1) * innerPagination.pageSize + index + 1;
+    }
+    return index + 1;
+  };
+
   const columns = useMemo(() => {
     let newColumns: any = propsColumns?.map((columnProps) => {
       let newFixed: any = columnProps.fixed;
@@ -248,6 +257,10 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           };
         },
         render: (text: any, rowData: T, index: number) => {
+          if (columnProps.dataIndex === 'rowIndex') {
+            return index + 1;
+          }
+
           const renderProps = {
             columnProps,
             text,
@@ -277,16 +290,23 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         counter,
       }).sort(tableColumnSort(counter.columnsMap));
     }
-
+    if (showIndex) {
+      newColumns.unshift({
+        dataIndex: '_rowIndex',
+        title: '序号',
+        width: 60,
+        render: rowIndexRender,
+      });
+    }
     return newColumns;
   }, [
     propsColumns,
     editableUtils.editableKeys.join(','),
-    editableUtils,
     fouceDataIndex,
     clickEdit,
     JSON.stringify(errorLine),
     counter,
+    showIndex,
   ]);
 
   /** 行选择相关的问题 */
