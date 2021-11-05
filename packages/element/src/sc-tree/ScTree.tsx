@@ -100,7 +100,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
   const allAction: DefaultAction<DataNode> = {
     add: async (key: any, _rowData: DataNode, isRoot?: boolean) => {
       let oldTreeData = treeData;
-      if (request) {
+      if (async && request && !(isRoot !== undefined && isRoot !== null && isRoot)) {
         const map = new Map<React.Key, any>();
         dig(treeData, map);
 
