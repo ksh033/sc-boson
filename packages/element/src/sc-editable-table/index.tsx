@@ -231,7 +231,8 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   };
 
   const columns = useMemo(() => {
-    let newColumns: any = propsColumns?.map((columnProps) => {
+    const newPropsColumns = propsColumns?.filter((it) => it.hidden !== true);
+    let newColumns: any = newPropsColumns?.map((columnProps) => {
       let newFixed: any = columnProps.fixed;
       let { width } = columnProps;
       if (columnProps.dataIndex === 'options') {

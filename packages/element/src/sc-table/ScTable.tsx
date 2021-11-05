@@ -22,6 +22,8 @@ export interface ScProColumnType<RecordType> extends ColumnType<RecordType> {
   canSearch?: boolean;
   /** @deprecated 你可以使用 tooltip，这个更改是为了与 antd 统一 */
   tip?: string;
+  /** @deprecated 是否隐藏 */
+  hidden?: boolean;
 }
 
 export interface ScProColumnGroupType<RecordType>
@@ -306,8 +308,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
   // ---------- 列计算相关 start  -----------------
   const tableColumn = useMemo(() => {
+    const newPropsColumns = propsColumns.filter((it) => it.hidden !== true);
+
     return genColumnList({
-      columns: propsColumns,
+      columns: newPropsColumns,
       map: counter.columnsMap,
       counter,
     }).sort(tableColumnSort(counter.columnsMap));

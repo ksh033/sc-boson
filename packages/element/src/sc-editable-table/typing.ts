@@ -117,6 +117,8 @@ export type ProColumns<RecordType = unknown> = Omit<ColumnProps<RecordType>, 're
   index?: number;
   /** @deprecated 你可以使用 tooltip，这个更改是为了与 antd 统一 */
   tip?: string;
+  /** @deprecated 是否隐藏 */
+  hidden?: boolean;
   canSearch?: boolean;
   editable?: boolean | ProTableEditableFnType<RecordType>;
   component?: FunctionComponent<any> | ComponentClass<any, any> | any;
