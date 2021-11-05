@@ -386,7 +386,12 @@ function useEditableArray<RecordType>(
     getRowKey: GetRowKey<RecordType>;
     dataSource: RecordType[];
     oldKeyMap: Map<React.Key, any>;
-    onValuesChange?: (record: RecordType, dataSource: RecordType[], index: number,changeValue: RecordType) => void;
+    onValuesChange?: (
+      record: RecordType,
+      dataSource: RecordType[],
+      index: number,
+      changeValue: RecordType,
+    ) => void;
     childrenColumnName: string | undefined;
     setDataSource: (dataSource: RecordType[]) => void;
   },
@@ -565,8 +570,13 @@ function useEditableArray<RecordType>(
     ReactDOM.unstable_batchedUpdates(() => {
       tRow[props.rowKey] = genNonDuplicateID();
       const recordKey = props.getRowKey(tRow, props.dataSource.length);
-      editableKeysSet.add(recordKey);
-      setEditableRowKeys(Array.from(editableKeysSet));
+      if (props.clickEdit) {
+        setEditableRowKeys([recordKey]);
+      } else {
+        editableKeysSet.add(recordKey);
+        setEditableRowKeys(Array.from(editableKeysSet));
+      }
+
       if (options?.newRecordType === 'dataSource') {
         props.setDataSource?.([...props.dataSource, tRow]);
       } else {

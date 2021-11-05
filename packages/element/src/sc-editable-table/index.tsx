@@ -62,8 +62,9 @@ export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
   maxLength?: number;
   /** Table 的值发生改变，为了适应 Form 调整了顺序 */
   onValuesChange?: (values: T[], record: T, index: number, changeValue: T) => void;
-  rowKey?: string;
-  showIndex?: boolean;
+  rowKey?: string; // 行key
+  showIndex?: boolean; // 是否显示序号
+  readonly?: boolean; // 是否只读
 };
 
 export type ErrorLineState = {
@@ -84,6 +85,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     pagination = false,
     editable,
     showIndex = false,
+    readonly = false,
     ...rest
   } = props;
   let tableId = 'tableForm';
@@ -257,8 +259,14 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           };
         },
         render: (text: any, rowData: T, index: number) => {
-          if (columnProps.dataIndex === 'rowIndex') {
-            return index + 1;
+          if (readonly) {
+            if (columnProps.render) {
+              const renderDom = columnProps.render(text, rowData, index, {
+                ...editableUtils,
+              });
+              return renderDom;
+            }
+            return text;
           }
 
           const renderProps = {
@@ -298,6 +306,11 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         render: rowIndexRender,
       });
     }
+    if (readonly) {
+      newColumns.filter((it: { dataIndex: string }) => {
+        return it.dataIndex === 'options';
+      });
+    }
     return newColumns;
   }, [
     propsColumns,
@@ -307,6 +320,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     JSON.stringify(errorLine),
     counter,
     showIndex,
+    readonly,
   ]);
 
   /** 行选择相关的问题 */
