@@ -185,20 +185,18 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     onReset?.(wrapForm.getFieldsValue());
   };
 
-  const onFinish = useCallback(
-    async (fieldsValue) => {
-      const values = { ...fieldsValue };
-      if (request) {
-        let rdata = await request(values);
-        if (onLoad) {
-          rdata = onLoad(rdata);
-        }
-      } else if (onSubmit) {
-        onSubmit(values);
+  const onFinish = useCallback(async () => {
+    const fieldsValue = await wrapForm.validateFields();
+    const values = { ...fieldsValue };
+    if (request) {
+      let rdata = await request(values);
+      if (onLoad) {
+        rdata = onLoad(rdata);
       }
-    },
-    [onSubmit, request, onLoad],
-  );
+    } else if (onSubmit) {
+      onSubmit(values);
+    }
+  }, [onSubmit, request, onLoad]);
 
   const toggleForm = () => {
     setExpandForm(!expandForm);
@@ -293,7 +291,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
     const buttons = (
       <span className={`${prefixCls}-buttons`}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" onClick={onFinish} htmlType="submit">
           查询
         </Button>
         <Button style={{ marginLeft: 8 }} onClick={handleFormReset}>
@@ -336,7 +334,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
       itemLength += 1;
 
       // 每一列的key, 一般是存在的
-      const itemKey = item.name? `${item.name}` : item.id || index;
+      const itemKey = item.name ? `${item.name}` : item.id || index;
 
       if (24 - (currentSpan % 24) < colSpan) {
         // 如果当前行空余位置放不下，那么折行
@@ -346,7 +344,6 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
       currentSpan += colSpan;
 
- 
       cols.push(
         <Col key={itemKey} span={colSpan}>
           {createCmp}
@@ -360,7 +357,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
     return (
       <Card bordered={false}>
-        <Form onFinish={onFinish} form={wrapForm} layout="horizontal" {...resProps}>
+        <Form form={wrapForm} layout="horizontal" {...resProps}>
           <Row gutter={24} justify="start" key="resize-observer-row">
             {cols}
             {customOptionButtons ? (
