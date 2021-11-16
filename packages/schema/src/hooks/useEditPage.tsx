@@ -34,6 +34,7 @@ export interface UseEditPageProp<S> extends UseListPageProp<S> {
     options?: DialogOptions & {
       preHandle?: (values: any) => any;
     },
+    serverName?: string,
   ) => any[];
   toInitialValues: (initConfig: initProps) => void;
   loading: boolean;
@@ -49,7 +50,8 @@ export interface UseEditPageProp<S> extends UseListPageProp<S> {
   getPageButtons: <T extends keyof typeof ToolButtons>(
     ...btns: (
       | (HButtonType & { buttonType?: T; extraProps?: ButtonTypeProps; options?: DialogOptions })
-      | T | undefined
+      | T
+      | undefined
     )[]
   ) => any[];
 }
@@ -194,7 +196,6 @@ export default function useEditPage(
   ): any => {
     let button: any = null;
     if (item) {
-   
       if (config.pageType === PageType.page) {
         defaultOptions.close = () => {
           history?.go(-1);
@@ -225,45 +226,43 @@ export default function useEditPage(
     return button;
   };
   const getPageButtons = <T extends keyof typeof ToolButtons>(
-  ...btns: (
+    ...btns: (
       | (HButtonType & { buttonType?: T; extraProps?: ButtonTypeProps; options?: DialogOptions })
-      | T | undefined 
+      | T
+      | undefined
     )[]
   ): any[] => {
     const newBtns: any[] = [];
-   const newAction = getAction();
-    const [fisBtn,...otherBtns]=btns
-    const formSubmitBtn=addPageButton('formSubmit')
-    const formUpdateBtn=addPageButton('formUpdate')
-
+    const newAction = getAction();
+    const [fisBtn, ...otherBtns] = btns;
+    const formSubmitBtn = addPageButton('formSubmit');
+    const formUpdateBtn = addPageButton('formUpdate');
 
     if (newAction === Action.ADD) {
       // btns.push((addPageButton(item))
-       if (fisBtn){
-        const extBtn=addPageButton(fisBtn)
-        newBtns.push({...formSubmitBtn,...extBtn})
+      if (fisBtn) {
+        const extBtn = addPageButton(fisBtn);
+        newBtns.push({ ...formSubmitBtn, ...extBtn });
       }
     }
     if (newAction === Action.EDIT) {
       // btns.push((addPageButton(item))
-  
-       if (fisBtn){
-        const extBtn=addPageButton(fisBtn)
-        newBtns.push({...formUpdateBtn,...extBtn})
-      }
 
+      if (fisBtn) {
+        const extBtn = addPageButton(fisBtn);
+        newBtns.push({ ...formUpdateBtn, ...extBtn });
+      }
     }
-    if (newBtns.length===0){
-      otherBtns.unshift(fisBtn)
+    if (newBtns.length === 0) {
+      otherBtns.unshift(fisBtn);
     }
-    
+
     if (otherBtns) {
       otherBtns.forEach((item) => {
-        const temBtn=addPageButton(item);
-        if(temBtn){
+        const temBtn = addPageButton(item);
+        if (temBtn) {
           newBtns.push(temBtn);
         }
-  
       });
     }
     newBtns.push({
@@ -278,12 +277,11 @@ export default function useEditPage(
     rAction?: string,
     options?: DialogOptions & {
       preHandle?: (values: any) => any;
-     
     },
     serverName?: string,
   ): any[] => {
-    const { preHandle,  ...restOptions } = options || {};
-  
+    const { preHandle, ...restOptions } = options || {};
+
     if (config.pageType === PageType.page) {
       defaultOptions.close = () => {
         history?.go(-1);
@@ -295,7 +293,7 @@ export default function useEditPage(
       const btn1 = {
         ...ToolButtons.formSubmit, // 提交按钮
         preHandle,
-    
+
         options: {
           ...defaultOptions,
           ...restOptions,
