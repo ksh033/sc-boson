@@ -21,7 +21,9 @@ export function deleteTreeData(list: any[], key: React.Key, node: any): any[] {
   return list
     .map((item) => {
       if (item.children) {
-        item.children = deleteTreeData(item.children, key, node);
+        const children = deleteTreeData(item.children, key, node);
+        item.children = children;
+        item.isLeaf = !(Array.isArray(children) && children.length > 0);
       }
       if (item.key !== key) {
         return item;
@@ -31,16 +33,25 @@ export function deleteTreeData(list: any[], key: React.Key, node: any): any[] {
     .filter((item) => item != null);
 }
 
-export function addTreeData(list: any[], key: React.Key, node: any, isRoot?: boolean): any[] {
+export function addTreeData(
+  list: any[],
+  key: React.Key,
+  node: any,
+  valueField: string,
+  isRoot?: boolean,
+): any[] {
   if (isRoot) {
-    return [...list, node];
+    return [...list.filter((it: any) => it[valueField] !== node[valueField]), node];
   }
   return list.map((item) => {
     if (item.children) {
-      item.children = addTreeData(item.children, key, node);
+      item.children = addTreeData(item.children, key, node, valueField);
     }
     if (item.key === key) {
-      item.children = item.children ? [...item.children, node] : [node];
+      item.isLeaf = false;
+      item.children = item.children
+        ? [...item.children.filter((it: any) => it[valueField] !== node[valueField]), node]
+        : [node];
       return item;
     }
     return item;

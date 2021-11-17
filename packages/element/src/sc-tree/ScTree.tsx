@@ -99,7 +99,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
 
   const allAction: DefaultAction<DataNode> = {
     add: async (key: any, _rowData: DataNode, isRoot?: boolean) => {
-      let oldTreeData = treeData;
+      let oldTreeData: any = treeData;
       if (async && request && !(isRoot !== undefined && isRoot !== null && isRoot)) {
         const map = new Map<React.Key, any>();
         dig(treeData, map);
@@ -114,7 +114,8 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         }
         oldTreeData = addChilList(treeData, key, rData);
       }
-      const newTreeData = addTreeData(oldTreeData, key, _rowData, isRoot);
+
+      const newTreeData = addTreeData(oldTreeData, key, _rowData, valueField, isRoot);
       setTreeData(newTreeData);
     },
     delete: (key: any, _rowData: DataNode) => {

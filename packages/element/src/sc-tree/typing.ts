@@ -14,7 +14,7 @@ export type ActionFunctionVO<T> = {
 };
 
 export type DefaultAction<T> = {
-  add: ActionBaseFunction<T>;
+  add: (key: any, row: T, isRoot?: boolean) => void;
   delete: ActionBaseFunction<T>;
   edit: ActionBaseFunction<T>;
 };
@@ -44,5 +44,8 @@ export interface ScTreeProps extends TreeProps {
   isLeafFormat?: (data: any) => boolean;
   async?: boolean;
   loadDataPramsFormat?: (data: any) => any;
-  saveRef?: React.MutableRefObject<ActionType | undefined> | ((actionRef: ActionType) => void);
+  saveRef?:
+    | React.RefObject<ActionType | undefined>
+    | React.MutableRefObject<ActionType | undefined>
+    | ((actionRef: ActionType) => void);
 }
