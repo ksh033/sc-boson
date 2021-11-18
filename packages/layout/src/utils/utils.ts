@@ -63,9 +63,11 @@ export function clearMenuItem(menusData: MenuDataItem[]): MenuDataItem[] {
           !finalItem.hideChildrenInMenu &&
           finalItem.children.some((child) => child && child.name && !child.hideInMenu)
         ) {
+          const children = clearMenuItem(finalItem.children);
           return {
             ...item,
-            children: clearMenuItem(finalItem.children),
+            children,
+            routes: children,
           };
         }
         // children 为空就直接删掉
