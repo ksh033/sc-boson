@@ -266,7 +266,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     } else {
       loadData();
     }
-  }, [params]);
+  }, [JSON.stringify(params)]);
 
   useUpdateEffect(() => {
     loadData();
@@ -288,6 +288,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       current: _pagination.current,
       pageSize: _pagination.pageSize,
     });
+
     counter.setFiltersArg(_filtersArg);
     const ordersMap = {};
     if (Array.isArray(_sorter)) {

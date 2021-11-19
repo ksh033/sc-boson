@@ -170,22 +170,25 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     let orders: any[] = [];
     if (Array.isArray(_sorter)) {
       _sorter.forEach((it) => {
-        orders.push({
-          asc: it.order === 'ascend',
-          column: it.field,
-        });
+        if (it.order) {
+          orders.push({
+            asc: it.order === 'ascend',
+            column: it.field,
+          });
+        }
       });
     }
     if (Object.prototype.toString.call(_sorter) === '[object Object]' && _sorter !== null) {
       const { field, order } = _sorter;
-      orders = [
-        {
-          asc: order === 'ascend',
-          column: field,
-        },
-      ];
+      if (order) {
+        orders = [
+          {
+            asc: order === 'ascend',
+            column: field,
+          },
+        ];
+      }
     }
-
     if (JSON.stringify(orders) !== JSON.stringify(ordersRef.current)) {
       ordersRef.current = orders;
       onSubmitSearchForm({
