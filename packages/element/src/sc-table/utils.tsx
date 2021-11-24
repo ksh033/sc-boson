@@ -9,6 +9,9 @@ import omitUndefinedAndEmptyArr from '../_util/omitUndefinedAndEmptyArr';
 import LabelIconTip from '../_util/LabelIconTip';
 import type { ColumnsState, useContainer } from './container';
 import { SearchOutlined } from '@ant-design/icons';
+import { cloneElement } from 'antd/es/_util/reactNode';
+
+export const { isValidElement } = React;
 
 export const renderColumnsTitle = (item: any) => {
   const { title } = item;
@@ -167,63 +170,92 @@ export const defaultOnFilter = (value: string, record: any, dataIndex: string | 
 
 export const getColumnSearchProps = (
   dataIndex: string,
-  title: string,
+  columnProps: any,
   counter: ReturnType<typeof useContainer>,
-) => ({
-  filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
-    <div style={{ padding: 8 }}>
-      <Input
-        // ref={(node) => {
-        //   this.searchInput = node;
-        // }}
-        placeholder={`请输入${title}`}
-        value={selectedKeys[0]}
-        onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-        onPressEnter={() => {
-          confirm();
-        }}
-        style={{ marginBottom: 8, display: 'block' }}
-      />
-      <Space>
-        <Button
-          type="primary"
-          onClick={() => {
+) => {
+  let { onFilter } = columnProps;
+  if (onFilter === undefined || onFilter === null) {
+    onFilter = counter.whetherRemote
+      ? undefined
+      : (value: string, record: any) =>
+          record[dataIndex]
+            ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+            : '';
+  }
+
+  if (columnProps.filters) {
+    return {
+      filteredValue: counter.filtersArg[dataIndex] || null,
+      onFilter,
+    };
+  }
+
+  return {
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => {
+      let dom = (
+        <Input
+          placeholder={`请输入${columnProps.title}`}
+          value={selectedKeys[0]}
+          onChange={(e) => {
+            setSelectedKeys(e.target.value ? [e.target.value] : []);
+          }}
+          onPressEnter={() => {
             confirm();
           }}
-          icon={<SearchOutlined />}
-          size="small"
-          style={{ width: 90 }}
-        >
-          查询
-        </Button>
-        <Button
-          onClick={() => {
-            clearFilters();
-          }}
-          size="small"
-          style={{ width: 90 }}
-        >
-          重置
-        </Button>
-      </Space>
-    </div>
-  ),
-  filterIcon: (filtered: any) => (
-    <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-  ),
-  filteredValue: counter.filtersArg[dataIndex] || null,
-  onFilter: counter.whetherRemote
-    ? undefined
-    : (value: string, record: any) =>
-        record[dataIndex]
-          ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
-          : '',
-  onFilterDropdownVisibleChange: (visible: any) => {
-    if (visible) {
-      // setTimeout(() => this.searchInput.select(), 100);
-    }
-  },
-});
+        />
+      );
+      if (columnProps.customSearchComponent) {
+        const cprops = {
+          value: selectedKeys[0],
+          onChange: (value: string) => {
+            setSelectedKeys(value ? [value] : []);
+          },
+        };
+        dom = isValidElement(columnProps.customSearchComponent)
+          ? cloneElement(columnProps.customSearchComponent, cprops)
+          : columnProps.customSearchComponent(cprops);
+      }
+
+      return (
+        <div style={{ padding: 8 }}>
+          <div style={{ marginBottom: 8, display: 'block' }}>{dom}</div>
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => {
+                confirm();
+              }}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              查询
+            </Button>
+            <Button
+              onClick={() => {
+                clearFilters();
+              }}
+              size="small"
+              style={{ width: 90 }}
+            >
+              重置
+            </Button>
+          </Space>
+        </div>
+      );
+    },
+    filterIcon: (filtered: any) => (
+      <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+    filteredValue: counter.filtersArg[dataIndex] || null,
+    onFilter,
+    onFilterDropdownVisibleChange: (visible: any) => {
+      if (visible) {
+        // setTimeout(() => this.searchInput.select(), 100);
+      }
+    },
+  };
+};
 
 /**
  * 转化 columns 到 pro 的格式 主要是 render 方法的自行实现
@@ -261,7 +293,7 @@ export function genColumnList<T>(props: {
       const config = map[columnKey] || { fixed: columnProps.fixed };
       let extraProps = {};
       if (canSearch) {
-        extraProps = getColumnSearchProps(dataIndex, columnProps.title, counter);
+        extraProps = getColumnSearchProps(dataIndex, columnProps, counter);
       }
       let sorterProps = {};
       if (columnProps.sorter && typeof columnProps.sorter === 'boolean') {
@@ -290,10 +322,10 @@ export function genColumnList<T>(props: {
 
       const tempColumns: any = {
         index: columnsIndex,
-        ...columnProps,
-        title: renderColumnsTitle(columnProps),
         ...extraProps,
         ...sorterProps,
+        ...columnProps,
+        title: renderColumnsTitle(columnProps),
         filters,
         fixed: config.fixed,
         width: columnProps.width || (columnProps.fixed ? 200 : undefined),

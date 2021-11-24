@@ -18,8 +18,17 @@ import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interfac
 const { useState, useEffect, useRef, useMemo } = React;
 export type { ColumnsType } from 'antd/es/table/Table';
 
+export interface CustomSearchComponentProps {
+  value?: any;
+  onChange?: (e: any) => void;
+}
+
+export declare type CustomSearchComponent =
+  | React.ReactNode
+  | ((props: CustomSearchComponentProps) => React.ReactNode);
 export interface ScProColumnType<RecordType> extends ColumnType<RecordType> {
   canSearch?: boolean;
+  customSearchComponent?: CustomSearchComponent;
   /** @deprecated 你可以使用 tooltip，这个更改是为了与 antd 统一 */
   tip?: string;
   /** @deprecated 是否隐藏 */
