@@ -24,7 +24,6 @@
     "tsc": "tsc --noEmit",
     "tsc:duplicate": "tsc -p ./tests/tsconfig.duplicate.json",
     "update:deps": "yarn upgrade-interactive --latest"
-
   },
   "devDependencies": {
     "@types/lodash": "^4.14.165",
@@ -55,11 +54,11 @@
     "@umijs/fabric": "^2.0.0",
     "@umijs/plugin-analytics": "^0.2.2",
     "@umijs/plugin-antd": "^0.9.0",
-    "@types/react-resizable":"^1.7.2",
+    "@types/react-resizable": "^1.7.2",
     "@umijs/test": "^3.2.10",
     "@umijs/test-utils": "^3.2.10",
     "@umijs/utils": "^3.2.11",
-    "antd": "^4.16.13",
+    "antd": "^4.17.3",
     "babel-loader": "^8.1.0",
     "babel-plugin-import": "^1.12.2",
     "body-parser": "^1.18.2",
@@ -119,8 +118,7 @@
     "write-pkg": "^4.0.0",
     "xhr-mock": "^2.5.1",
     "yorkie": "^2.0.0",
-    "ahooks":"^2.9.6"
-
+    "ahooks": "^2.9.6"
   },
   "name": "sc-boson"
 }

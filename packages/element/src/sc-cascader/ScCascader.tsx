@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-throw-literal */
 /* eslint-disable no-param-reassign */
+/* eslint-disable @typescript-eslint/no-throw-literal */
 import React, { useRef } from 'react';
 import type { CascaderProps } from 'antd/es/cascader';
 import { Cascader } from 'antd';
@@ -122,7 +122,7 @@ const ScCascader: React.FC<ScCascaderProps> = (props) => {
               setTreeData([...treeData]);
             } else {
               targetOption.isLeaf = true;
-              if (ref.current) {
+              if (ref.current && ref.current.handlePopupVisibleChange) {
                 // ref.current.setValue &&
                 //   ref.current.setValue(
                 //     selectedOptions.map((item: any) => {
@@ -131,6 +131,7 @@ const ScCascader: React.FC<ScCascaderProps> = (props) => {
                 //   );
                 ref.current.handlePopupVisibleChange(false);
               }
+              ref.current.blur();
               setValue(
                 selectedOptions.map((item: any) => {
                   return item[`${valueField}`];
@@ -138,6 +139,7 @@ const ScCascader: React.FC<ScCascaderProps> = (props) => {
               );
               const newvalue: any[] = formatValue(selectedOptions);
               handleChange(newvalue, selectedOptions);
+              setTreeData([...treeData]);
             }
           } else {
             setTreeData(rdata);
