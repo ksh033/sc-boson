@@ -1,5 +1,5 @@
 import type { ColumnProps, TableProps } from 'antd/es/table/index';
-import type { FormInstance, FormItemProps } from 'antd/es/form/index';
+import type { FormInstance, FormItemProps } from 'antd';
 import type { ComponentClass, FunctionComponent } from 'react';
 import type { UseEditableUtilType } from './useEditableArray';
 
