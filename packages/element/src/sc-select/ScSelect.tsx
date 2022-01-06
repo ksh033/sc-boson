@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import * as React from 'react';
 import type { SelectProps } from 'antd/es/select';
@@ -140,11 +141,19 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   const children: any[] = useMemo(() => {
     let list: any[] = [];
     if (singleInput && input !== '') {
-      list.push(
-        <Option key={inputKey} value={inputKey}>
-          {input}
-        </Option>,
-      );
+      const itIdx = Array.isArray(dataSource)
+        ? dataSource.findIndex((it) => {
+            const text = typeof textField === 'string' ? it[textField] : textField(it);
+            return text.indexOf(input) != -1;
+          })
+        : -1;
+      if (itIdx === -1) {
+        list.push(
+          <Option key={inputKey} value={inputKey}>
+            {input}
+          </Option>,
+        );
+      }
     }
     if (Array.isArray(dataSource) && dataSource.length > 0) {
       if (!group) {
@@ -155,7 +164,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
             singleInput && input !== ''
               ? dataSource.filter((it) => {
                   const text = typeof textField === 'string' ? it[textField] : textField(it);
-                  return text.indexOf(input) === -1;
+                  return text.indexOf(input) != -1;
                 })
               : dataSource;
           list = list.concat(renderList(newList));
@@ -181,7 +190,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
       }
     }
     return list;
-  }, [dataSource, input]);
+  }, [JSON.stringify(dataSource), group, input, inputKey, singleInput, textField]);
 
   const handleSearch = (value: any) => {
     if (remoteSearch && request) {

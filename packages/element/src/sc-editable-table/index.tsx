@@ -86,7 +86,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     editable,
     showIndex = false,
     readonly = false,
-    scroll={x:'100%'},
+    scroll = { x: '100%' },
     ...rest
   } = props;
   let tableId = 'tableForm';
@@ -500,7 +500,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     counter,
   ]);
   return (
-    <div id={tableId}>
+    <div id={tableId} className="sc-editable-table">
       <Form
         component={false}
         form={props.editable?.form}
@@ -513,7 +513,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           tableLayout={tableLayout}
           size="small"
           rowClassName={() => 'editable-row'}
-          scroll={scroll }
+          scroll={scroll}
         />
         {creatorButtonDom}
       </Form>
