@@ -37,7 +37,7 @@ const defaultComponent = (
         };
 
         // eslint-disable-next-line @typescript-eslint/no-shadow
-        const defaultComponent: any = <Input {...customProps} autoFocus={autoFocus}></Input>;
+        const defaultComponent: any = <Input {...customProps} autoFocus={autoFocus} />;
 
         let component: any = defaultComponent;
         const isElement = React.isValidElement(_columnProps.component);

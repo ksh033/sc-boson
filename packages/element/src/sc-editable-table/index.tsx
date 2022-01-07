@@ -1,12 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import type { TableProps } from 'antd/es/table/index';
 import type { ProTableProps, ActionType, TableRowSelection } from './typing';
 import type { ButtonProps } from 'antd/es/button/index';
@@ -18,7 +11,7 @@ import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interfa
 import { columnRender, removeDeletedData } from './utils';
 import useEditableArray from './useEditableArray';
 import useMountMergeState from '../_util/useMountMergeState';
-import { useMount, useSetState } from 'ahooks';
+import { useMount, useSetState, useKeyPress, useThrottleFn, useDebounceFn } from 'ahooks';
 import { validateRules } from './validateUtil';
 import Container from '../sc-table/container';
 import { genColumnList, tableColumnSort } from '../sc-table/utils';
@@ -72,6 +65,10 @@ export type ErrorLineState = {
   index: number;
 } | null;
 
+// const defaultEffectOptions = {
+//   wait: 500,
+// };
+
 function EditableTable<T extends Record<string, any>>(props: EditableProTableProps<T>) {
   const {
     actionRef: propsActionRef,
@@ -90,6 +87,8 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     ...rest
   } = props;
   let tableId = 'tableForm';
+  const divRef = useRef<HTMLDivElement>(null);
+
   const counter = Container.useContainer();
   const actionRef = useRef<ActionType>();
   const oldValueRef = useRef<Map<React.Key, any> | undefined>();
@@ -118,7 +117,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     },
   });
   // 处理默认聚焦
-  const [fouceDataIndex, setFouceDataIndex] = useState<string>('');
+  // const [fouceDataIndex, setFouceDataIndex] = useState<string>('');
   const [selectedRowKeys, setSelectedRowKeys] = useMountMergeState<React.ReactText[]>([], {
     value: propsRowSelection ? propsRowSelection.selectedRowKeys : undefined,
   });
@@ -253,9 +252,9 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           return {
             onClick: () => {
               if (columnProps.editable) {
-                setFouceDataIndex(String(columnProps.dataIndex));
+                editableUtils.setFouce(String(columnProps.dataIndex));
               } else if (firstEditable) {
-                setFouceDataIndex(String(firstEditable.dataIndex));
+                editableUtils.setFouce(String(firstEditable.dataIndex));
               }
             },
           };
@@ -277,7 +276,6 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
             rowData,
             index,
             editableUtils,
-            fouceDataIndex,
             clickEdit,
             errorLine,
           };
@@ -315,12 +313,12 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     }
     return newColumns;
   }, [
-    propsColumns,
+    JSON.stringify(propsColumns),
     editableUtils.editableKeys.join(','),
-    fouceDataIndex,
+    editableUtils.fouceDataIndex,
     clickEdit,
     JSON.stringify(errorLine),
-    counter,
+    JSON.stringify(counter),
     showIndex,
     readonly,
   ]);
@@ -415,6 +413,28 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       },
     };
   };
+  const setStartEditable = useDebounceFn(
+    (key) => {
+      editableUtils.startEditable(key);
+    },
+    { wait: 200 },
+  );
+  useKeyPress(
+    'tab',
+    (event: any) => {
+      event.stopPropagation();
+      if (clickEdit && editableUtils.editableKeys.length > 0) {
+        const index = value.findIndex((it) => it[rowKey] === editableUtils.editableKeys[0]);
+        if (index !== -1 && value.length > index + 1) {
+          editableUtils.cancelEditable(editableUtils.editableKeys[0]);
+          setStartEditable.run(value[index + 1][rowKey]);
+        }
+      }
+    },
+    {
+      target: divRef,
+    },
+  );
 
   // useClickAway(
   //   () => {
@@ -499,14 +519,12 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     creatorButtonText,
     counter,
   ]);
+
+  const { run } = useThrottleFn(editableUtils.onValuesChange, { wait: 300 });
+
   return (
-    <div id={tableId} className="sc-editable-table">
-      <Form
-        component={false}
-        form={props.editable?.form}
-        onValuesChange={editableUtils.onValuesChange}
-        key="table"
-      >
+    <div id={tableId} className="sc-editable-table" ref={divRef}>
+      <Form component={false} form={props.editable?.form} onValuesChange={run} key="table">
         <Table
           {...getTableProps()}
           rowKey={rowKey}

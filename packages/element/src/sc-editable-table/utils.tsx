@@ -12,7 +12,7 @@ type ColumnRenderInterface<T> = {
   rowData: T;
   index: number;
   editableUtils: UseEditableUtilType;
-  fouceDataIndex: string;
+  // fouceDataIndex: string;
   clickEdit: boolean;
 };
 const isNil = (value: any) => value === null || value === undefined;
@@ -63,7 +63,6 @@ export function columnRender<T>({
   rowData,
   index,
   editableUtils,
-  fouceDataIndex,
   clickEdit,
 }: ColumnRenderInterface<T>): any {
   const { isEditable, recordKey } = editableUtils.isEditable({
@@ -81,7 +80,8 @@ export function columnRender<T>({
     recordKey || index,
     columnProps?.key || columnProps?.dataIndex || index,
   );
-  const autoFocus = columnProps?.dataIndex === fouceDataIndex;
+
+  const autoFocus = columnProps?.dataIndex === editableUtils.fouceDataIndex;
   const textDom = defaultComponent(columnProps, name, text, rowData, autoFocus);
 
   const dom: React.ReactNode =

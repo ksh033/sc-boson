@@ -26,7 +26,7 @@ export const toNumber = (recordKey: string) => {
   if (recordKey.startsWith('0')) {
     return recordKey;
   }
-  return Number.isNaN((recordKey as unknown) as number) ? recordKey : Number(recordKey);
+  return Number.isNaN(recordKey as unknown as number) ? recordKey : Number(recordKey);
 };
 
 export const recordKeyToString = (rowKey: RecordKey): React.Key => {
@@ -399,7 +399,10 @@ function useEditableArray<RecordType>(
   const [newLineRecord, setNewLineRecord] = useState<NewLineConfig<RecordType> | undefined>(
     undefined,
   );
+
+  const [fouceDataIndex, setFouceDataIndex] = useState<string>('');
   const newLineRecordRef = useRef<NewLineConfig<RecordType> | undefined>(undefined);
+  const editComRef = useRef<any>();
 
   // 这里这么做是为了存上次的状态，不然每次存一下再拿
   newLineRecordRef.current = newLineRecord;
@@ -433,13 +436,19 @@ function useEditableArray<RecordType>(
       : undefined,
   });
 
+  const setFouce = (dataIndex: string) => {
+    ReactDOM.unstable_batchedUpdates(() => {
+      setFouceDataIndex(dataIndex);
+    });
+  };
+
   useLayoutEffect(() => {
     if (Array.isArray(props.editableKeys) && props.editableKeys.length === 0 && props.clickEdit) {
       if (Array.isArray(props.dataSource) && props.dataSource.length > 0) {
         setEditableRowKeys([props.dataSource[0][props.rowKey]]);
       }
     }
-  }, [props.clickEdit, JSON.stringify(props.dataSource)]);
+  }, [props.clickEdit, JSON.stringify(props.dataSource), props.type]);
 
   /** 一个用来标志的set 提供了方便的 api 来去重什么的 */
   const editableKeysSet = useMemo(() => {
@@ -476,8 +485,12 @@ function useEditableArray<RecordType>(
       message.warn(props.onlyOneLineEditorAlertMessage || '只能同时编辑一行');
       return false;
     }
-    editableKeysSet.add(recordKey);
-    setEditableRowKeys(Array.from(editableKeysSet));
+    // 防止多次渲染
+    ReactDOM.unstable_batchedUpdates(() => {
+      editableKeysSet.add(recordKey);
+      setEditableRowKeys(Array.from(editableKeysSet));
+    });
+
     return true;
   };
 
@@ -682,6 +695,9 @@ function useEditableArray<RecordType>(
   return {
     editableKeys,
     setEditableRowKeys,
+    fouceDataIndex,
+    setFouce,
+    editComRef,
     isEditable,
     actionRender,
     startEditable,
