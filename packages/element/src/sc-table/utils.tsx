@@ -270,7 +270,7 @@ export function genColumnList<T>(props: {
   counter: ReturnType<typeof useContainer>;
 }): (TableColumnType<T> & { index?: number })[] {
   const { columns, map, counter } = props;
-  return (columns
+  return columns
     .map((columnProps, columnsIndex) => {
       const {
         key,
@@ -318,13 +318,15 @@ export function genColumnList<T>(props: {
             sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
           };
         }
+      } else {
+        sorterProps = columnProps.sorter;
       }
 
       const tempColumns: any = {
         index: columnsIndex,
         ...extraProps,
-        ...sorterProps,
         ...columnProps,
+        ...sorterProps,
         title: renderColumnsTitle(columnProps),
         filters,
         fixed: config.fixed,
@@ -338,7 +340,7 @@ export function genColumnList<T>(props: {
       };
       return omitUndefinedAndEmptyArr(tempColumns);
     })
-    .filter((item) => !item.hideInTable) as unknown) as (TableColumnType<T> & {
+    .filter((item) => !item.hideInTable) as unknown as (TableColumnType<T> & {
     index?: number;
   })[];
 }
