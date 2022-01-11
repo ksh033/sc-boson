@@ -313,7 +313,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     }
     return newColumns;
   }, [
-    JSON.stringify(propsColumns),
+    propsColumns,
     editableUtils.editableKeys.join(','),
     editableUtils.fouceDataIndex,
     clickEdit,
