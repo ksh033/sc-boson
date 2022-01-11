@@ -327,7 +327,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
       }
       const createCmp = renderFormItem(item, index);
       // 如果 formItem 自己配置了 hidden，默认使用它自己的
-      const colSize = React.isValidElement<any>(item) ? item?.props?.colSize : 1;
+      const colSize = item?.columnSize ? item?.columnSize : 1;
       const colSpan = Math.min(spanSize.span * (colSize || 1), 24);
       // 计算总的 totalSpan 长度
       totalSpan += colSpan;
