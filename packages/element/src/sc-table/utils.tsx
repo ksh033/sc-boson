@@ -257,6 +257,10 @@ export const getColumnSearchProps = (
   };
 };
 
+function isNumber(val: any) {
+  return typeof val === 'number' && !isNaN(val);
+}
+
 /**
  * 转化 columns 到 pro 的格式 主要是 render 方法的自行实现
  *
@@ -296,8 +300,8 @@ export function genColumnList<T>(props: {
         extraProps = getColumnSearchProps(dataIndex, columnProps, counter);
       }
       let sorterProps = {};
+      const sortOrder = counter.sortOrderMap[dataIndex] ? counter.sortOrderMap[dataIndex] : false;
       if (columnProps.sorter && typeof columnProps.sorter === 'boolean') {
-        const sortOrder = counter.sortOrderMap[dataIndex] ? counter.sortOrderMap[dataIndex] : false;
         if (counter.whetherRemote) {
           sorterProps = {
             sorter: {
@@ -309,6 +313,9 @@ export function genColumnList<T>(props: {
           sorterProps = {
             sorter: {
               compare: (a: any, b: any) => {
+                if (isNumber(a[dataIndex])) {
+                  return Number(a[dataIndex]) - Number(b[dataIndex]);
+                }
                 const as: string = String(a[dataIndex]);
                 const bs: string = String(b[dataIndex]);
                 return as.localeCompare(bs, 'zh-CN');
@@ -319,7 +326,10 @@ export function genColumnList<T>(props: {
           };
         }
       } else {
-        sorterProps = columnProps.sorter;
+        sorterProps = {
+          ...columnProps.sorter,
+          sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
+        };
       }
 
       const tempColumns: any = {
