@@ -307,7 +307,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       });
     }
     if (readonly) {
-      newColumns.filter((it: { dataIndex: string }) => {
+      newColumns = newColumns.filter((it: { dataIndex: string }) => {
         return it.dataIndex === 'options';
       });
     }
@@ -319,6 +319,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     clickEdit,
     JSON.stringify(errorLine),
     JSON.stringify(counter),
+    JSON.stringify(innerPagination),
     showIndex,
     readonly,
   ]);
