@@ -1,6 +1,7 @@
 import type { Rule, FormItemProps } from 'antd/es/form';
 import type { ColProps } from 'antd/es/grid/col';
-
+export declare type FormLayout = 'horizontal' | 'inline' | 'vertical';
+export declare type RenderFunction = (val: any) => React.ReactNode;
 export interface FiledProp extends FormItemProps {
   prefixCls?: string;
   noStyle?: boolean;
@@ -12,6 +13,7 @@ export interface FiledProp extends FormItemProps {
   required?: boolean;
   labelCol?: ColProps;
   wrapperCol?: ColProps;
+  render?: RenderFunction;
 }
 /** 表单项配置 */
 export interface FormItemProp {
@@ -26,6 +28,8 @@ export interface FormItemProp {
    */
   formItemProps?: FiledProp;
 
+  render?: (val: any) => any;
+
   colProps?: ColProps&{newline?: boolean};
   /** 表单项属性 */
   fieldProps?: FiledProp;
@@ -33,6 +37,9 @@ export interface FormItemProp {
   children?: FormItemProp[];
   /** 占据多少格 */
   columnSize?: number;
+  
+    /** 是否换行 */
+  newline?: boolean;
   /** 组件 */
   component?: any;
   /** 组件属性 */
@@ -80,7 +87,7 @@ export interface FormConfig {
   fieldsetTitle?: string | React.ReactNode;
   // 子标题
   subTitle?: string | React.ReactNode;
-
+    layout?: FormLayout;
   /**
    * 分组名称
    *
@@ -90,6 +97,7 @@ export interface FormConfig {
   /** 分组表单项 */
   items: Field[];
 
+  className?: string;
   labelCol?: ColProps;
 
   wrapperCol?: ColProps;

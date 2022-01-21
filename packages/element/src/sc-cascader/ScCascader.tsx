@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-throw-literal */
 import React, { useRef } from 'react';
@@ -168,7 +169,7 @@ const ScCascader: React.FC<ScCascaderProps> = (props) => {
     }
     if (Array.isArray(_value)) {
       const { length } = _value;
-      return _value.map((item: any, i) => {
+      return _value.map((item: any, i: any) => {
         if (typeof item === 'string') {
           if (i === length - 1) {
             return <span key={i}>{item}</span>;

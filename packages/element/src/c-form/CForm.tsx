@@ -333,10 +333,17 @@ const CForm: React.FC<CFormProps> = (props) => {
         fieldset,
         fieldsetTitle,
         subTitle,
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        layout='',
+        className,
         items,
         gutter = { xs: 8, sm: 16, md: 24, lg: 32 },
         col = 4,
       } = item;
+      let fieldsetClassName=""
+      if (layout){
+        fieldsetClassName=`ant-form-${layout}`
+      }
       const colSpan = 24 / col;
       const defColProp = { span: colSpan, push: 0, pull: 0, offset: 0 };
       let cols: any[] = [];
@@ -344,10 +351,10 @@ const CForm: React.FC<CFormProps> = (props) => {
       let rowIndex = 0;
       let colCount = 0;
       let itemCount = 0;
+      let colIndex = 0;
       const createRow = (isGroup?: boolean, groupItem?: any) => {
         if (colCount >= 24) {
           rowIndex += 1;
-
           let colsItem = null;
           if (isGroup) {
             colsItem = (
@@ -367,9 +374,10 @@ const CForm: React.FC<CFormProps> = (props) => {
           );
           cols = [];
           colCount = 0;
+          colIndex=0;
         }
       };
-      let colIndex = 0;
+    
       items.forEach((formItem: any, index: number) => {
         let colItem;
         if (formItem.items && formItem.items.length > 0) {
@@ -483,11 +491,13 @@ const CForm: React.FC<CFormProps> = (props) => {
       if (itemCount > 0) {
         groups.push({ fieldset, fieldsetTitle });
       }
+
+      fieldsetClassName=classnames(fieldsetClassName,fieldsetTitle ? 'sc-form-fieldset' : 'sc-form-fieldset sc-form-fieldset-hide-title',className);
       return itemCount > 0 ? (
         <div
           key={`form-group-${fieldset}`}
           className={
-            fieldsetTitle ? 'sc-form-fieldset' : 'sc-form-fieldset sc-form-fieldset-hide-title'
+            fieldsetClassName
           }
           id={`${fieldset}`}
         >
