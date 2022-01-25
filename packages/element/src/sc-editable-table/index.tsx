@@ -11,7 +11,7 @@ import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interfa
 import { columnRender, removeDeletedData } from './utils';
 import useEditableArray from './useEditableArray';
 import useMountMergeState from '../_util/useMountMergeState';
-import { useMount, useSetState, useKeyPress, useThrottleFn, useDebounceFn } from 'ahooks';
+import { useMount, useSetState, useThrottleFn } from 'ahooks';
 import { validateRules } from './validateUtil';
 import Container from '../sc-table/container';
 import { genColumnList, tableColumnSort } from '../sc-table/utils';
@@ -417,28 +417,28 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       },
     };
   };
-  const setStartEditable = useDebounceFn(
-    (key) => {
-      editableUtils.startEditable(key);
-    },
-    { wait: 200 },
-  );
-  useKeyPress(
-    'tab',
-    (event: any) => {
-      event.stopPropagation();
-      if (clickEdit && editableUtils.editableKeys.length > 0) {
-        const index = value.findIndex((it) => it[rowKey] === editableUtils.editableKeys[0]);
-        if (index !== -1 && value.length > index + 1) {
-          editableUtils.cancelEditable(editableUtils.editableKeys[0]);
-          setStartEditable.run(value[index + 1][rowKey]);
-        }
-      }
-    },
-    {
-      target: divRef,
-    },
-  );
+  // const setStartEditable = useDebounceFn(
+  //   (key) => {
+  //     editableUtils.startEditable(key);
+  //   },
+  //   { wait: 200 },
+  // );
+  // useKeyPress(
+  //   'tab',
+  //   (event: any) => {
+  //     event.stopPropagation();
+  //     if (clickEdit && editableUtils.editableKeys.length > 0) {
+  //       const index = value.findIndex((it) => it[rowKey] === editableUtils.editableKeys[0]);
+  //       if (index !== -1 && value.length > index + 1) {
+  //         editableUtils.cancelEditable(editableUtils.editableKeys[0]);
+  //         setStartEditable.run(value[index + 1][rowKey]);
+  //       }
+  //     }
+  //   },
+  //   {
+  //     target: divRef,
+  //   },
+  // );
 
   // useClickAway(
   //   () => {
