@@ -72,7 +72,7 @@ export type ErrorLineState = {
 function EditableTable<T extends Record<string, any>>(props: EditableProTableProps<T>) {
   const {
     actionRef: propsActionRef,
-    rowKey = 'id',
+    rowKey = 'rowIndex',
     columns: propsColumns,
     rowSelection: propsRowSelection = false,
     clickEdit = false,
