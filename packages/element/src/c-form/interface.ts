@@ -1,6 +1,8 @@
 import type { Rule, FormItemProps } from 'antd/es/form';
 import type { ColProps } from 'antd/es/grid/col';
+
 export declare type FormLayout = 'horizontal' | 'inline' | 'vertical';
+
 export declare type RenderFunction = (val: any) => React.ReactNode;
 export interface FiledProp extends FormItemProps {
   prefixCls?: string;
