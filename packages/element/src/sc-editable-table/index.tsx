@@ -537,7 +537,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           rowClassName={() => 'editable-row'}
           scroll={scroll}
         />
-        {creatorButtonDom}
+        {readonly ? null : creatorButtonDom}
       </Form>
     </div>
   );
