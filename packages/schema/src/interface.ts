@@ -4,6 +4,7 @@ import type {
   FiledProp,
   FormConfig,
   FormItemProp,
+  FormLayout
 } from '@scboson/sc-element/es/c-form';
 import type { ScProColumnType } from '@scboson/sc-element/es/sc-table';
 

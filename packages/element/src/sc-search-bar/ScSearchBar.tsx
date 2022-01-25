@@ -6,7 +6,7 @@ import type { FormInstance, FormProps } from 'antd/es/form';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import useMediaQuery from 'use-media-antd-query';
 import classNames from 'classnames';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, MutableRefObject } from 'react';
 import Advances from './Advances';
 import Quicks from './Quicks';
 import SearchButtons from './SearchButton';
@@ -44,6 +44,7 @@ export interface ScSearchBarProps extends FormProps {
   onReset?: (params: any) => void;
   form?: any;
   colConfig?: any;
+  submitRef?: MutableRefObject<any>;
   customOptionButtons?: () => React.ReactNode[];
 }
 
@@ -159,6 +160,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     layout,
     customOptionButtons,
     style,
+    submitRef,
     ...resProps
   } = props;
 
@@ -291,7 +293,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
     const buttons = (
       <span className={`${prefixCls}-buttons`}>
-        <Button type="primary" onClick={onFinish} htmlType="submit">
+        <Button type="primary" onClick={onFinish} ref={submitRef} className='sc-searchbar-submit' >
           查询
         </Button>
         <Button style={{ marginLeft: 8 }} onClick={handleFormReset}>

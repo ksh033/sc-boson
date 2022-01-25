@@ -6,7 +6,7 @@ export { deepGet } from './CForm';
 export interface FormComponent<P> extends React.FC<P> {
   customView?: boolean;
 }
-export { FormConfig, Field, FieldGroup, FiledProp, FormItemProp } from './interface';
+export { FormConfig, Field, FieldGroup, FiledProp, FormItemProp,FormLayout } from './interface';
 export interface FormComponentProps {
   readonly?: boolean;
   name?: string;
