@@ -108,12 +108,15 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     value: props.value,
     onChange: props.onChange,
     postState: (list: T[]) => {
-      return list.map((it: T, idx: number) => {
-        return {
-          rowIndex: idx,
-          ...it,
-        };
-      });
+      if (Array.isArray(list)) {
+        return list.map((it: T, idx: number) => {
+          return {
+            rowIndex: idx,
+            ...it,
+          };
+        });
+      }
+      return [];
     },
   });
   // 处理默认聚焦
