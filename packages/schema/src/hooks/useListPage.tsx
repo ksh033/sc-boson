@@ -6,14 +6,13 @@ import type { BaseResult } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
 import { useSchemaContext } from '../context';
 import { PageType, PageConfig } from '../interface';
-import { useSetState, useUnmount, useMount } from 'ahooks';
+import { useSetState, useUnmount, useMount, useUpdateEffect } from 'ahooks';
 import type { TableInfoProps } from '../page/TableInfo';
 import type { SearchInfoProps } from '../page/SearchInfo';
 import TableInfo from '../page/TableInfo';
 import SearchInfo from '../page/SearchInfo';
 import _ from 'lodash';
 import schema from '../pageConfigUitls';
-
 
 export { PageConfig, PageType };
 export interface SearchConfig {
@@ -76,7 +75,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
 
   const filterRef = useRef<any>({});
   const ordersRef = useRef<any>({});
-  const submitRef= useRef<any>({});
+  const submitRef = useRef<any>({});
   const searchInitParams = useRef<any>();
   const schemaContext = useSchemaContext();
 
@@ -115,22 +114,22 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       pageSize: _params && _params.size ? _params.size : 10,
     };
   };
-  // const setSearchParams = (_params: any, _pagination: any) => {
-  //   if (!location) {
-  //     return;
-  //   }
-  //   const { pathname, search } = location;
-  //   const key = pathname + search;
-  //   const searchParam = JSON.parse(sessionStorage.getItem('SEARCH_PARAMS') || '{}');
-  //   searchParam[key] = {
-  //     ..._params,
-  //     ...{
-  //       current: _pagination.current,
-  //       size: _pagination.pageSize,
-  //     },
-  //   };
-  //   sessionStorage.setItem('SEARCH_PARAMS', JSON.stringify(searchParam));
-  // };
+  const setSearchParams = (_params: any, _pagination: any) => {
+    if (!location) {
+      return;
+    }
+    const { pathname, search } = location;
+    const key = pathname + search;
+    const searchParam = JSON.parse(sessionStorage.getItem('SEARCH_PARAMS') || '{}');
+    searchParam[key] = {
+      ..._params,
+      ...{
+        current: _pagination.current,
+        size: _pagination.pageSize,
+      },
+    };
+    sessionStorage.setItem('SEARCH_PARAMS', JSON.stringify(searchParam));
+  };
   const [state, setState] = useSetState<any>({
     params: getSearchParams(),
     pagination: getPagination(),
@@ -292,20 +291,18 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     }
   };
 
-  const searchEvent=(event: any)=>{
-    
-    if (event&&event.target){
-     const {key,target}=event
-     if (target.nodeName==="INPUT"){
-         if (key==="Enter"){
-          if (submitRef.current){
+  const searchEvent = (event: any) => {
+    if (event && event.target) {
+      const { key, target } = event;
+      if (target.nodeName === 'INPUT') {
+        if (key === 'Enter') {
+          if (submitRef.current) {
             submitRef.current.click();
           }
-
-         }
-     }
+        }
+      }
     }
-  }
+  };
   useMount(() => {
     const locSearchParams = getSearchParams();
     initSorter(locSearchParams);
@@ -314,17 +311,16 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     if (searchForm.current && searchForm.current.setFieldsValue) {
       searchForm.current.setFieldsValue(locSearchParams);
     }
-    document.body.addEventListener("keydown",searchEvent)
+    document.body.addEventListener('keydown', searchEvent);
   });
-  useUnmount(()=>{
-
-    document.body.removeEventListener("keydown",searchEvent)
-  })
-  // useUpdateEffect(() => {
-  //   if (location) {
-  //     setSearchParams(state.params, state.pagination);
-  //   }
-  // }, [JSON.stringify(state.params), JSON.stringify(state.pagination)]);
+  useUnmount(() => {
+    document.body.removeEventListener('keydown', searchEvent);
+  });
+  useUpdateEffect(() => {
+    if (location) {
+      setSearchParams(state.params, state.pagination);
+    }
+  }, [JSON.stringify(state.params), JSON.stringify(state.pagination)]);
   /** 获取网格列 */
   const getTableConfig = (tableConfig: TableConfig = {}) => {
     const { getOperateColumn, mergeCol, tableKey, callback, action } = tableConfig;
