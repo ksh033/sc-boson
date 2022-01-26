@@ -443,6 +443,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
             if (target.id && target.id === itemId) {
               const index = value.findIndex((it) => it[rowKey] === editableKeys[0]);
               if (index !== -1 && value.length > index + 1) {
+                editableUtils.setFouce(String(firstEditable?.dataIndex));
                 editableUtils.cancelEditable(editableKeys[0]);
                 setStartEditable.run(value[index + 1][rowKey]);
               }
@@ -451,7 +452,11 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         }
       }
     },
-    [JSON.stringify(value), editableUtils.editableKeys.join(',')],
+    [
+      JSON.stringify(value),
+      editableUtils.editableKeys.join(','),
+      JSON.stringify(firstEditable?.dataIndex),
+    ],
   );
 
   useEventListener('keydown', changeEnter);
