@@ -11,7 +11,7 @@ import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interfa
 import { columnRender, removeDeletedData } from './utils';
 import useEditableArray from './useEditableArray';
 import useMountMergeState from '../_util/useMountMergeState';
-import { useMount, useSetState, useThrottleFn } from 'ahooks';
+import { useDebounceFn, useEventListener, useMount, useSetState, useThrottleFn } from 'ahooks';
 import { validateRules } from './validateUtil';
 import Container from '../sc-table/container';
 import { genColumnList, tableColumnSort } from '../sc-table/utils';
@@ -225,6 +225,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   };
 
   const firstEditable = propsColumns?.find((it) => it.editable);
+  const lastEditItem = propsColumns?.filter((it) => it.editable).pop();
 
   const rowIndexRender = (text: any, rowData: T, index: number) => {
     if (pagination) {
@@ -417,61 +418,43 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       },
     };
   };
-  // const setStartEditable = useDebounceFn(
-  //   (key) => {
-  //     editableUtils.startEditable(key);
-  //   },
-  //   { wait: 200 },
-  // );
-  // useKeyPress(
-  //   'tab',
-  //   (event: any) => {
-  //     event.stopPropagation();
-  //     if (clickEdit && editableUtils.editableKeys.length > 0) {
-  //       const index = value.findIndex((it) => it[rowKey] === editableUtils.editableKeys[0]);
-  //       if (index !== -1 && value.length > index + 1) {
-  //         editableUtils.cancelEditable(editableUtils.editableKeys[0]);
-  //         setStartEditable.run(value[index + 1][rowKey]);
-  //       }
-  //     }
-  //   },
-  //   {
-  //     target: divRef,
-  //   },
-  // );
 
-  // useClickAway(
-  //   () => {
-  //     if (clickEdit && editableUtils.editableKeys.length > 0) {
-  //       editableUtils.editableKeys.forEach((key) => {
-  //         editableUtils.cancelEditable(key);
-  //       });
-  //     }
-  //   },
-  //   () => document.getElementById(tableId),
-  // );
+  const setStartEditable = useDebounceFn(
+    (key) => {
+      editableUtils.startEditable(key);
+    },
+    { wait: 200 },
+  );
 
-  // useEventListener('click', (event) => {
-  //   const dom = document.getElementById(tableId);
-  //   if (dom) {
-  //     const x = event.clientX;
-  //     const y = event.clientY;
-  //     const divx1 = dom.offsetLeft;
-  //     const divy1 = dom.offsetTop;
-  //     const divx2 = dom.offsetLeft + dom.offsetWidth;
-  //     const divy2 = dom.offsetTop + dom.offsetHeight;
-  //     const flag = x < divx1 || x > divx2 || y < divy1 || y > divy2;
-  //     console.log(event);
-  //     console.log(divx1, divx2);
-  //     if (!flag) {
-  //       if (clickEdit && editableUtils.editableKeys.length > 0) {
-  //         editableUtils.editableKeys.forEach((key) => {
-  //           editableUtils.cancelEditable(key);
-  //         });
-  //       }
-  //     }
-  //   }
-  // });
+  const changeEnter = useCallback(
+    (event: any) => {
+      const editableKeys = editableUtils.editableKeys;
+      if (clickEdit && Array.isArray(editableKeys) && editableKeys.length > 0) {
+        if (event && event.target) {
+          const { key, target } = event;
+          if (key === 'Tab') {
+            const dataIndex = lastEditItem?.dataIndex;
+            const itemId = editableKeys[0] + '_' + dataIndex;
+            if (target.nodeName === 'INPUT') {
+              if (target.blur) {
+                target?.blur();
+              }
+            }
+            if (target.id && target.id === itemId) {
+              const index = value.findIndex((it) => it[rowKey] === editableKeys[0]);
+              if (index !== -1 && value.length > index + 1) {
+                editableUtils.cancelEditable(editableKeys[0]);
+                setStartEditable.run(value[index + 1][rowKey]);
+              }
+            }
+          }
+        }
+      }
+    },
+    [JSON.stringify(value), editableUtils.editableKeys.join(',')],
+  );
+
+  useEventListener('keydown', changeEnter);
 
   const {
     record,

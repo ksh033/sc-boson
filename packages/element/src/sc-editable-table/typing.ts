@@ -19,10 +19,7 @@ export type ProCoreActionType<T = {}> = {
 
   /** @name 清空选择 */
   clearSelected?: () => void;
-} & Omit<
-  UseEditableUtilType,
-  'newLineRecord' | 'editableKeys' | 'actionRender' | 'setEditableRowKeys'
-> &
+} & Omit<UseEditableUtilType, 'newLineRecord' | 'actionRender' | 'setEditableRowKeys'> &
   T;
 
 export type ActionType = ProCoreActionType & {
