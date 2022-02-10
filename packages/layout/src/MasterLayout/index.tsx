@@ -7,14 +7,13 @@ import { Layout, ConfigProvider } from 'antd';
 import type { BreadcrumbProps as AntdBreadcrumbProps, BreadcrumbProps } from 'antd/es/breadcrumb';
 import classNames from 'classnames';
 import warning from 'warning';
-import useMergedState from 'rc-util/lib/hooks/useMergedState';
+import useMergedState from 'rc-util/es/hooks/useMergedState';
 import { stringify } from 'use-json-comparison';
 import useAntdMediaQuery from 'use-media-antd-query';
 import { useDeepCompareEffect, useDocumentTitle, isBrowser } from '@ant-design/pro-utils';
 import Omit from 'omit.js';
 import { getMatchMenu } from '../utils/getMatchMenu';
-import {UnorderedListOutlined} from '@ant-design/icons'
-
+import { UnorderedListOutlined } from '@ant-design/icons';
 import type { HeaderViewProps } from './Header';
 import Header from './Header';
 import type { MenuDataItem, MessageDescriptor, Route, RouterTypes, WithFalse } from '../typings';
@@ -60,16 +59,13 @@ const findAppCode = (pathname: string, appMenu?: AppMenuProps[]) => {
 };
 
 export type MasterLayoutProps = Partial<RouterTypes<Route>> &
-  SiderMenuProps &
-  {setCurrentMenu?: (currentMenu: any) => void; }
-  &
-  HeaderViewProps & {
+  SiderMenuProps & { setCurrentMenu?: (currentMenu: any) => void } & HeaderViewProps & {
     pure?: boolean;
     /** @name logo url */
     logo?: React.ReactNode | WithFalse<() => React.ReactNode>;
 
     /** @name 页面切换的时候触发 */
-    onPageChange?: (location?: RouterTypes<Route>['location'],currentMenu?: any) => void;
+    onPageChange?: (location?: RouterTypes<Route>['location'], currentMenu?: any) => void;
 
     loading?: boolean;
 
@@ -158,13 +154,13 @@ const renderSiderMenu = (
   }
   let { menuData } = props;
 
-  let appTitle: any=null;
-  if (appSelectKeys&&appSelectKeys.length>0){
-    const appItem=apps.find((item: any)=>{
-        return item.code===appSelectKeys[0]
-    })
-    if (appItem){
-      appTitle=<h1>{appItem.name}</h1>
+  let appTitle: any = null;
+  if (appSelectKeys && appSelectKeys.length > 0) {
+    const appItem = apps.find((item: any) => {
+      return item.code === appSelectKeys[0];
+    });
+    if (appItem) {
+      appTitle = <h1>{appItem.name}</h1>;
     }
   }
   /** 如果是分割菜单模式，需要专门实现一下 */
@@ -199,9 +195,17 @@ const renderSiderMenu = (
   return (
     <SiderMenu
       matchMenuKeys={matchMenuKeys}
-      menuHeaderRender={(logo,title,sideProps: any) => {
-        const {collapsed}=sideProps
-        return <a>{collapsed?<UnorderedListOutlined style={{ fontSize: '24px',color:'#C1C6C8'}} />:appTitle}</a>;
+      menuHeaderRender={(logo, title, sideProps: any) => {
+        const { collapsed } = sideProps;
+        return (
+          <a>
+            {collapsed ? (
+              <UnorderedListOutlined style={{ fontSize: '24px', color: '#C1C6C8' }} />
+            ) : (
+              appTitle
+            )}
+          </a>
+        );
       }}
       {...props}
       theme="dark"
@@ -320,28 +324,29 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props) => {
 
   const { breadcrumb = {}, breadcrumbMap, menuData = [] } = menuInfoData;
 
-  const matchMenus = useMemo(() => getMatchMenu(location.pathname || '/', menuData, true,true), [
-    location.pathname,
-    menuInfoData,
-  ]);
-
-  const matchMenuKeys = useMemo(
-    () => {
-
-      return Array.from(new Set(matchMenus.map((item) => item.key || item.path || '')))
-    },
-    [matchMenus],
+  const matchMenus = useMemo(
+    () => getMatchMenu(location.pathname || '/', menuData, true, true),
+    [location.pathname, menuInfoData],
   );
+
+  const matchMenuKeys = useMemo(() => {
+    return Array.from(new Set(matchMenus.map((item) => item.key || item.path || '')));
+  }, [matchMenus]);
   // 当前选中的menu，一般不会为空
-  const currentMenu =useMemo(()=>{
-       const menuItem=(matchMenus[matchMenus.length - 1] || {}) as ProSettings & MenuDataItem;
-       setCurrentMenu&&setCurrentMenu(menuItem)
-       return menuItem
-  },[matchMenus])
+  const currentMenu = useMemo(() => {
+    const menuItem = (matchMenus[matchMenus.length - 1] || {}) as ProSettings & MenuDataItem;
+    setCurrentMenu && setCurrentMenu(menuItem);
+    return menuItem;
+  }, [matchMenus]);
 
   const currentMenuLayoutProps = useCurrentMenuLayoutProps(currentMenu);
 
-  const { fixSiderbar, navTheme, layout: defaultPropsLayout, ...rest } = {
+  const {
+    fixSiderbar,
+    navTheme,
+    layout: defaultPropsLayout,
+    ...rest
+  } = {
     ...props,
     ...currentMenuLayoutProps,
   };
@@ -407,7 +412,7 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props) => {
 
   const [appSelectedKey, setAppSelectedKey] = useState(null);
   const appkey = findAppCode(location.pathname, appMenuData);
-  const appSelected = appSelectedKey ||appSelectedKeys || appkey ;
+  const appSelected = appSelectedKey || appSelectedKeys || appkey;
 
   // render sider dom
   const siderMenuDom = renderSiderMenu(
@@ -434,9 +439,7 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props) => {
         setAppSelectedKey(selectedKeys);
         onSelect && onSelect(selectedKeys);
       }
-    }
-  
-    
+    },
   };
   const headerDom = headerRender(
     {
@@ -505,13 +508,15 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props) => {
   useEffect(() => {
     const { onPageChange } = props;
     if (onPageChange) {
-      onPageChange(props.location,currentMenu);
+      onPageChange(props.location, currentMenu);
     }
   }, [props.location?.pathname, props.location?.pathname?.search]);
 
   const [hasFooterToolbar, setHasFooterToolbar] = useState(false);
 
-  useDocumentTitle(pageTitleInfo, props.title || defaultSettings.title);
+  const title = (props.title ? props.title : defaultSettings.title) || '';
+
+  useDocumentTitle(pageTitleInfo, title);
   return (
     <MenuCounter.Provider>
       <RouteContext.Provider

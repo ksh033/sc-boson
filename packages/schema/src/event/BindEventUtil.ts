@@ -1,13 +1,11 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable func-names */
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { PageConfig } from '../interface';
 import { useRequest } from 'ahooks';
-import { BaseResult } from '@ahooksjs/use-request/lib/types';
+import { BaseResult } from '@ahooksjs/use-request/es/types';
 import defaultEvents from './DefaultEvents';
 import type { HButtonType } from '../interface';
 import React from 'react';
-
 
 // interface useFormatEventProps {
 //   bindEvent: <T extends ButtonTypeProps>(button: T) => T;
@@ -85,20 +83,22 @@ const bindEvent = (
       }
 
       newBtn.onClick = (...arg) => {
-      
-        const event: any=arg.length>0?arg[arg.length-1]:null;
+        const event: any = arg.length > 0 ? arg[arg.length - 1] : null;
         // 彈出框处理
         if (options.content) {
           if (options.pageProps && !options.pageProps.callBack) {
             options.pageProps.callBack = callBack;
           }
         }
-        itemEvent({
-          ...newBtn,
-          options,
-          callBack,
-          preHandle,
-        },event);
+        itemEvent(
+          {
+            ...newBtn,
+            options,
+            callBack,
+            preHandle,
+          },
+          event,
+        );
       };
     }
   }

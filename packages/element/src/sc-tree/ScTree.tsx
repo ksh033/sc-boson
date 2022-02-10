@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Tree, Input, Space } from 'antd';
 import type { DataNode } from 'antd/es/tree';
 import { useUpdateEffect, useThrottle } from 'ahooks';
-import useMergedState from 'rc-util/lib/hooks/useMergedState';
+import useMergedState from 'rc-util/es/hooks/useMergedState';
 import { updateTreeData, addTreeData, deleteTreeData, defaultNode } from './utils';
 import type { ScTreeProps, ActionType, ActionFunctionVO, DefaultAction } from './typing';
 

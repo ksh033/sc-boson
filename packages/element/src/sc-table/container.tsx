@@ -1,6 +1,6 @@
 import { createContainer } from 'unstated-next';
 import { useState, useRef } from 'react';
-import useMergedState from 'rc-util/lib/hooks/useMergedState';
+import useMergedState from 'rc-util/es/hooks/useMergedState';
 import type { FixedType } from 'rc-table/es/interface';
 import type { ScTableProps } from './index';
 import type { DensitySize } from './components/ToolBar/DensityIcon';

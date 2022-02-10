@@ -2,12 +2,12 @@
 import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { GetRowKey } from 'antd/es/table/interface';
 import type { FormInstance } from 'antd/es/form/index';
-import useMergedState from 'rc-util/lib/hooks/useMergedState';
+import useMergedState from 'rc-util/es/hooks/useMergedState';
 import useLazyKVMap from 'antd/es/table/hooks/useLazyKVMap';
 import { LoadingOutlined } from '@ant-design/icons';
 import { message, Popconfirm } from 'antd';
 import ReactDOM from 'react-dom';
-import set from 'rc-util/lib/utils/set';
+import set from 'rc-util/es/utils/set';
 import useMountMergeState from '../_util/useMountMergeState';
 import { removeDeletedData } from './utils';
 

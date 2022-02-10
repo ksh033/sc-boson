@@ -2,7 +2,7 @@ import React from 'react';
 import { Dropdown, Menu, Space, Tabs } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
-import useMergedState from 'rc-util/lib/hooks/useMergedState';
+import useMergedState from 'rc-util/es/hooks/useMergedState';
 
 export type ListToolBarMenuItem = {
   key: React.Key;

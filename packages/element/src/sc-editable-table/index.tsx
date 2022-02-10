@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef } f
 import type { TableProps } from 'antd/es/table/index';
 import type { ProTableProps, ActionType, TableRowSelection } from './typing';
 import type { ButtonProps } from 'antd/es/button/index';
-import useMergedState from 'rc-util/lib/hooks/useMergedState';
+import useMergedState from 'rc-util/es/hooks/useMergedState';
 import { PlusOutlined } from '@ant-design/icons';
 import { Form, Table, Button } from 'antd';
 import type { TablePaginationConfig } from 'antd/es/table';

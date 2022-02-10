@@ -3,14 +3,12 @@ import Icon, { createFromIconfontCN } from '@ant-design/icons';
 import { Menu } from 'antd';
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import classNames from 'classnames';
-import useMergedState from 'rc-util/lib/hooks/useMergedState';
+import useMergedState from 'rc-util/es/hooks/useMergedState';
 import { isUrl, isImg } from '@ant-design/pro-utils';
-
 import type { MenuTheme, MenuProps } from 'antd';
 import type { ProSettings } from '../../defaultSettings';
 import defaultSettings from '../../defaultSettings';
 import { getOpenKeysFromMenuData } from '../../utils/utils';
-
 import type { MenuDataItem, MessageDescriptor, Route, RouterTypes, WithFalse } from '../../typings';
 import MenuCounter from './Counter';
 import type { PrivateSiderMenuProps } from './SiderMenu';
@@ -323,12 +321,15 @@ const BaseMenu: React.FC<BaseMenuProps & PrivateSiderMenuProps> = (props) => {
   }, [matchMenuKeys.join('-'), collapsed]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const openKeysProps = useMemo(() => getOpenKeysProps(openKeys, props), [
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    openKeys && openKeys.join(','),
-    props.layout,
-    props.collapsed,
-  ]);
+  const openKeysProps = useMemo(
+    () => getOpenKeysProps(openKeys, props),
+    [
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      openKeys && openKeys.join(','),
+      props.layout,
+      props.collapsed,
+    ],
+  );
 
   const [menuUtils] = useState(() => new MenuUtil(props));
 
@@ -353,33 +354,36 @@ const BaseMenu: React.FC<BaseMenuProps & PrivateSiderMenuProps> = (props) => {
   const finallyData = props.postMenuData ? props.postMenuData(menuData) : menuData;
 
   //if (finallyData && finallyData?.length < 1) {
-    //return null;
- // }
+  //return null;
+  // }
   return (
     <div className={'secondary-menu'}>
-    <h2 className={'secondary-sidebar-title'} 
-      style={
-        {   height: headerHeight,
+      <h2
+        className={'secondary-sidebar-title'}
+        style={{
+          height: headerHeight,
           flex: `0 0 ${headerHeight}`,
-          lineHeight: `${headerHeight}px`,}
-      }
-    >{'默认菜单'}</h2>
-    <div className={'secondary-sidebar'}>
-    <Menu
-      {...openKeysProps}
-      key="Menu"
-      mode={mode}
-      defaultOpenKeys={defaultOpenKeysRef.current}
-      theme={theme}
-      selectedKeys={selectedKeys}
-      style={style}
-      className={cls}
-      onOpenChange={setOpenKeys}
-      {...props.menuProps}
-    >
-      {menuUtils.getNavMenuItems(finallyData, false)}
-    </Menu>
-    </div>
+          lineHeight: `${headerHeight}px`,
+        }}
+      >
+        {'默认菜单'}
+      </h2>
+      <div className={'secondary-sidebar'}>
+        <Menu
+          {...openKeysProps}
+          key="Menu"
+          mode={mode}
+          defaultOpenKeys={defaultOpenKeysRef.current}
+          theme={theme}
+          selectedKeys={selectedKeys}
+          style={style}
+          className={cls}
+          onOpenChange={setOpenKeys}
+          {...props.menuProps}
+        >
+          {menuUtils.getNavMenuItems(finallyData, false)}
+        </Menu>
+      </div>
     </div>
   );
 };

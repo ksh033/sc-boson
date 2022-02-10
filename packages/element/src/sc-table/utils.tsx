@@ -4,7 +4,7 @@ import type { TableColumnType } from 'antd';
 import { Button } from 'antd';
 import { Input, Space, Typography } from 'antd';
 import type { ActionType } from './typing';
-import get from 'rc-util/lib/utils/get';
+import get from 'rc-util/es/utils/get';
 import omitUndefinedAndEmptyArr from '../_util/omitUndefinedAndEmptyArr';
 import LabelIconTip from '../_util/LabelIconTip';
 import type { ColumnsState, useContainer } from './container';

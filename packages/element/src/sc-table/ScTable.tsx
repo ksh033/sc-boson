@@ -12,7 +12,7 @@ import Container from './container';
 import type { ListToolBarProps } from './components/ListToolBar';
 import { genColumnList, tableColumnSort, genColumnKey } from './utils';
 import useDeepCompareEffect from '../_util/useDeepCompareEffect';
-import type { ColumnType } from 'antd/lib/table';
+import type { ColumnType } from 'antd/es/table';
 import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
 
 const { useState, useEffect, useRef, useMemo } = React;

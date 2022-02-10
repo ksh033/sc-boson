@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { TreeSelect } from 'antd';
 import type { TreeSelectProps } from 'antd/es/tree-select/index';
-import type { TreeNodeProps } from 'rc-tree-select/lib/TreeNode';
+import type { TreeNodeProps } from 'rc-tree-select/es/TreeNode';
 import { useUpdateEffect } from 'ahooks';
 import useFetchData from '../_util/useFetchData';
 
@@ -42,7 +42,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
   } = props;
   const isGone = useRef(false);
   const formatTreeData = (_data: any) => {
-    if (!_data){
+    if (!_data) {
       return null;
     }
     return _data.map((item: any) => {
@@ -72,8 +72,8 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
   const getData = (_data: any) => {
     let privateData: any[] = [];
 
-    if (!_data){
-      return privateData
+    if (!_data) {
+      return privateData;
     }
 
     if (root) {
@@ -187,7 +187,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
     };
   }, [restProps, treeData]);
 
-  return <TreeSelect {...treeProps}></TreeSelect> ;
+  return <TreeSelect {...treeProps} />;
 };
 
 export default ScTreeSelect;
