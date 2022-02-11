@@ -66,7 +66,7 @@ export interface UseListPageProp<S> {
 }
 
 export default function ListPage<S>(config: PageConfig, props: any): UseListPageProp<S> {
-  const { service } = config;
+  const { service, pageType = 'listpage' } = config;
   const { location } = props || {};
   // 查询表单
   const searchForm = useRef<any>();
@@ -79,14 +79,14 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const searchInitParams = useRef<any>();
   const schemaContext = useSchemaContext();
 
-  const getSearchParams = (): any => {
+  const getSearchParams = () => {
     if (!location) {
       return null;
     }
-    // const { pathname, search } = location;
-    // const key = pathname + search;
-    // const searchParam = JSON.parse(sessionStorage.getItem('SEARCH_PARAMS') || '{}');
-    return {};
+    const { pathname, search } = location;
+    const key = pathname + search;
+    const searchParam = JSON.parse(sessionStorage.getItem('SEARCH_PARAMS') || '{}');
+    return searchParam[key];
   };
 
   const [pageData, setPageData] = useSetState<any>();
@@ -311,10 +311,14 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     if (searchForm.current && searchForm.current.setFieldsValue) {
       searchForm.current.setFieldsValue(locSearchParams);
     }
-    document.body.addEventListener('keydown', searchEvent);
+    if (pageType === 'listpage') {
+      document.body.addEventListener('keydown', searchEvent);
+    }
   });
   useUnmount(() => {
-    document.body.removeEventListener('keydown', searchEvent);
+    if (pageType === 'listpage') {
+      document.body.removeEventListener('keydown', searchEvent);
+    }
   });
   useUpdateEffect(() => {
     if (location) {

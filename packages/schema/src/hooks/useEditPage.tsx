@@ -26,9 +26,11 @@ interface initProps {
   defaultValues?: any; // 默认初始化值
 }
 export interface UseEditPageProp<S> extends UseListPageProp<S> {
-  getFormConfig: (
-    _props?: FormFilterProp,
-  ) => { form: React.MutableRefObject<any>; formConfig: any[]; initialValues: any };
+  getFormConfig: (_props?: FormFilterProp) => {
+    form: React.MutableRefObject<any>;
+    formConfig: any[];
+    initialValues: any;
+  };
   getModalBtns: (
     rAction?: string,
     options?: DialogOptions & {
@@ -64,7 +66,7 @@ export default function useEditPage(
   pageConfig: PageConfig = { pageType: 'page' },
   props: any,
 ): UseEditPageProp<any> {
-  const config = { ...defaultConfig, ...pageConfig };
+  const config = { ...pageConfig, ...defaultConfig };
   const { dataTypeFormat } = Schema;
   const Page = ListPage(config, props);
   // const _editPageButtons: any[] = [];
