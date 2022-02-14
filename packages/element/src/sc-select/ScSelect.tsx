@@ -19,11 +19,12 @@ export interface ScSelectProps extends SelectProps<any> {
   model?: string;
   remoteSearch?: boolean;
   request?: (params: any) => Promise<any>;
-  onLoad?: (data: any) => void;
+  onLoad?: (data: any) => any;
   searchField?: string;
   customRef?: React.MutableRefObject<any>;
   singleInput?: boolean;
   openReloadData?: boolean;
+  preHandle?: (params: any) => boolean;
 }
 
 const ScSelect: React.FC<ScSelectProps> = (props) => {
@@ -45,6 +46,8 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     singleInput = false,
     onChange,
     openReloadData,
+    onDropdownVisibleChange,
+    preHandle,
     ...restProps
   } = props;
   const isGone = useRef(false);
@@ -72,19 +75,26 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     if (!request) {
       throw new Error('no remote request method');
     }
-    setLoading(true);
-    try {
-      let rdata = await request({ ...params, ...searchParam });
+    let flag: boolean = true;
+    if (preHandle) {
+      flag = preHandle?.(searchParam);
+    }
+    if (flag) {
+      setLoading(true);
+      try {
+        let rdata = await request({ ...params, ...searchParam });
 
-      if (isGone.current) return;
-      if (rdata) {
-        if (onLoad) {
-          rdata = onLoad(rdata);
+        if (isGone.current) return;
+        if (rdata) {
+          if (onLoad) {
+            rdata = onLoad(rdata);
+          }
+
+          setDataSource(rdata || []);
         }
-        setDataSource(rdata || []);
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -217,7 +227,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   //   }
   // }
 
-  const onDropdownVisibleChange = (open: boolean) => {
+  const handleDropdownVisibleChange = (open: boolean) => {
     if (open) {
       if (!autoload && request && Array.isArray(dataSource) && dataSource.length === 0) {
         if (!remoteSearch) {
@@ -228,19 +238,19 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         loadData({});
       }
     }
+    onDropdownVisibleChange?.(open);
   };
 
   const handleChange = (value: any, option: any) => {
     onChange && onChange(value, option);
   };
-
   return (
     <Select
       {...selectProps}
       //   用于解决后端返回value为null时，组件不展示输入提示文字问题
       value={selectProps.value === null ? undefined : selectProps.value}
       showSearch={showSearch}
-      onDropdownVisibleChange={onDropdownVisibleChange}
+      onDropdownVisibleChange={handleDropdownVisibleChange}
       loading={loading}
       onSearch={handleSearch}
       onChange={handleChange}

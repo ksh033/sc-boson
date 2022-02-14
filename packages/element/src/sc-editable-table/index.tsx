@@ -83,7 +83,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     editable,
     showIndex = false,
     readonly = false,
-    scroll = { x: '100%' },
+    scroll = { x: 'max-content' },
     ...rest
   } = props;
   let tableId = 'tableForm';
@@ -307,6 +307,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         dataIndex: '_rowIndex',
         title: '序号',
         width: 60,
+        fixed: true,
         render: rowIndexRender,
       });
     }
