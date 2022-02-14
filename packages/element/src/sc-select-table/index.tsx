@@ -56,6 +56,18 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
     return [];
   }, [JSON.stringify(dataSource), getCheckboxProps]);
 
+  const initCurrentRowKeys = (list: any) => {
+    if (Array.isArray(list)) {
+      const newList = list.filter((it) => {
+        const disabled = getCheckboxProps(it).disabled;
+        return !disabled;
+      });
+      if (newList.length > 0) {
+        setCurrentRowKey(newList[0][valueField]);
+      }
+    }
+  };
+
   const action = useRef<any>({
     rowKeys: [],
     rows: [],
@@ -67,8 +79,7 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
 
   useEffect(() => {
     if (!props.request && Array.isArray(props.data) && props.data.length > 0) {
-      const firstItem = props.data[0];
-      setCurrentRowKey(firstItem[valueField]);
+      initCurrentRowKeys(props.data);
       setDataSource(props.data || []);
     }
   }, [JSON.stringify(props.data)]);
@@ -155,9 +166,7 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
       rdata = onLoad(cdata);
     }
     if (Array.isArray(rdata)) {
-      if (rdata.length > 0) {
-        setCurrentRowKey(rdata[0][valueField]);
-      }
+      initCurrentRowKeys(rdata);
       setDataSource(rdata);
       return rdata;
     } else {
@@ -218,10 +227,7 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
 
   const onClear = () => {
     setValue(null);
-    if (Array.isArray(dataSource) && dataSource.length > 0) {
-      setCurrentRowKey(dataSource[0][valueField] || '');
-    }
-
+    initCurrentRowKeys(dataSource);
     action.current = {
       rowKeys: [],
       rows: [],
