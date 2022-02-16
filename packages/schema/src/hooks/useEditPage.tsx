@@ -66,7 +66,7 @@ export default function useEditPage(
   pageConfig: PageConfig = { pageType: 'page' },
   props: any,
 ): UseEditPageProp<any> {
-  const config = { ...pageConfig, ...defaultConfig };
+  const config = { ...defaultConfig, ...pageConfig };
   const { dataTypeFormat } = Schema;
   const Page = ListPage(config, props);
   // const _editPageButtons: any[] = [];
