@@ -33,9 +33,7 @@ export interface UseEditPageProp<S> extends UseListPageProp<S> {
   };
   getModalBtns: (
     rAction?: string,
-    options?: DialogOptions & {
-      preHandle?: (values: any) => any;
-    },
+    options?: DialogOptions &ButtonTypeProps,
     serverName?: string,
   ) => any[];
   toInitialValues: (initConfig: initProps) => void;
@@ -277,9 +275,7 @@ export default function useEditPage(
 
   const getModalBtns = (
     rAction?: string,
-    options?: DialogOptions & {
-      preHandle?: (values: any) => any;
-    },
+    options?: DialogOptions &ButtonTypeProps,
     serverName?: string,
   ): any[] => {
     const { preHandle, ...restOptions } = options || {};
