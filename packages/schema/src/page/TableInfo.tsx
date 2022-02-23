@@ -25,6 +25,17 @@ export interface TableInfoProps {
   size: any;
   scroll: any;
 }
+
+
+
+const OpRenderCmp: React.FC<any>=(props)=>{
+
+  const {tbuttons,config,reload,record,max,cmp:Cmp}=props
+  const buttons = bindEvents(tbuttons, config, reload);
+    
+  return <Cmp buttons={buttons} max={max} record={record} />;
+}
+
 export default class TableInfo {
   private tableInfo: TableInfoProps;
   private config: PageConfig;
@@ -185,9 +196,8 @@ export default class TableInfo {
             }
           });
           const Cmp = this.opColButtonCmp || Operation;
-          const buttons = bindEvents(tbuttons, this.config, this.reload);
-
-          return <Cmp buttons={buttons} max={max} record={record} />;
+        const opRenderCmpProps={tbuttons,config:this.config,reload:this.reload,record,max,cmp:Cmp}
+          return <OpRenderCmp {...opRenderCmpProps} />;
         };
       }
     }
