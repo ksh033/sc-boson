@@ -8,7 +8,7 @@ import { useUpdateEffect } from 'ahooks';
 
 const { useCallback, useState, useLayoutEffect } = React;
 
-export interface ScCascaderProps extends CascaderProps<any> {
+export interface ScCascaderProps extends CascaderProps {
   pIdField?: string;
   asyn?: boolean;
   textField?: string;

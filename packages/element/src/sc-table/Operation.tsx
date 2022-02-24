@@ -37,7 +37,7 @@ const Operation: React.FC<OperationProps> = (props) => {
             key={index}
             icon={icon}
             {...buttonProps}
-            onClick={(e) => {
+            onClick={(e: any) => {
               onClick({ ...params, record }, e);
             }}
           >

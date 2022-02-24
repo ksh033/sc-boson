@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
-import type { TableProps } from 'antd/es/table/index';
+import type { TableProps, TablePaginationConfig } from 'antd';
 import type { ProTableProps, ActionType, TableRowSelection } from './typing';
 import type { ButtonProps } from 'antd/es/button/index';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import { PlusOutlined } from '@ant-design/icons';
 import { Form, Table, Button } from 'antd';
-import type { TablePaginationConfig } from 'antd/es/table';
 import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
 import { columnRender, removeDeletedData } from './utils';
 import useEditableArray from './useEditableArray';
@@ -252,9 +251,14 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         ...columnProps,
         fixed: newFixed,
         width,
-        onCell() {
+        onCell(data: any, index?: number | undefined) {
+          const cellProps: any = columnProps.onCell ? columnProps.onCell(data, index) : {};
           return {
-            onClick: () => {
+            ...cellProps,
+            onClick: (e: any) => {
+              if (cellProps && cellProps?.onClick) {
+                cellProps?.onClick(e);
+              }
               if (columnProps.editable) {
                 editableUtils.setFouce(String(columnProps.dataIndex));
               } else if (firstEditable) {
