@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import type { FC } from 'react';
+import { useImperativeHandle } from 'react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useMemo, useState } from 'react';
@@ -16,13 +17,22 @@ export interface AreaDataProps {
   areaName: string;
 }
 
+export type SelectTableActionType = {
+  clearSearchData: () => void;
+};
+
 export type ScSelectTableProps = ScSelectProps & {
   dropdownRenderProps: ScTableProps<any>;
+  /** @name 初始化的参数，可以操作 table */
+  actionRef?:
+    | React.MutableRefObject<SelectTableActionType | undefined>
+    | ((actionRef: SelectTableActionType) => void);
   getCheckboxProps?: (record: any) => Partial<Omit<CheckboxProps, 'checked' | 'defaultChecked'>>;
 };
 
 const ScSelectTable: FC<ScSelectTableProps> = (props) => {
   const {
+    actionRef: propsActionRef,
     dropdownRenderProps,
     onLoad,
     mode,
@@ -30,6 +40,7 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
     valueField = 'value',
     labelInValue = true,
     value,
+    onSelect,
     getCheckboxProps = (record: any) => ({
       disabled: record.disabled || false,
     }),
@@ -45,6 +56,40 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
 
   const [dataSource, setDataSource] = useState(props.data || []);
   const [currentRowKey, setCurrentRowKey] = useState<any>('');
+  const actionRef = useRef<SelectTableActionType>();
+  useEffect(() => {
+    if (typeof propsActionRef === 'function' && actionRef.current) {
+      propsActionRef(actionRef.current);
+    }
+  }, [propsActionRef]);
+
+  if (propsActionRef) {
+    // @ts-ignore
+    propsActionRef.current = actionRef.current;
+  }
+
+  const userAction: SelectTableActionType = {
+    clearSearchData: () => {
+      setDataSource([]);
+    },
+  };
+
+  actionRef.current = userAction;
+
+  /** 绑定 action ref */
+  useImperativeHandle(
+    propsActionRef,
+    () => {
+      return actionRef.current;
+    },
+    [],
+  );
+
+  useEffect(() => {
+    return () => {
+      actionRef.current = undefined;
+    };
+  }, []);
 
   const effectiveData = useMemo(() => {
     if (Array.isArray(dataSource)) {
@@ -206,6 +251,16 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
     setCurrentRowKey(item[valueField]);
   };
 
+  const customSetValue = (record: any) => {
+    if (labelInValue) {
+      onSelect?.(record, record);
+      setValue(record);
+    } else {
+      onSelect?.(record[valueField], record);
+      setValue(record[valueField]);
+    }
+  };
+
   const onInputKeyDown = (event: any) => {
     const { key } = event;
     if (currentRowKey && currentRowKey !== '') {
@@ -218,7 +273,7 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
       }
       if (key === 'Enter') {
         const record = getRecord(currentRowKey);
-        setValue(record);
+        customSetValue(record);
         setOpen(false);
         handleRowSelect(record);
       }
@@ -267,7 +322,7 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
                   event.stopPropagation();
                   const config = getCheckboxProps(record);
                   if (!config.disabled) {
-                    setValue(record);
+                    customSetValue(record);
                     setOpen(false);
                     handleRowSelect(record);
                   }
