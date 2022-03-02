@@ -1,4 +1,4 @@
-import type {  FormSearchItem } from '../interface';
+import type { FormSearchItem } from '../interface';
 import schema from '../pageConfigUitls';
 
 import _ from 'lodash';
@@ -7,6 +7,7 @@ export interface SearchInfoProps {
   queryList: FormSearchItem[];
   form: any;
   onSubmit: (_params: any) => void;
+  onReset: (_params: any) => void;
   initialValues: any;
 }
 class SearchInfo {
@@ -26,15 +27,15 @@ class SearchInfo {
       }
       return false;
     });
-    if (searchItem)
-    return { searchItem, itemIndex };
+    if (searchItem) return { searchItem, itemIndex };
     return null;
   }
 
   /**
    * 添加查询项
-   * @param formItem  表单项
-   * @param group  分组
+   *
+   * @param formItem 表单项
+   * @param group 分组
    * @returns
    */
   addSearchItem(formItem: FormSearchItem | (() => FormSearchItem)) {
@@ -44,26 +45,30 @@ class SearchInfo {
     } else {
       newFormItem = { ...formItem };
     }
-    const {component}=newFormItem
-    if (_.isString(component)){
-      const newComponent=schema.getCmp(component)
-      newFormItem.component=newComponent;
+    const { component } = newFormItem;
+    if (_.isString(component)) {
+      const newComponent = schema.getCmp(component);
+      newFormItem.component = newComponent;
     }
- 
-     this.searchInfo.queryList.push(newFormItem);
+
+    this.searchInfo.queryList.push(newFormItem);
 
     return this;
   }
   /**
    * 修改查询项
+   *
    * @param dataIndex
    * @param col
    * @returns
    */
-  changeSearchItem(name: string, item: FormSearchItem | ((col?: FormSearchItem) => FormSearchItem)) {
+  changeSearchItem(
+    name: string,
+    item: FormSearchItem | ((col?: FormSearchItem) => FormSearchItem),
+  ) {
     const oldCol = this.findItem(name);
     if (oldCol) {
-      const { searchItem,  itemIndex } = oldCol;
+      const { searchItem, itemIndex } = oldCol;
       let newFormItem = {};
       if (_.isFunction(item)) {
         newFormItem = item();
@@ -71,23 +76,22 @@ class SearchInfo {
         newFormItem = item;
       }
 
-      newFormItem=_.merge(searchItem,newFormItem)
-    
-      if (itemIndex!==null) this.searchInfo.queryList[itemIndex] = newFormItem;
+      newFormItem = _.merge(searchItem, newFormItem);
+
+      if (itemIndex !== null) this.searchInfo.queryList[itemIndex] = newFormItem;
     }
     return this;
   }
   removeSearchItem(name: string) {
     const revalue = this.findItem(name);
     if (revalue) {
-      const {  itemIndex } = revalue;
-      if (itemIndex!==null){
+      const { itemIndex } = revalue;
+      if (itemIndex !== null) {
         this.searchInfo.queryList.splice(itemIndex, 1);
       }
     }
     return this;
   }
-
 
   toConfig() {
     return this.searchInfo;
