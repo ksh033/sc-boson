@@ -50,6 +50,7 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   data?: { rows: any[]; total: number; current: number; size: number }; // 列表数据
   request?: (params: any) => Promise<any>; // 请求数据的远程方法
   onLoad?: (data: any) => any; // 数据加载完成后触发,会多次触发
+  refresh?: () => void; // 点击刷新数据
   params?: any; // 请求的参数
   prefixCls?: string; // 表格容器的 class 名
   className?: string; // 样式
@@ -108,6 +109,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     cardProps,
     cardBordered = false,
     onChange,
+    refresh,
     ...restPros
   } = props;
 
@@ -421,6 +423,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
               <a
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
+                  refresh?.();
                   loadData();
                 }}
               >
