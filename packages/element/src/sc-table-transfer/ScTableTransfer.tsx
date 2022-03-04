@@ -7,7 +7,7 @@ import type { TransferListBodyProps } from 'antd/es/transfer/ListBody';
 import type { TransferDirection } from 'antd/es/transfer';
 
 import { Transfer } from 'antd';
-import Search from './Search';
+import Search from './search';
 
 import difference from 'lodash/difference';
 import isArray from 'lodash/isArray';
@@ -17,6 +17,7 @@ import type { ScTableProps } from '../sc-table';
 import type { ScSearchBarProps } from '../sc-search-bar';
 import ScSearchBar from '../sc-search-bar';
 import './style';
+
 export type DataSource =
   | {
       rows: any[];
@@ -245,11 +246,10 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
             onSelect(record: any, selected: any) {
               const key = record[rowKey];
 
-              // const tem=[...targetDataSource,record]
-              //setTargetDataSource(tem)
+             
               onItemSelect(key, selected);
             },
-            //selectedRowKeys: listSelectedKeys,
+           selectedRowKeys: listSelectedKeys,
           };
 
           if (direction === 'left') {
@@ -306,7 +306,7 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
               },
             };
           }
-          //if (tableProps)
+  
 
           return (
             <div>

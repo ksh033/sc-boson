@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Input } from 'antd'
-import { CloseOutlined, SearchOutlined } from '@ant-design/icons'
-const { useMemo } = React
+import {  SearchOutlined } from '@ant-design/icons'
+
 
 export interface TransferSearchProps {
   prefixCls?: string
@@ -21,7 +21,7 @@ const Search: React.FC<TransferSearchProps> = (props) => {
         handleClear?.();
       }
     },
-    [onChange],
+    [handleClear, onChange],
   );
 
   return (
