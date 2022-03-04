@@ -448,7 +448,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         }
       }
       const newData: any = arrayMoveImmutable([].concat(tlist), oldIndex, newIndex).filter(
-        (el) => !!el,
+        (el: any) => !!el,
       );
       if (dataSource) {
         if (isArray(dataSource)) {

@@ -118,7 +118,8 @@
     "write-pkg": "^4.0.0",
     "xhr-mock": "^2.5.1",
     "yorkie": "^2.0.0",
-    "ahooks": "^2.9.6"
+    "ahooks": "^2.9.6",
+    "array-move": "^4.0.0"
   },
   "name": "sc-boson"
 }
