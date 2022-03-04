@@ -28,29 +28,33 @@ import {umi,Schema} from './context';
 const { ScDatePicker, ScRangePicker } = ScDate
 const { Group: InputGroup } = Input
 
-export const cmps: any = {
-  Input,
-  ScTextArea,
-  TreeSelect,
-  Select,
-  Checkbox,
-  Radio,
-  DatePicker,
-  Calendar,
-  AutoComplete,
-  InputNumber,
-  Switch,
-  Upload,
-  Cascader,
-  ScCascader,
-  ScSelect,
-  ScTreeSelect,
-  ScDatePicker,
-  ScRangePicker,
-  ScCheckBox,
-  ScRadio,
-  InputGroup,
+export const cmps: Record<string,any> = {
+  "Input":Input,
+  "ScTextArea":ScTextArea,
+  "TreeSelect":TreeSelect,
+  "Select":Select,
+  "Checkbox":Checkbox,
+  "Radio":Radio,
+  'DatePicker':DatePicker,
+  "Calendar":Calendar,
+  "AutoComplete":AutoComplete,
+  "InputNumber":InputNumber,
+  "Switch":Switch,
+  "Upload":Upload,
+  "Cascader":Cascader,
+  "ScCascader":ScCascader,
+  "ScSelect":ScSelect,
+  "ScTreeSelect":ScTreeSelect,
+  "ScDatePicker":ScDatePicker,
+  "ScRangePicker":ScRangePicker,
+  "ScCheckBox":ScCheckBox,
+  "ScRadio":ScRadio,
+  "InputGroup":InputGroup,
 }
+
+
+export type CmpType=keyof typeof cmps
+
 
 
 export const regEditCmp = (cmpTye: string, cmp: any) => {

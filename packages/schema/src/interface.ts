@@ -7,15 +7,14 @@ import type {
   FormLayout,
 } from '@scboson/sc-element/es/c-form';
 import type { ScProColumnType } from '@scboson/sc-element/es/sc-table';
-
-import type { cmps } from './register';
+import type { SearchBarItem } from '@scboson/sc-element/es/sc-search-bar';
 
 import type React from 'react';
 import type { ButtonType, ButtonProps } from 'antd/es/button';
 
-export { Field, FieldGroup, FiledProp, FormConfig };
-export interface FormItem<T extends keyof typeof cmps> extends Omit<FormItemProp, 'component'> {
-  component?: T | string;
+export { Field, FieldGroup, FiledProp, FormConfig,FormLayout };
+export interface FormItem extends Omit<FormItemProp, 'component'> {
+  component?: string|any;
 }
 
 export interface DialogOptions {
@@ -260,27 +259,29 @@ export declare type ProColumns<RecordType = unknown> = (
 
 // export interface NodeType ='queryConfig' | 'formConfig' | 'tableConfig'
 
-export interface QueryConfigItem extends FiledProp {
-  // 文本
-  label: string;
-  // 字段
-  name: string;
-  /** 组件 */
-  component: string;
-  /** 是否显示再更多 */
-  hiddenExpend: boolean;
-  /** 组件属性 */
-  props?: any;
-  /** 子集 */
-  children?: QueryConfigItem[];
-  /** 占据多少格 */
-  columnSize?: number;
-}
+// export interface QueryConfigItem extends FiledProp {
+//   // 文本
+//   label: string;
+//   // 字段
+//   name: string;
+//   /** 组件 */
+//   component: string;
+//   /** 是否显示再更多 */
+//   hiddenExpend: boolean;
+//   /** 组件属性 */
+//   props?: any;
+//   /** 子集 */
+//   children?: QueryConfigItem[];
+//   /** 占据多少格 */
+//   columnSize?: number;
+// }
 
-export interface FormSearchItem extends FormItem<any> {
-  /** 是否隐藏 */
-  hiddenExpend?: boolean;
-}
+export type FormSearchItem =  FormItemProp& Omit<SearchBarItem, 'component'|'children'|'label'|'name'>;
+
+// export interface FormSearchItem extends FormItem<any>,SearchBarItem {
+//   /** 是否隐藏 */
+//   hiddenExpend?: boolean;
+// }
 
 /** 表单过滤 */
 export interface FormFilterProp {
@@ -311,10 +312,10 @@ export interface SearchFilterProp {
   /** Key "节点下的key"多查询配置时使用 */
   key?: string;
   /** CallBack 每一项回调处理 */
-  callBack?: (item: QueryConfigItem) => boolean;
+  callBack?: (item: FormSearchItem) => boolean;
   /** 当前操作 */
   action?: string;
-  fieldsProp?: Record<string, (item: QueryConfigItem) => QueryConfigItem | any> | undefined;
+  fieldsProp?: Record<string, (item: FormSearchItem) => FormSearchItem | any> | undefined;
 }
 
 /** 页面类型 */

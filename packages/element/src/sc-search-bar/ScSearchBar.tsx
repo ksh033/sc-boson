@@ -6,7 +6,8 @@ import type { FormInstance, FormProps } from 'antd/es/form';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import useMediaQuery from 'use-media-antd-query';
 import classNames from 'classnames';
-import { useState, useCallback, useMemo, MutableRefObject } from 'react';
+import type { MutableRefObject } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import Advances from './Advances';
 import Quicks from './Quicks';
 import SearchButtons from './SearchButton';
@@ -14,12 +15,17 @@ import isBrowser from '../_util/isBrowser';
 import { MyContext } from './context-manager';
 import RcResizeObserver from 'rc-resize-observer';
 import type { FormItemProp } from '../c-form/interface';
-
+import { useDebounceFn } from 'ahooks';
+import classnames from 'classnames'
 import useMountMergeState from '../_util/useMountMergeState';
 import './style';
 
 const FormItem = Form.Item;
 
+
+export type SearchFormItemProp=FormItemProp&{
+  hasFormItem?: boolean;
+}
 export interface SearchBarItem {
   label: string;
   name: string;
@@ -36,12 +42,13 @@ export interface ScSearchBarProps extends FormProps {
   onLoad?: (arg: any) => any;
   className?: string;
   queryList: SearchBarItem[];
-  colNumber: number;
+  colNumber?: number;
   prefixCls?: string;
-  span: SpanConfig;
+  span?: SpanConfig;
   children?: React.ReactNode;
   onSubmit?: (params: any) => void;
   onReset?: (params: any) => void;
+  lightFilter?: boolean;
   form?: any;
   colConfig?: any;
   submitRef?: MutableRefObject<any>;
@@ -76,6 +83,21 @@ const CONFIG_SPAN_BREAKPOINTS = {
   lg: 992,
   xl: 1057,
   xxl: Infinity,
+};
+const WIDTH_SIZE_ENUM = {
+  // 适用于短数字，短文本或者选项
+  xs: 104,
+  s: 216,
+  // 适用于较短字段录入、如姓名、电话、ID 等。
+  sm: 216,
+  m: 328,
+  // 标准宽度，适用于大部分字段长度。
+  md: 328,
+  l: 440,
+  // 适用于较长字段录入，如长网址、标签组、文件路径等。
+  lg: 440,
+  // 适用于长文本录入，如长链接、描述、备注等，通常搭配自适应多行输入框或定高文本域使用。
+  xl: 552,
 };
 /** 配置表单列变化的容器宽度断点 */
 const BREAKPOINTS = {
@@ -160,6 +182,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     layout,
     customOptionButtons,
     style,
+    lightFilter = false,
     submitRef,
     ...resProps
   } = props;
@@ -187,6 +210,27 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     onReset?.(wrapForm.getFieldsValue());
   };
 
+  const { run } = useDebounceFn(
+    async () => {
+      const fieldsValue = await wrapForm.validateFields();
+      const values = { ...fieldsValue };
+      if (request) {
+        let rdata = await request(values);
+        if (onLoad) {
+          rdata = onLoad(rdata);
+        }
+      } else if (onSubmit) {
+        onSubmit(values);
+      }
+    },
+    {
+      wait: 500,
+    },
+  );
+
+  if (lightFilter === true) {
+    resProps.onValuesChange = run;
+  }
   const onFinish = useCallback(async () => {
     const fieldsValue = await wrapForm.validateFields();
     const values = { ...fieldsValue };
@@ -215,7 +259,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     };
   }, [expandForm, handleFormReset, toggleForm]);
 
-  const renderFormItem = (item: FormItemProp, index: number) => {
+  const renderFormItem = (item: SearchFormItemProp, index: number) => {
     const { label, name, component, hasFormItem = true, fieldProps } = item;
     const fieldName = name;
 
@@ -225,7 +269,18 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
         rchildren.push(renderFormItem(element, idx));
       });
     }
+   
+    const formItemWidth=item.width ;
+    const newWidth = formItemWidth && !WIDTH_SIZE_ENUM[formItemWidth] ? formItemWidth : undefined;
 
+    const className = classnames(item.props?.className, {
+      [`sc-field-${formItemWidth}`]: formItemWidth && WIDTH_SIZE_ENUM[formItemWidth],
+    });
+
+    let widthObj = {};
+    if (newWidth) {
+      widthObj = { width: newWidth };
+    }
     let createCmp = null;
     if (component) {
       if (component.props) {
@@ -243,17 +298,21 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
           createCmp = React.createElement(
             component,
             {
-              style: { width: '100%' },
+             // style: { width: '100%' },
               key: `form-item-component-${index}`,
-              ...restProps,
+              ...restProps,       
+              className,
+              style: { ...item.props.style, ...widthObj },
             },
             rchildren,
           );
         } else {
           createCmp = React.createElement(component, {
-            style: { width: '100%' },
+            // style: { width: '100%' },
             key: `form-item-component-${index}`,
             ...restProps,
+            className,
+            style: { ...item.props.style, ...widthObj },
           });
         }
       }
@@ -263,13 +322,23 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     if (hasFormItem) {
       if (createCmp) {
         return (
-          <FormItem label={label} name={fieldName} {...fromConfig} key={`form-item-${index}`}>
+          <FormItem
+            label={!lightFilter ? label : ''}
+            name={fieldName}
+            {...fromConfig}
+            key={`form-item-${index}`}
+          >
             {createCmp}
           </FormItem>
         );
       }
       return (
-        <FormItem label={label} name={fieldName} {...fromConfig} key={`form-item-${index}`}>
+        <FormItem
+          label={!lightFilter ? label : ''}
+          name={fieldName}
+          {...fromConfig}
+          key={`form-item-${index}`}
+        >
           {rchildren}
         </FormItem>
       );
@@ -293,7 +362,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
     const buttons = (
       <span className={`${prefixCls}-buttons`}>
-        <Button type="primary" onClick={onFinish} ref={submitRef} className='sc-searchbar-submit' >
+        <Button type="primary" onClick={onFinish} ref={submitRef} className="sc-searchbar-submit">
           查询
         </Button>
         <Button style={{ marginLeft: 8 }} onClick={handleFormReset}>
@@ -314,7 +383,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     let currentSpan = 0;
 
     const cols: any[] = [];
-    items.forEach((item: FormItemProp, index: number) => {
+    items.forEach((item: SearchFormItemProp, index: number) => {
       const hidden: boolean =
         (item as React.ReactElement<{ hidden: boolean }>)?.props?.hidden ||
         item.hidden ||
@@ -346,38 +415,44 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
       currentSpan += colSpan;
 
-      cols.push(
-        <Col key={itemKey} span={colSpan}>
-          {createCmp}
-        </Col>,
-      );
+      if (lightFilter) {
+        cols.push(<Col key={itemKey}>{createCmp}</Col>);
+      } else {
+        cols.push(
+          <Col key={itemKey} span={colSpan}>
+            {createCmp}
+          </Col>,
+        );
+      }
     });
     const offset = useMemo(() => {
       const offsetSpan = (currentSpan % 24) + spanSize.span;
       return 24 - offsetSpan;
     }, [currentSpan, spanSize.span]);
 
+    const buttonsRow = lightFilter ?  null: (
+      <Col
+        offset={offset}
+        span={spanSize.span}
+        style={{
+          textAlign: 'right',
+        }}
+        key="option"
+      >
+        <Form.Item label=" " colon={false} className={classNames(`${prefixCls}-actions`)}>
+          {buttons}
+        </Form.Item>
+      </Col>
+    );
+
     return (
       <Card bordered={false}>
         <Form form={wrapForm} layout="horizontal" {...resProps}>
-          <Row gutter={24} justify="start" key="resize-observer-row">
+          <Row gutter={lightFilter?12:24} justify="start" key="resize-observer-row">
             {cols}
             {customOptionButtons ? (
               customOptionButtons()
-            ) : (
-              <Col
-                offset={offset}
-                span={spanSize.span}
-                style={{
-                  textAlign: 'right',
-                }}
-                key="option"
-              >
-                <Form.Item label=" " colon={false} className={classNames(`${prefixCls}-actions`)}>
-                  {buttons}
-                </Form.Item>
-              </Col>
-            )}
+            ) : buttonsRow}
           </Row>
         </Form>
       </Card>

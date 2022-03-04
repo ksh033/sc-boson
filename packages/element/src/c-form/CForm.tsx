@@ -334,15 +334,15 @@ const CForm: React.FC<CFormProps> = (props) => {
         fieldsetTitle,
         subTitle,
         // eslint-disable-next-line @typescript-eslint/no-shadow
-        layout='',
+        layout = '',
         className,
         items,
         gutter = { xs: 8, sm: 16, md: 24, lg: 32 },
         col = 4,
       } = item;
-      let fieldsetClassName=""
-      if (layout){
-        fieldsetClassName=`ant-form-${layout}`
+      let fieldsetClassName = '';
+      if (layout) {
+        fieldsetClassName = `ant-form-${layout}`;
       }
       const colSpan = 24 / col;
       const defColProp = { span: colSpan, push: 0, pull: 0, offset: 0 };
@@ -374,10 +374,10 @@ const CForm: React.FC<CFormProps> = (props) => {
           );
           cols = [];
           colCount = 0;
-          colIndex=0;
+          colIndex = 0;
         }
       };
-    
+
       items.forEach((formItem: any, index: number) => {
         let colItem;
         if (formItem.items && formItem.items.length > 0) {
@@ -492,15 +492,13 @@ const CForm: React.FC<CFormProps> = (props) => {
         groups.push({ fieldset, fieldsetTitle });
       }
 
-      fieldsetClassName=classnames(fieldsetClassName,fieldsetTitle ? 'sc-form-fieldset' : 'sc-form-fieldset sc-form-fieldset-hide-title',className);
+      fieldsetClassName = classnames(
+        fieldsetClassName,
+        fieldsetTitle ? 'sc-form-fieldset' : 'sc-form-fieldset sc-form-fieldset-hide-title',
+        className,
+      );
       return itemCount > 0 ? (
-        <div
-          key={`form-group-${fieldset}`}
-          className={
-            fieldsetClassName
-          }
-          id={`${fieldset}`}
-        >
+        <div key={`form-group-${fieldset}`} className={fieldsetClassName} id={`${fieldset}`}>
           {fieldsetTitle ? <div className="sc-form-fieldset-title">{fieldsetTitle}</div> : null}
           {subTitle ? <div className="sc-form-fieldset-subtitle">{subTitle}</div> : null}
           {rows}

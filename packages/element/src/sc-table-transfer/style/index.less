@@ -1,13 +1,30 @@
 @import '../../style/index.less';
 .sc-table-transfer {
   position: relative;
-  display: flex;
+ // display: flex;
   height: 100%;
   &-search-wrapper {
     position: relative;
     width: 100%;
     padding: 10px;
   }
+  .sc-table{
+    .ant-card{
+      .ant-card-body{
+        padding: 0px;
+      }
+    
+    }
+  }
+ .sc-searchbar{
+     margin: 10px;
+   .ant-card-body{
+     padding: 0px;
+   }
+   .ant-form-item{
+     margin-bottom: 0px;
+   }
+ }
   &-search {
     padding: 0 8px;
     &-action {
@@ -33,46 +50,6 @@
       }
     }
   }
-  &-title {
-    padding: 10px;
-    background: #f5f5f5;
-    font-weight: 700;
-  }
-  &-list {
-    border: 1px solid hsv(0, 0, 85%);
-    display: inline-block;
-    border-radius: 2px;
-    vertical-align: middle;
-    position: relative;
-    height: 300px;
-    flex: 1;
-    overflow: hidden;
-  }
-  &-operation {
-    display: flex;
-    overflow: hidden;
-    margin: 0 8px;
-    vertical-align: middle;
-    flex-direction: column;
-    justify-content: center;
-    :global(.ant-btn) {
-      &:first-child {
-        margin-bottom: 4px;
-      }
+ 
 
-      .anticon {
-        font-size: 12px;
-      }
-    }
-  }
-  .sc-table-alert {
-    margin-bottom: 0px;
-  }
-  .ant-alert-info {
-    border: none;
-    background: #fff;
-  }
-  .ant-table-fixed-header .ant-table-scroll .ant-table-header {
-    overflow-y: hidden;
-  }
 }

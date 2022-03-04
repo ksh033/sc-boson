@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
 import { useRef } from 'react';
-import type { ProColumn, FormItem, ProColumnType, HButtonType } from '../interface';
+import type { ProColumn, FormSearchItem , ProColumnType, HButtonType } from '../interface';
 import type { BaseResult } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
 import { useSchemaContext } from '../context';
@@ -19,7 +19,7 @@ export interface SearchConfig {
   tableKey?: string;
 
   /** 直接合并不行时使用此方法 */
-  callback?: ((column: FormItem<any>) => void) | undefined;
+  callback?: ((column: FormSearchItem) => void) | undefined;
   /** 当前页状态 */
   action?: string;
   /** 合并配置参数 */

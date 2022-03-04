@@ -12,8 +12,14 @@ import Container from './container';
 import type { ListToolBarProps } from './components/ListToolBar';
 import { genColumnList, tableColumnSort, genColumnKey } from './utils';
 import useDeepCompareEffect from '../_util/useDeepCompareEffect';
+
 import type { ColumnType } from 'antd/es/table';
 import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
+
+import { arrayMoveImmutable } from 'array-move';
+import isArray from 'lodash/isArray';
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+import { MenuOutlined } from '@ant-design/icons';
 
 const { useState, useEffect, useRef, useMemo } = React;
 export type { ColumnsType } from 'antd/es/table/Table';
@@ -81,6 +87,8 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   cardProps?: CardProps;
   /** @name table 列属性 */
   columns?: ScProColumn<T>;
+
+  dragSort?: boolean;
 }
 
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
@@ -109,11 +117,19 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     cardProps,
     cardBordered = false,
     onChange,
-    refresh,
+    dragSort = false,
+    dataSource: newdataSource,
+    onRow,
     ...restPros
   } = props;
 
   const { selectedRows = [], params = null, pageSize = 10, autoload = false } = restPros;
+
+  const SortableItem = SortableElement((sprops: any) => <tr {...sprops} />);
+  const SortableBody = SortableContainer((sprops: any) => <tbody {...sprops} />);
+  const DragHandle = SortableHandle(() => (
+    <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />
+  ));
 
   const counter = Container.useContainer();
   const isGone = useRef(false);
@@ -126,7 +142,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       manual: true,
     },
   );
-  const [dataSource, setDataSource] = useState(data);
+  const [dataSource, setDataSource] = useState<any>(data || newdataSource);
   const [rowKeys, setRowKeys] = useState(selectedRowKeys || []);
   const [rows, setRows] = useState<any[]>(selectedRows || []);
   const [innerPagination, setPagination] = useSetState({
@@ -288,6 +304,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       setDataSource(data);
     }
   }, [data]);
+  useUpdateEffect(() => {
+    if (newdataSource) {
+      setDataSource(newdataSource);
+    }
+  }, [JSON.stringify(newdataSource)]);
 
   const handleTableChange = (
     _pagination: TablePaginationConfig,
@@ -339,7 +360,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
   }, [tableColumn]);
   const columns = useMemo(() => {
-    return tableColumn.filter((item) => {
+    let filterCols = tableColumn.filter((item) => {
       // 删掉不应该显示的
       const columnKey = genColumnKey(item.key, item.index);
       const config = counter.columnsMap[columnKey];
@@ -348,7 +369,21 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       }
       return true;
     });
-  }, [counter.columnsMap, tableColumn]);
+
+    if (dragSort) {
+      filterCols = [
+        {
+          title: '',
+          dataIndex: 'sort',
+          width: 30,
+          className: 'drag-visible',
+          render: () => <DragHandle />,
+        },
+        ...filterCols,
+      ];
+    }
+    return filterCols;
+  }, [counter.columnsMap, tableColumn, dragSort]);
 
   const cRowSelection = useMemo(() => {
     return checkbox
@@ -400,12 +435,60 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     changeRowSelect(_rowKeys, _rows);
   };
 
+  // updateDragData=()
+  const onSortEnd = ({ oldIndex, newIndex }: any) => {
+    if (oldIndex !== newIndex) {
+      let tlist: any = [];
+      if (dataSource) {
+        if (isArray(dataSource)) {
+          tlist = dataSource;
+        } else {
+          tlist = dataSource.rows;
+        }
+      }
+      const newData: any = arrayMoveImmutable([].concat(tlist), oldIndex, newIndex).filter(
+        (el) => !!el,
+      );
+      if (dataSource) {
+        if (isArray(dataSource)) {
+          setDataSource(newData);
+        } else {
+          setDataSource({ ...dataSource, rows: newData });
+        }
+      }
+    }
+  };
+  const DraggableContainer = (dragProps: any) => (
+    <SortableBody
+      useDragHandle
+      disableAutoscroll
+      helperClass="row-dragging"
+      onSortEnd={onSortEnd}
+      {...dragProps}
+    />
+  );
+
+  const DraggableBodyRow = ({ style, ...restProps }: any) => {
+    let tlist: any = [];
+    if (dataSource) {
+      if (isArray(dataSource)) {
+        tlist = dataSource;
+      } else {
+        tlist = dataSource.rows;
+      }
+    }
+    const index = tlist.findIndex((x: any) => x[rowKey] === restProps['data-row-key']);
+    // function findIndex base on Table rowKey props and should always be a right array index
+
+    return <SortableItem index={index} {...restProps} />;
+  };
+
   const tableProp: any = () => {
     let _row = [];
     let total = 0;
     if (dataSource) {
       total = dataSource.total || 0;
-      _row = dataSource.rows || [];
+      _row = dataSource.rows || dataSource;
     }
 
     _row.forEach((it: any, index: number) => {
@@ -453,16 +536,28 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
     const key = rowKey || 'key';
     updateAction();
+    let components = null;
+    if (dragSort) {
+      components = {
+        body: {
+          wrapper: DraggableContainer,
+          row: DraggableBodyRow,
+        },
+      };
+    }
     return {
       onRow: (record: any, index: number) => {
-        let result: any = onCustomRow && onCustomRow(record, index);
+        let result: any = onRow && onRow(record, index);
         if (result === undefined || result === null) {
           result = {};
         }
         if (result && rowSelected && checkbox) {
+          const customClick = result.onClick;
           result.onClick = (event: any) => {
-            // 阻止合成事件间的冒泡
-            event.stopPropagation();
+            event.stopPropagation(); // 阻止合成事件间的冒泡
+            if (typeof customClick === 'function') {
+              customClick(event);
+            }
             handleRowSelect(record);
           }; // 点击行
         }
@@ -473,10 +568,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       loading,
       rowKey: key,
       rowSelection: cRowSelection,
-      dataSource: dataSource ? dataSource.rows : dataSource,
+      dataSource: _row,
       columns,
       pagination: paginationProps,
       ...restPros,
+      components,
       onChange: handleTableChange,
     };
   };

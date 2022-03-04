@@ -5,7 +5,8 @@ import type { ProTableProps, ActionType, TableRowSelection } from './typing';
 import type { ButtonProps } from 'antd/es/button/index';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import { PlusOutlined } from '@ant-design/icons';
-import { Form, Table, Button } from 'antd';
+import { Form,  Button } from 'antd';
+
 import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
 import { columnRender, removeDeletedData } from './utils';
 import useEditableArray from './useEditableArray';
@@ -14,6 +15,7 @@ import { useDebounceFn, useEventListener, useMount, useSetState, useThrottleFn }
 import { validateRules } from './validateUtil';
 import Container from '../sc-table/container';
 import { genColumnList, tableColumnSort } from '../sc-table/utils';
+import  ScTable from '../sc-table';
 
 export type RecordCreatorProps<T> = {
   record: T | ((index: number) => T);
@@ -433,13 +435,13 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
 
   const changeEnter = useCallback(
     (event: any) => {
-      const editableKeys = editableUtils.editableKeys;
+      const {editableKeys} = editableUtils;
       if (clickEdit && Array.isArray(editableKeys) && editableKeys.length > 0) {
         if (event && event.target) {
           const { key, target } = event;
           if (key === 'Tab') {
             const dataIndex = lastEditItem?.dataIndex;
-            const itemId = editableKeys[0] + '_' + dataIndex;
+            const itemId = `${editableKeys[0]  }_${  dataIndex}`;
             if (target.nodeName === 'INPUT') {
               if (target.blur) {
                 target?.blur();
@@ -522,7 +524,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   return (
     <div id={tableId} className="sc-editable-table" ref={divRef}>
       <Form component={false} form={props.editable?.form} onValuesChange={run} key="table">
-        <Table
+        <ScTable
           {...getTableProps()}
           rowKey={rowKey}
           tableLayout={tableLayout}

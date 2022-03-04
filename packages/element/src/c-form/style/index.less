@@ -1,6 +1,6 @@
 
 @import  '../../style/index.less';
-.@{sc-prefix}-form {
+.@{sc-prefix}-form,.@{sc-prefix}-searchbar {
   margin: 0px 16px;
   // 因为 light-filter 不需要定宽
  div:not(.@{sc-prefix}-pro-form-light-filter) {
@@ -93,17 +93,16 @@
 }
 
 .sc-form-fieldset {
-  &:first{
-    padding-top: 0px;
-  }
+
   &-hide-title{
     padding-top: 24px;
-  }
+  } 
+ 
   margin-top: 8px;
   margin-bottom: 8px;
   position: relative;
   &-title{
-    padding: 0 0px 8px 8px;
+    padding: 8px 0px 8px 8px;
     position: relative;
     border-bottom: solid 1px #f0f0f0;
     font-size: 14px;
@@ -114,6 +113,16 @@
    &-subtitle{
     padding-bottom: 8px;
    }
+}
+
+.ant-modal-custom{
+  
+.sc-form-fieldset {
+  &:first-child{
+    padding-top: 0px;
+  }
+}
+
 }
 .sc-viem-item {
   padding: 8px 0;

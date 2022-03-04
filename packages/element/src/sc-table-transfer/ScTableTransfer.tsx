@@ -1,213 +1,137 @@
-import * as React from 'react';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useEffect } from 'react';
 import ScTable from '../sc-table';
-import Search from './search';
+
+import type { TransferProps } from 'antd/es/transfer';
+import type { TransferListBodyProps } from 'antd/es/transfer/ListBody';
+import type { TransferDirection } from 'antd/es/transfer';
+
+import { Transfer } from 'antd';
+import Search from './Search';
+
+import difference from 'lodash/difference';
+import isArray from 'lodash/isArray';
+
+import { useSetState } from 'ahooks';
+import type { ScTableProps } from '../sc-table';
+import type { ScSearchBarProps } from '../sc-search-bar';
+import ScSearchBar from '../sc-search-bar';
 import './style';
-import type { ScProColumn } from '../sc-table/ScTable';
+export type DataSource =
+  | {
+      rows: any[];
+      total: number;
+      current: number;
+      size: number;
+    }
+  | any[];
 
-const { useState, useCallback, useEffect } = React;
+type ScSearchBarType = Omit<ScSearchBarProps, 'queryList'> & {
+  queryList: any[];
+};
 
-export interface DataSource {
-  rows: any[];
-  total: number;
-  current: number;
-  size: number;
-}
-
-export interface ScTableTransferfProps<T> {
-  columns?: ScProColumn<T>;
-  data: DataSource;
-  targetData: DataSource;
-  targetType: string;
-  pagination: any;
-  showSearch: boolean;
-  modelKey: string;
-  filterOption?: (filterText: any, item: any) => boolean;
-  targetKey: string;
-  maxHeight: number;
-  valueField: string;
-  searchField: string;
-  selectedKeys?: string[];
+export interface ScTableTransferfProps<T>
+  extends Omit<TransferProps<T>, 'dataSource' | 'rowKey' | 'onChange'> {
+  leftTable: ScTableProps<T>;
+  rightTable: ScTableProps<T>;
+  rowKey?: string;
+  dataSource?: DataSource;
+  targetDataSource?: any[];
   targetKeys?: string[];
-  prefixCls: string;
-  remoteSearch: boolean;
-  onSearchChange?: (direction: TransferDirection, e: React.ChangeEvent<HTMLInputElement>) => void;
-  value: string[];
-  onChange: any;
-  titles: any;
-  onMove: any;
-  onCustomSearch: any;
-  placeholder: string;
-  rowKey: string;
+  lefteSearch?: ScSearchBarType;
+  searchField?: string;
+  onChange?: (changeData: {
+    nextTargetKeys: string[];
+    direction: string;
+    moveKeys: string[];
+    targetDataSource: any[];
+  }) => void;
+  prefixCls?: string;
 }
 
-export type TransferDirection = 'left' | 'right';
-
+export interface ScTableTransferfState {
+  targetKeys: string[];
+  dataSource: any[];
+  targetDataSource: any[];
+  total: number;
+  leftFilterValue: string;
+  rightFilterValue: string;
+}
 const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
+  const [state, setState] = useSetState<ScTableTransferfState>({
+    targetKeys: [],
+    total: 0,
+    targetDataSource: [],
+    dataSource: [],
+    leftFilterValue: '',
+    rightFilterValue: '',
+  });
   const {
-    data = { rows: [], total: 0 },
-    targetData = { rows: [], total: 0 },
-    pagination = { size: 'small', hideOnSinglePage: true },
-    showSearch = false,
-    maxHeight = 200,
-    valueField = 'key',
+    leftTable,
+    rightTable,
+    dataSource,
+    rowKey = 'key',
+    targetKeys,
+    showSearch,
+    lefteSearch,
+    filterOption,
+    onChange,
+    targetDataSource,
     searchField = 'label',
     prefixCls = 'sc-table-transfer',
-    remoteSearch = true,
-    onMove = (_value: any) => {
-      console.log(_value);
-    },
-    onCustomSearch = false,
-    placeholder = '',
-    selectedKeys = [],
-    targetKeys = [],
-    value,
-    onSearchChange,
-    onChange,
-    filterOption,
-    columns,
-    titles,
+    ...restProps
   } = props;
-
-  const [state, setState] = useState({
-    leftFilter: '',
-    rightFilter: '',
-    sourceSelectedKeys: selectedKeys.filter((key) => targetKeys.indexOf(key) === -1),
-    targetSelectedKeys: selectedKeys.filter((key) => targetKeys.indexOf(key) > -1),
-    leftData: data,
-    rightData: targetData,
-    leftParams: null,
-    rightParams: null,
-    value,
-  });
-
-  const triggerChange = useCallback(
-    (changedValue: any) => {
-      if (onChange) {
-        onChange(changedValue);
-      }
-    },
-    [onChange],
-  );
-
-  const getSelectedKeysName = (direction: TransferDirection) => {
-    return direction === 'left' ? 'sourceSelectedKeys' : 'targetSelectedKeys';
-  };
-
-  const getValue = (_data: any[]) => {
-    const selectValues: string[] = [];
-    _data.forEach((item: any) => {
-      selectValues.push(item[valueField]);
-    });
-    return selectValues;
-  };
-
-  useEffect(() => {
-    setState((oldState) => ({
-      ...oldState,
-      ...{
-        leftData: data,
-      },
-    }));
-  }, [data]);
-
-  useEffect(() => {
-    setState((oldState) => ({
-      ...oldState,
-      ...{
-        rightData: targetData,
-      },
-    }));
-    const rvalue = getValue(targetData.rows);
-    triggerChange(rvalue);
-  }, [targetData]);
-
-  const handleSelect = (direction: TransferDirection, selectedItems: any[]) => {
-    const holder = selectedItems.map((item: any) => {
-      return item && item[valueField];
-    });
-
-    if (!props.selectedKeys) {
-      const key = getSelectedKeysName(direction);
-      const rdata: any = {};
-      rdata[key] = holder;
-      setState((oldState) => ({
-        ...oldState,
-        ...rdata,
-      }));
-    }
-  };
-
-  const handleLeftSelect = (selectedItems: any[]) => {
-    return handleSelect('left', selectedItems);
-  };
-  const handleRightSelect = (selectedItems: any[]) => {
-    return handleSelect('right', selectedItems);
-  };
-
-  const moveTo = (direction: TransferDirection) => {
-    const { leftData, rightData, sourceSelectedKeys, targetSelectedKeys } = state;
-
-    const rleftData = { ...{}, ...leftData };
-    const rrightData = { ...{}, ...rightData };
-
-    const dataSource: any[] = [...rleftData.rows];
-    const targetSource: any[] = [...rrightData.rows];
-
-    const moveKeys = direction === 'right' ? sourceSelectedKeys : targetSelectedKeys;
-    if (moveKeys.length) {
-      const newMoveKeys = moveKeys.filter(
-        (key: string) =>
-          !dataSource.some((dataItem) => !!(key === dataItem[valueField] && dataItem.disabled)),
-      );
-
-      const newTargetKeys: string[] = newMoveKeys.filter(
-        (key: string) =>
-          !targetSource.some((dataItem) => !!(key === dataItem[valueField] && dataItem.disabled)),
-      );
-
-      const newData: any[] = [];
-      const opData: any[] = direction === 'right' ? dataSource : targetSource;
-      const tgData: any[] = direction === 'right' ? targetSource : dataSource;
-
-      newTargetKeys.forEach((key) => {
-        const newItem = opData.find((item: any) => {
-          return (
-            item[valueField] === key &&
-            tgData.findIndex((innerItem) => innerItem[valueField] === key) === -1
-          );
-        });
-        if (newItem) {
-          newData.push(newItem);
-        }
-        opData.splice(
-          opData.findIndex((item) => item[valueField] === key),
-          1,
-        );
-      });
-      if (direction === 'right') {
-        rrightData.rows = [...rrightData.rows, ...newData];
-        rleftData.rows = opData;
+  const setDataSouce = (data?: DataSource) => {
+    if (data) {
+      if (isArray(data)) {
+        setState({ dataSource: data, total: data.length });
       } else {
-        rleftData.rows = [...rleftData.rows, ...newData];
-        rrightData.rows = opData;
+        setState({ dataSource: data.rows, total: data.total || data.rows.length });
       }
-      // const oppositeDirection = direction === 'right' ? 'left' : 'right'
-
-      setState((oldState) => ({
-        ...oldState,
-        ...{
-          sourceSelectedKeys: [],
-          targetSelectedKeys: [],
-          rightData: rrightData,
-          leftData: rleftData,
-          value: getValue(rrightData.rows),
-        },
-      }));
-      triggerChange(value);
-      onMove(value);
     }
+  };
+
+  const setTargetKeys = (keys: any, tdataSource?: any[]) => {
+    if (tdataSource) {
+      const tkeys = tdataSource.map((item) => item[rowKey]);
+
+      setState({ targetKeys: tkeys, targetDataSource });
+    } else if (keys) {
+      setState({ targetKeys: keys });
+    }
+  };
+  useEffect(() => {
+    setTargetKeys(targetKeys, targetDataSource);
+  }, [targetKeys, targetDataSource]);
+
+  useEffect(() => {
+    // updateAction();
+    setDataSouce(dataSource);
+  }, []);
+
+  useEffect(() => {
+    // updateAction();
+    setDataSouce(dataSource);
+  }, [dataSource]);
+
+  const selectedChange = (nextTargetKeys: string[], direction: string, moveKeys: string[]) => {
+    let changData: any[] = [];
+    if (direction === 'right') {
+      // state.targetKeys?.includes(item[rowKey])
+      const selectDatas = state.dataSource?.filter((item) => {
+        return moveKeys.includes(item[rowKey]);
+      });
+      changData = [...state.targetDataSource, ...selectDatas];
+    } else {
+      const selectDatas = state.targetDataSource?.filter((item) => {
+        return nextTargetKeys.includes(item[rowKey]);
+      });
+      changData = selectDatas;
+    }
+
+    setState({ targetKeys: nextTargetKeys, targetDataSource: changData });
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    onChange && onChange({ nextTargetKeys, direction, moveKeys, targetDataSource: changData });
   };
 
   const matchFilter = useCallback(
@@ -220,172 +144,197 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
     [filterOption],
   );
 
-  const handleFilter = (direction: TransferDirection, e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onCustomSearch) {
-      onCustomSearch(direction, e.target.value);
-      setState((oldState) => ({
-        ...oldState,
-        ...{
-          [`${direction}Filter`]: e.target.value,
-        },
-      }));
-      return;
-    }
-    let params: any = null;
-    if (onSearchChange) {
-      params = onSearchChange(direction, e);
-    }
-    setState((oldState) => ({
-      ...oldState,
-      ...{
-        [`${direction}Filter`]: e.target.value,
-        [`${direction}Params`]: params,
-      },
-    }));
-  };
-  const handleClear = useCallback((direction: string) => {
-    setState((oldState) => ({
-      ...oldState,
-      ...{
-        [`${direction}Filter`]: '',
-      },
-    }));
-  }, []);
-  const moveToLeft = () => moveTo('left');
-  const moveToRight = () => moveTo('right');
-  const handleLeftFilter = (e: React.ChangeEvent<HTMLInputElement>) => handleFilter('left', e);
-  const handleRightFilter = (e: React.ChangeEvent<HTMLInputElement>) => handleFilter('right', e);
+  const getFilterdData = (direction: string) => {
+    const {
+      dataSource: leftDataSource,
+      targetDataSource: rightDataSouce,
+      leftFilterValue,
+      rightFilterValue,
+    } = state;
 
+    let filterData = [];
+    if (direction === 'right') {
+      filterData = rightDataSouce;
+      if (rightFilterValue && rightFilterValue.trim()) {
+        filterData = filterData.filter((item: any) => {
+          return matchFilter(item[searchField] || '', item, rightFilterValue);
+        });
+      }
+    } else if (direction === 'left') {
+      filterData = leftDataSource;
+      if (leftFilterValue && leftFilterValue.trim()) {
+        filterData = filterData.filter((item: any) => {
+          return matchFilter(item[searchField] || '', item, leftFilterValue);
+        });
+      }
+    }
+    return filterData;
+  };
+
+  const handleFilter = (direction: TransferDirection, e: React.ChangeEvent<HTMLInputElement>) => {
+    setState({ [`${direction}FilterValue`]: e.target.value });
+  };
+
+  const handleClear = useCallback((direction: TransferDirection) => {
+    setState({ [`${direction}FilterValue`]: '' });
+  }, []);
   const handleLeftClear = () => handleClear('left');
   const handleRightClear = () => handleClear('right');
 
-  const getFilterdData = () => {
-    const { leftData, rightData, leftFilter, rightFilter } = state;
-    if (remoteSearch) {
-      return { leftData, rightData };
-    }
-
-    const cleftData = { ...{}, ...leftData };
-    const crightData = { ...{}, ...rightData };
-    const dataSource: any[] = [...cleftData.rows];
-    const targetSource: any[] = [...crightData.rows];
-
-    let letfFilterData: any[] = dataSource;
-    let rightFilterData: any[] = targetSource;
-
-    if (leftFilter && leftFilter.trim()) {
-      letfFilterData = dataSource
-        .map((item: any) => {
-          if (!matchFilter(item[searchField], item, leftFilter)) {
-            return null;
-          }
-          return item;
-        })
-        .filter((item: any) => {
-          return item;
-        });
-    }
-
-    if (rightFilter && rightFilter.trim()) {
-      rightFilterData = targetSource
-        .map((item: any) => {
-          if (!matchFilter(item[searchField], item, rightFilter)) {
-            return null;
-          }
-          return item;
-        })
-        .filter((item: any) => {
-          return item;
-        });
-    }
-    cleftData.rows = letfFilterData;
-    crightData.rows = rightFilterData;
-
-    return { leftData: cleftData, rightData: crightData };
-  };
-
-  const {
-    sourceSelectedKeys,
-    targetSelectedKeys,
-    leftFilter,
-    rightFilter,
-    leftParams,
-    rightParams,
-  } = state;
-  const filterData: any = getFilterdData();
-  let pri_leftPrams = null;
-  let pri_rightParams = null;
-  if (remoteSearch) {
-    pri_leftPrams = leftParams;
-    pri_rightParams = rightParams;
-  }
-  const { leftData, rightData } = filterData;
-  const leftSearch = showSearch ? (
+  const rightSearchCmp = showSearch ? (
     <div className={`${prefixCls}-search-wrapper`}>
       <Search
-        prefixCls={`${prefixCls}-search`}
-        onChange={handleLeftFilter}
-        handleClear={handleLeftClear}
-        value={leftFilter}
-        placeholder={placeholder}
-      />
-    </div>
-  ) : null;
-  const rightSearch = showSearch ? (
-    <div className={`${prefixCls}-search-wrapper`}>
-      <Search
-        prefixCls={`${prefixCls}-search`}
-        onChange={handleRightFilter}
+        prefixCls={`ant-transfer-list-search`}
+        onChange={(e) => {
+          handleFilter('right', e);
+        }}
         handleClear={handleRightClear}
-        value={rightFilter}
+        value={state.rightFilterValue}
       />
     </div>
   ) : null;
-  const leftTitle =
-    titles && titles[0] ? <div className={`${prefixCls}-title`}>{titles[0]}</div> : null;
-  const rightTitle =
-    titles && titles[1] ? <div className={`${prefixCls}-title`}>{titles[1]}</div> : null;
+  const leftSearchCmp =
+    showSearch && !lefteSearch ? (
+      <div className={`${prefixCls}-search-wrapper`}>
+        <Search
+          prefixCls={`${prefixCls}-search`}
+          onChange={(e) => {
+            handleFilter('right', e);
+          }}
+          handleClear={handleLeftClear}
+          value={state.leftFilterValue}
+        />
+      </div>
+    ) : null;
 
   return (
     <div className={`${prefixCls}`}>
-      <div className={`${prefixCls}-list`} style={{ height: 'auto' }}>
-        {leftTitle}
-        {leftSearch}
-        <ScTable
-          params={pri_leftPrams}
-          autoload={true}
-          selectedRowKeys={sourceSelectedKeys}
-          pagination={pagination}
-          data={leftData}
-          columns={columns}
-          onSelectRow={handleLeftSelect}
-          scroll={{ y: maxHeight }}
-          checkbox={true}
-        />
-      </div>
-      <div className={'sc-table-transfer-operation'}>
-        <Button type="primary" size="small" icon={<LeftOutlined />} onClick={moveToLeft}></Button>
-        <Button
-          type={'primary'}
-          size="small"
-          icon={<RightOutlined />}
-          onClick={moveToRight}
-        ></Button>
-      </div>
-      <div className={'sc-table-transfer-list'} style={{ height: 'auto' }}>
-        {rightTitle}
-        {false ? rightSearch : null}
-        <ScTable
-          params={pri_rightParams}
-          autoload={true}
-          selectedRowKeys={targetSelectedKeys}
-          pagination={pagination}
-          onSelectRow={handleRightSelect}
-          data={rightData}
-          columns={columns}
-          checkbox={true}
-        />
-      </div>
+      <Transfer
+        {...restProps}
+        showSearch={!lefteSearch && showSearch}
+        dataSource={state.dataSource}
+        rowKey={(record) => record[rowKey]}
+        targetKeys={state.targetKeys}
+        showSelectAll={false}
+        onChange={selectedChange}
+      >
+        {(renderProps: TransferListBodyProps<any>) => {
+          const {
+            direction,
+            // dataSource,
+            onItemSelectAll,
+            onItemSelect,
+            selectedKeys: listSelectedKeys,
+            disabled: listDisabled,
+          } = renderProps;
+          let tableProps = {};
+
+          let search = null;
+          const rowSelection: any = {
+            type: 'checkbox',
+            getCheckboxProps: (item: any) => ({ disabled: listDisabled || item.disabled }),
+            onSelectAll(selected: any, selectedRows: any) {
+              const treeSelectedKeys = selectedRows
+                .filter((item: any) => !item.disabled)
+                .map((record: any) => record[rowKey]);
+              const diffKeys = selected
+                ? difference(treeSelectedKeys, listSelectedKeys)
+                : difference(listSelectedKeys, treeSelectedKeys);
+              onItemSelectAll(diffKeys, selected);
+            },
+            onSelect(record: any, selected: any) {
+              const key = record[rowKey];
+
+              // const tem=[...targetDataSource,record]
+              //setTargetDataSource(tem)
+              onItemSelect(key, selected);
+            },
+            //selectedRowKeys: listSelectedKeys,
+          };
+
+          if (direction === 'left') {
+            let filterData = [];
+            let { total } = state;
+
+            filterData = getFilterdData(direction);
+            filterData = filterData?.map((item) => ({
+              ...item,
+              disabled: state.targetKeys?.includes(item[rowKey]),
+            }));
+            if (!lefteSearch) {
+              total = filterData.length;
+            }
+
+            rowSelection.selectedRowKeys = listSelectedKeys;
+            if (showSearch) {
+              search = lefteSearch ? (
+                <ScSearchBar lightFilter {...lefteSearch}></ScSearchBar>
+              ) : (
+                leftSearchCmp
+              );
+            }
+            getFilterdData(direction);
+            tableProps = {
+              ...leftTable,
+              rowKey,
+              data: {
+                rows: filterData,
+                total,
+              },
+              pagination: { ...leftTable.pagination, simple: true },
+              onLoad: leftTable.request
+                ? (data: any) => {
+                    if (data && data.rows) {
+                      setState({ dataSource: data.rows, total: data.total });
+                    }
+                    return [];
+                  }
+                : null,
+            };
+          }
+          if (direction === 'right') {
+            search = showSearch ? rightSearchCmp : null;
+
+            const filterData = getFilterdData(direction);
+            tableProps = {
+              ...rightTable,
+              rowKey,
+              pagination: { pageSize: 10, simple: true },
+              data: {
+                rows: filterData,
+                total: filterData.length,
+              },
+            };
+          }
+          //if (tableProps)
+
+          return (
+            <div>
+              {search}
+              <ScTable
+                {...tableProps}
+                style={{ width: 'inherit' }}
+                rowSelection={rowSelection}
+                // dataSource={filteredItems}
+                // pagination={direction === "left" ? pagination : true}
+                size="small"
+                scroll={undefined}
+                checkbox
+                // style={{ pointerEvents: listDisabled ? 'none' : null }}
+                onRow={(rowData: any) => ({
+                  onClick: () => {
+                    const { disabled: itemDisabled } = rowData;
+                    const key = rowData[rowKey];
+
+                    if (itemDisabled || listDisabled) return;
+                    onItemSelect(key, !listSelectedKeys.includes(key));
+                  },
+                })}
+              />
+            </div>
+          );
+        }}
+      </Transfer>
     </div>
   );
 };

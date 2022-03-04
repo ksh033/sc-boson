@@ -11,8 +11,8 @@ const Quicks: React.FC<any> = (props: any) => {
   }
   const { children } = props
   if (!state) return <div>{children}</div>
-  else {
+  
     return null
-  }
+  
 }
 export default Quicks

@@ -1,4 +1,4 @@
-import type { FormConfig, Field, FieldGroup, FormItem } from '../interface';
+import type { FormConfig, Field, FieldGroup } from '../interface';
 import type {RefObject} from 'react';
 import type {FormInstance} from 'antd'
 import _ from 'lodash';
@@ -23,12 +23,12 @@ class FormInfo {
       let fieldSetIndex = null;
       let itemIndex; let groupIndex;let findItem;
   
-     items.find((item: Field, j) => {
+     items.find((item: Field, j: any) => {
       
         if (item.items&&item.items.length>0){
           // @ts-ignore
           const groupItem: FieldGroup=item;
-          groupItem.items.find((gi, giIndex)=>{
+          groupItem.items.find((gi: any, giIndex: any)=>{
             const { id, name } = gi;
             let temName=name;
             if (_.isArray(name)){

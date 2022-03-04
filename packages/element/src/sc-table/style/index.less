@@ -1,7 +1,25 @@
 @sc-table-prefix-cls: ~'@sc-table';
+
+.row-dragging {
+  background: #fafafa;
+  border: 1px solid #ccc;
+  .sc-table-operation{
+    visibility: visible;
+  }
+}
+.ant-table-cell-fix-left, .ant-table-cell-fix-right{
+  background-color: transparent;
+}
+.row-dragging td {
+  padding: 10px;
+}
+
+.row-dragging .drag-visible {
+  visibility: visible;
+}
 .sc-table {
   position: relative;
-
+  
   overflow: hidden;
   .ant-table-pagination {
     margin-top: 24px;

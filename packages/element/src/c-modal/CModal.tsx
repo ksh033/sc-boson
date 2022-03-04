@@ -39,7 +39,7 @@ const CModalDialog = (props: CModalDialogProps) => {
     afterClose,
     visible,
     keyboard,
-    centered,
+    centered=true,
     getContainer,
     maskStyle,
     okButtonProps,
@@ -57,8 +57,9 @@ const CModalDialog = (props: CModalDialogProps) => {
   const prefixCls = props.prefixCls || 'ant-modal';
   const contentPrefixCls = `${prefixCls}-custom`;
   // 默认为 true，保持向下兼容
+  // eslint-disable-next-line no-constant-condition
   const okCancel = 'okCancel' ? props.okCancel : true;
-  const width = props.width || 416;
+  const width = props.width || 'auto';
   const style = props.style || {};
   const mask = props.mask === undefined ? true : props.mask;
   // 默认为 false，保持旧版默认行为
@@ -101,6 +102,7 @@ const CModalDialog = (props: CModalDialogProps) => {
       const { text, onClick, buttonProps } = item;
       customButton.push(
         <ActionButton
+          // eslint-disable-next-line react/no-array-index-key
           key={`ActionButton-${index}`}
           actionFn={onClick}
           closeModal={close}

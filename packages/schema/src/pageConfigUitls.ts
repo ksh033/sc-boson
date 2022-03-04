@@ -5,7 +5,7 @@ import type {
   PageConfig,
   FormItem,
   FormConfig,
-  QueryConfigItem,
+  FormSearchItem,
   ProColumn,
   FormFilterProp,
   SearchFilterProp,
@@ -63,7 +63,7 @@ const getConfig = (nodeType: string, pageConfig: PageConfig) => {
  * @returns
  */
 const converFormItem = (
-  it: FormItem<any>,
+  it: FormItem,
   filter: FormFilterProp,
   group: any,
   pageConfig: PageConfig,
@@ -186,8 +186,8 @@ const filterFormConfig = (pageConfig: PageConfig, filter: FormFilterProp) => {
         items.forEach((it: Field) => {
           if (it.items && it.items.length > 0) {
             newItem = it;
-            const newItems: (FormItem<any> | null)[] = [];
-            it.items.forEach((groupItem: FormItem<any>) => {
+            const newItems: (FormItem | null)[] = [];
+            it.items.forEach((groupItem: FormItem) => {
               newItems.push(converFormItem(groupItem, filter, group, pageConfig));
             });
             newItem.items = newItems;
@@ -295,14 +295,15 @@ const filterSearchConfig = (pageConfig: PageConfig, filter: SearchFilterProp) =>
 
   if (typeConfig) {
     const typeConfigCopy = _.cloneDeep(typeConfig);
-    typeConfigCopy.forEach((item: QueryConfigItem) => {
+    typeConfigCopy.forEach((item: FormSearchItem) => {
+  
       const { component, props } = item;
       // 查找注册组建
       if (component && cmps[component]) {
         item.component = cmps[component];
       }
       if (Array.isArray(item.children) && item.children.length > 0) {
-        item.children.forEach((ite) => {
+        item.children.forEach((ite: any) => {
           if (ite.component && cmps[ite.component]) {
             ite.component = cmps[ite.component];
           }

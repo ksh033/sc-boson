@@ -7,48 +7,33 @@ export interface TransferSearchProps {
   prefixCls?: string
   placeholder?: string
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-  handleClear?: (e: React.MouseEvent<any>) => void
+  handleClear?: () => void;
   value?: any
 }
 
 const Search: React.FC<TransferSearchProps> = (props) => {
   const { placeholder = '', value, prefixCls, onChange, handleClear } = props
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.persist()
-    if (onChange) {
-      onChange(event)
-    }
-  }
-
-  const _handleClear = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault()
-    if (handleClear) {
-      handleClear(e)
-    }
-  }
-  const icon = useMemo(() => {
-    return value && value.length > 0 ? (
-      <a href="#" className={`${prefixCls}-action`} onClick={_handleClear}>
-        <CloseOutlined />
-      </a>
-    ) : (
-      <span className={`${prefixCls}-action`}>
-        <SearchOutlined />
-      </span>
-    )
-  }, [value, prefixCls, _handleClear])
+  const handleChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onChange?.(e);
+      if (e.target.value === '') {
+        handleClear?.();
+      }
+    },
+    [onChange],
+  );
 
   return (
-    <div>
-      <Input
+    <Input
         placeholder={placeholder}
         className={prefixCls}
         value={value}
+        allowClear
         onChange={handleChange}
+        prefix={<SearchOutlined />}
+
       />
-      {icon}
-    </div>
   )
 }
 

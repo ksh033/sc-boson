@@ -23,6 +23,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     onLoad,
     isLeafFormat,
     saveRef,
+    root,
     actionRender,
     async = false,
     defaultExpandAll = false,
@@ -223,22 +224,30 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     },
     [],
   );
-
+ 
+  useUpdateEffect(() => {
+   
+      if (root){
+        setTreeData([root])
+      }else{
+        loadData({});
+      }
+    
+ 
+  }, [JSON.stringify(params)]);
   useEffect(() => {
-    if (autoload) {
+    if (!root&&autoload) {
       loadData(params);
     }
+    if (root){
+      setTreeData([root])
+    }
+
     return () => {
       actionRef.current = undefined;
       isGone.current = true;
     };
   }, []);
-
-  useUpdateEffect(() => {
-    if (autoload) {
-      loadData(params);
-    }
-  }, [JSON.stringify(params)]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   function addChilList(list: any[], key: React.Key, children: any[]): any[] {
@@ -281,6 +290,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         if (loadDataPramsFormat) {
           newparams = loadDataPramsFormat(node.dataRef);
         }
+        newparams={...params,...newparams}
         const rData: any[] = await request(newparams);
         if (isGone.current) return;
         const newData = addChilList(treeData, key, rData);
@@ -288,7 +298,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         resolve();
       });
     },
-    [addChilList, loadDataPramsFormat, request, setTreeData, treeData],
+    [addChilList, loadDataPramsFormat, request, setTreeData, treeData,params],
   );
 
   const treeProps = useMemo(() => {

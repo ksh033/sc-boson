@@ -130,7 +130,7 @@ export default class TableInfo {
     if (React.isValidElement(button)) {
       this.tableInfo.toolbar?.push(button);
       return this;
-    } else {
+    } 
       if (_.isString(button)) {
         const key: string = button;
         this.tableInfo.toolbar?.push({ ...ToolButtons[key], ...extraProps });
@@ -139,7 +139,7 @@ export default class TableInfo {
         this.tableInfo.toolbar?.push({ ...button, ...extraProps });
       }
       return this;
-    }
+    
   }
   addOpColButton<T extends keyof typeof ToolButtons>(
     button: HButtonType | T,
@@ -194,14 +194,7 @@ export default class TableInfo {
             }
           });
           const Cmp = this.opColButtonCmp || Operation;
-          const opRenderCmpProps = {
-            tbuttons,
-            config: this.config,
-            reload: this.reload,
-            record,
-            max,
-            cmp: Cmp,
-          };
+            const opRenderCmpProps={tbuttons,config:this.config,reload:this.reload,record,max,cmp:Cmp}
           return <OpRenderCmp {...opRenderCmpProps} />;
         };
       }
