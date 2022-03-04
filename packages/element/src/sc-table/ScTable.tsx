@@ -120,6 +120,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     dragSort = false,
     dataSource: newdataSource,
     onRow,
+    refresh,
     ...restPros
   } = props;
 

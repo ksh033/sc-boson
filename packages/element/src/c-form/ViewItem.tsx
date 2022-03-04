@@ -2,6 +2,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 import classNames from 'classnames';
+
 export default class ViewItem extends PureComponent<any> {
   render() {
     const {
