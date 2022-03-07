@@ -5,7 +5,8 @@
   ],
   "scripts": {
     "bootstrap": "node ./scripts/bootstrap.js",
-    "build": "father-build --watch",
+    "build": "father-build",
+    "build:dev": "father-build --watch",
     "changelog": "pro-changelog",
     "createRelease": "node ./scripts/createRelease.js",
     "deploy": "npm run site && gh-pages -d ./dist",

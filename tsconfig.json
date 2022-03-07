@@ -12,7 +12,6 @@
     "suppressImplicitAnyIndexErrors": true,
     "declaration": true,
     "skipLibCheck": true,
-  "types": ["node"],
     "paths": {
       "@scboson/sc-element": ["./packages/element/src/index.tsx"],
       "@scboson/sc-layout": ["./packages/layout/src/index.tsx"],
@@ -31,6 +30,8 @@
     "tests",
     "jest.config.js",
     "**/fixtures",
-    "./tests/no-duplicated.ts"
-,   "packages/element/BindEventUtil.ts"  ]
+    "./tests/no-duplicated.ts",
+   "packages/element/BindEventUtil.ts"  ],
+"plugins": [{ "transform": "typescript-transform-paths", "afterDeclarations": true }]
+
 }

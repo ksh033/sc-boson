@@ -22,7 +22,7 @@ import { getPageTitleInfo } from '../getPageTitle';
 import type { ProSettings } from '../defaultSettings';
 import defaultSettings from '../defaultSettings';
 import type { LocaleType } from '@ant-design/pro-layout/es/locales';
-import getLocales from '@ant-design/pro-layout/es/locales';
+import {gLocaleObject} from '@ant-design/pro-layout/es/locales';
 import type { BaseMenuProps } from '../components/SiderMenu/BaseMenu';
 import { DefaultFooter as Footer } from '@ant-design/pro-layout';
 import { RouteContext } from '@ant-design/pro-layout';
@@ -274,7 +274,7 @@ const getAppMenus = (apps?: AppProps[]): AppMenuProps[] => {
  *
  * @param props
  */
-const MaterLayout: React.FC<MasterLayoutProps> = (props) => {
+const MaterLayout: React.FC<MasterLayoutProps> = (props: MasterLayoutProps) => {
   const {
     children,
     onCollapse: propsOnCollapse,
@@ -312,7 +312,7 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props) => {
         ...restParams,
       });
     }
-    const locales = getLocales();
+    const locales = gLocaleObject();
     return locales[id] ? locales[id] : (defaultMessage as string);
   };
 

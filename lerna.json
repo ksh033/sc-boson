@@ -5,6 +5,8 @@
   "changelog": {
     
   },
+
+  "workspaces": ["packages/*"],
   "ignoreChanges": [
     "**/*.md",
     "**/*.test.ts",

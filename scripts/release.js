@@ -1,6 +1,7 @@
 const { utils } = require('umi');
 const { join } = require('path');
 const exec = require('./utils/exec');
+const inquirer = require('inquirer');
 const getPackages = require('./utils/getPackages');
 const isNextVersion = require('./utils/isNextVersion');
 
@@ -25,25 +26,26 @@ function packageExists({ name, version }) {
 
 async function release() {
   // Check git status
-  if (!args.skipGitStatusCheck) {
-    const gitStatus = execa.sync('git', ['status', '--porcelain']).stdout;
-    if (gitStatus.length) {
-     // printErrorAndExit(`Your git status is not clean. Aborting.`);
-    }
-  } else {
-    logStep('git status check is skipped, since --skip-git-status-check is supplied');
-  }
+  // if (!args.skipGitStatusCheck) {
+  //   const gitStatus = execa.sync('git', ['status', '--porcelain']).stdout;
+  //   if (gitStatus.length) {
+  //     printErrorAndExit(`Your git status is not clean. Aborting.`);
+  //   }
+  // } else {
+  //   logStep('git status check is skipped, since --skip-git-status-check is supplied');
+  // }
 
   // Check npm registry
   logStep('check npm registry');
- // const userRegistry = execa.sync('npm', ['config', 'get', 'registry']).stdout;
-  // if (userRegistry.includes('http://172.18.169.70:8081/repository/npm/')) {
-    // printErrorAndExit(`Release failed, please use ${chalk.blue('npm run release')}.`);
+  const userRegistry = execa.sync('npm', ['config', 'get', 'registry']).stdout;
+  // if (userRegistry.includes('http://172.18.169.70:8081/repository/npm')) {
+  //   printErrorAndExit(`Release failed, please use ${chalk.blue('npm run release')}.`);
   // }
-  // if (!userRegistry.includes('http://172.18.169.70:8081/repository/npm/')) {
-   // const registry = chalk.blue('http://172.18.169.70:8081/repository/npm/');
-   // printErrorAndExit(`Release failed, npm registry must be ${registry}.`);
- // }
+  if (!userRegistry.includes('http://172.18.169.70:8081/repository/npm')) {
+    const registry = chalk.blue('http://172.18.169.70:8081/repository/npm');
+    printErrorAndExit(`Release failed, npm registry must be ${registry}.`);
+  }
+  logStep('sdfs');
 
   let updated = null;
 
@@ -77,6 +79,7 @@ async function release() {
     // Git Tag
     // Push
     logStep('bump version with lerna version');
+
     const conventionalGraduate = args.conventionalGraduate
       ? ['--conventional-graduate'].concat(
           Array.isArray(args.conventionalGraduate) ? args.conventionalGraduate.join(',') : [],
@@ -87,9 +90,11 @@ async function release() {
           Array.isArray(args.conventionalPrerelease) ? args.conventionalPrerelease.join(',') : [],
         )
       : [];
+
     await exec(
-      lernaCli,
+      'node',
       [
+        [lernaCli],
         'version',
         '--exact',
         // '--no-commit-hooks',
@@ -112,8 +117,19 @@ async function release() {
   const pkgs = args.publishOnly ? getPackages() : updated;
   logStep(`publish packages: ${chalk.blue(pkgs.join(', '))}`);
 
+  // 获取 opt 的输入
+  const { otp } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'otp',
+      message: '请输入 otp 的值，留空表示不使用 otp',
+    },
+  ]);
+
+  process.env.NPM_CONFIG_OTP = otp;
+
   pkgs.forEach((pkg, index) => {
-    const pkgPath = join(cwd, 'packages', pkg.replace('pro-', ''));
+    const pkgPath = join(cwd, 'packages', pkg.replace('sc-', ''));
     const { name, version } = require(join(pkgPath, 'package.json'));
     const isNext = isNextVersion(version);
     let isPackageExist = null;
@@ -127,11 +143,11 @@ async function release() {
       console.log(
         `[${index + 1}/${pkgs.length}] Publish package ${name} ${isNext ? 'with next tag' : ''}`,
       );
-      const cliArgs = isNext ? ['publish', '--tag', 'next'] : ['publish'];
-      const { stdout } = execa.sync('npm', cliArgs, {
-        cwd: pkgPath,
-      });
-      console.log(stdout);
+      //const cliArgs = isNext ? ['publish', '--tag', 'next'] : ['publish'];
+     // const { stdout } = execa.sync('npm', cliArgs, {
+        //cwd: pkgPath,
+     // });
+     // console.log(stdout);
     }
   });
 
