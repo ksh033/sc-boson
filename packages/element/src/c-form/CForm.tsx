@@ -7,7 +7,7 @@ import React, { useEffect, useMemo } from 'react';
 import { Row, Form, Col, Anchor, Space } from 'antd';
 import type { FormProps } from 'antd/es/form';
 //import _ from 'lodash';
-import { isArray,isEmpty } from 'lodash';
+import { isArray, isEmpty, isObject } from 'lodash';
 import classnames from 'classnames';
 import ViewItem from './ViewItem';
 import './style/index';
@@ -513,7 +513,7 @@ const CForm: React.FC<CFormProps> = (props) => {
 
   const anchorRender = useMemo(() => {
     const anchorItems = groups.map(({ groupTitle, group }, index) => {
-      return <Link key={`link_${index}`} href={`#${group}`} title={groupTitle}></Link>;
+      return <Link key={`link_${index}`} href={`#${group}`} title={groupTitle} />;
     });
     let anchorProps = {};
     if (isObject(anchor)) {
