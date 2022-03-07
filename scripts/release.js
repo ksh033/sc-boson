@@ -45,7 +45,7 @@ async function release() {
     const registry = chalk.blue('http://172.18.169.70:8081/repository/npm');
     printErrorAndExit(`Release failed, npm registry must be ${registry}.`);
   }
-  logStep('sdfs');
+ 
 
   let updated = null;
 
@@ -129,7 +129,7 @@ async function release() {
   process.env.NPM_CONFIG_OTP = otp;
 
   pkgs.forEach((pkg, index) => {
-    const pkgPath = join(cwd, 'packages', pkg.replace('sc-', ''));
+    const pkgPath = join(cwd, 'packages', pkg!=="client-plugin"?pkg.replace('sc-', ''):pkg);
     const { name, version } = require(join(pkgPath, 'package.json'));
     const isNext = isNextVersion(version);
     let isPackageExist = null;

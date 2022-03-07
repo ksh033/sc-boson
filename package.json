@@ -5,7 +5,7 @@
   ],
   "scripts": {
     "bootstrap": "node ./scripts/bootstrap.js",
-    "build": "father-build",
+    "build": "father-build ",
     "build:dev": "father-build --watch",
     "changelog": "pro-changelog",
     "createRelease": "node ./scripts/createRelease.js",
@@ -13,7 +13,7 @@
     "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx  --fix --format=pretty ./packages && npm run lint:prettier",
     "lint:prettier": "npm run prettier &&  git diff && prettier --version && prettier --check \"packages/**/**.{js,jsx,tsx,ts,less,md,json}\" --end-of-line auto",
     "prettier": "prettier --write \"**/**.{js,jsx,tsx,ts,less,md,json}\"",
-    "release": "node ./scripts/release.js",
+    "release": "node ./scripts/release.js --skipBuild=true",
     "site": "dumi build",
     "size": "npm run build && size-limit",
     "size:build": "cross-env PRO_COMPONENTS_CI='CI' webpack",
