@@ -59,16 +59,16 @@ const getMds = (allVersion = false) => {
         return;
       }
       //github.repos
-        //.createRelease({
-         // owner: 'ant-design',
-         // repo: 'pro-components',
-         // tag_name: versionPkg,
-         // name: versionPkg,
-         // body: changeLog,
-       // })
-       // .catch((e) => {
-         // console.log(e);
-       // });
+      //.createRelease({
+      // owner: 'ant-design',
+      // repo: 'pro-components',
+      // tag_name: versionPkg,
+      // name: versionPkg,
+      // body: changeLog,
+      // })
+      // .catch((e) => {
+      // console.log(e);
+      // });
     });
   });
 };

@@ -15,41 +15,44 @@ nav:
 
 ## 代码演示
 
-``` jsx
-/**
- * title: 基础
- * desc: 时间类控件
- */
-import React from 'react'
+```jsx
+/** Title: 基础 desc: 时间类控件 */
+import React from 'react';
 import { ScDatePicker as ScDate } from 'sc-element';
 
-const {ScRangePicker,ScDatePicker} = ScDate;
+const { ScRangePicker, ScDatePicker } = ScDate;
 
 export default () => {
   return (
     <div>
-      <ScDatePicker format={"YYYYMMDD"} value={"20180101"}/>
-      <br/>
-      <ScRangePicker format={"YYYYMMDD"} value={["20180101","20180102"]}
-        rangesList={[{text:'一周',type:'w',value:1},{text:'一月',type:'M',value:1},{text:'一年',type:'y',value:1}]}
+      <ScDatePicker format={'YYYYMMDD'} value={'20180101'} />
+      <br />
+      <ScRangePicker
+        format={'YYYYMMDD'}
+        value={['20180101', '20180102']}
+        rangesList={[
+          { text: '一周', type: 'w', value: 1 },
+          { text: '一月', type: 'M', value: 1 },
+          { text: '一年', type: 'y', value: 1 },
+        ]}
       />
     </div>
-  )
-}
+  );
+};
 ```
 
 ## API
 
 日期类组件包括以下四种形式。
 
-* DatePicker
-* MonthPicker
-* RangePicker
-* WeekPicker
+- DatePicker
+- MonthPicker
+- RangePicker
+- WeekPicker
 
 ### 国际化配置
 
-默认配置为 en-US，如果你需要设置其他语言，推荐在入口处使用我们提供的国际化组件, 详见：[LocaleProvider国际化](http://ant.design/components/locale-provider-cn/)。
+默认配置为 en-US，如果你需要设置其他语言，推荐在入口处使用我们提供的国际化组件, 详见：[LocaleProvider 国际化](http://ant.design/components/locale-provider-cn/)。
 
 如有特殊需求（仅修改单一组件的语言），请使用 locale 参数，参考：[默认配置](https://github.com/ant-design/ant-design/blob/master/components/date-picker/locale/example.json)。
 
@@ -77,19 +80,19 @@ export default () => {
 
 ### 共同的方法
 
-| 名称 | 描述 |
-| --- | --- |
-| blur() | 移除焦点 |
+| 名称    | 描述     |
+| ------- | -------- |
+| blur()  | 移除焦点 |
 | focus() | 获取焦点 |
 
 ### DatePicker
 
 | 参数 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- | --- |
 | defaultValue | 默认日期 | [moment](http://momentjs.com/) | 无 |
 | disabledTime | 不可选择的时间 | function(date) | 无 |
 | format | 展示的日期格式，配置参考 [moment.js](http://momentjs.com/) | string | "YYYY-MM-DD" |
-| mode | 日期面板的状态 | `time|date|month|year` | 'date' |
+| mode | 日期面板的状态 | `time | date | month | year` | 'date' |
 | renderExtraFooter | 在面板中添加额外的页脚 | () => React. ReactNode | - |
 | showTime | 增加时间选择功能 | Object\|boolean | [TimePicker Options](/components/time-picker/#API) |
 | showTime.defaultValue | 设置用户选择日期时默认的时分秒，[例子](#components-date-picker-demo-disabled-date) | [moment](http://momentjs.com/) | moment() |
@@ -122,9 +125,9 @@ export default () => {
 ### RangePicker
 
 | 参数 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- |
 | defaultValue | 默认日期 | [moment](http://momentjs.com/)\[] | 无 |
-| disabledTime | 不可选择的时间 | function(dates: [moment, moment], partial: `'start'|'end'` ) | 无 |
+| disabledTime | 不可选择的时间 | function(dates: [moment, moment], partial: `'start' | 'end'` ) | 无 |
 | format | 展示的日期格式 | string | "YYYY-MM-DD HH:mm:ss" |
 | ranges       | 预设时间范围快捷选择 | { \[range: string]: [moment](http://momentjs.com/)\[] } \| () => { \[range: string]: [moment](http://momentjs.com/)\[] } | 无 |
 | renderExtraFooter | 在面板中添加额外的页脚 | () => React. ReactNode | - |

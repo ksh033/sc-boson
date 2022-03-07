@@ -62,14 +62,14 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
     if (enabledMove && _moveDom) {
       // 模态窗的宽高
       const winW = document.body.offsetWidth;
-        const winH = document.body.offsetHeight;
+      const winH = document.body.offsetHeight;
       const w = _moveDom.offsetWidth;
-        const h = _moveDom.offsetHeight;
+      const h = _moveDom.offsetHeight;
 
       const offsetX = e.screenX - mouseX;
-        const offsetY = e.screenY - mouseY;
+      const offsetY = e.screenY - mouseY;
       let targetX = x + offsetX;
-        let targetY = y + offsetY;
+      let targetY = y + offsetY;
       if (targetX < (-winW + w) / 2) {
         targetX = (-winW + w) / 2;
       }
@@ -83,8 +83,8 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
         targetY = winH - h;
       }
 
-      _moveDom.style.left = `${targetX  }px`;
-      _moveDom.style.top = `${targetY  }px`;
+      _moveDom.style.left = `${targetX}px`;
+      _moveDom.style.top = `${targetY}px`;
 
       setDoveDom(_moveDom);
     }
@@ -94,16 +94,16 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
     const { className } = e.target;
     if (className && className === 'ant-modal-title') {
       e.preventDefault();
-      const {parentNode} = e.target.parentNode.parentNode;
+      const { parentNode } = e.target.parentNode.parentNode;
       // console.log('startMove')
       // 启动移动，并初始化偏移值
       let _x = 0;
-        let _y = 100;
+      let _y = 100;
       if (parentNode.style.top) {
         _x = parseInt(parentNode.style.left);
         _y = parseInt(parentNode.style.top);
       }
-      setState(oldState => ({
+      setState((oldState) => ({
         ...oldState,
         ...{
           x: _x,
@@ -143,11 +143,10 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
   const _wrapClassName = useMemo(() => {
     let _className = wrapClassName;
     if (showFullscreen) {
-      _className =
-        `${_className  } ${  fullscreen ? 'fullscreen-modal' : ''  } c-modal`;
+      _className = `${_className} ${fullscreen ? 'fullscreen-modal' : ''} c-modal`;
     }
     if (!showHeader) {
-      _className = `${_className  } ` + `c-modal-hide-header`;
+      _className = `${_className} ` + `c-modal-hide-header`;
     }
     return _className;
   }, [wrapClassName, showFullscreen, fullscreen]);

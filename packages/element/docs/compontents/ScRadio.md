@@ -11,92 +11,68 @@ nav:
 
 ## 何时使用
 
-* 用于在多个备选项中选中单个状态。
-* 和 Select 的区别是，Radio 所有选项默认可见，方便用户在比较中选择，因此选项不宜过多。
+- 用于在多个备选项中选中单个状态。
+- 和 Select 的区别是，Radio 所有选项默认可见，方便用户在比较中选择，因此选项不宜过多。
 
 ## 代码演示
 
-``` jsx
-/**
- * title: 基础
- */
-import React from 'react'
+```jsx
+/** Title: 基础 */
+import React from 'react';
 import { ScRadio } from 'sc-element';
 
 export default () => {
-  const data=[
-    {label:'A',value:'a'},
-    {label:'B',value:'b'},
-    {label:'C',value:'c'},
-    {label:'D',value:'d'},
+  const data = [
+    { label: 'A', value: 'a' },
+    { label: 'B', value: 'b' },
+    { label: 'C', value: 'c' },
+    { label: 'D', value: 'd' },
   ];
 
-  return (
-    <ScRadio
-      data={data}
-      defaultValue={'a'}
-    />
-  )
-}
+  return <ScRadio data={data} defaultValue={'a'} />;
+};
 ```
 
-``` jsx
-/**
- * title: 按钮型选项
- */
-import React from 'react'
+```jsx
+/** Title: 按钮型选项 */
+import React from 'react';
 import { ScRadio } from 'sc-element';
 
 export default () => {
-  const data=[
-    {label:'A',value:'a'},
-    {label:'B',value:'b'},
-    {label:'C',value:'c'},
-    {label:'D',value:'d'},
+  const data = [
+    { label: 'A', value: 'a' },
+    { label: 'B', value: 'b' },
+    { label: 'C', value: 'c' },
+    { label: 'D', value: 'd' },
   ];
 
-  return (
-    <ScRadio
-      data={data}
-      radioType={'button'}
-      defaultValue={'a'}
-    />
-  )
-}
+  return <ScRadio data={data} radioType={'button'} defaultValue={'a'} />;
+};
 ```
 
-``` jsx
-/**
- * title: 请求后台数据
- */
-import React from 'react'
+```jsx
+/** Title: 请求后台数据 */
+import React from 'react';
 import { ScRadio } from 'sc-element';
 
 export default () => {
   const request = () => {
-    return new Promise(function(reslove, reject) {
+    return new Promise(function (reslove, reject) {
       reslove([
-        {label:'A',value:'a'},
-        {label:'B',value:'b'},
-        {label:'C',value:'c'},
-        {label:'D',value:'d'},
+        { label: 'A', value: 'a' },
+        { label: 'B', value: 'b' },
+        { label: 'C', value: 'c' },
+        { label: 'D', value: 'd' },
       ]);
     });
-  }
+  };
   const onLoad = (data) => {
     console.log(data);
-    return data
-  }
+    return data;
+  };
 
-  return (
-    <ScRadio 
-      request={request}
-      onLoad={onLoad}
-      modelKey={"selectData"}
-      autoload={true}
-    />
-  )
-}
+  return <ScRadio request={request} onLoad={onLoad} modelKey={'selectData'} autoload={true} />;
+};
 ```
 
 ## API
@@ -112,12 +88,11 @@ export default () => {
 | request | 一个获得 dataSource 的方法 | (params?: any) => Promise | '' |
 | onLoad | 数据加载完成后触发, 会多次触发 | (dataSource: T[]) => any[] | '' |
 | params | 请求服务端数据时的参数 | object | {} |
-| autoload | 是否自动加载服务端数据，需要配合参数type, modelKey, params使用 | boolean |  |
+| autoload | 是否自动加载服务端数据，需要配合参数 type, modelKey, params 使用 | boolean |  |
 
 ### RadioGroup
 
-单选框组合，用于包裹一组 `Radio` 。
-RadioGroup中所有的参数都可用在ScRadio中。
+单选框组合，用于包裹一组 `Radio` 。 RadioGroup 中所有的参数都可用在 ScRadio 中。
 
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |

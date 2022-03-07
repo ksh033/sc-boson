@@ -17,7 +17,7 @@ export default {
   },
   cssModules: true,
 
-  pkgs: ['element','utils', 'schema','layout','clientplugin'],
+  pkgs: ['element', 'utils', 'schema', 'layout', 'clientplugin'],
   extraBabelPlugins: [
     ['babel-plugin-import', { libraryName: 'antd', libraryDirectory: 'es', style: true }, 'antd'],
     [require('./scripts/replaceLib')],

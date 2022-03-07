@@ -32,15 +32,15 @@ export interface FormItemProp {
 
   render?: (val: any) => any;
 
-  colProps?: ColProps&{newline?: boolean};
+  colProps?: ColProps & { newline?: boolean };
   /** 表单项属性 */
   fieldProps?: FiledProp;
   /** 子集 */
   children?: FormItemProp[];
   /** 占据多少格 */
   columnSize?: number;
-  
-    /** 是否换行 */
+
+  /** 是否换行 */
   newline?: boolean;
   /** 组件 */
   component?: any;
@@ -89,7 +89,7 @@ export interface FormConfig {
   fieldsetTitle?: string | React.ReactNode;
   // 子标题
   subTitle?: string | React.ReactNode;
-    layout?: FormLayout;
+  layout?: FormLayout;
   /**
    * 分组名称
    *

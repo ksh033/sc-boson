@@ -17,7 +17,6 @@ import utils from '../utils/index';
 
 type Window = Record<string, any>;
 
-
 function createIframe(op: any): HTMLElement {
   const {
     form: { id },
@@ -153,11 +152,11 @@ export default {
       // @ts-ignore
       //const t=window.masterWindow;
       //console.log(t);
-     // console.log(window["0"]);
-     const temWin=window.masterWindow|| (<Window>window)
-     const headNode = temWin.document.getElementsByTagName('head')[0];
-     const scriptNode = temWin.document.createElement('script');
-     temWin[jsonp] = function () {
+      // console.log(window["0"]);
+      const temWin = window.masterWindow || <Window>window;
+      const headNode = temWin.document.getElementsByTagName('head')[0];
+      const scriptNode = temWin.document.createElement('script');
+      temWin[jsonp] = function () {
         status = 'resolved';
         const args: any = [];
         for (let i = 0; i < arguments.length; i++) {
@@ -165,13 +164,13 @@ export default {
         }
         resolve.apply(defer, args);
         clearInterval(timer);
-        scriptNode.remove()
+        scriptNode.remove();
         delete temWin[jsonp];
       };
-     
+
       scriptNode.type = 'text/javascript';
       scriptNode.charset = 'utf-8';
-       scriptNode.async = true;
+      scriptNode.async = true;
       const queryString = Object.keys(data)
         .map((key) => `${key}=${encodeURIComponent(data[key])}`)
         .join('&');
@@ -186,7 +185,7 @@ export default {
           delete temWin[jsonp];
           clearInterval(timer);
           if (status == 'pending') {
-            scriptNode.remove()
+            scriptNode.remove();
             reject({ code: 'timeout', msg: '超时' });
           }
         }

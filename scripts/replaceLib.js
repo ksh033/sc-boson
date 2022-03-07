@@ -4,7 +4,7 @@ const fs = require('fs');
 const cwd = process.cwd();
 
 function replacePath(path) {
- // console.log(path)
+  // console.log(path)
   if (path.node.source && /\/lib\//.test(path.node.source.value)) {
     const esModule = path.node.source.value.replace('/lib/', '/es/');
     const esPath = dirname(join(cwd, `node_modules/${esModule}`));

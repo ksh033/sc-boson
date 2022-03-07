@@ -1,46 +1,45 @@
 @import '../../style/index.less';
 .sc-table-transfer {
   position: relative;
- // display: flex;
+  // display: flex;
   height: 100%;
   &-search-wrapper {
     position: relative;
     width: 100%;
     padding: 10px;
   }
-  .sc-table{
-    .ant-card{
-      .ant-card-body{
+  .sc-table {
+    .ant-card {
+      .ant-card-body {
         padding: 0px;
       }
-    
     }
   }
- .sc-searchbar{
-     margin: 10px;
-   .ant-card-body{
-     padding: 0px;
-   }
-   .ant-form-item{
-     margin-bottom: 0px;
-   }
- }
+  .sc-searchbar {
+    margin: 10px;
+    .ant-card-body {
+      padding: 0px;
+    }
+    .ant-form-item {
+      margin-bottom: 0px;
+    }
+  }
   &-search {
     padding: 0 8px;
     &-action {
-      color: rgba(0, 0, 0, 0.25);
       position: absolute;
       top: 50%;
-      margin-top: -14px;
       right: 10px;
       bottom: 4px;
       width: 28px;
       height: 28px;
+      margin-top: -14px;
+      color: rgba(0, 0, 0, 0.25);
       line-height: 32px;
       text-align: center;
       .anticon {
-        transition: all 0.3s;
         color: rgba(0, 0, 0, 0.25);
+        transition: all 0.3s;
         &:hover {
           color: rgba(0, 0, 0, 0.45);
         }
@@ -50,6 +49,4 @@
       }
     }
   }
- 
-
 }

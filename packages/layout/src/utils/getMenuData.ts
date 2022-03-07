@@ -16,7 +16,6 @@ export default (
   formatMessage?: (message: MessageDescriptor) => string,
   menuDataRender?: (menuData: MenuDataItem[]) => MenuDataItem[],
 ) => {
-  
   const { menuData, breadcrumb } = transformRoute(
     routes,
     menu?.locale || false,

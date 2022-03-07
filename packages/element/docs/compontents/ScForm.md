@@ -7,17 +7,14 @@ nav:
 
 ## ScForm 表单
 
-对Form组件的拓展。
+对 Form 组件的拓展。
 
 ## 代码演示
 
-``` jsx
-/**
- * title: 基础
- * desc: 基础表单
- */
-import React, {useRef} from 'react'
-import { Button, Input, message } from 'antd'
+```jsx
+/** Title: 基础 desc: 基础表单 */
+import React, { useRef } from 'react';
+import { Button, Input, message } from 'antd';
 import { ScForm, ScSelect } from 'sc-element';
 
 export default () => {
@@ -26,43 +23,45 @@ export default () => {
       component: Input,
       formProps: {
         initialValue: '张三',
-        rules: [{
+        rules: [
+          {
             required: true,
-            message: '必填'
-        }]
+            message: '必填',
+          },
+        ],
       },
       props: {},
       label: '姓名',
-      name: 'name'
+      name: 'name',
     },
     {
       component: Input,
       formProps: {},
       props: {
-          placeholder: '请输入年龄'
+        placeholder: '请输入年龄',
       },
       label: '年龄',
-      name: 'age'
+      name: 'age',
     },
     {
-      component: ScSelect ,
+      component: ScSelect,
       formProps: {
-          initialValue: '1'
+        initialValue: '1',
       },
       props: {
         data: [
           {
             text: '男',
-            value: '1'
+            value: '1',
           },
           {
             text: '女',
-            value: '2'
-          }
-        ]
+            value: '2',
+          },
+        ],
       },
       label: '性别',
-      name: 'sex'
+      name: 'sex',
     },
     {
       component: Input,
@@ -70,7 +69,7 @@ export default () => {
       props: {},
       label: '年级',
       name: 'grade',
-      group: '2'
+      group: '2',
     },
     {
       component: Input,
@@ -78,23 +77,23 @@ export default () => {
       props: {},
       label: '班级',
       name: 'class',
-      group: '2'
-    }
-  ]
+      group: '2',
+    },
+  ];
 
   const formItemLayout = {
     labelCol: {
-        span: 4
+      span: 4,
     },
     wrapperCol: {
-        span: 20
-    }
-  }
+      span: 20,
+    },
+  };
 
   formConfig = formConfig.map((item) => {
-    item.formProps = {...item.formProps, ...formItemLayout}
+    item.formProps = { ...item.formProps, ...formItemLayout };
     return item;
-  })
+  });
 
   const groupConfig = [
     {
@@ -106,32 +105,28 @@ export default () => {
     {
       name: '2',
       title: '组2',
-      col: 2
-    }
-  ]
+      col: 2,
+    },
+  ];
   const form = useRef();
   return (
     <div>
-      <ScForm
-        formConfig={formConfig}
-        groupConfig={groupConfig}
-        form={form}
-      />
+      <ScForm formConfig={formConfig} groupConfig={groupConfig} form={form} />
       <div style={{ textAlign: 'right' }}>
         <Button
           type={'primary'}
-          onClick={async ()=>{
+          onClick={async () => {
             const values = await form.current.validateFields();
             console.log(values);
-            message.success("提交成功")
+            message.success('提交成功');
           }}
         >
           提交
         </Button>
       </div>
     </div>
-  )
-}
+  );
+};
 ```
 
 ## API
@@ -142,26 +137,26 @@ export default () => {
 | --- | --- | --- | --- |
 | formConfig | 表单项配置 | array | null |
 | groupConfig | 表单分组配置 | object | null |
-| form |  表单控制实例 |  React. MutableRefObject 或者 ((actionRef: ActionType) => void) | null |
+| form | 表单控制实例 | React. MutableRefObject 或者 ((actionRef: ActionType) => void) | null |
 
-## formConfig项的可选值
+## formConfig 项的可选值
 
-| 参数 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| component | 组件类型 | antd的表单组件, 如Input | null |
-| formProps | 表单项配置 | object | null |
-| props | 表单组件component的配置 | object | null |
-| label | 表单项名称 | string | '' |
-| name | 表单项的id值，具有唯一性 | string | '' |
-| group | 表单项归属的分组名 | string | 'default' |
+| 参数      | 说明                       | 类型                      | 默认值    |
+| --------- | -------------------------- | ------------------------- | --------- |
+| component | 组件类型                   | antd 的表单组件, 如 Input | null      |
+| formProps | 表单项配置                 | object                    | null      |
+| props     | 表单组件 component 的配置  | object                    | null      |
+| label     | 表单项名称                 | string                    | ''        |
+| name      | 表单项的 id 值，具有唯一性 | string                    | ''        |
+| group     | 表单项归属的分组名         | string                    | 'default' |
 
-## groupConfig项的可选值
+## groupConfig 项的可选值
 
-| 参数 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| name | 组名 | string | 'default' |
-| col | 列数 | number | 1 |
-| title | 组标题 | string | '' |
-| gutter | 列间隔 | number | 16 |
+| 参数   | 说明   | 类型   | 默认值    |
+| ------ | ------ | ------ | --------- |
+| name   | 组名   | string | 'default' |
+| col    | 列数   | number | 1         |
+| title  | 组标题 | string | ''        |
+| gutter | 列间隔 | number | 16        |
 
-更多api 请访问[ScForm](https://ant.design/components/form-cn/)。
+更多 api 请访问[ScForm](https://ant.design/components/form-cn/)。

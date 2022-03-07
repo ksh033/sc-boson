@@ -1,86 +1,78 @@
 /* eslint-disable react/no-find-dom-node */
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import { Button } from 'antd'
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import { Button } from 'antd';
 interface ActionButtonState {
-  loading: boolean
+  loading: boolean;
 }
 interface ActionButtonProps {
-  autoFocus?: boolean
-  actionFn?: (params?: any) => any
-  closeModal: (params?: any) => void
-  type?: string
-  buttonProps?: any
+  autoFocus?: boolean;
+  actionFn?: (params?: any) => any;
+  closeModal: (params?: any) => void;
+  type?: string;
+  buttonProps?: any;
 }
-export default class ActionButton extends React.Component<
-  ActionButtonProps,
-  ActionButtonState
-> {
-  timeoutId: any
+export default class ActionButton extends React.Component<ActionButtonProps, ActionButtonState> {
+  timeoutId: any;
 
   constructor(props: any) {
-    super(props)
+    super(props);
     this.state = {
       loading: false,
-    }
+    };
   }
 
   componentDidMount() {
     if (this.props.autoFocus) {
-      const $this: any = ReactDOM.findDOMNode(this)
-      this.timeoutId = setTimeout(() => $this.focus())
+      const $this: any = ReactDOM.findDOMNode(this);
+      this.timeoutId = setTimeout(() => $this.focus());
     }
   }
 
   componentWillUnmount() {
-    clearTimeout(this.timeoutId)
+    clearTimeout(this.timeoutId);
   }
 
   onClick = () => {
-    const { actionFn, closeModal } = this.props
+    const { actionFn, closeModal } = this.props;
     if (actionFn) {
-      let ret
+      let ret;
       if (actionFn.length) {
-        ret = actionFn(closeModal)
+        ret = actionFn(closeModal);
       } else {
-        ret = actionFn()
+        ret = actionFn();
         if (!ret) {
-          closeModal()
+          closeModal();
         }
       }
       if (ret && ret.then) {
-        this.setState({ loading: true })
+        this.setState({ loading: true });
         ret.then(
           (...args: any[]) => {
             // It's unnecessary to set loading=false, for the Modal will be unmounted after close.
             // this.setState({ loading: false });
-            closeModal(...args)
+            closeModal(...args);
           },
           () => {
             // Emit error when catch promise reject
             // console.error(e);
             // See: https://github.com/ant-design/ant-design/issues/6183
-            this.setState({ loading: false })
-          }
-        )
+            this.setState({ loading: false });
+          },
+        );
       }
     } else {
-      closeModal()
+      closeModal();
     }
-  }
+  };
 
   render() {
-    const { type, children, buttonProps } = this.props
-    const { loading } = this.state
+    const { type, children, buttonProps } = this.props;
+    const { loading } = this.state;
     return (
-      <Button
-        type={type}
-        onClick={this.onClick}
-        loading={loading}
-        {...buttonProps}
-      >
+      <Button type={type} onClick={this.onClick} loading={loading} {...buttonProps}>
         {children}
       </Button>
-    )
+    );
   }
 }

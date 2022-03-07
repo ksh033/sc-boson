@@ -5,7 +5,6 @@ export default {
   route: {
     path: '/',
     routes: [
-   
       {
         path: '/admin',
         name: '商城',
@@ -83,7 +82,7 @@ export default {
             component: './Welcome',
           },
         ],
-      }
+      },
     ],
   },
   location: {

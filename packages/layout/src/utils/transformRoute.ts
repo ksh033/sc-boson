@@ -3,11 +3,11 @@ import memoizeOne from 'memoize-one';
 import { pathToRegexp } from '@qixian.cs/path-to-regexp';
 import sha265 from './sha265';
 
- import type { MenuDataItem, Route, MessageDescriptor } from '../typings'
+import type { MenuDataItem, Route, MessageDescriptor } from '../typings';
 
 export function stripQueryStringAndHashFromPath(url: string) {
-   // eslint-disable-next-line no-param-reassign
-   url=url||"";
+  // eslint-disable-next-line no-param-reassign
+  url = url || '';
   return url.split('?')[0].split('#')[0];
 }
 
@@ -39,13 +39,11 @@ export const getKeyByPath = (item: MenuDataItem) => {
 
 /**
  * 获取locale，增加了一个功能，如果 locale = false，将不使用国际化
+ *
  * @param item
  * @param parentName
  */
-const getItemLocaleName = (
-  item: MenuDataItem,
-  parentName: string,
-): string | false => {
+const getItemLocaleName = (item: MenuDataItem, parentName: string): string | false => {
   const { name, locale } = item;
 
   // 如果配置了 locale 并且 locale 为 false或 ""
@@ -64,16 +62,15 @@ interface FormatterProps {
 }
 
 /**
- * 如果不是 / 开头的和父节点做一下合并
- * 如果是 / 开头的不作任何处理
- * 如果是 url 也直接返回
+ * 如果不是 / 开头的和父节点做一下合并 如果是 / 开头的不作任何处理 如果是 url 也直接返回
+ *
  * @param path
  * @param parentPath
  */
 const mergePath = (path: string = '', parentPath: string = '/') => {
-    if (!path&&!parentPath){
-        return "/";
-    }
+  if (!path && !parentPath) {
+    return '/';
+  }
   if ((path || parentPath).startsWith('/')) {
     return path;
   }
@@ -84,10 +81,7 @@ const mergePath = (path: string = '', parentPath: string = '/') => {
 };
 
 // bigfish 的兼容准话
-const bigfishCompatibleConversions = (
-  route: MenuDataItem,
-  props: FormatterProps,
-) => {
+const bigfishCompatibleConversions = (route: MenuDataItem, props: FormatterProps) => {
   const { menu = {}, indexRoute, path = '', children } = route;
   const {
     name = route.name,
@@ -148,7 +142,6 @@ const bigfishCompatibleConversions = (
 };
 
 /**
- *
  * @param props
  * @param parent
  */
@@ -245,9 +238,7 @@ function formatter(
         );
         // Reduce memory usage
         finallyItem.children =
-          formatterChildren && formatterChildren.length > 0
-            ? formatterChildren
-            : undefined;
+          formatterChildren && formatterChildren.length > 0 ? formatterChildren : undefined;
 
         if (!finallyItem.children) {
           delete finallyItem.children;
@@ -260,17 +251,12 @@ function formatter(
 
 const memoizeOneFormatter = memoizeOne(formatter, isEqual);
 
-/**
- * 删除 hideInMenu 和 item.name 不存在的
- */
+/** 删除 hideInMenu 和 item.name 不存在的 */
 const defaultFilterMenuData = (menuData: MenuDataItem[] = []): MenuDataItem[] =>
   menuData
     .filter(
       (item: MenuDataItem) =>
-        item &&
-        (item.name || item.children) &&
-        !item.hideInMenu &&
-        !item.redirect,
+        item && (item.name || item.children) && !item.hideInMenu && !item.redirect,
     )
     .map((item: MenuDataItem) => {
       if (
@@ -286,9 +272,7 @@ const defaultFilterMenuData = (menuData: MenuDataItem[] = []): MenuDataItem[] =>
     })
     .filter((item) => item);
 
-/**
- * support pathToRegexp get string
- */
+/** Support pathToRegexp get string */
 class RoutesMap<V> extends Map<string, V> {
   get(pathname: string) {
     let routeValue;
@@ -296,10 +280,7 @@ class RoutesMap<V> extends Map<string, V> {
       // eslint-disable-next-line no-restricted-syntax
       for (const [key, value] of this.entries()) {
         const path = stripQueryStringAndHashFromPath(key);
-        if (
-          !isUrl(key as string) &&
-          pathToRegexp(path as any, []).test(pathname as any)
-        ) {
+        if (!isUrl(key as string) && pathToRegexp(path as any, []).test(pathname as any)) {
           routeValue = value;
           break;
         }
@@ -313,11 +294,10 @@ class RoutesMap<V> extends Map<string, V> {
 }
 /**
  * 获取面包屑映射
- * @param MenuDataItem[] menuData 菜单配置
+ *
+ * @param MenuDataItem[] MenuData 菜单配置
  */
-const getBreadcrumbNameMap = (
-  menuData: MenuDataItem[],
-): RoutesMap<MenuDataItem> => {
+const getBreadcrumbNameMap = (menuData: MenuDataItem[]): RoutesMap<MenuDataItem> => {
   // Map is used to ensure the order of keys
   const routerMap = new RoutesMap<MenuDataItem>();
   const flattenMenuData = (data: MenuDataItem[], parent?: MenuDataItem) => {
@@ -334,19 +314,12 @@ const getBreadcrumbNameMap = (
   return routerMap;
 };
 
-const memoizeOneGetBreadcrumbNameMap = memoizeOne(
-  getBreadcrumbNameMap,
-  isEqual,
-);
+const memoizeOneGetBreadcrumbNameMap = memoizeOne(getBreadcrumbNameMap, isEqual);
 
 const clearChildren = (menuData: MenuDataItem[] = []): MenuDataItem[] => {
   return menuData
     .map((item: MenuDataItem) => {
-      if (
-        item.children &&
-        Array.isArray(item.children) &&
-        item.children.length > 0
-      ) {
+      if (item.children && Array.isArray(item.children) && item.children.length > 0) {
         const children = clearChildren(item.children);
         if (children.length) return { ...item, children };
       }

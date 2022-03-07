@@ -1,23 +1,21 @@
-import React, { useCallback } from 'react'
-import { Button } from 'antd'
+import React, { useCallback } from 'react';
+import { Button } from 'antd';
 
 const ModalEditPageTpl: React.FC<any> = (props) => {
-  const { toolbar, children } = props
+  const { toolbar, children } = props;
 
-  /**
-   * 表单顶部合并 以及通用方法引入
-   */
+  /** 表单顶部合并 以及通用方法引入 */
   const mergedFormButtons = useCallback(() => {
     return toolbar.map((item: any, index: number) => {
-      const buttonProps = item
-      const { buttonType, text, ...resprops } = buttonProps
+      const buttonProps = item;
+      const { buttonType, text, ...resprops } = buttonProps;
       return (
         <Button key={`formButton${index}`} {...resprops}>
           {text}
         </Button>
-      )
-    })
-  }, [toolbar])
+      );
+    });
+  }, [toolbar]);
 
   return (
     <div className="sc-modal-pagetpl">
@@ -28,7 +26,7 @@ const ModalEditPageTpl: React.FC<any> = (props) => {
         </div>
       ) : null}
     </div>
-  )
-}
+  );
+};
 
-export default ModalEditPageTpl
+export default ModalEditPageTpl;

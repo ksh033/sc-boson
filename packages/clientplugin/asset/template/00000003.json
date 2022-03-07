@@ -1,31 +1,31 @@
 {
-    "Master": [
-        { 
-            "times": "第1次打印",
-            "printTime": "2020-12-14 9:24",
-            "barCode": "SF1310000460214",
-            "pieces": "1/3",
-            "orderName": "母单号",
-            "orderNo": "SF1310000460214",
-            "mOrderName": "",
-            "mOrderNo": "",
-            "agingType": "7",
-            "router": "755BF-018",
-            "receiver": "刘洋",
-            "receiverPhone": "130****0430",
-            "receiverAdd": "福建省福州市闽侯县高新大道5号博思软件大厦",
-            "areaCode": "",
-            "cod": "",
-            "paymentType": "",
-            "entryMapCode": "",
-            "leaveTransferCode": "",
-            "qrCode": "{'k1':'755','k2':'755BF','k3':'018','k4':'T4','k5':'SF1310000460214','k6':'','k7':'6231e489'}",
-            "abPic": "",
-            "leaveMapCode": "",
-            "shipper": "博耕科技",
-            "shipperPhone": "138****7777",
-            "shipperAdd": "福建省福州市闽侯县高新大道5号博思软件大厦",
-            "custom":"藏香猪肉500g"
-        }
-    ]
+  "Master": [
+    {
+      "times": "第1次打印",
+      "printTime": "2020-12-14 9:24",
+      "barCode": "SF1310000460214",
+      "pieces": "1/3",
+      "orderName": "母单号",
+      "orderNo": "SF1310000460214",
+      "mOrderName": "",
+      "mOrderNo": "",
+      "agingType": "7",
+      "router": "755BF-018",
+      "receiver": "刘洋",
+      "receiverPhone": "130****0430",
+      "receiverAdd": "福建省福州市闽侯县高新大道5号博思软件大厦",
+      "areaCode": "",
+      "cod": "",
+      "paymentType": "",
+      "entryMapCode": "",
+      "leaveTransferCode": "",
+      "qrCode": "{'k1':'755','k2':'755BF','k3':'018','k4':'T4','k5':'SF1310000460214','k6':'','k7':'6231e489'}",
+      "abPic": "",
+      "leaveMapCode": "",
+      "shipper": "博耕科技",
+      "shipperPhone": "138****7777",
+      "shipperAdd": "福建省福州市闽侯县高新大道5号博思软件大厦",
+      "custom": "藏香猪肉500g"
+    }
+  ]
 }

@@ -16,16 +16,15 @@ import { MyContext } from './context-manager';
 import RcResizeObserver from 'rc-resize-observer';
 import type { FormItemProp } from '../c-form/interface';
 import { useDebounceFn } from 'ahooks';
-import classnames from 'classnames'
+import classnames from 'classnames';
 import useMountMergeState from '../_util/useMountMergeState';
 import './style';
 
 const FormItem = Form.Item;
 
-
-export type SearchFormItemProp=FormItemProp&{
+export type SearchFormItemProp = FormItemProp & {
   hasFormItem?: boolean;
-}
+};
 export interface SearchBarItem {
   label: string;
   name: string;
@@ -269,8 +268,8 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
         rchildren.push(renderFormItem(element, idx));
       });
     }
-   
-    const formItemWidth=item.width ;
+
+    const formItemWidth = item.width;
     const newWidth = formItemWidth && !WIDTH_SIZE_ENUM[formItemWidth] ? formItemWidth : undefined;
 
     const className = classnames(item.props?.className, {
@@ -298,9 +297,9 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
           createCmp = React.createElement(
             component,
             {
-             // style: { width: '100%' },
+              // style: { width: '100%' },
               key: `form-item-component-${index}`,
-              ...restProps,       
+              ...restProps,
               className,
               style: { ...item.props.style, ...widthObj },
             },
@@ -430,7 +429,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
       return 24 - offsetSpan;
     }, [currentSpan, spanSize.span]);
 
-    const buttonsRow = lightFilter ?  null: (
+    const buttonsRow = lightFilter ? null : (
       <Col
         offset={offset}
         span={spanSize.span}
@@ -448,11 +447,9 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     return (
       <Card bordered={false}>
         <Form form={wrapForm} layout="horizontal" {...resProps}>
-          <Row gutter={lightFilter?12:24} justify="start" key="resize-observer-row">
+          <Row gutter={lightFilter ? 12 : 24} justify="start" key="resize-observer-row">
             {cols}
-            {customOptionButtons ? (
-              customOptionButtons()
-            ) : buttonsRow}
+            {customOptionButtons ? customOptionButtons() : buttonsRow}
           </Row>
         </Form>
       </Card>

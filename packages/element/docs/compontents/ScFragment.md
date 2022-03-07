@@ -7,10 +7,7 @@ nav:
 
 ## ScFragment 占位组件
 
-对react自带的Fragment组件的拓展。
-有时候需要用一个组件将若干组件包裹，但又不想引入多余的dom标签，此时需要使用Fragment组件。
-但Fragment组件有个缺陷，不能传递props参数。
-ScFragment是对Fragment进行一个包装，其位可传递props的Fragment。
+对 react 自带的 Fragment 组件的拓展。有时候需要用一个组件将若干组件包裹，但又不想引入多余的 dom 标签，此时需要使用 Fragment 组件。但 Fragment 组件有个缺陷，不能传递 props 参数。 ScFragment 是对 Fragment 进行一个包装，其位可传递 props 的 Fragment。
 
 ## 应用场景举例：
 
@@ -18,22 +15,20 @@ ScFragment是对Fragment进行一个包装，其位可传递props的Fragment。
 
 ## 代码演示
 
-``` jsx
-/**
- * title: 基础
- */
-import React from 'react'
+```jsx
+/** Title: 基础 */
+import React from 'react';
 import { ScFragment } from 'sc-element';
-import { Button }  from 'antd';
+import { Button } from 'antd';
 
 export default () => {
   return (
     <ScFragment>
       <Button>button1</Button>
-      <Button style={{marginLeft: '8px'}}>button2</Button>
+      <Button style={{ marginLeft: '8px' }}>button2</Button>
     </ScFragment>
-  )
-}
+  );
+};
 ```
 
 ## API
@@ -43,4 +38,4 @@ export default () => {
 组件没有特定有用的参数。
 
 | 参数 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
+| ---- | ---- | ---- | ------ |

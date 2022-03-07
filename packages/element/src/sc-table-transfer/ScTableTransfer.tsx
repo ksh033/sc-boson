@@ -246,10 +246,9 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
             onSelect(record: any, selected: any) {
               const key = record[rowKey];
 
-             
               onItemSelect(key, selected);
             },
-           selectedRowKeys: listSelectedKeys,
+            selectedRowKeys: listSelectedKeys,
           };
 
           if (direction === 'left') {
@@ -306,7 +305,6 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
               },
             };
           }
-  
 
           return (
             <div>

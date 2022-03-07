@@ -25,9 +25,9 @@ import {
   WaterMark,
 } from '@ant-design/pro-layout';
 
-import {PageContainer} from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-layout';
 
-export  { default as ScCard } from '@ant-design/pro-card';
+export { default as ScCard } from '@ant-design/pro-card';
 
 // import type { SettingDrawerProps, SettingDrawerState } from './components/SettingDrawer';
 // import SettingDrawer from './components/SettingDrawer';

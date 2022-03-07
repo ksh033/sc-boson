@@ -21,7 +21,6 @@ import AbsJsSdk from './absjssdk';
 import CoordinateConvert from 'coordinate-convert';
 
 export default class SensorsSdk extends AbsJsSdk {
-
   constructor(option: IJsSdkOption) {
     super(option);
   }
@@ -42,9 +41,7 @@ export default class SensorsSdk extends AbsJsSdk {
   ): Promise<any> {
     const { data, successfn, errorfn } = option;
     const param =
-      data === null || typeof data === 'undefined'
-        ? { date: new Date().getTime() }
-        : data;
+      data === null || typeof data === 'undefined' ? { date: new Date().getTime() } : data;
     const _port = location.href.indexOf('https://') > -1 ? 6781 : 6780;
     const result = await this.loadRemoteData({
       url: `//127.0.0.1:${_port}/getResult`,
@@ -52,9 +49,9 @@ export default class SensorsSdk extends AbsJsSdk {
       data: param,
     });
     if (result && result.status === 200) {
-      successfn&&successfn(result.data);
+      successfn && successfn(result.data);
     } else {
-      errorfn&&errorfn(result.data);
+      errorfn && errorfn(result.data);
     }
   }
 
@@ -78,7 +75,7 @@ export default class SensorsSdk extends AbsJsSdk {
         successfn(data: any) {
           // wgs2gcj坐标转换
           const lng_lat = CoordinateConvert.wgs2gcj(data.data.longitude, data.data.latitude);
-         //  console.log('转换后lng_lat:');
+          //  console.log('转换后lng_lat:');
           // console.log(lng_lat);
           resolve(
             _this.getSuccess({
@@ -178,7 +175,7 @@ export default class SensorsSdk extends AbsJsSdk {
       window.location.href = `toon://mwap/photo?params=${JSON.stringify(params)}`;
       _this._axse({
         data: `params={"flagId":${flagTimeRandom}}`,
-        successfn(data:any) {
+        successfn(data: any) {
           if (data.data) {
             if (data.data.base64) {
               resolve(_this.getSuccess(data.data));
@@ -187,7 +184,7 @@ export default class SensorsSdk extends AbsJsSdk {
             }
           }
         },
-        errorfn(data:any) {
+        errorfn(data: any) {
           reject(_this.getError(data));
         },
       });

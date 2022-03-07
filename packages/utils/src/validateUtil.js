@@ -3,37 +3,38 @@
 /* eslint-disable no-useless-escape */
 /**
  * 验证身份证号是否正确
+ *
  * @param num
  * @returns {boolean}
  */
 export function checkIDCard(idcode) {
   // 转换大小写 保证最后一位的x为大写
-  idcode = idcode.toUpperCase()
+  idcode = idcode.toUpperCase();
   if (!idcode) {
-    return false
+    return false;
   }
   // 加权因子
-  const weightFactor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
+  const weightFactor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
   // 校验码
-  const checkCode = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2']
+  const checkCode = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'];
 
-  const code = `${idcode}`
-  const last = idcode[17] // 最后一个
+  const code = `${idcode}`;
+  const last = idcode[17]; // 最后一个
 
-  const seventeen = code.substring(0, 17)
+  const seventeen = code.substring(0, 17);
 
   // ISO 7064:1983.MOD 11-2
   // 判断最后一位校验码是否正确
-  const arr = seventeen.split('')
-  const len = arr.length
-  let num = 0
+  const arr = seventeen.split('');
+  const len = arr.length;
+  let num = 0;
   for (let i = 0; i < len; i++) {
-    num += arr[i] * weightFactor[i]
+    num += arr[i] * weightFactor[i];
   }
 
   // 获取余数
-  const resisue = num % 11
-  const lastNo = checkCode[resisue]
+  const resisue = num % 11;
+  const lastNo = checkCode[resisue];
 
   // 格式的正则
   // 正则思路
@@ -46,64 +47,63 @@ export function checkIDCard(idcode) {
   十五，十六，十七都是数字0-9
   十八位可能是数字0-9，也可能是X
   */
-  const idcardPatter = /^[1-9][0-9]{5}([1][9][0-9]{2}|[2][0][0|1][0-9])([0][1-9]|[1][0|1|2])([0][1-9]|[1|2][0-9]|[3][0|1])[0-9]{3}([0-9]|[X])$/
+  const idcardPatter =
+    /^[1-9][0-9]{5}([1][9][0-9]{2}|[2][0][0|1][0-9])([0][1-9]|[1][0|1|2])([0][1-9]|[1|2][0-9]|[3][0|1])[0-9]{3}([0-9]|[X])$/;
 
   // 判断格式是否正确
-  const format = idcardPatter.test(idcode)
+  const format = idcardPatter.test(idcode);
 
   // 返回验证结果，校验码和格式同时正确才算是合法的身份证号码
-  return !!(last === lastNo && format)
+  return !!(last === lastNo && format);
 }
 /**
  * 判断字符串是否为空，若为空则返回true否则返回false
+ *
  * @param source
- * @return true或者false
- * */
+ * @returns True或者false
+ */
 export function isEmpty(source) {
   if (source === undefined) {
-    return true
+    return true;
   }
-  source = source.toString()
+  source = source.toString();
 
-  const str = source.replace(/(^\s*)|(\s*$)/g, '')
+  const str = source.replace(/(^\s*)|(\s*$)/g, '');
   if (str === '' || str.toLowerCase() === 'null' || str.length <= 0) {
-    return true
-  } 
-    return false
-  
+    return true;
+  }
+  return false;
 }
 
 /**
  * 验证是否为手机号码（移动手机）
  *
- * @param {}
- *            source
+ * @param
+ *  Source
  */
 
 export function isMobilePhone(source) {
-  const regex = /^((\d3)|(\d{3}\-))?1\d{10}/
-  return regex.test(source)
+  const regex = /^((\d3)|(\d{3}\-))?1\d{10}/;
+  return regex.test(source);
 }
 /**
  * 验证是否为电子邮箱
  *
- * @param {}
- *            source
+ * @param
+ *  Source
  */
 export function isEmail(source) {
   // var regex = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
   if (
-    source.search(
-      /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
-    ) !== -1
+    source.search(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/) !== -1
   ) {
-    return true
-  } 
-    return false
-  
+    return true;
+  }
+  return false;
 }
 /**
  * 判断是否为空
+ *
  * @param val
  * @returns
  */
@@ -117,7 +117,7 @@ export function isNull(val) {
     val === 'null' ||
     val === 'NULL'
   ) {
-    return true
+    return true;
   }
-  return false
+  return false;
 }

@@ -8,7 +8,6 @@ import { LabelIconTip } from '@ant-design/pro-utils';
 import type { ListToolBarHeaderMenuProps } from './HeaderMenu';
 import HeaderMenu from './HeaderMenu';
 
-
 export type ListToolBarSetting = {
   icon: React.ReactNode;
   tooltip?: string;

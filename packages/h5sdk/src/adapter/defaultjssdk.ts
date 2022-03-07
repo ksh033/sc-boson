@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-useless-constructor */
-import type { IJsSdkOption } from "../interface";
-import AbsJsSdk from "./absjssdk";
+import type { IJsSdkOption } from '../interface';
+import AbsJsSdk from './absjssdk';
 
 // 默认SDK
 export default class defaultSdk extends AbsJsSdk {

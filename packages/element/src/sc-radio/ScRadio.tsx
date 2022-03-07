@@ -13,10 +13,10 @@ const RADIO_TYPE: any = {
   button: RadioButton,
 };
 export interface ScRadioProps extends RadioGroupProps, DataComponentProps {
-  radioType?: "button" | 'radio';
+  radioType?: 'button' | 'radio';
 }
 
-const ScRadio: React.FC<ScRadioProps> = props => {
+const ScRadio: React.FC<ScRadioProps> = (props) => {
   const {
     data = [],
     params = null,

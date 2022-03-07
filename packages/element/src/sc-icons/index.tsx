@@ -1,2 +1,2 @@
-import ScIcons from './ScIcons'
-export default ScIcons
+import ScIcons from './ScIcons';
+export default ScIcons;

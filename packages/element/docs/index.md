@@ -4,7 +4,6 @@ order: 10
 hero:
   title: sc-element 组件库
   desc: 基于 antd 的自定义组件库
-
 # features:
 
 #   - icon: https://gw.alipayobjects.com/zos/bmw-prod/881dc458-f20b-407b-947a-95104b5ec82b/k79dm8ih_w144_h144.png
@@ -26,5 +25,4 @@ hero:
 #     desc: 模拟多电商平台接入, 场景电商平台品目、电商平台账户、电商商品库、账户商品库、电商订单、售后单
 
 #     footer: Open-source MIT Licensed | Copyright © 2019-present<br />Powered by self
-
 ---

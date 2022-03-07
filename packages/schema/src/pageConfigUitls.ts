@@ -108,7 +108,7 @@ const converFormItem = (
   }
 
   let extProps = null;
-  const  temName=item.name ||item.id
+  const temName = item.name || item.id;
   if (typeof temName === 'string') {
     if (fieldsProp && fieldsProp[temName]) {
       if (_.isFunction(fieldsProp[temName])) {
@@ -296,7 +296,6 @@ const filterSearchConfig = (pageConfig: PageConfig, filter: SearchFilterProp) =>
   if (typeConfig) {
     const typeConfigCopy = _.cloneDeep(typeConfig);
     typeConfigCopy.forEach((item: FormSearchItem) => {
-  
       const { component, props } = item;
       // 查找注册组建
       if (component && cmps[component]) {

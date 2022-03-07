@@ -1,2 +1,2 @@
-import EditTable from './EditTable'
-export default EditTable
+import EditTable from './EditTable';
+export default EditTable;

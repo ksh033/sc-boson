@@ -34,8 +34,8 @@ const { yParser } = require('@umijs/utils');
           //'chenshuai2144 <qixian.cs@outlook.com> (https://github.com/chenshuai2144)',
         ],
         license: 'MIT',
-       // bugs: 'http://github.com/umijs/plugins/issues',
-       // homepage: `https://github.com/ant-design/pro-components/tree/master/packages/${shortName}#readme`,
+        // bugs: 'http://github.com/umijs/plugins/issues',
+        // homepage: `https://github.com/ant-design/pro-components/tree/master/packages/${shortName}#readme`,
         peerDependencies: {
           umi: '3.x',
         },

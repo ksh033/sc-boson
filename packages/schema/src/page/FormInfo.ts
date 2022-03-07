@@ -1,6 +1,6 @@
 import type { FormConfig, Field, FieldGroup } from '../interface';
-import type {RefObject} from 'react';
-import type {FormInstance} from 'antd'
+import type { RefObject } from 'react';
+import type { FormInstance } from 'antd';
 import _ from 'lodash';
 
 export interface FormInfoProps {
@@ -16,52 +16,52 @@ class FormInfo {
   }
   private findFormItem(
     filedName: string,
-  ): { formItem: Field; fieldSetIndex: number; itemIndex: number,groupIndex: number } | null {
+  ): { formItem: Field; fieldSetIndex: number; itemIndex: number; groupIndex: number } | null {
     let formItem = null;
     this.formInfo.formConfig.find((formConfig, i) => {
       const { items } = formConfig;
       let fieldSetIndex = null;
-      let itemIndex; let groupIndex;let findItem;
-  
-     items.find((item: Field, j: any) => {
-      
-        if (item.items&&item.items.length>0){
+      let itemIndex;
+      let groupIndex;
+      let findItem;
+
+      items.find((item: Field, j: any) => {
+        if (item.items && item.items.length > 0) {
           // @ts-ignore
-          const groupItem: FieldGroup=item;
-          groupItem.items.find((gi: any, giIndex: any)=>{
+          const groupItem: FieldGroup = item;
+          groupItem.items.find((gi: any, giIndex: any) => {
             const { id, name } = gi;
-            let temName=name;
-            if (_.isArray(name)){
-              temName=name.join(".")
+            let temName = name;
+            if (_.isArray(name)) {
+              temName = name.join('.');
             }
             if (filedName === temName || filedName === id) {
               itemIndex = giIndex;
-              findItem=gi;
-              groupIndex=j
+              findItem = gi;
+              groupIndex = j;
               return true;
             }
-            return false
-          })
-        }else{
-            // @ts-ignore
-            const fitem: FormItem=item;
-            const { id, name } = fitem;
-            let temName=name;
-            if (_.isArray(name)){
-              temName=name.join(".")
-            }
-            if (filedName === temName || filedName === id) {
-              itemIndex = j;
-              findItem=item;
+            return false;
+          });
+        } else {
+          // @ts-ignore
+          const fitem: FormItem = item;
+          const { id, name } = fitem;
+          let temName = name;
+          if (_.isArray(name)) {
+            temName = name.join('.');
+          }
+          if (filedName === temName || filedName === id) {
+            itemIndex = j;
+            findItem = item;
 
-              return true;
-            }
-        } 
-   
-        return false
-        
+            return true;
+          }
+        }
+
+        return false;
       });
-      
+
       if (findItem) {
         fieldSetIndex = i;
         formItem = {
@@ -86,8 +86,9 @@ class FormInfo {
   }
   /**
    * 添加表单项
-   * @param formItem  表单项
-   * @param fieldset  兼容group
+   *
+   * @param formItem 表单项
+   * @param fieldset 兼容group
    * @returns
    */
   addFormItem(formItem: Field | (() => Field), fieldset?: string) {
@@ -105,6 +106,7 @@ class FormInfo {
   }
   /**
    * 修改列信息
+   *
    * @param name
    * @param col
    * @returns
@@ -119,12 +121,13 @@ class FormInfo {
       } else {
         newFormItem = item;
       }
-      newFormItem=_.merge(formItem,newFormItem)
+      newFormItem = _.merge(formItem, newFormItem);
       // newFormItem = _.{ ...formItem, ...newFormItem };
-      if (groupIndex >= 0){
-        if (itemIndex>= 0) this.formInfo.formConfig[fieldSetIndex].items[groupIndex].items[itemIndex] = newFormItem;
-      }else if (itemIndex>= 0) this.formInfo.formConfig[fieldSetIndex].items[itemIndex] = newFormItem;
-     
+      if (groupIndex >= 0) {
+        if (itemIndex >= 0)
+          this.formInfo.formConfig[fieldSetIndex].items[groupIndex].items[itemIndex] = newFormItem;
+      } else if (itemIndex >= 0)
+        this.formInfo.formConfig[fieldSetIndex].items[itemIndex] = newFormItem;
     }
     return this;
   }
@@ -137,9 +140,8 @@ class FormInfo {
     return this;
   }
   /**
-   * 
    * @param filedSet 兼容group
-   * @returns 
+   * @returns
    */
   removeGroup(filedSet: string) {
     if (filedSet) {
@@ -153,4 +155,4 @@ class FormInfo {
     return this.formInfo;
   }
 }
-export default FormInfo
+export default FormInfo;

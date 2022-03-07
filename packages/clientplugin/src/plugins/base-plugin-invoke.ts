@@ -39,9 +39,9 @@ export default class BasePluginvoke {
     });
   }
 
-  public getConfig=()=>{
-    return this.config
-  }
+  public getConfig = () => {
+    return this.config;
+  };
 
   /**
    * 调用客户端公用方法
@@ -105,7 +105,7 @@ export default class BasePluginvoke {
                 return this.operate(invokeOP);
               });
             }
-            return null
+            return null;
           });
       };
     });

@@ -1,12 +1,12 @@
-
-@import  '../../style/index.less';
-.@{sc-prefix}-form,.@{sc-prefix}-searchbar {
+@import '../../style/index.less';
+.@{sc-prefix}-form,
+.@{sc-prefix}-searchbar {
   margin: 0px 16px;
   // 因为 light-filter 不需要定宽
- div:not(.@{sc-prefix}-pro-form-light-filter) {
+  div:not(.@{sc-prefix}-pro-form-light-filter) {
     .@{sc-prefix}-field {
       // 适用于短数字，短文本或者选项
-       max-width: 100%;
+      max-width: 100%;
       &-xs {
         width: 104px;
       }
@@ -39,90 +39,83 @@
   }
 }
 
-
 .sc-form-nav {
-    .ant-anchor {
-      position: relative;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      background: #fff;
-      &::before{
-        content: '';
-        position: absolute;
-        z-index: 2;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        height: 0;
-        border-bottom: 1px solid #ebedf0;
-      }
-      .ant-anchor-ink {
-        display: none;
-      }
-      .ant-anchor-link {
-        position: relative;
-        flex-grow: 1;
-        flex-shrink: 1;
-        padding: 18px 20px;
-        overflow: hidden;
-        line-height: 1;
-        font-size: 14px;
-        text-align: center;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        color: #000;
-        cursor: pointer;
-        transition: all 0.5s;
-      }
+  .ant-anchor {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: #fff;
+    &::before {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: 2;
+      width: 100%;
+      height: 0;
+      border-bottom: 1px solid #ebedf0;
+      content: '';
     }
-
+    .ant-anchor-ink {
+      display: none;
+    }
+    .ant-anchor-link {
+      position: relative;
+      flex-grow: 1;
+      flex-shrink: 1;
+      padding: 18px 20px;
+      overflow: hidden;
+      color: #000;
+      font-size: 14px;
+      line-height: 1;
+      white-space: nowrap;
+      text-align: center;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: all 0.5s;
+    }
+  }
 }
 .sc-form-group-container {
   flex-wrap: wrap;
   max-width: 100%;
   // padding-left: 0px!important;
   // padding-right: 0px!important;
-  .ant-space-item{
-    .ant-col{
-      padding-left: 0px!important;
-  padding-right: 0px!important;
+  .ant-space-item {
+    .ant-col {
+      padding-right: 0px !important;
+      padding-left: 0px !important;
+    }
   }
- 
-}
 }
 
 .sc-form-fieldset {
-
-  &-hide-title{
+  &-hide-title {
     padding-top: 24px;
-  } 
- 
+  }
+  position: relative;
+
   margin-top: 8px;
   margin-bottom: 8px;
-  position: relative;
-  &-title{
-    padding: 8px 0px 8px 8px;
+  &-title {
     position: relative;
-    border-bottom: solid 1px #f0f0f0;
-    font-size: 14px;
     margin-bottom: 8px;
+    padding: 8px 0px 8px 8px;
     font-weight: 900;
- 
+    font-size: 14px;
+    border-bottom: solid 1px #f0f0f0;
   }
-   &-subtitle{
+  &-subtitle {
     padding-bottom: 8px;
-   }
-}
-
-.ant-modal-custom{
-  
-.sc-form-fieldset {
-  &:first-child{
-    padding-top: 0px;
   }
 }
 
+.ant-modal-custom {
+  .sc-form-fieldset {
+    &:first-child {
+      padding-top: 0px;
+    }
+  }
 }
 .sc-viem-item {
   padding: 8px 0;
@@ -131,13 +124,13 @@
   text-align: right;
 }
 
-.ant-form-vertical{
+.ant-form-vertical {
   .sc-viem-item {
-margin-bottom: 0px;
+    margin-bottom: 0px;
   }
-  .sc-viem-item-label{
-  text-align: left;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
+  .sc-viem-item-label {
+    margin-bottom: 8px;
+    font-weight: bold;
+    text-align: left;
+  }
 }

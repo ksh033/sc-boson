@@ -12,9 +12,9 @@ import type { SearchBarItem } from '@scboson/sc-element/es/sc-search-bar';
 import type React from 'react';
 import type { ButtonType, ButtonProps } from 'antd/es/button';
 
-export { Field, FieldGroup, FiledProp, FormConfig,FormLayout };
+export { Field, FieldGroup, FiledProp, FormConfig, FormLayout };
 export interface FormItem extends Omit<FormItemProp, 'component'> {
-  component?: string|any;
+  component?: string | any;
 }
 
 export interface DialogOptions {
@@ -276,7 +276,8 @@ export declare type ProColumns<RecordType = unknown> = (
 //   columnSize?: number;
 // }
 
-export type FormSearchItem =  FormItemProp& Omit<SearchBarItem, 'component'|'children'|'label'|'name'>;
+export type FormSearchItem = FormItemProp &
+  Omit<SearchBarItem, 'component' | 'children' | 'label' | 'name'>;
 
 // export interface FormSearchItem extends FormItem<any>,SearchBarItem {
 //   /** 是否隐藏 */

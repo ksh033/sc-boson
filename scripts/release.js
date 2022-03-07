@@ -45,7 +45,6 @@ async function release() {
     const registry = chalk.blue('http://172.18.169.70:8081/repository/npm');
     printErrorAndExit(`Release failed, npm registry must be ${registry}.`);
   }
- 
 
   let updated = null;
 
@@ -91,25 +90,25 @@ async function release() {
         )
       : [];
 
-    await exec(
-      'node',
-      [
-        [lernaCli],
-        'version',
-        '--exact',
-        // '--no-commit-hooks',
-        // '--no-git-tag-version',
-        // '--no-push',
-        '--message',
-        '🎨 chore(release): Publish',
-        '--conventional-commits',
-      ]
-        .concat(conventionalGraduate)
-        .concat(conventionalPrerelease),
-      {
-        shell: false,
-      },
-    );
+    // await exec(
+    //   'node',
+    //   [
+    //     [lernaCli],
+    //     'version',
+    //     '--exact',
+    //     // '--no-commit-hooks',
+    //     // '--no-git-tag-version',
+    //     // '--no-push',
+    //     '--message',
+    //     '🎨 chore(release): Publish',
+    //     '--conventional-commits',
+    //   ]
+    //     .concat(conventionalGraduate)
+    //     .concat(conventionalPrerelease),
+    //   {
+    //     shell: false,
+    //   },
+    // );
   }
 
   // Publish
@@ -129,7 +128,11 @@ async function release() {
   process.env.NPM_CONFIG_OTP = otp;
 
   pkgs.forEach((pkg, index) => {
-    const pkgPath = join(cwd, 'packages', pkg!=="client-plugin"?pkg.replace('sc-', ''):pkg);
+    const pkgPath = join(
+      cwd,
+      'packages',
+      pkg !== 'client-plugin' ? pkg.replace('sc-', '') : 'clientplugin',
+    );
     const { name, version } = require(join(pkgPath, 'package.json'));
     const isNext = isNextVersion(version);
     let isPackageExist = null;
@@ -144,10 +147,10 @@ async function release() {
         `[${index + 1}/${pkgs.length}] Publish package ${name} ${isNext ? 'with next tag' : ''}`,
       );
       //const cliArgs = isNext ? ['publish', '--tag', 'next'] : ['publish'];
-     // const { stdout } = execa.sync('npm', cliArgs, {
-        //cwd: pkgPath,
-     // });
-     // console.log(stdout);
+      // const { stdout } = execa.sync('npm', cliArgs, {
+      //cwd: pkgPath,
+      // });
+      // console.log(stdout);
     }
   });
 

@@ -1,142 +1,142 @@
 ﻿[
-    {
-        "Detail": [
-            {
-                "assetCode": "1",
-                "useWayCode": "01",
-                "warmArea": "0",
-                "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
-                "initAmount": "1",
-                "deprTotal": "0",
-                "pageNumber": 0
-            }
-        ],
-        "List": []
-    },
-    {
-        "Detail": [
-            {
-                "assetCode": "2",
-                "useWayCode": "01",
-                "warmArea": "0",
-                "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
-                "initAmount": "1",
-                "deprTotal": "0",
-                "pageNumber": 1
-            }
-        ],
-        "List": []
-    },
-    {
-        "Detail": [
-            {
-                "assetCode": "3",
-                "useWayCode": "01",
-                "warmArea": "0",
-                "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
-                "initAmount": "1",
-                "deprTotal": "0",
-                "pageNumber": 2
-            }
-        ],
-        "List": []
-    },
-    {
-        "Detail": [
-            {
-                "assetCode": "4",
-                "useWayCode": "01",
-                "warmArea": "0",
-                "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
-                "initAmount": "1",
-                "deprTotal": "0",
-                "pageNumber": 3
-            }
-        ],
-        "List": []
-    },
-    {
-        "Detail": [
-            {
-                "assetCode": "5",
-                "useWayCode": "01",
-                "warmArea": "0",
-                "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
-                "initAmount": "1",
-                "deprTotal": "0",
-                "pageNumber": 4
-            }
-        ],
-        "List": []
-    },
-    {
-        "Detail": [
-            {
-                "assetCode": "6",
-                "useWayCode": "01",
-                "warmArea": "0",
-                "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
-                "initAmount": "1",
-                "deprTotal": "0",
-                "pageNumber": 5
-            }
-        ],
-        "List": []
-    },
-    {
-        "Detail": [
-            {
-                "assetCode": "7",
-                "useWayCode": "01",
-                "warmArea": "0",
-                "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
-                "initAmount": "1",
-                "deprTotal": "0",
-                "pageNumber": 6
-            }
-        ],
-        "List": []
-    },
-    {
-        "Detail": [
-            {
-                "assetCode": "8",
-                "useWayCode": "01",
-                "warmArea": "0",
-                "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
-                "initAmount": "1",
-                "deprTotal": "0",
-                "pageNumber": 7
-            }
-        ],
-        "List": []
-    },
-    {
-        "Detail": [
-            {
-                "assetCode": "9",
-                "useWayCode": "01",
-                "warmArea": "0",
-                "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
-                "initAmount": "1",
-                "deprTotal": "0",
-                "pageNumber": 8
-            }
-        ],
-        "List": []
-    },
-    {
-        "Detail": [
-            {
-                "assetCode": "10",
-                "useWayCode": "01",
-                "warmArea": "0",
-                "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
-                "initAmount": "1",
-                "deprTotal": "0",
-                "pageNumber": 9
-            }
-        ],
-        "List": []
-    }
+  {
+    "Detail": [
+      {
+        "assetCode": "1",
+        "useWayCode": "01",
+        "warmArea": "0",
+        "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
+        "initAmount": "1",
+        "deprTotal": "0",
+        "pageNumber": 0
+      }
+    ],
+    "List": []
+  },
+  {
+    "Detail": [
+      {
+        "assetCode": "2",
+        "useWayCode": "01",
+        "warmArea": "0",
+        "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
+        "initAmount": "1",
+        "deprTotal": "0",
+        "pageNumber": 1
+      }
+    ],
+    "List": []
+  },
+  {
+    "Detail": [
+      {
+        "assetCode": "3",
+        "useWayCode": "01",
+        "warmArea": "0",
+        "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
+        "initAmount": "1",
+        "deprTotal": "0",
+        "pageNumber": 2
+      }
+    ],
+    "List": []
+  },
+  {
+    "Detail": [
+      {
+        "assetCode": "4",
+        "useWayCode": "01",
+        "warmArea": "0",
+        "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
+        "initAmount": "1",
+        "deprTotal": "0",
+        "pageNumber": 3
+      }
+    ],
+    "List": []
+  },
+  {
+    "Detail": [
+      {
+        "assetCode": "5",
+        "useWayCode": "01",
+        "warmArea": "0",
+        "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
+        "initAmount": "1",
+        "deprTotal": "0",
+        "pageNumber": 4
+      }
+    ],
+    "List": []
+  },
+  {
+    "Detail": [
+      {
+        "assetCode": "6",
+        "useWayCode": "01",
+        "warmArea": "0",
+        "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
+        "initAmount": "1",
+        "deprTotal": "0",
+        "pageNumber": 5
+      }
+    ],
+    "List": []
+  },
+  {
+    "Detail": [
+      {
+        "assetCode": "7",
+        "useWayCode": "01",
+        "warmArea": "0",
+        "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
+        "initAmount": "1",
+        "deprTotal": "0",
+        "pageNumber": 6
+      }
+    ],
+    "List": []
+  },
+  {
+    "Detail": [
+      {
+        "assetCode": "8",
+        "useWayCode": "01",
+        "warmArea": "0",
+        "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
+        "initAmount": "1",
+        "deprTotal": "0",
+        "pageNumber": 7
+      }
+    ],
+    "List": []
+  },
+  {
+    "Detail": [
+      {
+        "assetCode": "9",
+        "useWayCode": "01",
+        "warmArea": "0",
+        "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
+        "initAmount": "1",
+        "deprTotal": "0",
+        "pageNumber": 8
+      }
+    ],
+    "List": []
+  },
+  {
+    "Detail": [
+      {
+        "assetCode": "10",
+        "useWayCode": "01",
+        "warmArea": "0",
+        "remark": "财政服务器虚拟化存储扩容及系统备份建设项目，高树冲",
+        "initAmount": "1",
+        "deprTotal": "0",
+        "pageNumber": 9
+      }
+    ],
+    "List": []
+  }
 ]

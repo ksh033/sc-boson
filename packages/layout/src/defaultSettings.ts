@@ -1,7 +1,6 @@
 import type { MenuTheme } from 'antd/es/menu/MenuContext';
 
-import type {ProSettings} from '@ant-design/pro-layout'
-
+import type { ProSettings } from '@ant-design/pro-layout';
 
 const defaultSettings: ProSettings = {
   navTheme: 'dark',
@@ -18,5 +17,5 @@ const defaultSettings: ProSettings = {
   primaryColor: 'daybreak',
   splitMenus: false,
 };
-export type {ProSettings} ;
+export type { ProSettings };
 export default defaultSettings;

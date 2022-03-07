@@ -10,7 +10,7 @@ import { Modal, Upload } from 'antd';
 import { imagePreview } from './pictureUtil';
 import type { Props, SortableItemParams, SortableListParams } from './types';
 
-export  { UploadFile } from 'antd/es/upload/interface'
+export { UploadFile } from 'antd/es/upload/interface';
 
 const preView = (file: string) => {
   if (file !== '') {

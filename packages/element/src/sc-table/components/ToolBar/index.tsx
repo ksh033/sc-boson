@@ -53,9 +53,7 @@ export type ToolBarProps<T = unknown> = {
   columns: TableColumnType<T>[];
 };
 
-function getButtonText({
-
-}: OptionConfig & {
+function getButtonText({}: OptionConfig & {
   intl: IntlType;
 }) {
   return {

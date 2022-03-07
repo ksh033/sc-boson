@@ -1,26 +1,26 @@
 export interface RequestData {
-  data: any
-  success?: boolean
-  message?: number
+  data: any;
+  success?: boolean;
+  message?: number;
 }
 
 const useFetchData = async (
   request: (arg0: any) => Promise<any>,
   options?: any,
-  callBack?: (arg: any) => void
+  callBack?: (arg: any) => void,
 ): Promise<any> => {
   if (request) {
     try {
-      let dataSource: RequestData = await request(options)
+      let dataSource: RequestData = await request(options);
       if (callBack) {
-        callBack(dataSource)
+        callBack(dataSource);
       }
-      return dataSource
+      return dataSource;
     } catch (e) {
-      console.log('请求出错:', e)
+      console.log('请求出错:', e);
     }
   }
-  return []
-}
+  return [];
+};
 
-export default useFetchData
+export default useFetchData;

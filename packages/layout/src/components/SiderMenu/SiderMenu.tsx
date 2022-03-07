@@ -117,14 +117,14 @@ const SiderMenu: React.FC<SiderMenuProps & PrivateSiderMenuProps> = (props) => {
   //  // [`${baseClassName}-light`]: theme === "light",
   // });
   useEffect(() => {
-    let actionItem=null;
+    let actionItem = null;
     if (matchMenuKeys.length > 0) {
       const key = matchMenuKeys[0];
       actionItem = menuData.find((item) => {
         return item.key === key;
       });
     } else {
-      actionItem = menuData&&menuData.length>0? menuData[0]:null;
+      actionItem = menuData && menuData.length > 0 ? menuData[0] : null;
     }
     if (actionItem)
       // eslint-disable-next-line @typescript-eslint/no-use-before-define

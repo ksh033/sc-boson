@@ -57,7 +57,7 @@ function dragDirection(
   if (dragIndex > hoverIndex && hoverClientY < hoverMiddleY) {
     return 'upward';
   }
-  return ''
+  return '';
 }
 class BodyRow extends React.Component<BodyRowProps> {
   render() {
@@ -74,7 +74,7 @@ class BodyRow extends React.Component<BodyRowProps> {
     } = this.props;
     const style = { ...restProps.style, cursor: 'move' };
 
-    let {className} = restProps;
+    let { className } = restProps;
     if (isOver && initialClientOffset) {
       const direction = dragDirection(
         dragRow.index,
@@ -92,9 +92,7 @@ class BodyRow extends React.Component<BodyRowProps> {
     }
 
     return connectDragSource(
-      connectDropTarget(
-        <tr {...restProps} className={className} style={style} />,
-      ),
+      connectDropTarget(<tr {...restProps} className={className} style={style} />),
     );
   }
 }
@@ -128,15 +126,11 @@ const rowTarget = {
   },
 };
 
-const DragableBodyRow = DropTarget(
-  'row',
-  rowTarget,
-  (connect: any, monitor: any) => ({
-    connectDropTarget: connect.dropTarget(),
-    isOver: monitor.isOver(),
-    sourceClientOffset: monitor.getSourceClientOffset(),
-  }),
-)(
+const DragableBodyRow = DropTarget('row', rowTarget, (connect: any, monitor: any) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver(),
+  sourceClientOffset: monitor.getSourceClientOffset(),
+}))(
   DragSource('row', rowSource, (connect: any, monitor: any) => ({
     connectDragSource: connect.dragSource(),
     dragRow: monitor.getItem(),
@@ -181,7 +175,7 @@ function isSameColumn(a: any | null, b: any | null) {
       if (Array.isArray(value) && Array.isArray(other)) {
         return value === other || _.isEqual(value, other);
       }
-      return false
+      return false;
     })
   );
 }
@@ -247,7 +241,8 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
 
     const newState: any = { prevProps: props, ...restState };
     if (prevProps) {
-      let sourceData; let targetData;
+      let sourceData;
+      let targetData;
       if (props.columns.length > prevProps.columns.length) {
         sourceData = props.columns;
         targetData = prevProps.columns;
@@ -270,7 +265,7 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
       this.resizeProxy.style.display = 'inline';
       this.resizeProxy.style.zIndex = '999';
       this.resizeProxy.style.top = '0px';
-      this.resizeProxy.style.left = `${e.pageX - offset.left  }px`;
+      this.resizeProxy.style.left = `${e.pageX - offset.left}px`;
     }
   };
   handleStartResize = () => (e: MouseEvent) => {
@@ -279,7 +274,7 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
       this.resizeProxy.style.display = 'inline';
       this.resizeProxy.style.zIndex = '999';
       this.resizeProxy.style.top = '0px';
-      this.resizeProxy.style.left = `${e.pageX - offset.left  }px`;
+      this.resizeProxy.style.left = `${e.pageX - offset.left}px`;
     }
   };
   handleStopResize = (index: any) => (e: any, obj: any) => {
@@ -314,21 +309,15 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
             widthAll += parseInt(col.minWidth);
           }
         } else if (col.width) {
-            widthAll += parseInt(col.width);
-          }
+          widthAll += parseInt(col.width);
+        }
       });
       const isScroll = widthAll > ctable.clientWidth;
 
       columns = columns.map((col: any) => ({
         ...col,
 
-        width: isScroll
-          ? col.minWidth
-            ? col.minWidth
-            : col.width
-          : col.auto
-          ? 'auto'
-          : col.width,
+        width: isScroll ? (col.minWidth ? col.minWidth : col.width) : col.auto ? 'auto' : col.width,
         minWidth: initResize ? col.minWidth : col.width,
       }));
       _that.setState({ columns, initResize: true });
@@ -338,9 +327,7 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
     const p = document.createElement('div');
     p.className = 'sc-advanced-table-resize-proxy';
     this.resizeProxy = p;
-    this.tableDom = interopDefault(ReactDOM).findDOMNode(
-      this.doms.tableNode,
-    );
+    this.tableDom = interopDefault(ReactDOM).findDOMNode(this.doms.tableNode);
     if (this.tableDom) {
       const loadDom = this.tableDom.querySelector('.ant-spin-nested-loading');
       if (loadDom) {
@@ -389,7 +376,7 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
             <CheckboxGroup
               options={columnsSelect}
               defaultValue={columnsSelect.map((item: any) => item.value)}
-              onChange={selectItems => {
+              onChange={(selectItems) => {
                 const newColumns = initColumns.filter((item: any) => {
                   const canFind = selectItems.findIndex(
                     (inneritem: any) => inneritem === item.dataIndex,
@@ -405,7 +392,7 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
         }
         trigger={['click']}
         visible={showColumnsSelect}
-        onVisibleChange={e => {
+        onVisibleChange={(e) => {
           this.setState({
             showColumnsSelect: !!e,
           });

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
 import { useRef } from 'react';
-import type { ProColumn, FormSearchItem , ProColumnType, HButtonType } from '../interface';
+import type { ProColumn, FormSearchItem, ProColumnType, HButtonType } from '../interface';
 import type { BaseResult } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
 import { useSchemaContext } from '../context';

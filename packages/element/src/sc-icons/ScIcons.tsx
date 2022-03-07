@@ -1,16 +1,16 @@
-import * as React from 'react'
-import './style/index'
+import * as React from 'react';
+import './style/index';
 
 export interface ScIconsProps {
-  color?: string
-  type: string
-  size?: string
-  text?: React.ReactNode | string
-  className?: string
-  style?: any
-  onClick?: (params: any) => void
-  isImg?: boolean
-  fillWord?: React.ReactNode | string
+  color?: string;
+  type: string;
+  size?: string;
+  text?: React.ReactNode | string;
+  className?: string;
+  style?: any;
+  onClick?: (params: any) => void;
+  isImg?: boolean;
+  fillWord?: React.ReactNode | string;
 }
 
 // ScIcons 扩展图标组件 - 带点击事件、文字等
@@ -25,28 +25,28 @@ const ScIcons: React.FC<ScIconsProps> = (props) => {
     onClick = () => {},
     style,
     fillWord,
-  } = props
+  } = props;
 
-  let defaultcls = ['icon', 'bs-icon', `bs-icon-${size}`, className]
+  let defaultcls = ['icon', 'bs-icon', `bs-icon-${size}`, className];
   if (!isImg) {
-    defaultcls.push(`bs-icon-${type}`)
+    defaultcls.push(`bs-icon-${type}`);
   }
-  let cls = defaultcls.join(' ')
+  let cls = defaultcls.join(' ');
 
-  let rtext: any
+  let rtext: any;
   if (text) {
-    rtext = text
+    rtext = text;
   }
-  let stys = {}
+  let stys = {};
 
   if (style) {
-    stys = { ...style }
+    stys = { ...style };
   }
   if (color) {
     stys = {
       ...stys,
       color: color,
-    }
+    };
   }
 
   return (
@@ -63,7 +63,7 @@ const ScIcons: React.FC<ScIconsProps> = (props) => {
       </span>
       {rtext}
     </div>
-  )
-}
+  );
+};
 
-export default ScIcons
+export default ScIcons;

@@ -74,12 +74,7 @@ const SiderMenuWrapper: React.FC<SiderMenuProps & PrivateSiderMenuProps> = (prop
       />
     </Drawer>
   ) : (
-    <SiderMenu
-
-      className={classNames(`${prefixCls}-sider`, className)}
-      {...props}
-      style={style}
-    />
+    <SiderMenu className={classNames(`${prefixCls}-sider`, className)} {...props} style={style} />
   );
 };
 

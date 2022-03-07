@@ -1,7 +1,4 @@
-﻿
-
-
-export type PageInfo = {
+﻿export type PageInfo = {
   pageSize: number;
   total: number;
   current: number;
@@ -16,10 +13,8 @@ export declare type ProCoreActionType<T = {}> = {
   /** @name 清空选择 */
   clearSelected?: () => void;
   pageInfo?: PageInfo;
-}  & T;
-
+} & T;
 
 export type ActionType = ProCoreActionType & {
   fullScreen?: () => void;
 };
-

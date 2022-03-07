@@ -5,34 +5,23 @@ import classNames from 'classnames';
 import { Layout } from 'antd';
 import type { GlobalHeaderProps } from '@ant-design/pro-layout/es/components/GlobalHeader';
 import GlobalHeader from '@ant-design/pro-layout/es/components/GlobalHeader';
-import {TopNavHeader} from '@ant-design/pro-layout';
+import { TopNavHeader } from '@ant-design/pro-layout';
 import type { WithFalse } from '@ant-design/pro-layout/es/typings';
 import type { PrivateSiderMenuProps } from '@ant-design/pro-layout/es/components/SiderMenu/SiderMenu';
 
 const { Header } = Layout;
-export interface AppMenuProps{
-  /**
-   * 应用名称
-   */
+export interface AppMenuProps {
+  /** 应用名称 */
   name: string;
-  /**
-   * 应用编码
-   */
+  /** 应用编码 */
   code: string;
-  /**
-   * 应用路径
-   * 
-   */
+  /** 应用路径 */
   path: string;
-  /**
-   * 应用路径
-   * 
-   */
-   icon: string;
-   
-   key: string;
-   
-    }
+  /** 应用路径 */
+  icon: string;
+
+  key: string;
+}
 export type HeaderViewProps = GlobalHeaderProps & {
   isMobile?: boolean;
   collapsed?: boolean;
@@ -49,10 +38,9 @@ export type HeaderViewProps = GlobalHeaderProps & {
   appsMenu?: AppMenuProps[];
   appSelect?: (appCode: any) => void;
   location: any;
-  appMenuProps: any,
-  appSelectedKeys: any,
+  appMenuProps: any;
+  appSelectedKeys: any;
 };
-
 
 type HeaderViewState = {
   visible: boolean;
@@ -60,13 +48,12 @@ type HeaderViewState = {
 };
 
 class HeaderView extends Component<HeaderViewProps & PrivateSiderMenuProps, HeaderViewState> {
-
   renderContent = () => {
     const {
       isMobile,
       onCollapse,
       navTheme,
-     // layout,
+      // layout,
       headerRender,
       headerContentRender,
       appsMenu,
@@ -77,18 +64,16 @@ class HeaderView extends Component<HeaderViewProps & PrivateSiderMenuProps, Head
         {headerContentRender && headerContentRender(this.props)}
       </GlobalHeader>
     );
-  
-    if (appsMenu&& appsMenu.length>0 && !isMobile) {
-  
+
+    if (appsMenu && appsMenu.length > 0 && !isMobile) {
       defaultDom = (
         <TopNavHeader
           theme={navTheme as 'light' | 'dark'}
           mode="horizontal"
           onCollapse={onCollapse}
-         // menuProps={menuProps}
+          // menuProps={menuProps}
           {...this.props}
-
-           menuData={appsMenu}
+          menuData={appsMenu}
         />
       );
     }
@@ -110,7 +95,7 @@ class HeaderView extends Component<HeaderViewProps & PrivateSiderMenuProps, Head
       prefixCls,
       headerHeight,
     } = this.props;
-   
+
     const needFixedHeader = fixedHeader || layout === 'mix';
     const isTop = layout === 'top';
 
@@ -123,10 +108,10 @@ class HeaderView extends Component<HeaderViewProps & PrivateSiderMenuProps, Head
     });
 
     /** 计算侧边栏的宽度，不然导致左边的样式会出问题 */
-   // const width =
-     // layout !== 'mix' && needSettingWidth
-      //  ? `calc(100% - ${collapsed ? 48 : siderWidth}px)`
-      //  : '100%';
+    // const width =
+    // layout !== 'mix' && needSettingWidth
+    //  ? `calc(100% - ${collapsed ? 48 : siderWidth}px)`
+    //  : '100%';
 
     const right = needFixedHeader ? 0 : undefined;
 
@@ -146,7 +131,7 @@ class HeaderView extends Component<HeaderViewProps & PrivateSiderMenuProps, Head
             padding: 0,
             height: headerHeight,
             lineHeight: `${headerHeight}px`,
-          //  width,
+            //  width,
             zIndex: layout === 'mix' ? 100 : 19,
             right,
             ...style,

@@ -1,20 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import zhCN from 'antd/es/locale/zh_CN';
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  ReactNode,
-  useRef,
-} from 'react';
-import {
-  Table,
-  Input,
-  Popconfirm,
-  Form,
-  ConfigProvider,
-  InputNumber,
-} from 'antd';
+import React, { useState, useContext, useEffect, ReactNode, useRef } from 'react';
+import { Table, Input, Popconfirm, Form, ConfigProvider, InputNumber } from 'antd';
 import { useUpdateEffect } from 'ahooks';
 import { TableProps } from 'antd/es/table/Table';
 
@@ -33,11 +20,7 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   formItemPorpos?: any;
   props?: any;
   children: React.ReactNode;
-  tableRender?: (
-    dataIndex: string,
-    value: any,
-    record: any,
-  ) => React.ReactElement;
+  tableRender?: (dataIndex: string, value: any, record: any) => React.ReactElement;
 }
 
 const EditableCell: React.FC<EditableCellProps> = ({
@@ -58,11 +41,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
 }) => {
   const itemInputClassName = 'bs-edit-form-item-required';
   let inputNode =
-    inputType === 'number' ? (
-      <InputNumber min={0} {...props} />
-    ) : (
-      <Input {...props} />
-    );
+    inputType === 'number' ? <InputNumber min={0} {...props} /> : <Input {...props} />;
   if (tableRender) {
     inputNode = tableRender(dataIndex, record[dataIndex], record);
   }
@@ -118,9 +97,7 @@ const EditableRow: React.FC<EditableRowProps> = ({
   ...props
 }) => {
   const [form] = Form.useForm();
-  const colSpan: number = Array.isArray(props.children)
-    ? props.children.length
-    : 0;
+  const colSpan: number = Array.isArray(props.children) ? props.children.length : 0;
 
   useUpdateEffect(() => {
     if (record) {
@@ -129,17 +106,10 @@ const EditableRow: React.FC<EditableRowProps> = ({
   }, [record]);
 
   return (
-    <Form
-      form={form}
-      component={false}
-      initialValues={record}
-      onValuesChange={onValuesChange}
-    >
+    <Form form={form} component={false} initialValues={record} onValuesChange={onValuesChange}>
       {rowHeadRender ? (
         <tr className="ant-table-expanded-row ant-table-expanded-row-level-1">
-          <td colSpan={colSpan}>
-            {rowHeadRender ? rowHeadRender(record, index) : null}
-          </td>
+          <td colSpan={colSpan}>{rowHeadRender ? rowHeadRender(record, index) : null}</td>
         </tr>
       ) : null}
       <EditableContext.Provider value={form}>
@@ -254,7 +224,7 @@ const EditableTable = (props: EditableTableProps<any>) => {
     try {
       const row = await form.validateFields();
       const newData = [...dataSource.rows];
-      const index = newData.findIndex(item => key === item[rowKey]);
+      const index = newData.findIndex((item) => key === item[rowKey]);
       if (index > -1) {
         const item = newData[index];
         newData.splice(index, 1, {
@@ -305,10 +275,7 @@ const EditableTable = (props: EditableTableProps<any>) => {
               if (rowEditable) {
                 return (
                   <span>
-                    <a
-                      onClick={() => save(record[rowKey], form)}
-                      style={{ marginRight: 12 }}
-                    >
+                    <a onClick={() => save(record[rowKey], form)} style={{ marginRight: 12 }}>
                       {saveText}
                     </a>
                     {render(_, record, index)}
@@ -317,10 +284,7 @@ const EditableTable = (props: EditableTableProps<any>) => {
               } else {
                 return editable ? (
                   <span>
-                    <a
-                      onClick={() => save(record[rowKey], form)}
-                      style={{ marginRight: 12 }}
-                    >
+                    <a onClick={() => save(record[rowKey], form)} style={{ marginRight: 12 }}>
                       {saveText}
                     </a>
                     <Popconfirm
@@ -448,7 +412,7 @@ const EditableTable = (props: EditableTableProps<any>) => {
 
   const onValuesChange = (changedValues: any, allValues: any) => {
     const newData = [...tableRef.current.rows];
-    const index = newData.findIndex(item => allValues[rowKey] === item[rowKey]);
+    const index = newData.findIndex((item) => allValues[rowKey] === item[rowKey]);
     if (index > -1) {
       const item = newData[index];
       newData.splice(index, 1, {
@@ -467,7 +431,7 @@ const EditableTable = (props: EditableTableProps<any>) => {
   return (
     <ConfigProvider locale={zhCN}>
       <Table
-        onRow={record => {
+        onRow={(record) => {
           return {
             record,
             onValuesChange,

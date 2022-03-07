@@ -1,20 +1,20 @@
-import React from 'react'
-import CModal from './CModal'
-import type {CModalDialogProps} from './CModal'
-import { Modal } from 'antd'
+import React from 'react';
+import CModal from './CModal';
+import type { CModalDialogProps } from './CModal';
+import { Modal } from 'antd';
 
 export default {
   show: (props: CModalDialogProps) => {
     const config = {
       okCancel: true,
       ...props,
-    }
-    return CModal(config)
+    };
+    return CModal(config);
   },
-  showFull: (props: CModalDialogProps&{component?: any}) => {
-    const { component, pageProps, ...restPops } = props
+  showFull: (props: CModalDialogProps & { component?: any }) => {
+    const { component, pageProps, ...restPops } = props;
     if (component) {
-      restPops.content = React.createElement(component, pageProps)
+      restPops.content = React.createElement(component, pageProps);
       // console.log(restPops.content)
     }
     const config = {
@@ -26,11 +26,11 @@ export default {
       showFullscreen: true,
       pageProps,
       ...restPops,
-    }
+    };
 
-    return CModal(config)
+    return CModal(config);
   },
   confirm: (props: CModalDialogProps) => {
-    return Modal.confirm(props)
+    return Modal.confirm(props);
   },
-}
+};

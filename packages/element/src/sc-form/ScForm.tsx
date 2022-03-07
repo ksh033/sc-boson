@@ -20,10 +20,7 @@ export interface FormItem {
   group?: string;
 }
 
-const ScForm: React.ForwardRefRenderFunction<unknown, ScFormProps> = (
-  _props,
-  ref,
-) => {
+const ScForm: React.ForwardRefRenderFunction<unknown, ScFormProps> = (_props, ref) => {
   const { formConfig = {}, groupConfig = {}, form } = _props;
 
   const initialValues = useMemo(() => {

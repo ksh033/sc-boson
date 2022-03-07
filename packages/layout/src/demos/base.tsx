@@ -36,9 +36,7 @@ export default () => {
         waterMarkProps={{
           content: 'Pro Layout',
         }}
-        menuFooterRender={(props) => {
-         
-        }}
+        menuFooterRender={(props) => {}}
         onMenuHeaderClick={(e) => console.log(e)}
         menuItemRender={(item, dom) => (
           <a
@@ -49,14 +47,8 @@ export default () => {
             {dom}
           </a>
         )}
-        rightContentRender={() => (
-          <div>
-           李漳州 / 博耕科技漳州子公司
-
-          </div>
-        )}
+        rightContentRender={() => <div>李漳州 / 博耕科技漳州子公司</div>}
         {...settings}
- 
       >
         <PageContainer
           content={content}
@@ -108,7 +100,6 @@ export default () => {
           </div>
         </PageContainer>
       </ProLayout>
-  
     </div>
   );
 };

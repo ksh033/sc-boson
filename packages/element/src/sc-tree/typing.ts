@@ -34,7 +34,7 @@ export interface ScTreeProps extends TreeProps {
   textField?: string;
   valueField?: string;
   params?: any;
-  root?: Record<string,any>;
+  root?: Record<string, any>;
   autoload?: boolean;
   canSearch?: boolean;
   placeholder?: string;

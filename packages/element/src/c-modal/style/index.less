@@ -3,22 +3,22 @@
     min-width: 560px;
     max-width: calc(100vw - 56px);
     min-height: 190px;
-    vertical-align: middle;
-    text-align: initial;
     max-height: calc(100vh - 112px);
+    text-align: initial;
+    vertical-align: middle;
     &-body-wrapper {
-     // height: 100%;
+      // height: 100%;
       width: 100%;
-      .sc-form-fieldset-hide-title{
+      .sc-form-fieldset-hide-title {
         padding: 0 !important;
       }
       .sc-form {
-        background-color: #fff;
-        padding: 0 !important;
         margin: 10px !important;
+        padding: 0 !important;
+        background-color: #fff;
       }
-      .ant-form-horizontal{
-        .sc-viem-item{
+      .ant-form-horizontal {
+        .sc-viem-item {
           padding: 0 !important;
         }
       }
@@ -33,8 +33,8 @@
     &-footer {
       position: relative;
       top: 24px;
-      margin-left: -24px;
       margin-right: -24px;
+      margin-left: -24px;
       padding: 16px 24px;
       border-top: 1px solid #e8e8e8;
     }
@@ -46,16 +46,15 @@
 }
 
 .sc-modal-pagetpl {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
   &-header {
-    width: 100%;
-    background-color: #fff;
-
     z-index: 9;
+    width: 100%;
     padding: 15px 20px;
+    background-color: #fff;
     box-shadow: 0 0 5px #b5c5ef;
     &-title {
       color: #36c;
@@ -73,28 +72,28 @@
 
   &-content {
     flex: 1;
-    overflow: auto;
-    padding: 10px;
     max-height: 500px;
+    padding: 10px;
+    overflow: auto;
   }
   &-footer {
     &-bill {
       padding: 10px;
-      box-shadow: 0 0 3px #1b6dfd;
       color: #fff;
       font-size: 16px;
+      box-shadow: 0 0 3px #1b6dfd;
       &-content {
-        overflow: hidden;
-        padding: 0;
         margin: 0;
+        padding: 0;
+        overflow: hidden;
 
         > li {
           float: right;
           width: 200px;
 
           > label {
-            width: 80px;
             display: inline-block;
+            width: 80px;
             text-align: right;
           }
         }

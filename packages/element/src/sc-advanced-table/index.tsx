@@ -1,3 +1,3 @@
-import ScAdvancedTable from './ScAdvancedTable'
+import ScAdvancedTable from './ScAdvancedTable';
 
-export default ScAdvancedTable
+export default ScAdvancedTable;

@@ -4,7 +4,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const { readdirSync, existsSync} = require('fs');
+const { readdirSync, existsSync } = require('fs');
 
 const tailPkgs = readdirSync(path.join(__dirname, 'packages')).filter(
   (pkg) => pkg.charAt(0) !== '.',
@@ -25,21 +25,18 @@ const externals = isCI
     }, {})
   : {};
 
-
-
 const webPackConfigList = [];
 
-const findEntry=(path)=>{
-var indexFile=["index.ts","index.js","index.tsx"];
-let file=indexFile.find((filename)=>{
-
-  return existsSync(path+filename)
-})
-return file;
-}
+const findEntry = (path) => {
+  var indexFile = ['index.ts', 'index.js', 'index.tsx'];
+  let file = indexFile.find((filename) => {
+    return existsSync(path + filename);
+  });
+  return file;
+};
 tailPkgs.forEach((pkg) => {
   const entry = {};
-  let entryFile=findEntry(`./packages/${pkg}/src/`);
+  let entryFile = findEntry(`./packages/${pkg}/src/`);
 
   entry[`${pkg}`] = `./packages/${pkg}/src/${entryFile}`;
   if (!isCI) {
@@ -160,7 +157,7 @@ tailPkgs.forEach((pkg) => {
         'react-dom': 'ReactDOM',
         antd: 'antd',
         moment: 'moment',
-        'net':'net',
+        net: 'net',
         ...externals,
       },
     ],

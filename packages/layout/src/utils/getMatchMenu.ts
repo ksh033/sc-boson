@@ -50,7 +50,7 @@ export const getFlatMenus = (menuData: MenuDataItem[] = []): Record<string, Menu
       return;
     }
 
-    menus[stripQueryStringAndHashFromPath(item.path ||item.key ||  '/')] = {
+    menus[stripQueryStringAndHashFromPath(item.path || item.key || '/')] = {
       ...item,
     };
     menus[item.path || item.key || '/'] = { ...item };
@@ -67,14 +67,13 @@ export const getFlatMenus = (menuData: MenuDataItem[] = []): Record<string, Menu
  *
  * @param menuData
  */
- export const getFlatKeyMenus = (menuData: MenuDataItem[] = []): Record<string, MenuDataItem> => {
+export const getFlatKeyMenus = (menuData: MenuDataItem[] = []): Record<string, MenuDataItem> => {
   let menus: Record<string, MenuDataItem> = {};
   menuData.forEach((item) => {
     if (!item || !item.key) {
       return;
     }
 
-    
     menus[item.key] = { ...item };
 
     if (item.children) {
@@ -111,49 +110,50 @@ export const getMenuMatches = (
   path: string,
   exact?: boolean,
 ): string[] | undefined => {
-  return  flatMenuKeys.filter((item: any) => {
-    if (item === '/' && path === '/') {
-      return true;
-    }
-    if (item !== '/' && item !== '/*' && item && !isUrl(item)) {
-      const pathKey = stripQueryStringAndHashFromPath(item);
-
-      try {
-        // exact
-        if (exact) {
-          if (pathToRegexp("".concat(pathKey)).test(path)) {
-            return true;
-          }
-         
-          if (pathToRegexp(`${pathKey}/(.*)`).test(path)) {
-            return true;
-          }
-          
-        } else {
-          // /a
-          if (pathToRegexp(`${pathKey}`, []).test(path)) {
-            return true;
-          }
-          // /a/b/b
-          if (pathToRegexp(`${pathKey}/(.*)`).test(path)) {
-            return true;
-          }
-        }
-      } catch (error) {
-        // console.log(error, path);
+  return flatMenuKeys
+    .filter((item: any) => {
+      if (item === '/' && path === '/') {
+        return true;
       }
-    }
-    return false;
-  }).sort((a, b) => {
-    // 如果完全匹配放到最后面
-    if (a === path) {
-      return 10;
-    }
-    if (b === path) {
-      return -10;
-    }
-    return a.substr(1).split('/').length - b.substr(1).split('/').length;
-  }) as string[];
+      if (item !== '/' && item !== '/*' && item && !isUrl(item)) {
+        const pathKey = stripQueryStringAndHashFromPath(item);
+
+        try {
+          // exact
+          if (exact) {
+            if (pathToRegexp(''.concat(pathKey)).test(path)) {
+              return true;
+            }
+
+            if (pathToRegexp(`${pathKey}/(.*)`).test(path)) {
+              return true;
+            }
+          } else {
+            // /a
+            if (pathToRegexp(`${pathKey}`, []).test(path)) {
+              return true;
+            }
+            // /a/b/b
+            if (pathToRegexp(`${pathKey}/(.*)`).test(path)) {
+              return true;
+            }
+          }
+        } catch (error) {
+          // console.log(error, path);
+        }
+      }
+      return false;
+    })
+    .sort((a, b) => {
+      // 如果完全匹配放到最后面
+      if (a === path) {
+        return 10;
+      }
+      if (b === path) {
+        return -10;
+      }
+      return a.substr(1).split('/').length - b.substr(1).split('/').length;
+    }) as string[];
 };
 let flatMenus: any = null;
 /**
@@ -170,11 +170,10 @@ export const getMatchMenu = (
   fullKeys?: boolean,
   exact?: boolean,
 ): MenuDataItem[] => {
- 
-    flatMenus = getFlatMenus(menuData);
-    
-    const keyMenus=getFlatKeyMenus(menuData)
- 
+  flatMenus = getFlatMenus(menuData);
+
+  const keyMenus = getFlatKeyMenus(menuData);
+
   const flatMenuKeys = Object.keys(flatMenus);
   let menuPathKeys = getMenuMatches(flatMenuKeys, pathname || '/', exact);
 
@@ -184,15 +183,15 @@ export const getMatchMenu = (
   if (!fullKeys) {
     menuPathKeys = [menuPathKeys[menuPathKeys.length - 1]];
   }
-if (flatMenus[pathname]){
-  menuPathKeys = [menuPathKeys[menuPathKeys.length - 1]];
-}
- // console.log(flatMenus[pathname])
+  if (flatMenus[pathname]) {
+    menuPathKeys = [menuPathKeys[menuPathKeys.length - 1]];
+  }
+  // console.log(flatMenus[pathname])
   // console.log(menuPathKeys)
- // if
-  const keys= menuPathKeys
+  // if
+  const keys = menuPathKeys
     .map((menuPathKey) => {
-      const menuItem = flatMenus[menuPathKey] ;
+      const menuItem = flatMenus[menuPathKey];
 
       // 去重
       const map = new Map();
@@ -211,7 +210,7 @@ if (flatMenus[pathname]){
       return parentItems;
     })
     .flat(1);
-    return keys
+  return keys;
 };
 
 export default getMatchMenu;

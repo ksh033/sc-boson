@@ -1,2 +1,2 @@
-import ScSteps from './ScSteps'
-export default ScSteps
+import ScSteps from './ScSteps';
+export default ScSteps;

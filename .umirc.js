@@ -96,7 +96,7 @@ export default {
       },
     ],
   },
-  analytics:false,
+  analytics: false,
   hash: true,
   ssr: {
     devServerRender: false,
@@ -120,13 +120,8 @@ export default {
     '/components': [
       {
         title: '布局',
-        children: [
-          'layout',
-         
-        ],
+        children: ['layout'],
       },
-     
     ],
-    
   },
 };

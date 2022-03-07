@@ -1,4 +1,3 @@
-
 @size-xxxs: 16px;
 @size-xxs: 18px;
 @size-xs: 20px;
@@ -11,34 +10,33 @@
 @size-xxxxl: 72px;
 
 :global {
-
   .bs-icon-box {
     display: inline;
     vertical-align: text-bottom;
 
     > span {
-        vertical-align: middle;
-        position: relative;
-        display: inline-block;
+      position: relative;
+      display: inline-block;
+      vertical-align: middle;
 
-        > span {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-        }
+      > span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
     }
   }
 
   .bs-icon {
-    fill: currentColor;
-    background-size: cover;
     width: @size-m;
     height: @size-m;
-    font-family: "bsfont" !important;
-    user-select: none;
+    font-family: 'bsfont' !important;
     font-style: normal;
     vertical-align: middle;
+    background-size: cover;
+    user-select: none;
+    fill: currentColor;
 
     &-xxxs {
       width: @size-xxxs;
@@ -109,7 +107,7 @@
     }
 
     & span {
-      padding-left: 5px
+      padding-left: 5px;
     }
   }
 }

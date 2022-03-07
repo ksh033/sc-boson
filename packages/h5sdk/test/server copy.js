@@ -5,7 +5,7 @@ const { once } = require('events');
 const { pathToFileURL, fileURLToPath } = require('url');
 //const opn = require('opn');
 
-console.log(require('events'))
+console.log(require('events'));
 const port = 8080;
 
 const systemJSURL = pathToFileURL(path.resolve(__dirname, '..') + '/');
@@ -16,14 +16,13 @@ const mimes = {
   '.js': 'application/javascript',
   '.mjs': 'application/javascript',
   '.json': 'application/json',
-  '.wasm': 'application/wasm'
+  '.wasm': 'application/wasm',
 };
 
 let failTimeout, browserTimeout;
 
-function setBrowserTimeout () {
-  if (browserTimeout)
-    clearTimeout(browserTimeout);
+function setBrowserTimeout() {
+  if (browserTimeout) clearTimeout(browserTimeout);
   browserTimeout = setTimeout(() => {
     console.log('No browser requests made to server for 10s, closing.');
     process.exit(0);
@@ -32,66 +31,62 @@ function setBrowserTimeout () {
 
 //setBrowserTimeout();
 
-http.createServer(async function (req, res) {
-  console.log(req.url)
-  //setBrowserTimeout();
-  if (req.url === '/done') {
-    console.log('Tests completed successfully.');
-    process.exit();
-    return;
-  }
-  else if (req.url === '/error') {
-    console.log('\033[31mTest failures found.\033[0m');
-    failTimeout = setTimeout(() => process.exit(1), 30000);
-  }
-  else if (failTimeout) {
-    clearTimeout(failTimeout);
-    failTimeout = null;
-  }
-
-  const url = new URL(req.url[0] === '/' ? req.url.slice(1) : req.url, systemJSURL);
-  const filePath = fileURLToPath(url);
-console.log(systemJSURL.href)
-console.log(url.href === systemJSURL.href)
-  // redirect to test/test.html file by default
-  if (url.href === systemJSURL.href) {
-    res.writeHead(301, {
-      'location': '/test/test.html'
-    });
-    res.end();
-    return;
-  }
-
-  const fileStream = fs.createReadStream(filePath);
-  try {
-    console.log(once)
-    await once(fileStream, 'readable');
-  }
-  catch (e) {
-    if (e.code === 'EISDIR' || e.code === 'ENOENT') {
-      res.writeHead(404, {
-        'content-type': 'text/html'
-      });
-      res.end(`File not found.`);
+http
+  .createServer(async function (req, res) {
+    console.log(req.url);
+    //setBrowserTimeout();
+    if (req.url === '/done') {
+      console.log('Tests completed successfully.');
+      process.exit();
+      return;
+    } else if (req.url === '/error') {
+      console.log('\033[31mTest failures found.\033[0m');
+      failTimeout = setTimeout(() => process.exit(1), 30000);
+    } else if (failTimeout) {
+      clearTimeout(failTimeout);
+      failTimeout = null;
     }
-    console.log(e)
-    return;
-  }
 
-  let mime;
-  if (filePath.endsWith('javascript.css'))
-    mime = 'application/javascript';
-  else
-    mime = mimes[path.extname(filePath)] || 'text/plain';
+    const url = new URL(req.url[0] === '/' ? req.url.slice(1) : req.url, systemJSURL);
+    const filePath = fileURLToPath(url);
+    console.log(systemJSURL.href);
+    console.log(url.href === systemJSURL.href);
+    // redirect to test/test.html file by default
+    if (url.href === systemJSURL.href) {
+      res.writeHead(301, {
+        location: '/test/test.html',
+      });
+      res.end();
+      return;
+    }
 
-  res.writeHead(200, {
-    'content-type': mime
-  });
-  fileStream.pipe(res);
-  await once(fileStream, 'end');
-  res.end();
-  
-}).listen(port);
+    const fileStream = fs.createReadStream(filePath);
+    try {
+      console.log(once);
+      await once(fileStream, 'readable');
+    } catch (e) {
+      if (e.code === 'EISDIR' || e.code === 'ENOENT') {
+        res.writeHead(404, {
+          'content-type': 'text/html',
+        });
+        res.end(`File not found.`);
+      }
+      console.log(e);
+      return;
+    }
+
+    let mime;
+    if (filePath.endsWith('javascript.css')) mime = 'application/javascript';
+    else mime = mimes[path.extname(filePath)] || 'text/plain';
+
+    res.writeHead(200, {
+      'content-type': mime,
+    });
+    fileStream.pipe(res);
+    await once(fileStream, 'end');
+    res.end();
+  })
+  .listen(port);
 
 console.log(`Test server listening on http://localhost:${port}\n`);
 //opn(`http://localhost:${port}/test/adapter/wxsdk.html`);

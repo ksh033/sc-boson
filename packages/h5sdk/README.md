@@ -12,8 +12,7 @@ $ npm install
 $ npm run test         # 访问 testepay.bstj.com/sjq/80/test/adapter/wxsdk.html
 ```
 
-若项目使用 webpack 打包，请注意添加以下配置项：
-webpackConfig.module.noParse=/coordinate-conver/;
+若项目使用 webpack 打包，请注意添加以下配置项： webpackConfig.module.noParse=/coordinate-conver/;
 
 ## 开发规范
 

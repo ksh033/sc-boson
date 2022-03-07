@@ -39,7 +39,7 @@ const CModalDialog = (props: CModalDialogProps) => {
     afterClose,
     visible,
     keyboard,
-    centered=true,
+    centered = true,
     getContainer,
     maskStyle,
     okButtonProps,
@@ -47,7 +47,7 @@ const CModalDialog = (props: CModalDialogProps) => {
     closable,
     footer,
     onToggleFullscreen,
-    bodyStyle
+    bodyStyle,
     // iconType = 'question-circle',
   } = props;
 
@@ -122,11 +122,10 @@ const CModalDialog = (props: CModalDialogProps) => {
     custFooter = !fullscreen ? <div>{customButton}</div> : null;
   }
   // let customFooter=hideFooter
-  const isElement= React.isValidElement(props.content)
-  const dlgContent =
-    !isElement
-      ? React.createElement(props.content, { close, pageProps: props.pageProps })
-      : React.cloneElement(props.content,{close, pageProps: props.pageProps});
+  const isElement = React.isValidElement(props.content);
+  const dlgContent = !isElement
+    ? React.createElement(props.content, { close, pageProps: props.pageProps })
+    : React.cloneElement(props.content, { close, pageProps: props.pageProps });
 
   return (
     <ScModal

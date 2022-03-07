@@ -4,7 +4,15 @@ import schema from './pageConfigUitls';
 export { ListPage } from './page/ListPage';
 export { EditPage } from './page/EditPage';
 
-export { PageConfig, ToolButtons,ButtonTypeProps,PageType,setFuncodes,FormConfig,FormSearchItem } from './interface';
+export {
+  PageConfig,
+  ToolButtons,
+  ButtonTypeProps,
+  PageType,
+  setFuncodes,
+  FormConfig,
+  FormSearchItem,
+} from './interface';
 
 export {
   SchemaContext,

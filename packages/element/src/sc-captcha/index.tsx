@@ -5,7 +5,7 @@ import type { NamePath } from 'antd/es/form/interface';
 import type { FormItemProps } from 'antd/es/form';
 import React, { useState, useCallback, useEffect } from 'react';
 
-export type ProFormCaptchaProps =  {
+export type ProFormCaptchaProps = {
   /** @name 倒计时的秒数 */
   countDown?: number;
 
@@ -23,7 +23,7 @@ export type ProFormCaptchaProps =  {
 
   value?: any;
   onChange?: any;
-}&FormItemProps;
+} & FormItemProps;
 
 const ScCaptcha: React.FC<ProFormCaptchaProps> = React.forwardRef((props, ref: any) => {
   const [count, setCount] = useState<number>(props.countDown || 60);

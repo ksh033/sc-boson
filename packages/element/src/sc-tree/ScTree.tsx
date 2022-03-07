@@ -224,23 +224,20 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     },
     [],
   );
- 
+
   useUpdateEffect(() => {
-   
-      if (root){
-        setTreeData([root])
-      }else{
-        loadData({});
-      }
-    
- 
+    if (root) {
+      setTreeData([root]);
+    } else {
+      loadData({});
+    }
   }, [JSON.stringify(params)]);
   useEffect(() => {
-    if (!root&&autoload) {
+    if (!root && autoload) {
       loadData(params);
     }
-    if (root){
-      setTreeData([root])
+    if (root) {
+      setTreeData([root]);
     }
 
     return () => {
@@ -290,7 +287,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         if (loadDataPramsFormat) {
           newparams = loadDataPramsFormat(node.dataRef);
         }
-        newparams={...params,...newparams}
+        newparams = { ...params, ...newparams };
         const rData: any[] = await request(newparams);
         if (isGone.current) return;
         const newData = addChilList(treeData, key, rData);
@@ -298,7 +295,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         resolve();
       });
     },
-    [addChilList, loadDataPramsFormat, request, setTreeData, treeData,params],
+    [addChilList, loadDataPramsFormat, request, setTreeData, treeData, params],
   );
 
   const treeProps = useMemo(() => {
