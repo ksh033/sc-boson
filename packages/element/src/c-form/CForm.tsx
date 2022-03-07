@@ -6,7 +6,8 @@
 import React, { useEffect, useMemo } from 'react';
 import { Row, Form, Col, Anchor, Space } from 'antd';
 import type { FormProps } from 'antd/es/form';
-import _ from 'lodash';
+//import _ from 'lodash';
+import { isArray,isEmpty } from 'lodash';
 import classnames from 'classnames';
 import ViewItem from './ViewItem';
 import './style/index';
@@ -93,7 +94,7 @@ const CForm: React.FC<CFormProps> = (props) => {
 
   const convertData = (name: string | string[], dataName: string, _props: any, data: any) => {
     let itemValue;
-    if (_.isArray(name)) {
+    if (isArray(name)) {
       name.forEach((key) => {
         itemValue = data ? data[key] : null;
       });
@@ -282,7 +283,7 @@ const CForm: React.FC<CFormProps> = (props) => {
       }
       delete _props.newline;
       // 设置默认的 栅格比例
-      if (!itemProps.fieldProps || _.isEmpty(itemProps.fieldProps)) {
+      if (!itemProps.fieldProps || isEmpty(itemProps.fieldProps)) {
         itemProps.fieldProps = {
           labelCol: item.labelCol || labelCol,
           wrapperCol: item.wrapperCol || wrapperCol,
@@ -436,7 +437,7 @@ const CForm: React.FC<CFormProps> = (props) => {
         //       itemCount++;
         //     }
         //     // 设置默认的 栅格比例
-        //     if (!itemProps.formItemProps || _.isEmpty(itemProps.formItemProps)) {
+        //     if (!itemProps.formItemProps || isEmpty(itemProps.formItemProps)) {
         //       itemProps.formItemProps = {
         //         labelCol: item.labelCol || labelCol,
         //         wrapperCol: item.wrapperCol || wrapperCol,
@@ -515,7 +516,7 @@ const CForm: React.FC<CFormProps> = (props) => {
       return <Link key={`link_${index}`} href={`#${group}`} title={groupTitle}></Link>;
     });
     let anchorProps = {};
-    if (_.isObject(anchor)) {
+    if (isObject(anchor)) {
       anchorProps = { ...anchor };
     }
     return (

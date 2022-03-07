@@ -8,6 +8,7 @@
     "build": "father-build ",
     "build:dev": "father-build --watch",
     "changelog": "pro-changelog",
+    "check-deps": "node ./scripts/checkDeps.js",
     "createRelease": "node ./scripts/createRelease.js",
     "deploy": "npm run site && gh-pages -d ./dist",
     "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx  --fix --format=pretty ./packages && npm run lint:prettier",
@@ -120,7 +121,8 @@
     "xhr-mock": "^2.5.1",
     "yorkie": "^2.0.0",
     "ahooks": "^2.9.6",
-    "array-move": "^4.0.0"
+    "array-move": "^4.0.0",
+    "babel-types": "^6.26.0"
   },
   "name": "sc-boson"
 }

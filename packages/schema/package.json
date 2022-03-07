@@ -26,8 +26,14 @@
     "antd": "4.x",
     "react": "^16.x"
   },
- 
+ "devDependencies": {
+
+
+ },
   "dependencies": {
+    "umi": "^3.2.10",
+    "lodash":"^4.17.21",
+    "ahooks": "^2.9.6",
     "@scboson/sc-element": "1.0.4-beta1"
   }
 }

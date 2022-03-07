@@ -12,7 +12,7 @@ import type { UseListPageProp } from './useListPage';
 import ListPage from './useListPage';
 import FormInfo from '../page/FormInfo';
 import { Schema } from '../context';
-import _ from 'lodash';
+import {isObject,isString} from 'lodash';
 import { useSetState } from 'ahooks';
 
 // import ButtonTool from '../page/OpColButton';
@@ -99,7 +99,7 @@ export default function useEditPage(
   };
   // const { dict } = userDictModel();
   const [initialValues, setInitialValues] = useState(() => {
-    const values = _.isObject(record) ? record : {};
+    const values = isObject(record) ? record : {};
     return values;
   });
 
@@ -160,7 +160,7 @@ export default function useEditPage(
     if (getAction() !== Action.ADD) {
       if (config.service && config.service[name]) {
         let _params = params;
-        if (_.isObject(record)) {
+        if (isObject(record)) {
           _params = key ? { [key]: record[key] } : record;
         }
         setLoading(true);
@@ -205,12 +205,12 @@ export default function useEditPage(
       if (React.isValidElement(item)) {
         button = item;
       }
-      if (_.isString(item)) {
+      if (isString(item)) {
         const key: string = item;
         button = { ...ToolButtons[key], options: defaultOptions };
       }
 
-      if (_.isObject(item)) {
+      if (isObject(item)) {
         const { buttonType, extraProps, options, ...restProps } = item;
         if (buttonType) {
           button = {
