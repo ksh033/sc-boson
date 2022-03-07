@@ -308,10 +308,14 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
             dataSource={dataSource}
             pagination={false}
             size="small"
-            checkbox
+            checkbox={type === 'radio' ? false : true}
             rowKey={valueField}
             rowClassName={(record) => {
               const key = record[valueField] || '';
+              const config = getCheckboxProps(record);
+              if (config.disabled) {
+                return 'sc-select-table-item-disabled';
+              }
               const index = action.current.rowKeys.indexOf(key);
               return key === currentRowKey && index === -1 ? 'sc-select-table-item-active' : '';
             }}
@@ -329,15 +333,19 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
                 },
               };
             }}
-            rowSelection={{
-              type: type,
-              selectedRowKeys: action.current.rowKeys,
-              // renderCell: () => {
-              //   return null;
-              // },
-              getCheckboxProps,
-              ...dropdownRenderProps.rowSelection,
-            }}
+            rowSelection={
+              type === 'radio'
+                ? undefined
+                : {
+                    type: type,
+                    selectedRowKeys: action.current.rowKeys,
+                    // renderCell: () => {
+                    //   return null;
+                    // },
+                    getCheckboxProps,
+                    ...dropdownRenderProps.rowSelection,
+                  }
+            }
           />
         );
       }}
