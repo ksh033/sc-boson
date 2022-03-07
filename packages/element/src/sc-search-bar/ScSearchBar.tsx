@@ -301,7 +301,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
               key: `form-item-component-${index}`,
               ...restProps,
               className,
-              style: { ...item.props.style, ...widthObj },
+              style: { ...(item.props.style || {}), ...widthObj },
             },
             rchildren,
           );
@@ -311,7 +311,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
             key: `form-item-component-${index}`,
             ...restProps,
             className,
-            style: { ...item.props.style, ...widthObj },
+            style: { ...(item.props.style || {}), ...widthObj },
           });
         }
       }
