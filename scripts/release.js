@@ -26,14 +26,14 @@ function packageExists({ name, version }) {
 
 async function release() {
   // Check git status
-  // if (!args.skipGitStatusCheck) {
-  //   const gitStatus = execa.sync('git', ['status', '--porcelain']).stdout;
-  //   if (gitStatus.length) {
-  //     printErrorAndExit(`Your git status is not clean. Aborting.`);
-  //   }
-  // } else {
-  //   logStep('git status check is skipped, since --skip-git-status-check is supplied');
-  // }
+  if (!args.skipGitStatusCheck) {
+    const gitStatus = execa.sync('git', ['status', '--porcelain']).stdout;
+    if (gitStatus.length) {
+      printErrorAndExit(`Your git status is not clean. Aborting.`);
+    }
+  } else {
+    logStep('git status check is skipped, since --skip-git-status-check is supplied');
+  }
 
   // Check npm registry
   logStep('check npm registry');
@@ -45,6 +45,7 @@ async function release() {
     const registry = chalk.blue('http://172.18.169.70:8081/repository/npm');
     printErrorAndExit(`Release failed, npm registry must be ${registry}.`);
   }
+ 
 
   let updated = null;
 
@@ -90,25 +91,25 @@ async function release() {
         )
       : [];
 
-    // await exec(
-    //   'node',
-    //   [
-    //     [lernaCli],
-    //     'version',
-    //     '--exact',
-    //     // '--no-commit-hooks',
-    //     // '--no-git-tag-version',
-    //     // '--no-push',
-    //     '--message',
-    //     '🎨 chore(release): Publish',
-    //     '--conventional-commits',
-    //   ]
-    //     .concat(conventionalGraduate)
-    //     .concat(conventionalPrerelease),
-    //   {
-    //     shell: false,
-    //   },
-    // );
+    await exec(
+      'node',
+      [
+        [lernaCli],
+        'version',
+        '--exact',
+        // '--no-commit-hooks',
+        // '--no-git-tag-version',
+        // '--no-push',
+        '--message',
+        '🎨 chore(release): Publish',
+        '--conventional-commits',
+      ]
+        .concat(conventionalGraduate)
+        .concat(conventionalPrerelease),
+      {
+        shell: false,
+      },
+    );
   }
 
   // Publish
@@ -117,22 +118,18 @@ async function release() {
   logStep(`publish packages: ${chalk.blue(pkgs.join(', '))}`);
 
   // 获取 opt 的输入
-  const { otp } = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'otp',
-      message: '请输入 otp 的值，留空表示不使用 otp',
-    },
-  ]);
+  // const { otp } = await inquirer.prompt([
+  //   {
+  //     type: 'input',
+  //     name: 'otp',
+  //     message: '请输入 otp 的值，留空表示不使用 otp',
+  //   },
+  // ]);
 
-  process.env.NPM_CONFIG_OTP = otp;
+  //process.env.NPM_CONFIG_OTP = otp;
 
   pkgs.forEach((pkg, index) => {
-    const pkgPath = join(
-      cwd,
-      'packages',
-      pkg !== 'client-plugin' ? pkg.replace('sc-', '') : 'clientplugin',
-    );
+    const pkgPath = join(cwd, 'packages', pkg!=="client-plugin"?pkg.replace('sc-', ''):'clientplugin');
     const { name, version } = require(join(pkgPath, 'package.json'));
     const isNext = isNextVersion(version);
     let isPackageExist = null;
@@ -146,15 +143,15 @@ async function release() {
       console.log(
         `[${index + 1}/${pkgs.length}] Publish package ${name} ${isNext ? 'with next tag' : ''}`,
       );
-      //const cliArgs = isNext ? ['publish', '--tag', 'next'] : ['publish'];
-      // const { stdout } = execa.sync('npm', cliArgs, {
-      //cwd: pkgPath,
-      // });
-      // console.log(stdout);
+      const cliArgs = isNext ? ['publish', '--tag', 'next'] : ['publish'];
+     const { stdout } = execa.sync('npm', cliArgs, {
+        cwd: pkgPath,
+     });
+     console.log(stdout);
     }
   });
 
-  await exec('npm', ['run', 'prettier']);
+
 
   logStep('done');
 }
