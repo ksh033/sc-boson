@@ -91,25 +91,25 @@ async function release() {
         )
       : [];
 
-    await exec(
-      'node',
-      [
-        [lernaCli],
-        'version',
-        '--exact',
-        // '--no-commit-hooks',
-        // '--no-git-tag-version',
-        // '--no-push',
-        '--message',
-        '🎨 chore(release): Publish',
-        '--conventional-commits',
-      ]
-        .concat(conventionalGraduate)
-        .concat(conventionalPrerelease),
-      {
-        shell: false,
-      },
-    );
+    // await exec(
+    //   'node',
+    //   [
+    //     [lernaCli],
+    //     'version',
+    //     '--exact',
+    //     // '--no-commit-hooks',
+    //     // '--no-git-tag-version',
+    //     // '--no-push',
+    //     '--message',
+    //     '🎨 chore(release): Publish',
+    //     '--conventional-commits',
+    //   ]
+    //     .concat(conventionalGraduate)
+    //     .concat(conventionalPrerelease),
+    //   {
+    //     shell: false,
+    //   },
+    // );
   }
 
   // Publish
