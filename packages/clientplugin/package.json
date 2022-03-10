@@ -18,7 +18,8 @@
     "build-demo": "webpack --config ./webpack.dev.js"
   },
   "publishConfig": {
-    "registry": "http://172.18.169.70:8081/repository/bsnpm/"
+    "access": "public",
+    "registry": "http://172.18.164.103:4873/"
   },
   "devDependencies": {
     "@types/jquery": "^3.3.29",

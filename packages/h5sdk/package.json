@@ -10,7 +10,8 @@
   "typings": "./dist/index.ts.d",
 
   "publishConfig": {
-    "registry": "http://172.18.169.70:8081/repository/bsnpm/"
+    "access": "public",
+    "registry": "http://172.18.164.103:4873/"
   },
   "license": "MIT",
   "files": [

@@ -30,8 +30,9 @@
     "ie >= 11"
   ],
 
-   "publishConfig": {
-    "registry": "http://172.18.169.70:8081/repository/bsnpm/"
+  "publishConfig": {
+    "access": "public",
+    "registry": "http://172.18.164.103:4873/"
   },
   "dependencies": {
     "@ant-design/icons": "^4.0.0",
