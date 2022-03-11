@@ -32,7 +32,7 @@ type ScSearchBarType = Omit<ScSearchBarProps, 'queryList'> & {
 };
 
 export interface ScTableTransferfProps<T>
-  extends Omit<TransferProps<T>, 'dataSource' | 'rowKey' | 'onChange'> {
+  extends Omit<TransferProps<T>, 'dataSource' | 'rowKey' | 'onChange' | 'filterOption'> {
   leftTable: ScTableProps<T>;
   rightTable: ScTableProps<T>;
   rowKey?: string;
@@ -40,6 +40,8 @@ export interface ScTableTransferfProps<T>
   targetDataSource?: any[];
   targetKeys?: string[];
   lefteSearch?: ScSearchBarType;
+  filterOption?: (inputValue: string, item: any, direction: TransferDirection) => boolean;
+
   searchField?: string;
   onChange?: (changeData: {
     nextTargetKeys: string[];
@@ -136,9 +138,9 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
   };
 
   const matchFilter = useCallback(
-    (text: string, item: any, filter: string) => {
+    (text: string, item: any, filter: string, direction: TransferDirection) => {
       if (filterOption) {
-        return filterOption(filter, item);
+        return filterOption(filter, item, direction);
       }
       return text.indexOf(filter) >= 0;
     },
@@ -158,14 +160,14 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
       filterData = rightDataSouce;
       if (rightFilterValue && rightFilterValue.trim()) {
         filterData = filterData.filter((item: any) => {
-          return matchFilter(item[searchField] || '', item, rightFilterValue);
+          return matchFilter(item[searchField] || '', item, rightFilterValue, direction);
         });
       }
     } else if (direction === 'left') {
       filterData = leftDataSource;
       if (leftFilterValue && leftFilterValue.trim()) {
         filterData = filterData.filter((item: any) => {
-          return matchFilter(item[searchField] || '', item, leftFilterValue);
+          return matchFilter(item[searchField] || '', item, leftFilterValue, direction);
         });
       }
     }
@@ -236,6 +238,7 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
             getCheckboxProps: (item: any) => ({ disabled: listDisabled || item.disabled }),
             onSelectAll(selected: any, selectedRows: any) {
               const treeSelectedKeys = selectedRows
+                .filter((item: any) => item)
                 .filter((item: any) => !item.disabled)
                 .map((record: any) => record[rowKey]);
               const diffKeys = selected
@@ -266,21 +269,20 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
 
             rowSelection.selectedRowKeys = listSelectedKeys;
             if (showSearch) {
-              search = lefteSearch ? (
-                <ScSearchBar lightFilter {...lefteSearch}></ScSearchBar>
-              ) : (
-                leftSearchCmp
-              );
+              search = lefteSearch ? <ScSearchBar lightFilter {...lefteSearch} /> : leftSearchCmp;
             }
             getFilterdData(direction);
             tableProps = {
               ...leftTable,
               rowKey,
+              onSelectRow: () => {},
               data: {
                 rows: filterData,
                 total,
               },
-              pagination: { ...leftTable.pagination, simple: true },
+              pagination: { ...leftTable.pagination, simple: true,onChange:function(){
+                onItemSelectAll(listSelectedKeys, false);
+              } },
               onLoad: leftTable.request
                 ? (data: any) => {
                     if (data && data.rows) {
