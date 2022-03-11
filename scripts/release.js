@@ -143,7 +143,7 @@ async function release() {
       console.log(
         `[${index + 1}/${pkgs.length}] Publish package ${name} ${isNext ? 'with next tag' : ''}`,
       );
-      const cliArgs = isNext ? ['publish', '--tag', 'beta','--dry-run'] : ['publish'];
+      const cliArgs = isNext ? ['publish', '--tag', 'beta'] : ['publish'];
      const { stdout } = execa.sync('npm', cliArgs, {
         cwd: pkgPath,
      });
