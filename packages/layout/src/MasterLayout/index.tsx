@@ -38,9 +38,9 @@ import useCurrentMenuLayoutProps from '../utils/useCurrentMenuLayoutProps';
 import { clearMenuItem } from '../utils/utils';
 import type { WaterMarkProps } from '@ant-design/pro-layout/es/components/WaterMark';
 import type { AppMenuProps } from './Header';
-import './index.less';
-
 export type AppProps = Omit<AppMenuProps, 'component'>;
+
+import './index.less';
 
 const findAppCode = (pathname: string, appMenu?: AppMenuProps[]) => {
   const keys = pathname.replace('//', '/').split('/');
@@ -579,4 +579,5 @@ MaterLayout.defaultProps = {
   location: isBrowser() ? window.location : undefined,
 };
 
+export {getMatchMenu,getMenuData,getBreadcrumbProps,getPageTitleInfo,RouteContext}
 export default MaterLayout;

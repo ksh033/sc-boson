@@ -1,12 +1,10 @@
 import './Header.less';
 
 import React, { Component } from 'react';
-import { Layout } from 'antd';
 import type { HeaderProps } from '@ant-design/pro-layout';
 import { DefaultHeader } from '@ant-design/pro-layout';
 import type { PrivateSiderMenuProps } from './components/SiderMenu/SiderMenu';
 
-const { Header } = Layout;
 
 type HeaderViewState = {
   visible: boolean;
