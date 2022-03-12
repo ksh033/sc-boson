@@ -27,7 +27,7 @@
     "react": "^16.x"
   },
   "dependencies": {
-    "@scboson/sc-element": "1.0.4-beta1",
+    "@scboson/sc-element": "beta",
     "ahooks": "^2.9.6",
     "lodash": "^4.17.21",
     "umi": "^3.2.10"
