@@ -1,8 +1,7 @@
 {
   "name": "@scboson/sc-schema",
-  "version": "1.0.3-beta.2",
+  "version": "1.0.3-beta.3",
   "description": "sc-schema",
-
   "keywords": [
     "schema"
   ],
@@ -23,18 +22,14 @@
     "src"
   ],
   "peerDependencies": {
-    "lodash": "^4.x",
     "antd": "4.x",
+    "lodash": "^4.x",
     "react": "^16.x"
   },
- "devDependencies": {
-
-
- },
   "dependencies": {
-    "umi": "^3.2.10",
-    "lodash":"^4.17.21",
+    "@scboson/sc-element": "1.0.4-beta1",
     "ahooks": "^2.9.6",
-    "@scboson/sc-element": "1.0.4-beta1"
+    "lodash": "^4.17.21",
+    "umi": "^3.2.10"
   }
 }

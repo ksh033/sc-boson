@@ -1,6 +1,6 @@
 {
   "name": "@scboson/client-plugin",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "description": "博思客户端",
   "main": "./es/index.js",
   "module": "./es/index.js",
@@ -12,7 +12,6 @@
   ],
   "license": "MIT",
   "scripts": {
-   
     "dev": "webpack-dev-server --config ./webpack.dev.js",
     "build": "webpack --config ./webpack.pro.js",
     "build-demo": "webpack --config ./webpack.dev.js"
@@ -23,7 +22,6 @@
   },
   "devDependencies": {
     "@types/jquery": "^3.3.29",
-
     "clean-webpack-plugin": "^2.0.1",
     "copy-webpack-plugin": "^5.0.1",
     "html-webpack-plugin": "^3.2.0",
