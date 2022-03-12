@@ -2,7 +2,11 @@
   "version": "independent",
   "npmClient": "yarn",
   "useWorkspaces": true,
-  "changelog": {},
+  "changelog": {
+    
+    "cacheDir": ".changelog"
+
+  },
 
   "workspaces": ["packages/*"],
   "ignoreChanges": [

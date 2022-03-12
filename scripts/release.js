@@ -25,6 +25,9 @@ function packageExists({ name, version }) {
 }
 
 async function release() {
+
+
+
   // Check git status
   if (!args.skipGitStatusCheck) {
     const gitStatus = execa.sync('git', ['status', '--porcelain']).stdout;
@@ -38,11 +41,12 @@ async function release() {
   // Check npm registry
   logStep('check npm registry');
   const userRegistry = execa.sync('npm', ['config', 'get', 'registry']).stdout;
+  console.log(userRegistry)
   // if (userRegistry.includes('http://172.18.169.70:8081/repository/npm')) {
   //   printErrorAndExit(`Release failed, please use ${chalk.blue('npm run release')}.`);
   // }
-  if (!userRegistry.includes('http://172.18.164.103:4873/')) {
-    const registry = chalk.blue('http://172.18.164.103:4873/');
+  if (!userRegistry.includes('http://172.18.164.103:4873')) {
+    const registry = chalk.blue('http://172.18.164.103:4873');
     printErrorAndExit(`Release failed, npm registry must be ${registry}.`);
   }
  
@@ -91,25 +95,26 @@ async function release() {
         )
       : [];
 
-    // await exec(
-    //   'node',
-    //   [
-    //     [lernaCli],
-    //     'version',
-    //     '--exact',
-    //     // '--no-commit-hooks',
-    //     // '--no-git-tag-version',
-    //     // '--no-push',
-    //     '--message',
-    //     '🎨 chore(release): Publish',
-    //     '--conventional-commits',
-    //   ]
-    //     .concat(conventionalGraduate)
-    //     .concat(conventionalPrerelease),
-    //   {
-    //     shell: false,
-    //   },
-    // );
+    await exec(
+      'node',
+      [
+        [lernaCli],
+        'version',
+        '--yes',
+        '--exact',
+        // '--no-commit-hooks',
+        // '--no-git-tag-version',
+        // '--no-push',
+        '--message',
+        '🎨 chore(release): Publish',
+        '--conventional-commits',
+      ]
+        .concat(conventionalGraduate)
+        .concat(conventionalPrerelease),
+      {
+        shell: false,
+      },
+    );
   }
 
   // Publish
@@ -145,14 +150,11 @@ async function release() {
       );
       const cliArgs = isNext ? ['publish', '--tag', 'beta'] : ['publish'];
      const { stdout } = execa.sync('npm', cliArgs, {
-        cwd: pkgPath,
+       cwd: pkgPath,
      });
      console.log(stdout);
     }
   });
-
-
-
   logStep('done');
 }
 
