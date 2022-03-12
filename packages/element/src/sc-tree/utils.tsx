@@ -81,7 +81,7 @@ export const defaultNode = (
 
   return (
     <a
-      key="add"
+      
       onClick={async (e) => {
         e.stopPropagation();
         callback(rowData);

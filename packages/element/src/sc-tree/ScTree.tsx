@@ -156,7 +156,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         ) : null;
 
       return (
-        <Space>
+        <Space key={`${rowData.key}`}>
           {rowData.title}
           {actionDom}
         </Space>
