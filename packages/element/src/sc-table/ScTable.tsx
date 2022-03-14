@@ -12,7 +12,7 @@ import Container from './container';
 import type { ListToolBarProps } from './components/ListToolBar';
 import { genColumnList, tableColumnSort, genColumnKey } from './utils';
 import useDeepCompareEffect from '../_util/useDeepCompareEffect';
-
+import useMergedState from 'rc-util/es/hooks/useMergedState';
 import type { ColumnType } from 'antd/es/table';
 import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
 
@@ -132,6 +132,16 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />
   ));
 
+  const newParams = useMemo(() => {
+    const nparams = JSON.parse(JSON.stringify(params));
+    if (nparams && nparams.size && nparams.current) {
+      delete nparams.size;
+      delete nparams.current;
+    }
+
+    return nparams;
+  }, [JSON.stringify(params)]);
+
   const counter = Container.useContainer();
   const isGone = useRef(false);
   const { loading, run } = useRequest(
@@ -146,10 +156,23 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const [dataSource, setDataSource] = useState<any>(data || newdataSource);
   const [rowKeys, setRowKeys] = useState(selectedRowKeys || []);
   const [rows, setRows] = useState<any[]>(selectedRows || []);
-  const [innerPagination, setPagination] = useSetState({
-    current: pagination && pagination.current ? pagination.current : 1,
-    pageSize: pagination && pagination.pageSize ? pagination.pageSize : pageSize,
-  });
+  // const [innerPagination, setPagination] = useSetState({
+  //   current: pagination && pagination.current ? pagination.current : 1,
+  //   pageSize: pagination && pagination.pageSize ? pagination.pageSize : pageSize,
+  // });
+
+  const [innerPagination, setPagination] = useMergedState<{
+    current: number;
+    pageSize: number;
+  }>(
+    { current: 1, pageSize: pageSize },
+    {
+      value: {
+        current: pagination && pagination.current ? pagination.current : 1,
+        pageSize: pagination && pagination.pageSize ? pagination.pageSize : pageSize,
+      },
+    },
+  );
 
   const action = useRef<any>({
     rowKeys: selectedRowKeys || [],
@@ -165,11 +188,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
   const loadData = async () => {
     if (counter.whetherRemote) {
-      const { current } = innerPagination;
-      const { _filters, ...restParams } = params;
+      const { _filters, ...restParams } = newParams;
       const payload = {
         size: innerPagination.pageSize,
-        current,
+        current: innerPagination.current,
         ..._filters,
         ...restParams,
       };
@@ -294,7 +316,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     } else {
       loadData();
     }
-  }, [JSON.stringify(params)]);
+  }, [JSON.stringify(newParams)]);
 
   useUpdateEffect(() => {
     loadData();
@@ -317,10 +339,12 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     _sorter: any,
     extra: TableCurrentDataSource<any>,
   ) => {
-    setPagination({
-      current: _pagination.current,
-      pageSize: _pagination.pageSize,
-    });
+    if (_pagination && _pagination.current && _pagination.pageSize) {
+      setPagination({
+        current: _pagination.current,
+        pageSize: _pagination.pageSize,
+      });
+    }
 
     counter.setFiltersArg(_filtersArg);
     const ordersMap = {};

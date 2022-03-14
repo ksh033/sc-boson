@@ -146,7 +146,13 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
         pagination: { ...state.pagination, current: 1 },
       });
     } else {
-      reload();
+      if (state.pagination.current !== 1) {
+        setState({
+          pagination: { ...state.pagination, current: 1 },
+        });
+      } else {
+        reload();
+      }
     }
   };
 
