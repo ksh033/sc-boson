@@ -5,7 +5,7 @@ import * as React from 'react';
 import type { CardProps } from 'antd';
 import { Table, Tooltip, Divider, Card } from 'antd';
 import type { TableProps, TablePaginationConfig } from 'antd/es/table/Table';
-import { useUpdateEffect, useRequest, useSetState } from 'ahooks';
+import { useUpdateEffect, useRequest } from 'ahooks';
 import type { OptionConfig, ToolBarProps } from './components/ToolBar';
 import Toolbar from './components/ToolBar';
 import Container from './container';
@@ -427,6 +427,13 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   }, [JSON.stringify(rowKeys), handleRowSelectChange, getRecord, getCheckboxProps, rowSelection]);
 
   const handleRowSelect = (record: any) => {
+    let checkConfig: any = { disabled: false };
+    if (typeof getCheckboxProps === 'function') {
+      checkConfig = getCheckboxProps(record);
+    }
+    if (checkConfig?.disabled) {
+      return;
+    }
     const key = record[rowKey];
     let _rowKeys = [...(action.current.rowKeys || [])];
     let _rows = [...(action.current.rows || [])];
@@ -436,13 +443,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         _rows = [record];
       }
       if (rowSelection?.type === 'checkbox') {
-        let checkConfig: any = { disabled: false };
-        if (typeof getCheckboxProps === 'function') {
-          checkConfig = getCheckboxProps(record);
-        }
-        if (checkConfig?.disabled) {
-          return;
-        }
         const index = _rowKeys.findIndex((item) => item === key);
         if (index > -1) {
           _rowKeys = _rowKeys.filter((item) => {
