@@ -204,10 +204,10 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
 
   const handleSearch = (value: any) => {
     if (remoteSearch && request) {
-      if (value.trim()) {
-        debounce.cancel();
-        debounce.run(value);
-      }
+      //if (value.trim()) {
+      debounce.cancel();
+      debounce.run(value);
+      // }
     }
     if (singleInput) {
       setInputValue.cancel();
