@@ -161,16 +161,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   //   pageSize: pagination && pagination.pageSize ? pagination.pageSize : pageSize,
   // });
 
-  const [innerPagination, setPagination] = useMergedState<{
-    current: number;
-    pageSize: number;
-  }>(
+  const [innerPagination, setPagination] = useMergedState<TablePaginationConfig>(
     { current: 1, pageSize: pageSize },
     {
-      value: {
-        current: pagination && pagination.current ? pagination.current : 1,
-        pageSize: pagination && pagination.pageSize ? pagination.pageSize : pageSize,
-      },
+      value: pagination ? pagination : undefined,
     },
   );
 
@@ -308,7 +302,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   }, []);
 
   useUpdateEffect(() => {
-    if (innerPagination.current > 1) {
+    if (innerPagination && Number(innerPagination.current || 0) > 1) {
       setPagination({
         ...innerPagination,
         current: 1,
@@ -512,8 +506,13 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     let _row = [];
     let total = 0;
     if (dataSource) {
-      total = dataSource.total || 0;
-      _row = dataSource.rows || dataSource;
+      if (isArray(dataSource)) {
+        total = dataSource.length;
+        _row = dataSource;
+      } else {
+        total = dataSource.total || 0;
+        _row = dataSource.rows || dataSource;
+      }
     }
 
     _row.forEach((it: any, index: number) => {
@@ -547,7 +546,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
     if (pagination === false) {
       paginationProps = false;
-    } else if (typeof pagination === 'object' && pagination !== null) {
+    } else if (Object.prototype.toString.call(pagination) === '[object Object]') {
       paginationProps = {
         ...paginationProps,
         ...pagination,
