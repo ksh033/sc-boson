@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-throw-literal */
 import React, { useRef } from 'react';
-import type { CascaderProps, CascaderValueType } from 'antd/es/cascader';
+import type { CascaderProps } from 'antd/es/cascader';
 import { Cascader } from 'antd';
 import { useUpdateEffect } from 'ahooks';
 
@@ -210,7 +210,7 @@ const ScCascader: React.FC<ScCascaderProps> = (props) => {
     otherProps.displayRender = displayRender;
   }
 
-  const formatTextValue = (valList: CascaderValueType | undefined) => {
+  const formatTextValue = (valList: any) => {
     if (Array.isArray(valList)) {
       return valList.map((it) => {
         if (Object.prototype.toString.call(it) === '[object Object]') {
