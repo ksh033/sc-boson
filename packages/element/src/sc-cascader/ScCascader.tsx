@@ -2,13 +2,13 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-throw-literal */
 import React, { useRef } from 'react';
-import type { CascaderProps } from 'antd/es/cascader';
+import type { CascaderProps, CascaderValueType } from 'antd/es/cascader';
 import { Cascader } from 'antd';
 import { useUpdateEffect } from 'ahooks';
 
 const { useCallback, useState, useLayoutEffect } = React;
 
-export type ScCascaderProps = CascaderProps<any> & {
+export type ScCascaderProps = CascaderProps & {
   pIdField?: string;
   asyn?: boolean;
   textField?: string;
@@ -209,13 +209,26 @@ const ScCascader: React.FC<ScCascaderProps> = (props) => {
     otherProps.loadData = loadTreeData;
     otherProps.displayRender = displayRender;
   }
+
+  const formatTextValue = (valList: CascaderValueType | undefined) => {
+    if (Array.isArray(valList)) {
+      return valList.map((it) => {
+        if (Object.prototype.toString.call(it) === '[object Object]') {
+          return it[`${textField}`];
+        }
+        return it;
+      });
+    }
+    return [];
+  };
+
   return (
     <Cascader
       ref={ref}
       options={treeData}
       {...restProps}
       {...otherProps}
-      value={_value}
+      value={formatTextValue(_value)}
       onChange={handleChange}
     />
   );
