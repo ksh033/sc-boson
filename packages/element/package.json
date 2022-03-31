@@ -17,8 +17,7 @@
     "ant"
   ],
   "publishConfig": {
-    "access": "public",
-    "registry": "http://172.18.164.103:4873/"
+    "access": "public"
   },
   "repository": {
     "type": "git",

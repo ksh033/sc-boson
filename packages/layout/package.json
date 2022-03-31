@@ -30,8 +30,7 @@
     "ie >= 11"
   ],
   "publishConfig": {
-    "access": "public",
-    "registry": "http://172.18.164.103:4873/"
+    "access": "public"
   },
   "dependencies": {
     "@ant-design/icons": "^4.0.0",
