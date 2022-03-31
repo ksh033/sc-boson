@@ -45,8 +45,8 @@ async function release() {
   // if (userRegistry.includes('http://172.18.169.70:8081/repository/npm')) {
   //   printErrorAndExit(`Release failed, please use ${chalk.blue('npm run release')}.`);
   // }
-  if (!userRegistry.includes('http://172.18.164.103:4873')) {
-    const registry = chalk.blue('http://172.18.164.103:4873');
+  if (!userRegistry.includes('http://172.18.164.116:4873')) {
+    const registry = chalk.blue('http://172.18.164.116:4873');
     printErrorAndExit(`Release failed, npm registry must be ${registry}.`);
   }
  
