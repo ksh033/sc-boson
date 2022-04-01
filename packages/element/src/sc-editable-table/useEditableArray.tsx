@@ -494,6 +494,12 @@ function useEditableArray<RecordType>(
     return true;
   };
 
+  const clearAllEditKeysAndSetOne = (keys: React.Key) => {
+    ReactDOM.unstable_batchedUpdates(() => {
+      setEditableRowKeys([keys]);
+    });
+  };
+
   /**
    * 退出编辑状态
    *
@@ -693,6 +699,7 @@ function useEditableArray<RecordType>(
   };
 
   return {
+    clearAllEditKeysAndSetOne,
     editableKeys,
     setEditableRowKeys,
     fouceDataIndex,

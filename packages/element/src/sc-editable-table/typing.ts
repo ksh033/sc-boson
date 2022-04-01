@@ -19,13 +19,14 @@ export type ProCoreActionType<T = {}> = {
 
   /** @name 清空选择 */
   clearSelected?: () => void;
-} & Omit<UseEditableUtilType, 'newLineRecord' | 'actionRender' | 'setEditableRowKeys'> &
+} & Omit<UseEditableUtilType, 'newLineRecord' | 'actionRender'> &
   T;
 
 export type ActionType = ProCoreActionType & {
   selectedRows: any[];
   fullScreen?: () => void;
   validateRules?: (value: any[]) => Promise<any>;
+  clearAllEditKeysAndSetOne: (key: string) => void;
 };
 
 export type AddLineOptions = {

@@ -182,6 +182,7 @@ const EditableTable = (props: EditableTableProps<any>) => {
       // ...sorter,
     };
     if (!request) {
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw 'no remote request method';
     }
 
@@ -250,7 +251,7 @@ const EditableTable = (props: EditableTableProps<any>) => {
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
     } finally {
-      form && form.resetFields();
+      form?.resetFields();
     }
   };
 
