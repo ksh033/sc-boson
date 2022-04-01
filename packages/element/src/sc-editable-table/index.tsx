@@ -11,7 +11,7 @@ import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interfa
 import { columnRender, removeDeletedData } from './utils';
 import useEditableArray from './useEditableArray';
 import useMountMergeState from '../_util/useMountMergeState';
-import { useDebounceFn, useEventListener, useMount, useSetState, useThrottleFn } from 'ahooks';
+import { useEventListener, useMount, useSetState, useThrottleFn } from 'ahooks';
 import { validateRules } from './validateUtil';
 import Container from '../sc-table/container';
 import { genColumnList, tableColumnSort } from '../sc-table/utils';
@@ -414,8 +414,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           onClick: () => {
             if (clickEdit) {
               if (editableUtils.editableKeys.length > 0) {
-                editableUtils.cancelEditable(editableUtils.editableKeys[0]);
-                editableUtils.startEditable(record[rowKey]);
+                editableUtils.clearAllEditKeysAndSetOne(record[rowKey]);
               } else {
                 editableUtils.startEditable(record[rowKey]);
               }
@@ -425,13 +424,6 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       },
     };
   };
-
-  const setStartEditable = useDebounceFn(
-    (key) => {
-      editableUtils.startEditable(key);
-    },
-    { wait: 200 },
-  );
 
   const changeEnter = useCallback(
     (event: any) => {
@@ -451,8 +443,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
               const index = value.findIndex((it) => it[rowKey] === editableKeys[0]);
               if (index !== -1 && value.length > index + 1) {
                 editableUtils.setFouce(String(firstEditable?.dataIndex));
-                editableUtils.cancelEditable(editableKeys[0]);
-                setStartEditable.run(value[index + 1][rowKey]);
+                editableUtils.clearAllEditKeysAndSetOne(value[index + 1][rowKey]);
               }
             }
           }
