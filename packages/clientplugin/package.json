@@ -17,8 +17,7 @@
     "build-demo": "webpack --config ./webpack.dev.js"
   },
   "publishConfig": {
-    "access": "public",
-    "registry": "http://172.18.164.103:4873/"
+    "access": "public"
   },
   "devDependencies": {
     "@types/jquery": "^3.3.29",
