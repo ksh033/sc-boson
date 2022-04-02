@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.4-beta.10](https://192.168.10.60/sc-dva-antd-pro/compare/@scboson/sc-element@1.0.4-beta.9...@scboson/sc-element@1.0.4-beta.10) (2022-04-01)
+
+**Note:** Version bump only for package @scboson/sc-element
+
+
+
+
+
 ## [1.0.4-beta.9](https://192.168.10.60/sc-dva-antd-pro/compare/@scboson/sc-element@1.0.4-beta.8...@scboson/sc-element@1.0.4-beta.9) (2022-04-01)
 
 **Note:** Version bump only for package @scboson/sc-element
