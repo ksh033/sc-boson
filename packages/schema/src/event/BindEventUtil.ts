@@ -13,20 +13,28 @@ import React from 'react';
 //   formatUseReq: <R = any, P extends any[] = any>(serviveName: string) => BaseResult<R, P> | null;
 // }
 
+
+
 function formatUseReq<R = any, P extends any[] = any>(
   serviveName: string,
   service?: any,
+  isTable?:boolean
 ): BaseResult<R, P> | null {
+
   if (service && service[serviveName]) {
+    if (isTable){
+      return service[serviveName]
+    }
     return useRequest(service[serviveName], { manual: true, throwOnError: true });
   }
   return null;
 }
 
 const bindEvent = (
-  btn: HButtonType,
+  btn: HButtonType&{request?:any},
   config: PageConfig,
   defaultCallback?: (values: any) => void,
+  isTable?:boolean
 ): HButtonType => {
   if (React.isValidElement(btn)) {
     return btn;
@@ -35,12 +43,12 @@ const bindEvent = (
   const newBtn = { ...btn };
   if (newBtn.buttonType) {
     const serverName = newBtn.serverName || newBtn.buttonType;
-    const remote = formatUseReq(serverName, config.service);
+    const remote = formatUseReq(serverName, config.service,isTable);
     let options: any = {};
     if (remote) {
       newBtn.loading = remote?.loading;
       options = {
-        service: remote.run,
+        service: remote.run||remote,
       };
     }
     if (newBtn.options) {
@@ -113,9 +121,10 @@ const bindEvents = (
   toolbar: HButtonType[],
   config: PageConfig,
   callback?: (values: any) => void,
+  isTable?:boolean,
 ): HButtonType[] => {
   return toolbar.map((item: any) => {
-    const newItem = bindEvent(item, config, callback);
+    const newItem = bindEvent(item, config, callback,isTable);
     return newItem;
   });
 };
