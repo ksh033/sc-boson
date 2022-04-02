@@ -85,6 +85,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     showIndex = false,
     readonly = false,
     scroll = { x: 'max-content' },
+    onRow,
     ...rest
   } = props;
   let tableId = 'tableForm';
@@ -409,9 +410,18 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           rest.onTableChange(changePagination, filters, sorter, extra);
         }
       },
-      onRow: (record: T) => {
-        return {
-          onClick: () => {
+      onRow: (record: T, index?: number) => {
+        let result: any = onRow && onRow(record, index);
+        if (result === undefined || result === null) {
+          result = {};
+        }
+        if (result) {
+          const customClick = result.onClick;
+          result.onClick = (event: any) => {
+            event.stopPropagation(); // 阻止合成事件间的冒泡
+            if (typeof customClick === 'function') {
+              customClick(event);
+            }
             if (clickEdit) {
               if (editableUtils.editableKeys.length > 0) {
                 editableUtils.clearAllEditKeysAndSetOne(record[rowKey]);
@@ -419,7 +429,10 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
                 editableUtils.startEditable(record[rowKey]);
               }
             }
-          },
+          }; // 点击行
+        }
+        return {
+          ...result,
         };
       },
     };
