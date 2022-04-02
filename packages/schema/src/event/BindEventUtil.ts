@@ -18,7 +18,7 @@ function formatUseReq<R = any, P extends any[] = any>(
   service?: any,
 ): BaseResult<R, P> | null {
   if (service && service[serviveName]) {
-    return useRequest(service[serviveName], { manual: true });
+    return useRequest(service[serviveName], { manual: true, throwOnError: true });
   }
   return null;
 }

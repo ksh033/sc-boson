@@ -252,13 +252,17 @@ function formSubmit(props: ButtonTypeProps) {
         }
         newValue.pageEntryTime = pageEntryTime;
         if (service) {
-          const data = await service(newValue);
-          if (callBack) {
-            callBack(data, newValue);
-          }
-          if (data === null || data.success === undefined || data.success === null) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            close && close(data);
+          try {
+            const data = await service(newValue);
+            if (callBack) {
+              callBack(data, newValue);
+            }
+            if (data === null || data.success === undefined || data.success === null) {
+              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+              close && close(data);
+            }
+          } catch (err) {
+            callBack?.(err, newValue);
           }
         } else if (close) {
           close();
@@ -284,13 +288,17 @@ function formUpdate(props: ButtonTypeProps) {
         }
         newValue.pageEntryTime = pageEntryTime;
         if (service) {
-          const data = await service(newValue);
-          if (callBack) {
-            callBack(data, newValue);
-          }
-          if (data === null || data.success === undefined || data.success === null) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            close && close(data);
+          try {
+            const data = await service(newValue);
+            if (callBack) {
+              callBack(data, newValue);
+            }
+            if (data === null || data.success === undefined || data.success === null) {
+              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+              close && close(data);
+            }
+          } catch (err) {
+            callBack?.(err, newValue);
           }
         } else if (close) {
           close();
