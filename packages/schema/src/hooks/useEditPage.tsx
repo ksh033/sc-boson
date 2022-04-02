@@ -12,8 +12,9 @@ import type { UseListPageProp } from './useListPage';
 import ListPage from './useListPage';
 import FormInfo from '../page/FormInfo';
 import { Schema } from '../context';
-import {isObject,isString} from 'lodash';
+import { isObject, isString } from 'lodash';
 import { useSetState } from 'ahooks';
+import moment from 'moment';
 
 // import ButtonTool from '../page/OpColButton';
 
@@ -79,6 +80,7 @@ export default function useEditPage(
     record = location.query;
   }
   const [pageData, setPageData] = useSetState<any>();
+  const pageEntryTimeRef = useRef<string>(moment().format('YYYY-MM-DD HH:mm:ss'));
 
   const setData = (data: any) => {
     setPageData(data);
@@ -96,6 +98,7 @@ export default function useEditPage(
     ...props,
     form,
     callBack: pageProps.callBack,
+    pageEntryTime: pageEntryTimeRef.current,
   };
   // const { dict } = userDictModel();
   const [initialValues, setInitialValues] = useState(() => {

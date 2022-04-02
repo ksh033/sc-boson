@@ -32,6 +32,8 @@ export interface DialogOptions {
   close?: (values?: any) => void | null; // 弹窗关闭
   form?: any;
   backUrl?: string;
+  /** 进入页面时间 */
+  pageEntryTime?: string;
 }
 
 export interface ButtonTypeProps extends ButtonProps {
@@ -46,6 +48,7 @@ export interface ButtonTypeProps extends ButtonProps {
   action?: Action;
   /** 弹出框属性配置 */
   options?: DialogOptions;
+
   /** 调用远程服务方法 */
   serverName?: string;
   // 是否可见

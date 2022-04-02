@@ -240,7 +240,7 @@ function formBack(props: ButtonTypeProps) {
 function formSubmit(props: ButtonTypeProps) {
   const { options, callBack, preHandle } = props;
   if (options) {
-    const { form, service, close } = options;
+    const { form, service, close, pageEntryTime } = options;
     if (form && form.current) {
       form.current.validateFields().then(async (values: any) => {
         let newValue = values;
@@ -250,6 +250,7 @@ function formSubmit(props: ButtonTypeProps) {
             return;
           }
         }
+        newValue.pageEntryTime = pageEntryTime;
         if (service) {
           const data = await service(newValue);
           if (callBack) {
@@ -271,7 +272,7 @@ function formSubmit(props: ButtonTypeProps) {
 function formUpdate(props: ButtonTypeProps) {
   const { options, callBack, preHandle } = props;
   if (options) {
-    const { form, service, close } = options;
+    const { form, service, close, pageEntryTime } = options;
     if (form && form.current) {
       form.current.validateFields().then(async (values: any) => {
         let newValue = values;
@@ -281,6 +282,7 @@ function formUpdate(props: ButtonTypeProps) {
             return;
           }
         }
+        newValue.pageEntryTime = pageEntryTime;
         if (service) {
           const data = await service(newValue);
           if (callBack) {
