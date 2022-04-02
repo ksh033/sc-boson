@@ -11,7 +11,7 @@ import { ToolButtons } from '../interface';
 import OpColButton from './OpColButton';
 import { bindEvents } from '../event/BindEventUtil';
 import { ScTable } from '@scboson/sc-element';
-import React from 'react';
+import React,{useRef} from 'react';
 
 const { Operation } = ScTable;
 const OpColKey = '_OperateKey';
@@ -28,7 +28,10 @@ export interface TableInfoProps {
 
 const OpRenderCmp: React.FC<any> = (props) => {
   const { tbuttons, config, reload, record, max, cmp: Cmp } = props;
-  const buttons = bindEvents(tbuttons, config, reload);
+
+
+  const buttons = bindEvents(tbuttons, config, reload,true);
+
 
   return <Cmp buttons={buttons} max={max} record={record} />;
 };
