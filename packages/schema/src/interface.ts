@@ -34,6 +34,8 @@ export interface DialogOptions {
   backUrl?: string;
   /** 进入页面时间 */
   pageEntryTime?: string;
+  preHandle?: (values: any) => any;
+  callBack?: (values: any, requestData?: any) => void; // 回调函数
 }
 
 export interface ButtonTypeProps extends ButtonProps {
