@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-element",
-  "version": "1.0.4-beta.13",
+  "version": "1.0.4-beta.14",
   "description": "基于ReactJS+Antd",
   "keywords": [
     "ant",
@@ -45,12 +45,9 @@
     "rc-util": "^5.0.1",
     "react-dnd": "^10.0.2",
     "react-dnd-html5-backend": "^10.0.2",
-
- 
     "unstated-next": "^1.1.0",
     "use-media-antd-query": "^1.0.1"
   },
-
   "resolutions": {
     "antd": "^4.19.5"
   },
