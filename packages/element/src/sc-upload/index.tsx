@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import type { CSSProperties } from 'react';
 import React, { memo, useState } from 'react';
 import type { SortEnd } from 'react-sortable-hoc';
@@ -28,12 +27,6 @@ const preView = (file: string) => {
   return <img src={file} alt="avatar" style={{ width: '100%' }} />;
 };
 
-const itemStyle: CSSProperties = {
-  width: 112,
-  height: 112,
-  // margin: 4,
-  cursor: 'grab',
-};
 const SortableItem = SortableElement((params: SortableItemParams) => {
   // todo 自定义显示
   // const iconRender = (file: UploadFile<any>, listType?: UploadListType) => {
@@ -41,17 +34,15 @@ const SortableItem = SortableElement((params: SortableItemParams) => {
   // };
 
   return (
-    <div style={itemStyle}>
-      <UploadList
-        locale={{ previewFile: '预览图片', removeFile: '删除图片' }}
-        showDownloadIcon={false}
-        listType={params.props.listType}
-        onPreview={params.onPreview}
-        // iconRender={iconRender}
-        onRemove={params.onRemove}
-        items={[params.item]}
-      />
-    </div>
+    <UploadList
+      locale={{ previewFile: '预览图片', removeFile: '删除图片' }}
+      showDownloadIcon={false}
+      listType={params.props.listType}
+      onPreview={params.onPreview}
+      // iconRender={iconRender}
+      onRemove={params.onRemove}
+      items={[params.item]}
+    />
   );
 });
 
