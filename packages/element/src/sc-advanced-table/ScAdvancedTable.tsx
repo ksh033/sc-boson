@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Button, Dropdown, Checkbox } from 'antd';
 import { Resizable } from 'react-resizable';
-import { DndProvider, DragSource, DropTarget } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+
+import {HTML5Backend} from 'react-dnd-html5-backend';
 import type { ScTableProps } from '../sc-table';
 import ScTable from '../sc-table';
 import { DownOutlined } from '@ant-design/icons';
@@ -59,85 +60,46 @@ function dragDirection(
   }
   return '';
 }
-class BodyRow extends React.Component<BodyRowProps> {
-  render() {
-    const {
-      isOver,
-      connectDragSource,
-      connectDropTarget,
-      moveRow,
-      dragRow,
-      clientOffset,
-      sourceClientOffset,
-      initialClientOffset,
-      ...restProps
-    } = this.props;
-    const style = { ...restProps.style, cursor: 'move' };
 
-    let { className } = restProps;
-    if (isOver && initialClientOffset) {
-      const direction = dragDirection(
-        dragRow.index,
-        restProps.index,
-        initialClientOffset,
-        clientOffset,
-        sourceClientOffset,
-      );
-      if (direction === 'downward') {
-        className += ' drop-over-downward';
+
+const type = 'DraggableBodyRow';
+
+const DraggableBodyRow = ({ index, moveRow, className, style, ...restProps }:any) => {
+  const ref = React.useRef();
+  const [{ isOver, dropClassName }, drop] = useDrop({
+    accept: type,
+    collect: (monitor:any) => {
+      const { index: dragIndex } = monitor.getItem() || {};
+      if (dragIndex === index) {
+        return {};
       }
-      if (direction === 'upward') {
-        className += ' drop-over-upward';
-      }
-    }
+      return {
+        isOver: monitor.isOver(),
+        dropClassName: dragIndex < index ? ' drop-over-downward' : ' drop-over-upward',
+      };
+    },
+    drop: (item:any) => {
+      moveRow(item.index, index);
+    },
+  });
+  const [, drag] = useDrag({
+    type,
+    item: { index },
+    collect: (monitor:any) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+  drop(drag(ref));
 
-    return connectDragSource(
-      connectDropTarget(<tr {...restProps} className={className} style={style} />),
-    );
-  }
-}
-
-const rowSource = {
-  beginDrag(props: any) {
-    return {
-      index: props.index,
-    };
-  },
+  return (
+    <tr
+      ref={ref}
+      className={`${className}${isOver ? dropClassName : ''}`}
+      style={{ cursor: 'move', ...style }}
+      {...restProps}
+    />
+  );
 };
-
-const rowTarget = {
-  drop(props: any, monitor: any) {
-    const dragIndex = monitor.getItem().index;
-    const hoverIndex = props.index;
-
-    // Don't replace items with themselves
-    if (dragIndex === hoverIndex) {
-      return;
-    }
-
-    // Time to actually perform the action
-    props.moveRow(dragIndex, hoverIndex);
-
-    // Note: we're mutating the monitor item here!
-    // Generally it's better to avoid mutations,
-    // but it's good here for the sake of performance
-    // to avoid expensive index searches.
-    monitor.getItem().index = hoverIndex;
-  },
-};
-
-const DragableBodyRow = DropTarget('row', rowTarget, (connect: any, monitor: any) => ({
-  connectDropTarget: connect.dropTarget(),
-  isOver: monitor.isOver(),
-  sourceClientOffset: monitor.getSourceClientOffset(),
-}))(
-  DragSource('row', rowSource, (connect: any, monitor: any) => ({
-    connectDragSource: connect.dragSource(),
-    dragRow: monitor.getItem(),
-    clientOffset: monitor.getClientOffset(),
-    initialClientOffset: monitor.getInitialClientOffset(),
-  }))(BodyRow),
-);
 
 const ResizeableTitle = (props: any) => {
   const { onResize, onResizeStop, onResizeStart, width, ...restProps } = props;
@@ -454,7 +416,7 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
       components = {
         ...components,
         body: {
-          row: DragableBodyRow,
+          row: DraggableBodyRow,
         },
       };
       otherProps = {
@@ -476,6 +438,7 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
             <div className={'sc-advanced-table-part'}>{customToolbar}</div>
           </div>
         )}
+       
         <DndProvider backend={HTML5Backend}>
           <ScTable
             saveRef={this.saveRef('tableNode')}
