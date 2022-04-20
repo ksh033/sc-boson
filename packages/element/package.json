@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-element",
-  "version": "1.0.4-beta.15",
+  "version": "1.0.4-beta.16",
   "description": "基于ReactJS+Antd",
   "keywords": [
     "ant",
@@ -46,16 +46,14 @@
     "react-dnd": "^15.1.0",
     "react-dnd-html5-backend": "^15.1.0",
     "react-resizable": "^3.0.1",
-
-    "react-sortable-hoc":"^2.0.0",
- 
+    "react-sortable-hoc": "^2.0.0",
     "unstated-next": "^1.1.0",
     "use-media-antd-query": "^1.0.1"
   },
   "resolutions": {
     "antd": "^4.19.5",
-    "@types/react":"17.0.39",
-    "@types/react-dom":"17.0.15"
+    "@types/react": "17.0.39",
+    "@types/react-dom": "17.0.15"
   },
   "sideEffects": [
     "es/**/style/*",
