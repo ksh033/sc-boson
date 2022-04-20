@@ -69,17 +69,29 @@ const bindEvent = (
     }
     if (!newBtn.onClick && defaultEvents[newBtn.buttonType]) {
       const itemEvent = defaultEvents[newBtn.buttonType];
-      let callBack: ((values: any) => void) | null = null;
+      let callBack: ((values: any, newValue: any) => void) | null = (null);
       let preHandle: ((values: any) => boolean) | null = null;
       // 默认的回调方法
-      if (defaultCallback) {
-        callBack = defaultCallback;
-      }
+      // if (defaultCallback) {
+      // callBack = defaultCallback;
+      // }
 
+
+      let callBackFun: any = null
       if (newBtn.callBack) {
-        callBack = newBtn.callBack;
-      } else if (options.callBack) {
-        callBack = options.callBack;
+        callBackFun = newBtn.callBack;
+      } 
+      callBack = (values: any, newValue: any) => {
+
+        if (callBackFun) {
+          callBackFun(values, newValue)
+        }
+        if (options.callBack){
+          options.callBack(values, newValue)
+        }
+        if (defaultCallback) {
+          defaultCallback(values)
+        }
       }
       if (newBtn.preHandle) {
         preHandle = newBtn.preHandle;
@@ -90,7 +102,7 @@ const bindEvent = (
       newBtn.onClick = (...arg) => {
         const event: any = arg.length > 0 ? arg[arg.length - 1] : null;
         // 彈出框处理
-       
+
         if (options.content) {
           if (options.pageProps && !options.pageProps.callBack) {
             options.pageProps.callBack = callBack;

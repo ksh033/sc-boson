@@ -36,7 +36,6 @@ const OpRenderCmp: React.FC<any> = (props) => {
       return newItem;
     });
   }
-  console.log('buttons', buttons);
   // bindEvents(tbuttons, config, reload, true);
 
   return <Cmp buttons={buttons} max={max} record={record} />;

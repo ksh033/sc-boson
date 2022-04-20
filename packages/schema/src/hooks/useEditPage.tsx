@@ -43,7 +43,7 @@ export interface UseEditPageProp<S> extends UseListPageProp<S> {
   getAction: () => any;
   getFormInfo: (_props?: FormFilterProp) => FormInfo;
   getTitle: (action: string) => any;
-  getModalBtn : (button: keyof typeof ToolButtons|HButtonType, options?: DialogOptions & ButtonTypeProps)=>HButtonType,
+  getModalBtn: (button: keyof typeof ToolButtons | HButtonType, options?: DialogOptions & ButtonTypeProps) => HButtonType,
   addPageButton: <T extends keyof typeof ToolButtons>(
     btns:
       | (HButtonType & { buttonType?: T; extraProps?: ButtonTypeProps; options?: DialogOptions })
@@ -278,30 +278,40 @@ export default function useEditPage(
   };
 
 
-  const getModalBtn = (button: keyof typeof ToolButtons|HButtonType, buttonProps?:  ButtonTypeProps) => {
+  const getModalBtn = (button: keyof typeof ToolButtons | HButtonType, buttonProps?: ButtonTypeProps) => {
 
-    const { preHandle,closeDlg,options ,...restOptions } = buttonProps || {};
+    const { preHandle, closeDlg, options,callBack:newBallCack, ...restOptions } = buttonProps || {};
 
     if (config.pageType === PageType.page) {
       defaultOptions.close = () => {
         history?.go(-1);
       };
     }
-    const {close,...otherDefaultOpt}=defaultOptions
-    let btn=null;
-    if(typeof button==="string"){
-      btn=ToolButtons[button]
-    }else{
-      btn=button
+
+    const { close,callBack:defCallBack, ...otherDefaultOpt } = defaultOptions
+
+    let callBack=defCallBack;
+   if (newBallCack){
+    callBack=(fromdata:any,newdata:any)=>{
+      defCallBack&& defCallBack()
+      newBallCack(fromdata,newdata)
     }
-    const newBtn={
+   }
+    let btn = null;
+    if (typeof button === "string") {
+      btn = ToolButtons[button]
+    } else {
+      btn = button
+    }
+    const newBtn = {
       ...btn,
       ...restOptions,
+      callBack,
       options: {
         ...otherDefaultOpt,
-        
+
         ...options,
-        close:closeDlg!==undefined&&closeDlg===false?null:close
+        close: closeDlg !== undefined && closeDlg === false ? null : close
       },
     }
 
