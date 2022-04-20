@@ -90,6 +90,7 @@ const bindEvent = (
       newBtn.onClick = (...arg) => {
         const event: any = arg.length > 0 ? arg[arg.length - 1] : null;
         // 彈出框处理
+       
         if (options.content) {
           if (options.pageProps && !options.pageProps.callBack) {
             options.pageProps.callBack = callBack;

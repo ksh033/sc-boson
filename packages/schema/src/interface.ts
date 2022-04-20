@@ -50,6 +50,7 @@ export interface ButtonTypeProps extends ButtonProps {
   action?: Action;
   /** 弹出框属性配置 */
   options?: DialogOptions;
+  closeDlg?:boolean,
 
   /** 调用远程服务方法 */
   serverName?: string;

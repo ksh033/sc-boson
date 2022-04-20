@@ -15,11 +15,16 @@ import useDeepCompareEffect from '../_util/useDeepCompareEffect';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import type { ColumnType } from 'antd/es/table';
 import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
+import { dataType, optionsTyps, findFromData, getParam } from "./components/DraggableBodyRow/common";
 
 import { arrayMoveImmutable } from 'array-move';
 import isArray from 'lodash/isArray';
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { MenuOutlined } from '@ant-design/icons';
+import DraggableBodyRow from './components/DraggableBodyRow';
+
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
+import update from "immutability-helper";
+
 
 const { useState, useEffect, useRef, useMemo } = React;
 export type { ColumnsType } from 'antd/es/table/Table';
@@ -88,7 +93,7 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   /** @name table 列属性 */
   columns?: ScProColumn<T>;
 
-  dragSort?: boolean;
+  dragSort?: boolean | string;
 }
 
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
@@ -126,11 +131,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
   const { selectedRows = [], params = null, pageSize = 10, autoload = false } = restPros;
 
-  const SortableItem = SortableElement((sprops: any) => <tr {...sprops} />);
-  const SortableBody = SortableContainer((sprops: any) => <tbody {...sprops} />);
-  const DragHandle = SortableHandle(() => (
-    <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />
-  ));
 
   const newParams = useMemo(() => {
     const nparams = JSON.parse(JSON.stringify(params));
@@ -146,9 +146,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const isGone = useRef(false);
   const { loading, run } = useRequest(
     request ||
-      new Promise((resolve) => {
-        resolve(null);
-      }),
+    new Promise((resolve) => {
+      resolve(null);
+    }),
     {
       manual: true,
     },
@@ -389,34 +389,22 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       return true;
     });
 
-    if (dragSort) {
-      filterCols = [
-        {
-          title: '',
-          dataIndex: 'sort',
-          width: 30,
-          className: 'drag-visible',
-          render: () => <DragHandle />,
-        },
-        ...filterCols,
-      ];
-    }
     return filterCols;
   }, [counter.columnsMap, tableColumn, dragSort]);
 
   const cRowSelection = useMemo(() => {
     return checkbox
       ? {
-          selectedRowKeys: rowKeys,
-          onChange: handleRowSelectChange,
-          onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
-            if (getRecord) {
-              getRecord(record, selected, _selectedRows, nativeEvent);
-            }
-          },
-          ...rowSelection,
-          getCheckboxProps,
-        }
+        selectedRowKeys: rowKeys,
+        onChange: handleRowSelectChange,
+        onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
+          if (getRecord) {
+            getRecord(record, selected, _selectedRows, nativeEvent);
+          }
+        },
+        ...rowSelection,
+        getCheckboxProps,
+      }
       : undefined;
   }, [JSON.stringify(rowKeys), handleRowSelectChange, getRecord, getCheckboxProps, rowSelection]);
 
@@ -477,31 +465,124 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       }
     }
   };
-  const DraggableContainer = (dragProps: any) => (
-    <SortableBody
-      useDragHandle
-      disableAutoscroll
-      helperClass="row-dragging"
-      onSortEnd={onSortEnd}
-      {...dragProps}
-    />
+
+
+
+
+
+  const moveRow = React.useCallback(
+    (props) => {
+      let { dragId, dropId, dropParentId, operateType, originalIndex } = props;
+
+      console.log("dropId",dropId)
+      console.log("dragId",dragId)
+
+      console.log(operateType)
+      let data: any[] = dataSource.rows || dataSource;
+      //  console.log(dataSource)
+      let {
+        dragRow,
+        dropRow,
+        dragIndex,
+        dropIndex,
+        dragParentIndex, // 拖拽子节点的父节点索引
+        dropParentIndex // 放置子节点父节点索引
+      } = getParam(data, dragId, dropId, rowKey);
+console.log( dragRow,dropRow,)
+      // 拖拽是否是组
+      let dragIsGroup = !dragRow.isLeaf || dragRow.parentId === "0" || !dragRow.parentId;
+      // 放置的是否是组
+      let dropIsGroup = dropParentId === "0" || !dropParentId;
+
+      // 根据变化的数据查找拖拽行的row和索引
+      const {
+        row,
+        index: rowIndex,
+        parentIndex: rowParentIndex
+      } = findFromData(data, dragId, rowKey);
+
+      let newData = data;
+      // 组拖拽
+      if (rowIndex != undefined && dragIndex != undefined) {
+        if (dragIsGroup && dropIsGroup) {
+          console.log("no leve")
+          // 超出出拖拽区域还原
+          if (operateType === optionsTyps.didDrop) {
+            newData = update<any, any>(data, {
+              $splice: [
+                [rowIndex, 1], //删除目前拖拽的索引的数据
+                [originalIndex, 0, row] // 将拖拽数据插入原始索引位置
+              ]
+            });
+          } else {
+            console.log("no leve")
+            newData = update<any, any>(data, {
+
+              $splice: [
+                [dragIndex, 1],
+                [dropIndex, 0, dragRow]
+              ]
+            });
+          }
+        }
+        // 同一组下的子项拖拽
+        else if (dragRow.parentId === dropRow?.parentId) {
+          // 超出拖拽区域还原
+          if (dragParentIndex !== undefined && dragParentIndex != null) {
+            console.log("in leve1")
+
+            if (operateType === optionsTyps.didDrop) {
+              newData = update<any, any>(data, {
+
+                [dragParentIndex]: {
+                  children: {
+                    $splice: [
+                      [rowIndex, 1],
+                      [originalIndex, 0, row]
+                    ]
+                  }
+                }
+              });
+            } else {
+              console.log("in leve")
+              console.log(dragIndex)
+              console.log(dropIndex)
+              newData = update<any, any>(data, {
+                [dragParentIndex]: {
+                  children: {
+                    $splice: [
+                      [dragIndex, 1],
+                      [dropIndex, 0, dragRow]
+                    ]
+                  }
+                }
+              });
+            }
+          }
+
+        } else {
+          console.log("other")
+
+       
+          console.log(dragRow)
+          console.log(dropRow)
+        }
+
+        setDataSource(newData);
+      }
+
+    },
+    [dataSource]
   );
 
-  const DraggableBodyRow = ({ style, ...restProps }: any) => {
-    let tlist: any = [];
-    if (dataSource) {
-      if (isArray(dataSource)) {
-        tlist = dataSource;
-      } else {
-        tlist = dataSource.rows;
-      }
-    }
-    const index = tlist.findIndex((x: any) => x[rowKey] === restProps['data-row-key']);
-    // function findIndex base on Table rowKey props and should always be a right array index
-
-    return <SortableItem index={index} {...restProps} />;
+  const findRow = (id: any) => {
+    const { row, index, parentIndex } = findFromData(dataSource, id, rowKey);
+    return {
+      row,
+      rowIndex: index,
+      rowParentIndex: parentIndex
+    };
   };
-
   const tableProp: any = () => {
     let _row = [];
     let total = 0;
@@ -564,7 +645,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     if (dragSort) {
       components = {
         body: {
-          wrapper: DraggableContainer,
+
           row: DraggableBodyRow,
         },
       };
@@ -585,9 +666,20 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
             handleRowSelect(record);
           }; // 点击行
         }
-        return {
-          ...result,
-        };
+
+        let onRowProps = result
+        if (dragSort) {
+          onRowProps = {
+            ...onRowProps, record,
+            data: dataSource,
+            index,
+            moveRow,
+            findRow,
+            rowKey
+          }
+
+        }
+        return onRowProps
       },
       loading,
       rowKey: key,
@@ -641,12 +733,12 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       bodyStyle={
         toolbarDom
           ? {
-              paddingTop: 0,
-              paddingBottom: 0,
-            }
+            paddingTop: 0,
+            paddingBottom: 0,
+          }
           : {
-              padding: 0,
-            }
+            padding: 0,
+          }
       }
       {...cardProps}
     >
@@ -655,7 +747,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       <Table {...tableProp()} />
     </Card>
   );
-  return <div className={prefixCls + className}>{tableAreaDom}</div>;
+  return <div className={prefixCls + className}><DndProvider backend={HTML5Backend}>{tableAreaDom}</DndProvider></div>;
 };
 
 /**

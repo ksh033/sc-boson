@@ -49,9 +49,9 @@ export interface UseListPageProp<S> {
   /** 获取查询对象 */
   getSearch: (searchConfig?: SearchConfig | undefined) => SearchInfo;
   /** 绑定默认事件 */
-  bindEvent: (button: HButtonType) => any;
+  bindEvent: (button: HButtonType) => HButtonType ;
   /** 批量绑定默认事件 */
-  bindEvents: (buttons: HButtonType[]) => any;
+  bindEvents: (buttons: HButtonType[]) => HButtonType[];
   /** 获取useRequest */
   formatUseReq: <R = any, P extends any[] = any>(serviveName: string) => BaseResult<R, P> | null;
 
