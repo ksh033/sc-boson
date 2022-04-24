@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import * as React from 'react';
 import type { SelectProps } from 'antd/es/select';
-import { Select, Tooltip } from 'antd';
+import { Empty, Select, Spin, Tooltip } from 'antd';
 import { useUpdateEffect, useDebounceFn } from 'ahooks';
 
 const { useMemo, useLayoutEffect, useState, useRef } = React;
@@ -51,7 +51,10 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     ...restProps
   } = props;
   const isGone = useRef(false);
+  // 存储第一次查询的记录，当查询数据为空的时候赋值用
+  const autoloadData = useRef<any[]>([]);
   const [dataSource, setDataSource] = useState(data || []);
+
   const [input, setInput] = useState('');
   const [inputKey, setInputKey] = useState(-1);
   const selectProps: any = { params, ...restProps };
@@ -89,7 +92,10 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
           if (onLoad) {
             rdata = onLoad(rdata);
           }
-
+          // 存储第一次查询的记录，当查询数据为空的时候赋值用
+          if (Array.isArray(autoloadData.current) && autoloadData.current?.length === 0) {
+            autoloadData.current = rdata || [];
+          }
           setDataSource(rdata || []);
         }
       } finally {
@@ -103,14 +109,6 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
       const searchParam: any = {};
       searchParam[searchField] = value;
       loadData(searchParam);
-    },
-    { wait: 500 },
-  );
-
-  const setInputValue = useDebounceFn(
-    (value) => {
-      setInput(value);
-      setInputKey(inputKey - 1);
     },
     { wait: 500 },
   );
@@ -203,16 +201,18 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   }, [JSON.stringify(dataSource), group, input, inputKey, singleInput, textField]);
 
   const handleSearch = (value: any) => {
-    if (remoteSearch && request) {
-      //if (value.trim()) {
-      debounce.cancel();
-      debounce.run(value);
-      // }
+    if (value.trim()) {
+      if (remoteSearch && request) {
+        //if (value.trim()) {
+        debounce.cancel();
+        debounce.run(value);
+        // }
+      }
+    } else {
+      setDataSource(autoloadData.current || []);
     }
-    if (singleInput) {
-      setInputValue.cancel();
-      setInputValue.run(value);
-    }
+    setInput(value);
+    setInputKey(inputKey - 1);
     onSearch && onSearch(value);
   };
 
@@ -246,7 +246,6 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   };
   return (
     <Select
-      {...selectProps}
       //   用于解决后端返回value为null时，组件不展示输入提示文字问题
       value={selectProps.value === null ? undefined : selectProps.value}
       showSearch={showSearch}
@@ -254,7 +253,11 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
       loading={loading}
       onSearch={handleSearch}
       onChange={handleChange}
+      searchValue={input}
+      defaultActiveFirstOption={false}
+      notFoundContent={loading ? <Spin size="small" /> : <Empty />}
       ref={ref}
+      {...selectProps}
     >
       {children}
     </Select>
