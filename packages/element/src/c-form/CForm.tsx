@@ -500,8 +500,8 @@ const CForm: React.FC<CFormProps> = (props) => {
       );
       return itemCount > 0 ? (
         <div key={`form-group-${fieldset}`} className={fieldsetClassName} id={`${fieldset}`}>
-          {fieldsetTitle ? <div className="sc-form-fieldset-title">{fieldsetTitle}</div> : null}
-          {subTitle ? <div className="sc-form-fieldset-subtitle">{subTitle}</div> : null}
+          {fieldsetTitle ? <div className="sc-form-fieldset-title">{fieldsetTitle} {subTitle ? <div className="sc-form-fieldset-subtitle">{subTitle}</div> : null}</div> : null}
+         
           {rows}
         </div>
       ) : null;
@@ -512,8 +512,8 @@ const CForm: React.FC<CFormProps> = (props) => {
   }, [formConfig, action]);
 
   const anchorRender = useMemo(() => {
-    const anchorItems = groups.map(({ groupTitle, group }, index) => {
-      return <Link key={`link_${index}`} href={`#${group}`} title={groupTitle} />;
+    const anchorItems = groups.map(({ groupTitle,fieldsetTitle, group,fieldset }, index) => {
+      return <Link key={`link_${index}`} href={`#${group||fieldset}`} title={groupTitle||fieldsetTitle} />;
     });
     let anchorProps = {};
     if (isObject(anchor)) {

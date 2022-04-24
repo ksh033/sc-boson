@@ -15,7 +15,7 @@ import useDeepCompareEffect from '../_util/useDeepCompareEffect';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import type { ColumnType } from 'antd/es/table';
 import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
-import { dataType, optionsTyps, findFromData, getParam } from "./components/DraggableBodyRow/common";
+import {   getParam, DropDataType,moveRowData } from "./components/DraggableBodyRow/common";
 
 import { arrayMoveImmutable } from 'array-move';
 import isArray from 'lodash/isArray';
@@ -23,7 +23,6 @@ import DraggableBodyRow from './components/DraggableBodyRow';
 
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
-import update from "immutability-helper";
 
 
 const { useState, useEffect, useRef, useMemo } = React;
@@ -92,7 +91,7 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   cardProps?: CardProps;
   /** @name table 列属性 */
   columns?: ScProColumn<T>;
-
+  treeTable?:boolean;
   dragSort?: boolean | string;
 }
 
@@ -125,6 +124,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     dragSort = false,
     dataSource: newdataSource,
     onRow,
+    treeTable,
     refresh,
     ...restPros
   } = props;
@@ -156,10 +156,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const [dataSource, setDataSource] = useState<any>(data || newdataSource);
   const [rowKeys, setRowKeys] = useState(selectedRowKeys || []);
   const [rows, setRows] = useState<any[]>(selectedRows || []);
-  // const [innerPagination, setPagination] = useSetState({
-  //   current: pagination && pagination.current ? pagination.current : 1,
-  //   pageSize: pagination && pagination.pageSize ? pagination.pageSize : pageSize,
-  // });
+
+  console.log("render")
+  const [updateSource,setUpdateSource] =useState<Boolean>(false);
+
 
   const [innerPagination, setPagination] = useMergedState<TablePaginationConfig>(
     { current: 1, pageSize: pageSize },
@@ -322,10 +322,17 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
   }, [data]);
   useUpdateEffect(() => {
-    if (newdataSource) {
+
+    console.log("useUpdateEffect","setDataSource")
+    if (newdataSource&&updateSource===false) {
+     
       setDataSource(newdataSource);
+    }else{
+      if (updateSource){
+        setUpdateSource(false)
+      }
     }
-  }, [JSON.stringify(newdataSource)]);
+  }, [newdataSource]);
 
   const handleTableChange = (
     _pagination: TablePaginationConfig,
@@ -442,147 +449,32 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     changeRowSelect(_rowKeys, _rows);
   };
 
-  // updateDragData=()
-  const onSortEnd = ({ oldIndex, newIndex }: any) => {
-    if (oldIndex !== newIndex) {
-      let tlist: any = [];
-      if (dataSource) {
-        if (isArray(dataSource)) {
-          tlist = dataSource;
-        } else {
-          tlist = dataSource.rows;
-        }
-      }
-      const newData: any = arrayMoveImmutable([].concat(tlist), oldIndex, newIndex).filter(
-        (el: any) => !!el,
-      );
-      if (dataSource) {
-        if (isArray(dataSource)) {
-          setDataSource(newData);
-        } else {
-          setDataSource({ ...dataSource, rows: newData });
-        }
-      }
-    }
-  };
 
 
 
 
 
   const moveRow = React.useCallback(
-    (props) => {
-      let { dragId, dropId, dropParentId, operateType, originalIndex } = props;
+    (dropData:DropDataType) => {
+    //  let data: any[] = dataSource.rows || dataSource;
+     const newDataSouce= moveRowData(dataSource,dropData,rowKey);
+     
+     setDataSource(newDataSouce);
 
-      console.log("dropId",dropId)
-      console.log("dragId",dragId)
-
-      console.log(operateType)
-      let data: any[] = dataSource.rows || dataSource;
-      //  console.log(dataSource)
-      let {
-        dragRow,
-        dropRow,
-        dragIndex,
-        dropIndex,
-        dragParentIndex, // 拖拽子节点的父节点索引
-        dropParentIndex // 放置子节点父节点索引
-      } = getParam(data, dragId, dropId, rowKey);
-console.log( dragRow,dropRow,)
-      // 拖拽是否是组
-      let dragIsGroup = !dragRow.isLeaf || dragRow.parentId === "0" || !dragRow.parentId;
-      // 放置的是否是组
-      let dropIsGroup = dropParentId === "0" || !dropParentId;
-
-      // 根据变化的数据查找拖拽行的row和索引
-      const {
-        row,
-        index: rowIndex,
-        parentIndex: rowParentIndex
-      } = findFromData(data, dragId, rowKey);
-
-      let newData = data;
-      // 组拖拽
-      if (rowIndex != undefined && dragIndex != undefined) {
-        if (dragIsGroup && dropIsGroup) {
-          console.log("no leve")
-          // 超出出拖拽区域还原
-          if (operateType === optionsTyps.didDrop) {
-            newData = update<any, any>(data, {
-              $splice: [
-                [rowIndex, 1], //删除目前拖拽的索引的数据
-                [originalIndex, 0, row] // 将拖拽数据插入原始索引位置
-              ]
-            });
-          } else {
-            console.log("no leve")
-            newData = update<any, any>(data, {
-
-              $splice: [
-                [dragIndex, 1],
-                [dropIndex, 0, dragRow]
-              ]
-            });
-          }
-        }
-        // 同一组下的子项拖拽
-        else if (dragRow.parentId === dropRow?.parentId) {
-          // 超出拖拽区域还原
-          if (dragParentIndex !== undefined && dragParentIndex != null) {
-            console.log("in leve1")
-
-            if (operateType === optionsTyps.didDrop) {
-              newData = update<any, any>(data, {
-
-                [dragParentIndex]: {
-                  children: {
-                    $splice: [
-                      [rowIndex, 1],
-                      [originalIndex, 0, row]
-                    ]
-                  }
-                }
-              });
-            } else {
-              console.log("in leve")
-              console.log(dragIndex)
-              console.log(dropIndex)
-              newData = update<any, any>(data, {
-                [dragParentIndex]: {
-                  children: {
-                    $splice: [
-                      [dragIndex, 1],
-                      [dropIndex, 0, dragRow]
-                    ]
-                  }
-                }
-              });
-            }
-          }
-
-        } else {
-          console.log("other")
-
-       
-          console.log(dragRow)
-          console.log(dropRow)
-        }
-
-        setDataSource(newData);
-      }
+      //setUpdateSource(true)
 
     },
-    [dataSource]
+    [dataSource,setDataSource]
   );
 
-  const findRow = (id: any) => {
-    const { row, index, parentIndex } = findFromData(dataSource, id, rowKey);
-    return {
-      row,
-      rowIndex: index,
-      rowParentIndex: parentIndex
-    };
-  };
+  // const findRow = (id: any) => {
+  //   const { row, index, parentIndex } = findFromData(dataSource, id, rowKey);
+  //   return {
+  //     row,
+  //     rowIndex: index,
+  //     rowParentIndex: parentIndex
+  //   };
+  // };
   const tableProp: any = () => {
     let _row = [];
     let total = 0;
@@ -670,11 +562,12 @@ console.log( dragRow,dropRow,)
         let onRowProps = result
         if (dragSort) {
           onRowProps = {
-            ...onRowProps, record,
-            data: dataSource,
+            ...onRowProps, 
+            record,
             index,
+            treeTable,
             moveRow,
-            findRow,
+           // findRow,
             rowKey
           }
 

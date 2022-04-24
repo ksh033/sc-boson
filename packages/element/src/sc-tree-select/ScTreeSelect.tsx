@@ -12,7 +12,6 @@ export interface ScTreeSelectProps extends TreeSelectProps<TreeNodeProps> {
   onLoad?: (dataSource: any) => void;
   data: any[];
   root: any;
-  dispatch: any;
   textField?: string;
   pIdField?: string;
   keyField?: string;
