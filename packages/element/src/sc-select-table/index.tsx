@@ -44,6 +44,7 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
     getCheckboxProps = (record: any) => ({
       disabled: record.disabled || false,
     }),
+    loading,
     ...restProps
   } = props;
 
@@ -308,6 +309,7 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
             dataSource={dataSource}
             pagination={false}
             size="small"
+            loading={loading}
             checkbox={type === 'radio' ? false : true}
             rowKey={valueField}
             rowClassName={(record) => {
