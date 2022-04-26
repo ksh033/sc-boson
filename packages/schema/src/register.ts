@@ -12,10 +12,10 @@ import {
   Upload,
   Cascader,
 } from 'antd';
-import {InputProps,GroupProps,SearchProps,TextAreaProps,PasswordProps} from 'antd/es/input'
+import {InputProps,GroupProps} from 'antd/es/input'
 import {TreeSelectProps} from 'antd/es/tree-select'
 import {SelectProps} from 'antd/es/select'
-import {CheckboxProps} from 'antd/es/Checkbox'
+import {CheckboxProps} from 'antd/es/checkbox'
 import {RadioProps} from 'antd/es/radio'
 import {DatePickerProps,  RangePickerProps as BaseRangePickerProps, RangePickerProps } from 'antd/es/date-picker'
 import {CalendarProps} from 'antd/es/calendar'
@@ -23,7 +23,7 @@ import {AutoCompleteProps} from 'antd/es/auto-complete'
 import {InputNumberProps} from 'antd/es/input-number'
 import {SwitchProps} from 'antd/es/switch'
 import {UploadProps} from 'antd/es/upload'
-import {CascaderProps} from 'antd/es/Cascader'
+import {CascaderProps} from 'antd/es/cascader'
 
 
 import {
