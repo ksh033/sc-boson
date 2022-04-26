@@ -49,7 +49,7 @@ export interface UseListPageProp<S> {
   /** 获取查询对象 */
   getSearch: (searchConfig?: SearchConfig | undefined) => SearchInfo;
   /** 绑定默认事件 */
-  bindEvent: (button: HButtonType) => HButtonType ;
+  bindEvent: (button: HButtonType) => HButtonType;
   /** 批量绑定默认事件 */
   bindEvents: (buttons: HButtonType[]) => HButtonType[];
   /** 获取useRequest */
@@ -302,10 +302,15 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       const { key, target } = event;
       if (target.nodeName === 'INPUT') {
         if (key === 'Enter') {
-          if (submitRef.current) {
+          if (submitRef.current&&submitRef.current.click) {
             submitRef.current.click();
           }
         }
+        
+        if (event.stopPropagation){
+          event.stopPropagation()
+        }
+ 
       }
     }
   };
@@ -317,13 +322,17 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     if (searchForm.current && searchForm.current.setFieldsValue) {
       searchForm.current.setFieldsValue(locSearchParams);
     }
-    if (pageType === 'listpage') {
-      document.body.addEventListener('keydown', searchEvent);
+   const [pageCon]=document.getElementsByClassName('ant-pro-page-container')
+    if (pageCon&&pageType === 'listpage') {
+      pageCon.addEventListener('keydown', searchEvent);
+   
     }
   });
   useUnmount(() => {
-    if (pageType === 'listpage') {
-      document.body.removeEventListener('keydown', searchEvent);
+    const [pageCon]=document.getElementsByClassName('ant-pro-page-container')
+    if (pageCon&&pageType === 'listpage') {
+  
+      pageCon.removeEventListener('keydown', searchEvent);
     }
   });
   useUpdateEffect(() => {

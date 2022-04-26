@@ -1,9 +1,9 @@
 import type {
-  Field,
-  FieldGroup,
-  FiledProp,
-  FormConfig,
-  FormItemProp,
+  Field as ScField,
+  FieldGroup as ScFieldGroup,
+  FiledProp as ScFiledProp,
+  FormConfig as ScFormConfig,
+  FormItemProp as ScFormItemProp,
   FormLayout,
 } from '@scboson/sc-element/es/c-form';
 import type { ScProColumnType } from '@scboson/sc-element/es/sc-table';
@@ -12,10 +12,47 @@ import type { SearchBarItem } from '@scboson/sc-element/es/sc-search-bar';
 import type React from 'react';
 import type { ButtonType, ButtonProps } from 'antd/es/button';
 
-export { Field, FieldGroup, FiledProp, FormConfig, FormLayout };
-export interface FormItem extends Omit<FormItemProp, 'component'> {
-  component?: string | any;
+import {CmpTypes,PropsType} from './register'
+
+
+
+
+
+
+ interface FormItemProp<T={}> extends ScFormItemProp{
+  component?:CmpTypes  | String | React.ComponentType<T|any>;
+  /** 组件属性 */
+  props?: PropsType<CmpTypes> |  T;
 }
+
+const d:FormItemProp={
+  component:'AutoComplete',
+  props:{
+    
+  }
+}
+
+
+
+interface FieldGroup extends Omit<ScFieldGroup,'items'>{
+  items: FormItemProp[];
+}
+
+
+declare type Field = FormItemProp | FieldGroup;
+
+
+interface FormConfig extends Omit<ScFormConfig,'items'>{
+  items: Field[];
+}
+
+export { Field,FormItemProp, FieldGroup, ScFiledProp, FormConfig, FormLayout };
+
+
+export interface FormItem extends Omit<FormItemProp, 'component'> {
+
+}
+
 
 export interface DialogOptions {
   url?: string; // 去的页面
@@ -36,6 +73,8 @@ export interface DialogOptions {
   pageEntryTime?: string;
   preHandle?: (values: any) => any;
   callBack?: (values: any, requestData?: any) => void; // 回调函数
+  okCancel?: true,
+  footer?: boolean,
 }
 
 export interface ButtonTypeProps extends ButtonProps {

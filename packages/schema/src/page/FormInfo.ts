@@ -8,6 +8,8 @@ export interface FormInfoProps {
   formConfig: FormConfig[];
   initialValues: any;
 }
+
+
 class FormInfo {
   formInfo: FormInfoProps;
 

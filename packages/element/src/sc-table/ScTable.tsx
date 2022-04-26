@@ -108,7 +108,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     request,
     onLoad,
     onSelectRow,
-    selectedRowKeys = [],
+    selectedRowKeys,
     saveRef,
     rowSelected = true,
     onCustomRow,
@@ -129,7 +129,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     ...restPros
   } = props;
 
-  const { selectedRows = [], params = null, pageSize = 10, autoload = false } = restPros;
+  const { selectedRows, params = null, pageSize = 10, autoload = false } = restPros;
 
 
   const newParams = useMemo(() => {
@@ -157,7 +157,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const [rowKeys, setRowKeys] = useState(selectedRowKeys || []);
   const [rows, setRows] = useState<any[]>(selectedRows || []);
 
-  console.log("render")
+
   const [updateSource,setUpdateSource] =useState<Boolean>(false);
 
 
@@ -169,8 +169,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   );
 
   const action = useRef<any>({
-    rowKeys: selectedRowKeys || [],
-    rows: selectedRows || [],
+    rowKeys: rowKeys || [],
+    rows: rows || [],
   });
 
   const dataKeys = useRef<Set<any>>(new Set([]));
@@ -323,7 +323,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   }, [data]);
   useUpdateEffect(() => {
 
-    console.log("useUpdateEffect","setDataSource")
     if (newdataSource&&updateSource===false) {
      
       setDataSource(newdataSource);
@@ -334,6 +333,23 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
   }, [newdataSource]);
 
+
+  //外部选中更新
+  useUpdateEffect(()=>{
+
+    console.log(selectedRowKeys)
+    console.log(columns)
+    if (selectedRowKeys){
+      setRowKeys(selectedRowKeys)
+      action.current.rowKeys=selectedRowKeys
+   }
+   if (selectedRows){
+     setRows(selectedRows)
+     action.current.rows=selectedRows
+   }
+ 
+ 
+  },[selectedRowKeys])
   const handleTableChange = (
     _pagination: TablePaginationConfig,
     _filtersArg: Record<string, FilterValue | null>,
