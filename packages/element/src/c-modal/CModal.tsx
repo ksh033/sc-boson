@@ -23,7 +23,7 @@ export type CModalDialogProps =  Omit<ModalFuncProps, 'content'> &
     rootPrefixCls?: string;
     customToolbar?: ButtonProps[];
     pageProps?: any;
-    content?: any;
+    content?: React.ReactElement | React.ComponentType;
   };
 
 const CModalDialog = (props: CModalDialogProps) => {
@@ -122,10 +122,18 @@ const CModalDialog = (props: CModalDialogProps) => {
     custFooter = !fullscreen ? <div>{customButton}</div> : null;
   }
   // let customFooter=hideFooter
-  const isElement = React.isValidElement(props.content);
-  const dlgContent = !isElement
-    ? React.createElement(props.content, { close, pageProps: props.pageProps })
-    : React.cloneElement(props.content, { close, pageProps: props.pageProps });
+
+  let dlgContent=null
+  if (props.content){
+    if (React.isValidElement(props.content)){
+      dlgContent=React.cloneElement(props.content, { close, pageProps: props.pageProps })
+    }else{
+      dlgContent=React.createElement<any>(props.content, { close, pageProps: props.pageProps })
+    }
+  }
+ 
+
+   
 
   return (
     <ScModal

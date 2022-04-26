@@ -30,7 +30,7 @@ export default {
 
     return CModal(config);
   },
-  confirm: (props: CModalDialogProps) => {
+  confirm: (props: Omit<CModalDialogProps,'content'>&{content:React.ReactNode}) => {
     return Modal.confirm(props);
   },
 };
