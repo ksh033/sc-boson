@@ -15,7 +15,7 @@ export const destroyFns: any[] = [];
 
 const IS_REACT_16 = !!ReactDOM.createPortal;
 
-export type CModalDialogProps = ModalFuncProps &
+export type CModalDialogProps =  Omit<ModalFuncProps, 'content'> &
   Omit<ScModalProps, 'children'> & {
     afterClose?: () => void;
     close?: (...args: any[]) => void;
