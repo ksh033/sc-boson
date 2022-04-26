@@ -97,7 +97,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
   }, [data]);
 
   const loadData = useCallback(
-    async (_params) => {
+    async (_params:any) => {
       if (!request) {
         throw Error('no remote request method');
       }

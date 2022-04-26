@@ -1,15 +1,15 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, PropsWithChildren } from 'react';
 import React from 'react';
 import { Layout } from 'antd';
 import { ConfigProviderWrap } from '@ant-design/pro-provider';
 
-const WrapContent: React.FC<{
+const WrapContent: React.FC<PropsWithChildren<{
   isChildrenLayout?: boolean;
   className?: string;
   style?: CSSProperties;
   location?: any;
   contentHeight?: number | string;
-}> = (props) => {
+}>> = (props) => {
   const { style, className, children } = props;
   return (
     <ConfigProviderWrap>

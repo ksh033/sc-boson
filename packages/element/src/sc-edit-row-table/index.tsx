@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import zhCN from 'antd/es/locale/zh_CN';
-import React, { useState, useContext, useEffect, ReactNode, useRef } from 'react';
+import React, { useState, useContext, useEffect, ReactNode, useRef, PropsWithChildren } from 'react';
 import { Table, Input, Popconfirm, Form, ConfigProvider, InputNumber } from 'antd';
 import { useUpdateEffect } from 'ahooks';
 import { TableProps } from 'antd/es/table/Table';
@@ -89,7 +89,7 @@ interface EditableRowProps {
   rowHeadRender?: (record: any, index: number) => ReactNode;
 }
 
-const EditableRow: React.FC<EditableRowProps> = ({
+const EditableRow: React.FC<PropsWithChildren<EditableRowProps>> = ({
   index,
   record,
   rowHeadRender,

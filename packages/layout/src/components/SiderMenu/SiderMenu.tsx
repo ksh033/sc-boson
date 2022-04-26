@@ -13,7 +13,7 @@ import MenuCounter from './Counter';
 
 const { Sider } = Layout;
 
-export const defaultRenderLogo = (logo: React.ReactNode): React.ReactNode => {
+export const defaultRenderLogo = (logo: React.ReactNode|(()=>React.ReactNode)): React.ReactNode => {
   if (typeof logo === 'string') {
     return <img src={logo} alt="logo" />;
   }

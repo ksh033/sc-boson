@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Button, Dropdown, Checkbox } from 'antd';
+//@ts-ignore
 import { Resizable } from 'react-resizable';
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 

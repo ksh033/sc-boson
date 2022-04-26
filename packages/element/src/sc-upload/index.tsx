@@ -27,7 +27,7 @@ const preView = (file: string) => {
   return <img src={file} alt="avatar" style={{ width: '100%' }} />;
 };
 
-const SortableItem = SortableElement((params: SortableItemParams) => {
+const SortableItem = SortableElement<SortableItemParams>((params: SortableItemParams) => {
   // todo 自定义显示
   // const iconRender = (file: UploadFile<any>, listType?: UploadListType) => {
   //   return null;
@@ -51,7 +51,7 @@ const listStyle: CSSProperties = {
   flexWrap: 'wrap',
   maxWidth: '100%',
 };
-const SortableList = SortableContainer((params: SortableListParams) => {
+const SortableList = SortableContainer<SortableListParams>((params: SortableListParams) => {
   return (
     <div style={listStyle} className="sc-sort-list">
       {params.items.map((item, index) => (

@@ -5,3 +5,4 @@ declare module '*.less';
 declare module 'request-promise-native';
 declare module 'snowflake-id';
 declare module 'sm2';
+declare module 'react-resizable';

@@ -530,8 +530,10 @@ const CForm: React.FC<CFormProps> = (props) => {
   return (
     <div className="sc-form">
       <Form form={waForm} {...formProps}>
+        <>
         {anchor ? anchorRender : null}
         {formConfig.length > 0 ? formChildren : children}
+        </>
       </Form>
     </div>
   );

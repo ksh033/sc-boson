@@ -35,7 +35,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.0.0",
     "ahooks": "^2.9.6",
-    "antd": "^4.19.5",
+    "antd": "^4.20.0",
     "array-move": "^4.0.0",
     "classnames": "^2.2.6",
     "immutability-helper": "^3.1.1",
@@ -51,9 +51,7 @@
     "use-media-antd-query": "^1.0.1"
   },
   "resolutions": {
-    "antd": "^4.19.5",
-    "@types/react": "17.0.39",
-    "@types/react-dom": "17.0.15"
+    "antd": "^4.20.0"
   },
   "sideEffects": [
     "es/**/style/*",

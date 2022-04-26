@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { PropsWithChildren, useContext, useEffect, useRef } from 'react';
 import {
   SettingOutlined,
   VerticalAlignMiddleOutlined,
@@ -21,12 +21,12 @@ type ColumnSettingProps<T = any> = {
   checkable?: boolean;
 };
 
-const ToolTipIcon: React.FC<{
+const ToolTipIcon: React.FC<PropsWithChildren<{
   title: string;
   columnKey: string | number;
   show: boolean;
   fixed?: FixedType;
-}> = ({ title, show, children, columnKey, fixed }) => {
+}>> = ({ title, show, children, columnKey, fixed }) => {
   const { columnsMap, setColumnsMap } = Container.useContainer();
   if (!show) {
     return null;

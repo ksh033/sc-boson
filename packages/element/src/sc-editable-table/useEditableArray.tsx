@@ -248,7 +248,7 @@ function editableRowByKey<RecordType>(
  *
  * @param ActionRenderConfig
  */
-export const SaveEditableAction: React.FC<ActionRenderConfig<any> & { row: any }> = ({
+export const SaveEditableAction: React.FC<ActionRenderConfig<any> & { row: any,children?:React.ReactNode }> = ({
   recordKey,
   onSave,
   form,
@@ -296,7 +296,7 @@ export const SaveEditableAction: React.FC<ActionRenderConfig<any> & { row: any }
  *
  * @param ActionRenderConfig
  */
-export const DeleteEditableAction: React.FC<ActionRenderConfig<any> & { row: any }> = ({
+export const DeleteEditableAction: React.FC<ActionRenderConfig<any> & { row: any,children?:React.ReactNode }> = ({
   recordKey,
   onDelete,
   row,
