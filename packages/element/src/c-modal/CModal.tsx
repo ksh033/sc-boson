@@ -23,7 +23,7 @@ export type CModalDialogProps =  Omit<ModalFuncProps, 'content'> &
     rootPrefixCls?: string;
     customToolbar?: ButtonProps[];
     pageProps?: any;
-    content?: React.ReactElement | React.ComponentType;
+    content?: React.ReactElement | React.ComponentType<any>;
   };
 
 const CModalDialog = (props: CModalDialogProps) => {
