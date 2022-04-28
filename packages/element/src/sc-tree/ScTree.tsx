@@ -5,6 +5,7 @@ import { useUpdateEffect, useThrottle } from 'ahooks';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import { updateTreeData, addTreeData, deleteTreeData, defaultNode } from './utils';
 import type { ScTreeProps, ActionType, ActionFunctionVO, DefaultAction } from './typing';
+import type { NodeMouseEventParams } from 'rc-tree/es/contextTypes';
 
 const { useState, useEffect, useRef, useCallback } = React;
 const { Search } = Input;
@@ -29,6 +30,8 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     defaultExpandAll = false,
     defaultExpandParent = false,
     loadDataPramsFormat,
+    onMouseEnter,
+    onMouseLeave,
     ...restProps
   } = props;
   const isGone = useRef(false);
@@ -40,7 +43,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         const { disabled, metaInfo, children, dataRef, ...restItem } = item;
         let rChildren = children;
         let rIsLeaf = item.isLeaf;
-        const otherAttr = { disCabled: disabled || false, metaInfo, dataRef: dataRef || restItem };
+        const otherAttr = { disabled: disabled || false, metaInfo, dataRef: dataRef || restItem };
         const title = item[textField || 'title'] || item.title;
         if (Array.isArray(children) && children.length > 0) {
           rChildren = formatTreeData(children);
@@ -67,7 +70,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
       return formatTreeData(value);
     },
   });
-  const [showKey, setShowKey] = useState<string | null>(null);
+  const [showKey, setShowKey] = useState<string | number>('');
 
   /**
    * 打平这个数组
@@ -311,13 +314,14 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     return inTreeProps;
   }, [treeData, defaultExpandAll, defaultExpandParent, titleRender, async, onLoadData]);
 
-  const handleMouseEnter = (e: any) => {
-    const { node } = e;
-    setShowKey(node.key);
+  const handleMouseEnter = (e: NodeMouseEventParams<HTMLSpanElement>) => {
+    setShowKey(e.node.key);
+    onMouseEnter?.(e);
   };
 
-  const handleMouseLeave = () => {
-    setShowKey(null);
+  const handleMouseLeave = (e: NodeMouseEventParams<HTMLSpanElement>) => {
+    setShowKey('');
+    onMouseLeave?.(e);
   };
 
   return (
@@ -336,10 +340,10 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
       {treeData && treeData.length > 0 ? (
         <Tree
           blockNode
-          {...treeProps}
-          {...restProps}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          {...treeProps}
+          {...restProps}
         />
       ) : null}
     </div>

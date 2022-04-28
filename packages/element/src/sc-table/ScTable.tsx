@@ -15,15 +15,14 @@ import useDeepCompareEffect from '../_util/useDeepCompareEffect';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import type { ColumnType } from 'antd/es/table';
 import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
-import {   getParam, DropDataType,moveRowData } from "./components/DraggableBodyRow/common";
+import type { DropDataType } from './components/DraggableBodyRow/common';
+import { moveRowData } from './components/DraggableBodyRow/common';
 
-import { arrayMoveImmutable } from 'array-move';
 import isArray from 'lodash/isArray';
 import DraggableBodyRow from './components/DraggableBodyRow';
 
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { DndProvider } from "react-dnd";
-
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
 
 const { useState, useEffect, useRef, useMemo } = React;
 export type { ColumnsType } from 'antd/es/table/Table';
@@ -91,7 +90,7 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   cardProps?: CardProps;
   /** @name table 列属性 */
   columns?: ScProColumn<T>;
-  treeTable?:boolean;
+  treeTable?: boolean;
   dragSort?: boolean | string;
 }
 
@@ -131,7 +130,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
   const { selectedRows, params = null, pageSize = 10, autoload = false } = restPros;
 
-
   const newParams = useMemo(() => {
     const nparams = JSON.parse(JSON.stringify(params));
     if (nparams && nparams.size && nparams.current) {
@@ -146,9 +144,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const isGone = useRef(false);
   const { loading, run } = useRequest(
     request ||
-    new Promise((resolve) => {
-      resolve(null);
-    }),
+      new Promise((resolve) => {
+        resolve(null);
+      }),
     {
       manual: true,
     },
@@ -157,9 +155,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const [rowKeys, setRowKeys] = useState(selectedRowKeys || []);
   const [rows, setRows] = useState<any[]>(selectedRows || []);
 
-
-  const [updateSource,setUpdateSource] =useState<Boolean>(false);
-
+  const [updateSource, setUpdateSource] = useState<boolean>(false);
 
   const [innerPagination, setPagination] = useMergedState<TablePaginationConfig>(
     { current: 1, pageSize: pageSize },
@@ -322,34 +318,26 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
   }, [data]);
   useUpdateEffect(() => {
-
-    if (newdataSource&&updateSource===false) {
-     
+    if (newdataSource && updateSource === false) {
       setDataSource(newdataSource);
-    }else{
-      if (updateSource){
-        setUpdateSource(false)
+    } else {
+      if (updateSource) {
+        setUpdateSource(false);
       }
     }
   }, [newdataSource]);
 
-
   //外部选中更新
-  useUpdateEffect(()=>{
-
-    console.log(selectedRowKeys)
-    console.log(columns)
-    if (selectedRowKeys){
-      setRowKeys(selectedRowKeys)
-      action.current.rowKeys=selectedRowKeys
-   }
-   if (selectedRows){
-     setRows(selectedRows)
-     action.current.rows=selectedRows
-   }
- 
- 
-  },[selectedRowKeys])
+  useUpdateEffect(() => {
+    if (selectedRowKeys) {
+      setRowKeys(selectedRowKeys);
+      action.current.rowKeys = selectedRowKeys;
+    }
+    if (selectedRows) {
+      setRows(selectedRows);
+      action.current.rows = selectedRows;
+    }
+  }, [selectedRowKeys]);
   const handleTableChange = (
     _pagination: TablePaginationConfig,
     _filtersArg: Record<string, FilterValue | null>,
@@ -402,7 +390,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
   }, [tableColumn]);
   const columns = useMemo(() => {
-    let filterCols = tableColumn.filter((item) => {
+    const filterCols = tableColumn.filter((item) => {
       // 删掉不应该显示的
       const columnKey = genColumnKey(item.key, item.index);
       const config = counter.columnsMap[columnKey];
@@ -418,16 +406,16 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const cRowSelection = useMemo(() => {
     return checkbox
       ? {
-        selectedRowKeys: rowKeys,
-        onChange: handleRowSelectChange,
-        onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
-          if (getRecord) {
-            getRecord(record, selected, _selectedRows, nativeEvent);
-          }
-        },
-        ...rowSelection,
-        getCheckboxProps,
-      }
+          selectedRowKeys: rowKeys,
+          onChange: handleRowSelectChange,
+          onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
+            if (getRecord) {
+              getRecord(record, selected, _selectedRows, nativeEvent);
+            }
+          },
+          ...rowSelection,
+          getCheckboxProps,
+        }
       : undefined;
   }, [JSON.stringify(rowKeys), handleRowSelectChange, getRecord, getCheckboxProps, rowSelection]);
 
@@ -465,22 +453,16 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     changeRowSelect(_rowKeys, _rows);
   };
 
-
-
-
-
-
   const moveRow = React.useCallback(
-    (dropData:DropDataType) => {
-    //  let data: any[] = dataSource.rows || dataSource;
-     const newDataSouce= moveRowData(dataSource,dropData,rowKey);
-     
-     setDataSource(newDataSouce);
+    (dropData: DropDataType) => {
+      //  let data: any[] = dataSource.rows || dataSource;
+      const newDataSouce = moveRowData(dataSource, dropData, rowKey);
+
+      setDataSource(newDataSouce);
 
       //setUpdateSource(true)
-
     },
-    [dataSource,setDataSource]
+    [dataSource, setDataSource],
   );
 
   // const findRow = (id: any) => {
@@ -553,7 +535,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     if (dragSort) {
       components = {
         body: {
-
           row: DraggableBodyRow,
         },
       };
@@ -575,20 +556,19 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
           }; // 点击行
         }
 
-        let onRowProps = result
+        let onRowProps = result;
         if (dragSort) {
           onRowProps = {
-            ...onRowProps, 
+            ...onRowProps,
             record,
             index,
             treeTable,
             moveRow,
-           // findRow,
-            rowKey
-          }
-
+            // findRow,
+            rowKey,
+          };
         }
-        return onRowProps
+        return onRowProps;
       },
       loading,
       rowKey: key,
@@ -642,12 +622,12 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       bodyStyle={
         toolbarDom
           ? {
-            paddingTop: 0,
-            paddingBottom: 0,
-          }
+              paddingTop: 0,
+              paddingBottom: 0,
+            }
           : {
-            padding: 0,
-          }
+              padding: 0,
+            }
       }
       {...cardProps}
     >
@@ -656,7 +636,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       <Table {...tableProp()} />
     </Card>
   );
-  return <div className={prefixCls + className}><DndProvider backend={HTML5Backend}>{tableAreaDom}</DndProvider></div>;
+  return (
+    <div className={prefixCls + className}>
+      <DndProvider backend={HTML5Backend}>{tableAreaDom}</DndProvider>
+    </div>
+  );
 };
 
 /**

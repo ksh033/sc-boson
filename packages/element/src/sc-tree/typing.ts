@@ -49,4 +49,5 @@ export interface ScTreeProps extends TreeProps {
     | React.RefObject<ActionType | undefined>
     | React.MutableRefObject<ActionType | undefined>
     | ((actionRef: ActionType) => void);
+  readonly?: boolean;
 }
