@@ -15,13 +15,14 @@ export const destroyFns: any[] = [];
 
 const IS_REACT_16 = !!ReactDOM.createPortal;
 
+ type CustButtonType={text:string,onClick?:()=>any,buttonProps?:ButtonProps}
 export type CModalDialogProps =  Omit<ModalFuncProps, 'content'> &
   Omit<ScModalProps, 'children'> & {
     afterClose?: () => void;
     close?: (...args: any[]) => void;
     autoFocusButton?: null | 'ok' | 'cancel';
     rootPrefixCls?: string;
-    customToolbar?: ButtonProps[];
+    customToolbar?: CustButtonType[];
     pageProps?: any;
     content?: React.ReactElement | React.ComponentType<any>;
   };

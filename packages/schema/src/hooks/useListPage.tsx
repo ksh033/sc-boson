@@ -109,10 +109,13 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
 
   const getPagination = () => {
     const _params = getSearchParams();
-    return {
-      current: _params && _params.current ? _params.current : 1,
-      pageSize: _params && _params.size ? _params.size : 10,
-    };
+    if (_params&&_params.current&&_params.size){
+      return {
+        current: _params && _params.current,
+        pageSize: _params && _params.size 
+      }
+    }
+    return null;
   };
   const setSearchParams = (_params: any, _pagination: any) => {
     if (!location) {
@@ -365,8 +368,8 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       ...searchInitParams.current,
       ...state.params,
       ...(tableConfig.defaultParams ? tableConfig.defaultParams : {}),
-      current: pagination.current,
-      size: pagination.pageSize,
+     // current: pagination?.current,
+      //size: pagination?.pageSize,
     };
     let request = null;
     if (config.service?.queryPage) {

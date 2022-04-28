@@ -2,7 +2,7 @@ import React from 'react';
 import CModal from './CModal';
 import type { CModalDialogProps } from './CModal';
 import { Modal } from 'antd';
-
+export {CModalDialogProps}
 export default {
   show: (props: CModalDialogProps) => {
     const config = {

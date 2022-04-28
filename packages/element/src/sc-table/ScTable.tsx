@@ -180,8 +180,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     if (counter.whetherRemote) {
       const { _filters, ...restParams } = newParams;
       const payload = {
-        size: innerPagination.pageSize,
-        current: innerPagination.current,
+        size: innerPagination.pageSize || pageSize,
+        current: innerPagination.current || 1,
         ..._filters,
         ...restParams,
       };

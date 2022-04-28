@@ -12,47 +12,32 @@ import type { SearchBarItem } from '@scboson/sc-element/es/sc-search-bar';
 import type React from 'react';
 import type { ButtonType, ButtonProps } from 'antd/es/button';
 
-import {CmpTypes,PropsType} from './register'
+import { CmpTypes, PropsType } from './register';
 
-
-
-
-
-
- interface FormItemProp<T={}> extends ScFormItemProp{
-  component?:CmpTypes  | String | React.ComponentType<T|any>;
+interface FormItemProp<T = {}> extends ScFormItemProp {
+  component?: CmpTypes | String | React.ComponentType<T | any>;
   /** 组件属性 */
-  props?: PropsType<CmpTypes> |  T;
+  props?: PropsType<CmpTypes> | T;
 }
 
-const d:FormItemProp={
-  component:'AutoComplete',
-  props:{
-    
-  }
-}
+const d: FormItemProp = {
+  component: 'AutoComplete',
+  props: {},
+};
 
-
-
-interface FieldGroup extends Omit<ScFieldGroup,'items'>{
+interface FieldGroup extends Omit<ScFieldGroup, 'items'> {
   items: FormItemProp[];
 }
 
-
 declare type Field = FormItemProp | FieldGroup;
 
-
-interface FormConfig extends Omit<ScFormConfig,'items'>{
+interface FormConfig extends Omit<ScFormConfig, 'items'> {
   items: Field[];
 }
 
-export { Field,FormItemProp, FieldGroup, ScFiledProp, FormConfig, FormLayout };
+export { Field, FormItemProp, FieldGroup, ScFiledProp, FormConfig, FormLayout };
 
-
-export interface FormItem extends Omit<FormItemProp, 'component'> {
-
-}
-
+export interface FormItem extends Omit<FormItemProp, 'component'> {}
 
 export interface DialogOptions {
   url?: string; // 去的页面
@@ -73,8 +58,8 @@ export interface DialogOptions {
   pageEntryTime?: string;
   preHandle?: (values: any) => any;
   callBack?: (values: any, requestData?: any) => void; // 回调函数
-  okCancel?: true,
-  footer?: boolean,
+  okCancel?: true;
+  footer?: boolean;
 }
 
 export interface ButtonTypeProps extends ButtonProps {
@@ -89,7 +74,7 @@ export interface ButtonTypeProps extends ButtonProps {
   action?: Action;
   /** 弹出框属性配置 */
   options?: DialogOptions;
-  closeDlg?:boolean,
+  closeDlg?: boolean;
 
   /** 调用远程服务方法 */
   serverName?: string;
@@ -278,8 +263,21 @@ export interface QueryConfig {
   formItemProps?: any; // 该组件的表单属性
   props?: any; // 组件的属性
 }
+
+type DataType =
+  | 'defaultNumber'
+  | 'unitprice'
+  | 'money'
+  | 'status'
+  | 'dataTime'
+  | 'media'
+  | 'rate'
+  | 'un_cargoUnit'
+  | 'un_stockUnit'
+  | 'un_purchaseUnit'
+  | 'un_distributeUnit';
 export interface ProColumnType<RecordType> extends ScProColumnType<RecordType> {
-  dataType?: string;
+  dataType?: DataType | String;
   dataIndex?: string;
   name?: string;
   /** 在 table 中隐藏 */
