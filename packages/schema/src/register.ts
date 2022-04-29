@@ -12,19 +12,18 @@ import {
   Upload,
   Cascader,
 } from 'antd';
-import {InputProps,GroupProps} from 'antd/es/input'
-import {TreeSelectProps} from 'antd/es/tree-select'
-import {SelectProps} from 'antd/es/select'
-import {CheckboxProps} from 'antd/es/checkbox'
-import {RadioProps} from 'antd/es/radio'
-import {DatePickerProps,  RangePickerProps as BaseRangePickerProps, RangePickerProps } from 'antd/es/date-picker'
-import {CalendarProps} from 'antd/es/calendar'
-import {AutoCompleteProps} from 'antd/es/auto-complete'
-import {InputNumberProps} from 'antd/es/input-number'
-import {SwitchProps} from 'antd/es/switch'
-import {UploadProps} from 'antd/es/upload'
-import {CascaderProps} from 'antd/es/cascader'
-
+import { InputProps, GroupProps } from 'antd/es/input';
+import { TreeSelectProps } from 'antd/es/tree-select';
+import { SelectProps } from 'antd/es/select';
+import { CheckboxProps } from 'antd/es/checkbox';
+import { RadioProps } from 'antd/es/radio';
+import { DatePickerProps, RangePickerProps } from 'antd/es/date-picker';
+import { CalendarProps } from 'antd/es/calendar';
+import type { AutoCompleteProps } from 'antd/es/auto-complete';
+import type { InputNumberProps } from 'antd/es/input-number';
+import type { SwitchProps } from 'antd/es/switch';
+import type { UploadProps } from 'antd/es/upload';
+import { CascaderProps } from 'antd/es/cascader';
 
 import {
   ScCascader,
@@ -70,8 +69,7 @@ export const cmps: Record<string, any> = {
   InputGroup: InputGroup,
 };
 
-
-export type CmpPropsTypes= {
+export type CmpPropsTypes = {
   Input: InputProps;
   ScTextArea: ScTextAreaProps;
   TreeSelect: TreeSelectProps;
@@ -79,12 +77,12 @@ export type CmpPropsTypes= {
   Checkbox: CheckboxProps;
   Radio: RadioProps;
   DatePicker: DatePickerProps;
-  Calendar: CalendarProps<any>,
+  Calendar: CalendarProps<any>;
   AutoComplete: AutoCompleteProps;
   InputNumber: InputNumberProps;
   Switch: SwitchProps;
   Upload: UploadProps;
-  Cascader: CascaderProps<any>,
+  Cascader: CascaderProps<any>;
   ScCascader: ScCascaderProps;
   ScSelect: ScSelectProps;
   ScTreeSelect: ScTreeSelectProps;
@@ -93,15 +91,12 @@ export type CmpPropsTypes= {
   ScCheckBox: CheckboxProps;
   ScRadio: ScRadioProps;
   InputGroup: GroupProps;
-}
+};
 
-export type CmpTypes=keyof CmpPropsTypes
+export type CmpTypes = keyof CmpPropsTypes;
 //export type PropsType<T =  keyof CmpTypes>=T extends 'Input' ? InputProps: T extends 'ScTextArea'? TextAreaProps:any
 
-
-export type PropsType<T extends CmpTypes>=CmpPropsTypes[T];
-
-
+export type PropsType<T extends CmpTypes> = CmpPropsTypes[T];
 
 export const regEditCmp = (cmpTye: string, cmp: any) => {
   if (cmps[cmpTye]) {

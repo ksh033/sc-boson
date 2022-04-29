@@ -1,5 +1,4 @@
 import type {
-  Field as ScField,
   FieldGroup as ScFieldGroup,
   FiledProp as ScFiledProp,
   FormConfig as ScFormConfig,
@@ -8,22 +7,15 @@ import type {
 } from '@scboson/sc-element/es/c-form';
 import type { ScProColumnType } from '@scboson/sc-element/es/sc-table';
 import type { SearchBarItem } from '@scboson/sc-element/es/sc-search-bar';
-
 import type React from 'react';
 import type { ButtonType, ButtonProps } from 'antd/es/button';
+import type { CmpTypes, PropsType } from './register';
 
-import { CmpTypes, PropsType } from './register';
-
-interface FormItemProp<T = {}> extends ScFormItemProp {
-  component?: CmpTypes | String | React.ComponentType<T | any>;
+interface FormItemProp<T = any> extends ScFormItemProp {
+  component?: CmpTypes | string | React.ComponentType<T | any>;
   /** 组件属性 */
   props?: PropsType<CmpTypes> | T;
 }
-
-const d: FormItemProp = {
-  component: 'AutoComplete',
-  props: {},
-};
 
 interface FieldGroup extends Omit<ScFieldGroup, 'items'> {
   items: FormItemProp[];
@@ -37,7 +29,7 @@ interface FormConfig extends Omit<ScFormConfig, 'items'> {
 
 export { Field, FormItemProp, FieldGroup, ScFiledProp, FormConfig, FormLayout };
 
-export interface FormItem extends Omit<FormItemProp, 'component'> {}
+export type FormItem = Omit<FormItemProp, 'component'>;
 
 export interface DialogOptions {
   url?: string; // 去的页面
@@ -47,7 +39,7 @@ export interface DialogOptions {
   pageProps?: any; // 弹出页面接收参数
   params?: any; // 参数
   record?: any; // 表格单个数据
-  content?: React.ReactNode | string; // 显示的页面
+  content?: React.ReactNode | string | any; // 显示的页面content
   onOk?: () => Promise<any>;
   onCancel?: () => Promise<any>;
   service?: (...args: any[]) => Promise<any>;
@@ -277,7 +269,7 @@ type DataType =
   | 'un_purchaseUnit'
   | 'un_distributeUnit';
 export interface ProColumnType<RecordType> extends ScProColumnType<RecordType> {
-  dataType?: DataType | String;
+  dataType?: DataType | string;
   dataIndex?: string;
   name?: string;
   /** 在 table 中隐藏 */

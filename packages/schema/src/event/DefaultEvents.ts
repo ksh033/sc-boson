@@ -1,5 +1,4 @@
-/* eslint-disable no-empty */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+// @ts-ignore
 import { CModal } from '@scboson/sc-element';
 import type { ButtonTypeProps } from '../interface';
 // @ts-ignore

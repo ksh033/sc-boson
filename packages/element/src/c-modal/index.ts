@@ -2,7 +2,7 @@ import React from 'react';
 import CModal from './CModal';
 import type { CModalDialogProps } from './CModal';
 import { Modal } from 'antd';
-export {CModalDialogProps}
+export { CModalDialogProps };
 export default {
   show: (props: CModalDialogProps) => {
     const config = {
@@ -30,7 +30,7 @@ export default {
 
     return CModal(config);
   },
-  confirm: (props: Omit<CModalDialogProps,'content'>&{content?:React.ReactNode}) => {
+  confirm: (props: Omit<CModalDialogProps, 'content'> & { content?: React.ReactNode }) => {
     return Modal.confirm(props);
   },
 };

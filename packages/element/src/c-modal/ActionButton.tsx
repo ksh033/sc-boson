@@ -2,11 +2,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Button } from 'antd';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 interface ActionButtonState {
   loading: boolean;
 }
-interface ActionButtonProps  {
+interface ActionButtonProps {
   autoFocus?: boolean;
   actionFn?: (params?: any) => any;
   closeModal: (params?: any) => void;
@@ -14,8 +14,10 @@ interface ActionButtonProps  {
   buttonProps?: any;
 }
 
-
-export default class ActionButton extends React.Component<PropsWithChildren<ActionButtonProps>, ActionButtonState> {
+export default class ActionButton extends React.Component<
+  PropsWithChildren<ActionButtonProps>,
+  ActionButtonState
+> {
   timeoutId: any;
 
   constructor(props: any) {
