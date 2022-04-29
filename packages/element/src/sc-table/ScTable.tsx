@@ -306,7 +306,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   }, [JSON.stringify(newParams)]);
 
   useEffect(() => {
-    if (pagination && pagination.current) {
+    if (pagination && Object.prototype.toString.call(pagination) === '[object Object]') {
       setPagination(pagination);
     }
   }, [pagination]);
