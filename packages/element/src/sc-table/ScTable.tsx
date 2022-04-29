@@ -5,14 +5,13 @@ import * as React from 'react';
 import type { CardProps } from 'antd';
 import { Table, Tooltip, Divider, Card } from 'antd';
 import type { TableProps, TablePaginationConfig } from 'antd/es/table/Table';
-import { useUpdateEffect, useRequest } from 'ahooks';
+import { useUpdateEffect, useRequest, useSetState } from 'ahooks';
 import type { OptionConfig, ToolBarProps } from './components/ToolBar';
 import Toolbar from './components/ToolBar';
 import Container from './container';
 import type { ListToolBarProps } from './components/ListToolBar';
 import { genColumnList, tableColumnSort, genColumnKey } from './utils';
 import useDeepCompareEffect from '../_util/useDeepCompareEffect';
-import useMergedState from 'rc-util/es/hooks/useMergedState';
 import type { ColumnType } from 'antd/es/table';
 import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
 import type { DropDataType } from './components/DraggableBodyRow/common';
@@ -157,12 +156,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
   const [updateSource, setUpdateSource] = useState<boolean>(false);
 
-  const [innerPagination, setPagination] = useMergedState<TablePaginationConfig>(
-    { current: 1, pageSize: pageSize },
-    {
-      value: pagination ? pagination : undefined,
-    },
-  );
+  const [innerPagination, setPagination] = useSetState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+  });
 
   const action = useRef<any>({
     rowKeys: rowKeys || [],
@@ -308,8 +305,16 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
   }, [JSON.stringify(newParams)]);
 
+  useEffect(() => {
+    if (pagination && pagination.current) {
+      setPagination(pagination);
+    }
+  }, [pagination]);
+
   useUpdateEffect(() => {
-    loadData();
+    if (innerPagination.current && innerPagination.pageSize) {
+      loadData();
+    }
   }, [innerPagination.current, innerPagination.pageSize]);
 
   useUpdateEffect(() => {
@@ -317,6 +322,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       setDataSource(data);
     }
   }, [data]);
+
   useUpdateEffect(() => {
     if (newdataSource && updateSource === false) {
       setDataSource(newdataSource);
@@ -338,6 +344,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       action.current.rows = selectedRows;
     }
   }, [selectedRowKeys]);
+
   const handleTableChange = (
     _pagination: TablePaginationConfig,
     _filtersArg: Record<string, FilterValue | null>,
