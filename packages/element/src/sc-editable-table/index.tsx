@@ -16,6 +16,7 @@ import { validateRules } from './validateUtil';
 import Container from '../sc-table/container';
 import { genColumnList, tableColumnSort } from '../sc-table/utils';
 import ScTable from '../sc-table';
+import isObject from 'lodash/isObject';
 
 export type RecordCreatorProps<T> = {
   record: T | ((index: number) => T);
@@ -167,6 +168,20 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     propsActionRef.current = actionRef.current;
   }
 
+  const setRowData = (key: string, data: any) => {
+    if (Array.isArray(value) && value.length > 0 && isObject(data)) {
+      const index = value.findIndex((it) => it[rowKey] === key);
+      if (index > -1) {
+        const newVlaue = JSON.parse(JSON.stringify(value));
+        newVlaue.splice(index, 1, data);
+        editable?.form?.setFieldsValue({
+          [key]: data,
+        });
+        setValue(newVlaue);
+      }
+    }
+  };
+
   /** 可编辑行的相关配置 */
   const editableUtils = useEditableArray<any>({
     ...{
@@ -188,6 +203,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   const userAction: ActionType = {
     ...editableUtils,
     selectedRows,
+    setRowData,
     validateRules: (data: any[]) => {
       if (props.columns) {
         return validateRules(props.columns, data, setErrorLine);

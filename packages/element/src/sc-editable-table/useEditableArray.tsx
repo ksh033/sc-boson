@@ -248,15 +248,9 @@ function editableRowByKey<RecordType>(
  *
  * @param ActionRenderConfig
  */
-export const SaveEditableAction: React.FC<ActionRenderConfig<any> & { row: any,children?:React.ReactNode }> = ({
-  recordKey,
-  onSave,
-  form,
-  row,
-  children,
-  newLineConfig,
-  editorType,
-}) => {
+export const SaveEditableAction: React.FC<
+  ActionRenderConfig<any> & { row: any; children?: React.ReactNode }
+> = ({ recordKey, onSave, form, row, children, newLineConfig, editorType }) => {
   const [loading, setLoading] = useMountMergeState<boolean>(false);
   return (
     <a
@@ -296,14 +290,9 @@ export const SaveEditableAction: React.FC<ActionRenderConfig<any> & { row: any,c
  *
  * @param ActionRenderConfig
  */
-export const DeleteEditableAction: React.FC<ActionRenderConfig<any> & { row: any,children?:React.ReactNode }> = ({
-  recordKey,
-  onDelete,
-  row,
-  children,
-  deletePopconfirmMessage,
-  cancelEditable,
-}) => {
+export const DeleteEditableAction: React.FC<
+  ActionRenderConfig<any> & { row: any; children?: React.ReactNode }
+> = ({ recordKey, onDelete, row, children, deletePopconfirmMessage, cancelEditable }) => {
   const [loading, setLoading] = useMountMergeState<boolean>(false);
   const onConfirm = async () => {
     try {

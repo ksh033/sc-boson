@@ -43,7 +43,10 @@ export interface UseEditPageProp<S> extends UseListPageProp<S> {
   getAction: () => any;
   getFormInfo: (_props?: FormFilterProp) => FormInfo;
   getTitle: (action: string) => any;
-  getModalBtn: (button: keyof typeof ToolButtons | HButtonType, options?: DialogOptions & ButtonTypeProps) => HButtonType,
+  getModalBtn: (
+    button: keyof typeof ToolButtons | HButtonType,
+    options?: DialogOptions & ButtonTypeProps,
+  ) => HButtonType;
   addPageButton: <T extends keyof typeof ToolButtons>(
     btns:
       | (HButtonType & { buttonType?: T; extraProps?: ButtonTypeProps; options?: DialogOptions })
@@ -277,10 +280,17 @@ export default function useEditPage(
     return Page.bindEvents(newBtns);
   };
 
-
-  const getModalBtn = (button: keyof typeof ToolButtons | HButtonType, buttonProps?: ButtonTypeProps) => {
-
-    const { preHandle, closeDlg, options,callBack:newBallCack, ...restOptions } = buttonProps || {};
+  const getModalBtn = (
+    button: keyof typeof ToolButtons | HButtonType,
+    buttonProps?: ButtonTypeProps,
+  ) => {
+    const {
+      preHandle,
+      closeDlg,
+      options,
+      callBack: newBallCack,
+      ...restOptions
+    } = buttonProps || {};
 
     if (config.pageType === PageType.page) {
       defaultOptions.close = () => {
@@ -288,20 +298,20 @@ export default function useEditPage(
       };
     }
 
-    const { close,callBack:defCallBack, ...otherDefaultOpt } = defaultOptions
+    const { close, callBack: defCallBack, ...otherDefaultOpt } = defaultOptions;
 
-    let callBack=defCallBack;
-   if (newBallCack){
-    callBack=(fromdata:any,newdata:any)=>{
-      defCallBack&& defCallBack()
-      newBallCack(fromdata,newdata)
+    let callBack = defCallBack;
+    if (newBallCack) {
+      callBack = (fromdata: any, newdata: any) => {
+        defCallBack?.();
+        newBallCack(fromdata, newdata);
+      };
     }
-   }
     let btn = null;
-    if (typeof button === "string") {
-      btn = ToolButtons[button]
+    if (typeof button === 'string') {
+      btn = ToolButtons[button];
     } else {
-      btn = button
+      btn = button;
     }
     const newBtn = {
       ...btn,
@@ -311,13 +321,12 @@ export default function useEditPage(
         ...otherDefaultOpt,
 
         ...options,
-        close: closeDlg !== undefined && closeDlg === false ? null : close
+        close: closeDlg !== undefined && closeDlg === false ? null : close,
       },
-    }
-
+    };
 
     return Page.bindEvent(newBtn);
-  }
+  };
   const getModalBtns = (
     rAction?: string,
     options?: DialogOptions & ButtonTypeProps,
@@ -408,6 +417,6 @@ export default function useEditPage(
     data: pageData,
     getPageButtons,
     addPageButton,
-    getModalBtn
+    getModalBtn,
   };
 }

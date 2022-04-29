@@ -27,6 +27,7 @@ export type ActionType = ProCoreActionType & {
   fullScreen?: () => void;
   validateRules?: (value: any[]) => Promise<any>;
   clearAllEditKeysAndSetOne: (key: string) => void;
+  setRowData: (key: string, data: any) => void;
 };
 
 export type AddLineOptions = {
