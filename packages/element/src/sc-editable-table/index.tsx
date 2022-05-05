@@ -173,9 +173,13 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       const index = value.findIndex((it) => it[rowKey] === key);
       if (index > -1) {
         const newVlaue = JSON.parse(JSON.stringify(value));
-        newVlaue.splice(index, 1, data);
+        const newItem = {
+          ...newVlaue[index],
+          ...data,
+        };
+        newVlaue.splice(index, 1, newItem);
         editable?.form?.setFieldsValue({
-          [key]: data,
+          [key]: newItem,
         });
         setValue(newVlaue);
       }
