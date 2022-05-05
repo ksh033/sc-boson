@@ -24,7 +24,12 @@ export default class ViewItem extends PureComponent<any> {
       <Row className="ant-form-item sc-viem-item">
         {label ? (
           <Col {...labelCol} className={labelClassName}>
-            <div className="sc-viem-item-label">
+            <div
+              className={[
+                'sc-viem-item-label',
+                layout === 'vertical' ? '' : 'sc-view-item-label-text',
+              ].join(' ')}
+            >
               {label}
               {layout === 'vertical' ? '' : colon ? ':' : ''}
             </div>

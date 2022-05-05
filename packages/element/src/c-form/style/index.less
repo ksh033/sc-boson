@@ -69,7 +69,6 @@
     }
     .ant-anchor-link {
       position: relative;
-     
       padding: 18px 20px;
       overflow: hidden;
       color: #000;
@@ -118,7 +117,7 @@
   }
   &-subtitle {
     font-weight:normal;
-     margin-left: 16px;;
+    margin-left: 16px;;
     font-size: 12px;
     display: inline-block;
   }
@@ -132,10 +131,17 @@
   }
 }
 .sc-viem-item {
-  padding: 8px 0;
+  padding: 4px 0;
 }
 .sc-viem-item-label {
   text-align: right;
+}
+
+.sc-viem-item-label.sc-view-item-label-text:after {
+  content: ' ';
+  position: relative;
+  top: -0.5px;
+  margin: 0 8px 0 2px;
 }
 
 .ant-form-vertical {
