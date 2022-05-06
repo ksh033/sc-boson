@@ -208,8 +208,6 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         debounce.run(value);
         // }
       }
-    } else {
-      setDataSource(autoloadData.current || []);
     }
     setInput(value);
     setInputKey(inputKey - 1);
