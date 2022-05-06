@@ -316,7 +316,11 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
             errorLine?.field === columnProps.dataIndex &&
             !isEditable
           ) {
-            return <span className="ant-input-affix-wrapper">{columnRender<T>(renderProps)}</span>;
+            return (
+              <span className="ant-input-affix-wrapper ant-input ant-input-status-error">
+                {columnRender<T>(renderProps)}
+              </span>
+            );
           }
           return columnRender<T>(renderProps);
         },
