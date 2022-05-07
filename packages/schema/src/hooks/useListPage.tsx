@@ -109,11 +109,11 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
 
   const getPagination = () => {
     const _params = getSearchParams();
-    if (_params&&_params.current&&_params.size){
+    if (_params && _params.current && _params.size) {
       return {
         current: _params && _params.current,
-        pageSize: _params && _params.size 
-      }
+        pageSize: _params && _params.size,
+      };
     }
     return null;
   };
@@ -149,7 +149,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
         pagination: { ...state.pagination, current: 1 },
       });
     } else {
-      if (state.pagination.current !== 1) {
+      if (state.pagination != null && state.pagination.current !== 1) {
         setState({
           pagination: { ...state.pagination, current: 1 },
         });
@@ -305,15 +305,14 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       const { key, target } = event;
       if (target.nodeName === 'INPUT') {
         if (key === 'Enter') {
-          if (submitRef.current&&submitRef.current.click) {
+          if (submitRef.current && submitRef.current.click) {
             submitRef.current.click();
           }
         }
-        
-        if (event.stopPropagation){
-          event.stopPropagation()
+
+        if (event.stopPropagation) {
+          event.stopPropagation();
         }
- 
       }
     }
   };
@@ -325,16 +324,14 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     if (searchForm.current && searchForm.current.setFieldsValue) {
       searchForm.current.setFieldsValue(locSearchParams);
     }
-   const [pageCon]=document.getElementsByClassName('ant-pro-page-container')
-    if (pageCon&&pageType === 'listpage') {
+    const [pageCon] = document.getElementsByClassName('ant-pro-page-container');
+    if (pageCon && pageType === 'listpage') {
       pageCon.addEventListener('keydown', searchEvent);
-   
     }
   });
   useUnmount(() => {
-    const [pageCon]=document.getElementsByClassName('ant-pro-page-container')
-    if (pageCon&&pageType === 'listpage') {
-  
+    const [pageCon] = document.getElementsByClassName('ant-pro-page-container');
+    if (pageCon && pageType === 'listpage') {
       pageCon.removeEventListener('keydown', searchEvent);
     }
   });
@@ -368,7 +365,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       ...searchInitParams.current,
       ...state.params,
       ...(tableConfig.defaultParams ? tableConfig.defaultParams : {}),
-     // current: pagination?.current,
+      // current: pagination?.current,
       //size: pagination?.pageSize,
     };
     let request = null;
