@@ -182,6 +182,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         editable?.form?.setFieldsValue({
           [key]: newItem,
         });
+        console.log(12);
         setValue(newVlaue);
       }
     }

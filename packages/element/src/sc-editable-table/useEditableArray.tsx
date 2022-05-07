@@ -516,9 +516,6 @@ function useEditableArray<RecordType>(
   };
 
   const onValuesChange = (value: RecordType, values: any) => {
-    if (!props.onValuesChange) {
-      return;
-    }
     let { dataSource } = props;
     const childrenColumnName = props.childrenColumnName || 'children';
     // 这里是把正在编辑中的所有表单数据都修改掉
@@ -556,7 +553,8 @@ function useEditableArray<RecordType>(
       ...values[recordKey],
     };
 
-    props.onValuesChange(editRow, dataSource, idx, value);
+    props.onValuesChange?.(editRow, dataSource, idx, value);
+    props.setDataSource(dataSource);
   };
 
   /**
