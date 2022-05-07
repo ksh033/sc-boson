@@ -122,6 +122,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       return [];
     },
   });
+
   // 处理默认聚焦
   // const [fouceDataIndex, setFouceDataIndex] = useState<string>('');
   const [selectedRowKeys, setSelectedRowKeys] = useMountMergeState<React.ReactText[]>([], {
@@ -232,6 +233,24 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       actionRef.current = undefined;
     };
   }, []);
+
+  useEffect(() => {
+    if (Array.isArray(value) && value.length > 0) {
+      const editList = value.filter((it) => {
+        return editableUtils.editableKeys.indexOf(it[rowKey]) !== -1;
+      });
+      if (editList.length > 0) {
+        let fieldsValue = {};
+        editList.forEach((it: any) => {
+          fieldsValue = {
+            ...fieldsValue,
+            [it[rowKey]]: it,
+          };
+        });
+        props.editable?.form?.setFieldsValue(fieldsValue);
+      }
+    }
+  }, [JSON.stringify(value)]);
 
   /** 如果有 ellipsis ，设置 tableLayout 为 fixed */
   const tableLayout = props.columns?.some((item) => item.ellipsis) ? 'fixed' : 'auto';
