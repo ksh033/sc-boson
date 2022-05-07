@@ -26,6 +26,7 @@ interface initProps {
   params?: any; // 服务的参数，默认参数为 { id: record }
   defaultValues?: any; // 默认初始化值
 }
+type ActionType = 'add' | 'edit' | 'view';
 export interface UseEditPageProp<S> extends UseListPageProp<S> {
   getFormConfig: (_props?: FormFilterProp) => {
     form: React.MutableRefObject<any>;
@@ -39,8 +40,8 @@ export interface UseEditPageProp<S> extends UseListPageProp<S> {
   ) => any[];
   toInitialValues: (initConfig: initProps) => void;
   loading: boolean;
-  getPageParam: () => any;
-  getAction: () => any;
+  getPageParam: <T = any>() => T;
+  getAction: <T = ActionType>() => T;
   getFormInfo: (_props?: FormFilterProp) => FormInfo;
   getTitle: (action: string) => any;
   getModalBtn: (

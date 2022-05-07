@@ -46,6 +46,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     singleInput = false,
     onChange,
     openReloadData,
+    groupField = 'group',
     onDropdownVisibleChange,
     preHandle,
     ...restProps
@@ -180,11 +181,11 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
       } else {
         const groupMap: any = {};
         dataSource.forEach((item: any) => {
-          if (item.group) {
-            if (!groupMap[item.group]) {
-              groupMap[item.group] = [];
+          if (item[groupField]) {
+            if (!groupMap[item[groupField]]) {
+              groupMap[item[groupField]] = [];
             }
-            groupMap[item.group].push(item);
+            groupMap[item[groupField]].push(item);
           }
         });
         list = Object.keys(groupMap).map((key, i) => {
@@ -197,6 +198,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         });
       }
     }
+
     return list;
   }, [JSON.stringify(dataSource), group, input, inputKey, singleInput, textField]);
 
@@ -207,6 +209,10 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         debounce.cancel();
         debounce.run(value);
         // }
+      }
+    } else {
+      if (request) {
+        setDataSource(autoloadData.current || []);
       }
     }
     setInput(value);
@@ -240,6 +246,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   };
 
   const handleChange = (value: any, option: any) => {
+    setInput('');
     onChange && onChange(value, option);
   };
   return (
@@ -249,11 +256,11 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
       showSearch={showSearch}
       onDropdownVisibleChange={handleDropdownVisibleChange}
       loading={loading}
-      onSearch={handleSearch}
+      onSearch={showSearch ? handleSearch : null}
       onChange={handleChange}
       searchValue={input}
       defaultActiveFirstOption={false}
-      notFoundContent={loading ? <Spin size="small" /> : <Empty />}
+      //notFoundContent={loading ? <Spin size="small" /> : <Empty />}
       ref={ref}
       {...selectProps}
     >

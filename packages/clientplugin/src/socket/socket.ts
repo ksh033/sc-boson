@@ -64,9 +64,12 @@ const messageStack: Map<string, Function> = new Map<string, Function>();
 window.addEventListener('message', function (event: any) {
   // TODO
   const {
-    data: { type = '' },
+    data: { type = '', source = "", },
   } = event;
   if (~type.indexOf('webpack')) {
+    return;
+  }
+  if (source.indexOf('react-devtools') > -1) {
     return;
   }
   let { data } = event;

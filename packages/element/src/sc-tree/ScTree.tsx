@@ -276,11 +276,11 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
 
   const onLoadData = useCallback(
     (node: any): Promise<void> => {
-      const { key, children } = node;
+      const { key, children, isLeaf } = node;
       // eslint-disable-next-line no-async-promise-executor
-      return new Promise(async (resolve) => {
-        if (children) {
-          resolve();
+      return new Promise<any>(async (resolve) => {
+        if (children && children.length > 0) {
+          resolve([]);
           return;
         }
         if (!request) {
@@ -295,7 +295,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         if (isGone.current) return;
         const newData = addChilList(treeData, key, rData);
         setTreeData(newData);
-        resolve();
+        resolve([]);
       });
     },
     [addChilList, loadDataPramsFormat, request, setTreeData, treeData, params],

@@ -97,7 +97,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
   }, [data]);
 
   const loadData = useCallback(
-    async (_params:any) => {
+    async (_params: any) => {
       if (!request) {
         throw Error('no remote request method');
       }
@@ -132,16 +132,17 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
   const onLoadData = (treeNode: any) => {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise<void>(async (resolve) => {
-      if (treeNode.props.data.children && treeNode.props.data.children.length > 0) {
+      if (treeNode.children && treeNode.children.length > 0) {
         resolve();
         return;
       }
       if (!request) {
         throw Error('no remote request method');
       }
-      let rParams = treeNode.props.data;
+      const { props, children, ...data } = treeNode;
+      let rParams = data;
       if (loadDataPramsFormat) {
-        rParams = loadDataPramsFormat(treeNode.props.data);
+        rParams = loadDataPramsFormat(treeNode);
       }
       let rdata = await useFetchData(request, rParams);
       if (isGone.current) return;
@@ -150,7 +151,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
       }
 
       // eslint-disable-next-line no-param-reassign
-      treeNode.props.data.children = formatTreeData(rdata);
+      treeNode.children = formatTreeData(rdata);
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       setTreeData(connetData(treeData, treeNode.props.data));
       resolve();
