@@ -24,7 +24,7 @@ export interface TableInfoProps {
   saveRef: any;
   size: any;
   scroll: any;
-  
+  request?: (params: any) => Promise<any>;
 }
 
 const OpRenderCmp: React.FC<any> = (props) => {
