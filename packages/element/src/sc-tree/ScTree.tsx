@@ -9,7 +9,7 @@ import type { NodeMouseEventParams } from 'rc-tree/es/contextTypes';
 
 const { useState, useEffect, useRef, useCallback } = React;
 const { Search } = Input;
-
+const { DirectoryTree } = Tree;
 const ScTree: React.FC<ScTreeProps> = (props) => {
   const {
     data = [],
@@ -21,6 +21,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     placeholder = '',
     onSearch = null,
     request,
+    treeType = 'Tree',
     onLoad,
     isLeafFormat,
     saveRef,
@@ -185,7 +186,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     }
   }, [throttledValue]);
 
-  const loadData = async (_params: any) => {
+  const loadData = async (_params: any, isRoot?: boolean) => {
     if (!request) {
       throw new Error('no remote request method');
     }
@@ -197,7 +198,14 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     if (onLoad) {
       rData = onLoad(rData);
     }
-    setTreeData(rData);
+    if (isRoot) {
+      if (root) {
+        root.children = rData;
+      }
+      setTreeData([root]);
+    } else {
+      setTreeData(rData);
+    }
   };
 
   const userAction: ActionType = {
@@ -236,11 +244,12 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     }
   }, [JSON.stringify(params)]);
   useEffect(() => {
-    if (!root && autoload) {
-      loadData(params);
-    }
-    if (root) {
+    if (root && autoload) {
+      loadData(params, true);
+    } else if (root && !autoload) {
       setTreeData([root]);
+    } else {
+      loadData(params);
     }
 
     return () => {
@@ -278,6 +287,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     (node: any): Promise<void> => {
       const { key, children, isLeaf } = node;
       // eslint-disable-next-line no-async-promise-executor
+
       return new Promise<any>(async (resolve) => {
         if (children && children.length > 0) {
           resolve([]);
@@ -311,6 +321,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     if (async) {
       inTreeProps.loadData = onLoadData;
     }
+
     return inTreeProps;
   }, [treeData, defaultExpandAll, defaultExpandParent, titleRender, async, onLoadData]);
 
@@ -324,6 +335,9 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     onMouseLeave?.(e);
   };
 
+  const TreeCmp = useMemo(() => {
+    return treeType === 'DirectoryTree' ? DirectoryTree : Tree;
+  }, [treeType]);
   return (
     <div>
       {canSearch ? (
@@ -338,7 +352,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         />
       ) : null}
       {treeData && treeData.length > 0 ? (
-        <Tree
+        <TreeCmp
           blockNode
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}

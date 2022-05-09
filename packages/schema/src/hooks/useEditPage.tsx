@@ -175,11 +175,25 @@ export default function useEditPage(
 
         config.service[name](_params).then((res: any) => {
           if (callback) {
-            setInitialValues(toDefaultValueChuange(callback(res)));
+            const ret = callback(res);
+            if (ret) {
+              if (ret.then) {
+                // 判断是Promise方法
+                ret.then((res: any) => {
+                  setInitialValues(toDefaultValueChuange(res));
+                  setLoading(false);
+                });
+              } else {
+                setInitialValues(toDefaultValueChuange(ret));
+                setLoading(false);
+              }
+            } else {
+              setLoading(false);
+            }
           } else {
             setInitialValues(toDefaultValueChuange(res));
+            setLoading(false);
           }
-          setLoading(false);
         });
       } else {
         setInitialValues(toDefaultValueChuange(defaultValues));
