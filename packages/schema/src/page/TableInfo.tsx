@@ -111,7 +111,7 @@ export default class TableInfo {
       dataIndex: OpColKey,
       fixed: 'right',
       width: 180,
-      max: 3,
+      max: 4,
     };
     let newCol = null;
     const { item, colIndex } = this.findCol(OpColKey) || {};
