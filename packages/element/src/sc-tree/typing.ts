@@ -41,6 +41,7 @@ export interface ScTreeProps extends TreeProps {
   onSearch?: any;
   treeType?: "Tree" | "DirectoryTree"
   actionRender?: ActionRenderFunction<any>;
+  render?: (node: any) => React.ReactNode;
   request?: (params: any) => Promise<any>;
   onLoad?: (data: any) => any;
   isLeafFormat?: (data: any) => boolean;
