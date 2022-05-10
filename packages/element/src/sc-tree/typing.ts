@@ -39,6 +39,7 @@ export interface ScTreeProps extends TreeProps {
   canSearch?: boolean;
   placeholder?: string;
   onSearch?: any;
+  treeType?: "Tree" | "DirectoryTree"
   actionRender?: ActionRenderFunction<any>;
   request?: (params: any) => Promise<any>;
   onLoad?: (data: any) => any;
@@ -46,8 +47,8 @@ export interface ScTreeProps extends TreeProps {
   async?: boolean;
   loadDataPramsFormat?: (data: any) => any;
   saveRef?:
-    | React.RefObject<ActionType | undefined>
-    | React.MutableRefObject<ActionType | undefined>
-    | ((actionRef: ActionType) => void);
+  | React.RefObject<ActionType | undefined>
+  | React.MutableRefObject<ActionType | undefined>
+  | ((actionRef: ActionType) => void);
   readonly?: boolean;
 }
