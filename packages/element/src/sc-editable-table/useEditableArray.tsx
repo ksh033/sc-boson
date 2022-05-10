@@ -554,7 +554,9 @@ function useEditableArray<RecordType>(
     };
 
     props.onValuesChange?.(editRow, dataSource, idx, value);
-    props.setDataSource(dataSource);
+    if (editableType === 'multiple') {
+      props.setDataSource(dataSource);
+    }
   };
 
   /**
