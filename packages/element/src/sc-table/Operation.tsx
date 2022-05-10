@@ -20,7 +20,7 @@ export interface OperationProps {
 }
 
 const Operation: React.FC<OperationProps> = (props) => {
-  const { max = 3, buttons = [], record } = props;
+  const { max = 4, buttons = [], record } = props;
 
   const renderChild = useCallback(() => {
     const children: any[] = [];
