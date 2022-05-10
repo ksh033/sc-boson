@@ -25,6 +25,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     onLoad,
     isLeafFormat,
     saveRef,
+    render,
     root,
     actionRender,
     async = false,
@@ -45,7 +46,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         let rChildren = children;
         let rIsLeaf = item.isLeaf;
         const otherAttr = { disabled: disabled || false, metaInfo, dataRef: dataRef || restItem };
-        const title = item[textField || 'title'] || item.title;
+        const title = render ? render(item) : item[textField || 'title'] || item.title;
         if (Array.isArray(children) && children.length > 0) {
           rChildren = formatTreeData(children);
         }
