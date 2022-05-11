@@ -30,7 +30,7 @@ export interface FormItemProp {
    */
   formItemProps?: FiledProp;
 
-  render?: (val: any) => any;
+  render?: (val: any, record: any) => any;
 
   colProps?: ColProps & { newline?: boolean };
   /** 表单项属性 */

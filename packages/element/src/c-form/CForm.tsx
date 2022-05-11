@@ -195,40 +195,49 @@ const CForm: React.FC<CFormProps> = (props) => {
     if (newWidth) {
       widthObj = { width: newWidth };
     }
+    const { rules, required, ...viewItemProps } = itemProps;
     return (
       <>
         {action === 'view' || readonly ? (
-          <ViewItem
+          <FormItem
             key={`form-item-${name}`}
-            name={viewName}
-            fieldProps={fieldProps}
-            value={itValue}
-            layout={layout}
-            {...itemProps}
-            initialValue={initialValues}
+            name={name}
+            {...viewItemProps}
+            className="sc-viem-form-item"
           >
-            {viewUseComponent || component.customView
-              ? !isElemnet
-                ? React.createElement(component, {
-                    ...item.props,
-                    readonly: true,
-                    initialValues,
-                    value: itValue,
-                    fieldProps,
-                    className,
-                    style: { ...item.props.style, ...widthObj },
-                  })
-                : React.cloneElement(component, {
-                    ...item.props,
-                    readonly: true,
-                    initialValues,
-                    value: itValue,
-                    fieldProps,
-                    className,
-                    style: { ...item.props.style, ...widthObj },
-                  })
-              : null}
-          </ViewItem>
+            <ViewItem
+              key={`form-item-${name}`}
+              render={item.render}
+              // name={viewName}
+              // fieldProps={fieldProps}
+              // value={itValue}
+              // layout={layout}
+              // {...itemProps}
+              initialValue={initialValues}
+            >
+              {viewUseComponent || component.customView
+                ? !isElemnet
+                  ? React.createElement(component, {
+                      ...item.props,
+                      readonly: true,
+                      initialValues,
+                      value: itValue,
+                      fieldProps,
+                      className,
+                      style: { ...item.props.style, ...widthObj },
+                    })
+                  : React.cloneElement(component, {
+                      ...item.props,
+                      readonly: true,
+                      initialValues,
+                      value: itValue,
+                      fieldProps,
+                      className,
+                      style: { ...item.props.style, ...widthObj },
+                    })
+                : null}
+            </ViewItem>
+          </FormItem>
         ) : (
           <FormItem key={`form-item-${name}`} name={name} {...itemProps}>
             {!isElemnet
@@ -500,8 +509,12 @@ const CForm: React.FC<CFormProps> = (props) => {
       );
       return itemCount > 0 ? (
         <div key={`form-group-${fieldset}`} className={fieldsetClassName} id={`${fieldset}`}>
-          {fieldsetTitle ? <div className="sc-form-fieldset-title">{fieldsetTitle} {subTitle ? <div className="sc-form-fieldset-subtitle">{subTitle}</div> : null}</div> : null}
-         
+          {fieldsetTitle ? (
+            <div className="sc-form-fieldset-title">
+              {fieldsetTitle}{' '}
+              {subTitle ? <div className="sc-form-fieldset-subtitle">{subTitle}</div> : null}
+            </div>
+          ) : null}
           {rows}
         </div>
       ) : null;
@@ -512,8 +525,14 @@ const CForm: React.FC<CFormProps> = (props) => {
   }, [formConfig, action]);
 
   const anchorRender = useMemo(() => {
-    const anchorItems = groups.map(({ groupTitle,fieldsetTitle, group,fieldset }, index) => {
-      return <Link key={`link_${index}`} href={`#${group||fieldset}`} title={groupTitle||fieldsetTitle} />;
+    const anchorItems = groups.map(({ groupTitle, fieldsetTitle, group, fieldset }, index) => {
+      return (
+        <Link
+          key={`link_${index}`}
+          href={`#${group || fieldset}`}
+          title={groupTitle || fieldsetTitle}
+        />
+      );
     });
     let anchorProps = {};
     if (isObject(anchor)) {
@@ -531,8 +550,8 @@ const CForm: React.FC<CFormProps> = (props) => {
     <div className="sc-form">
       <Form form={waForm} {...formProps}>
         <>
-        {anchor ? anchorRender : null}
-        {formConfig.length > 0 ? formChildren : children}
+          {anchor ? anchorRender : null}
+          {formConfig.length > 0 ? formChildren : children}
         </>
       </Form>
     </div>
