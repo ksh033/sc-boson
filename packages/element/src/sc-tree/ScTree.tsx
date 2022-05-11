@@ -250,7 +250,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     } else if (root && !autoload) {
       setTreeData([root]);
     } else {
-      loadData(params);
+      if (autoload) loadData(params);
     }
 
     return () => {
