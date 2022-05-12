@@ -19,7 +19,7 @@ import { moveRowData } from './components/DraggableBodyRow/common';
 
 import isArray from 'lodash/isArray';
 import DraggableBodyRow from './components/DraggableBodyRow';
-
+import DraggableBodyCell from './components/DraggableBodyRow/DraggableBodyCell';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 
@@ -89,7 +89,8 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   cardProps?: CardProps;
   /** @name table 列属性 */
   columns?: ScProColumn<T>;
-  treeTable?: boolean;
+  treeDataIndex?: string;
+  onDrop?: (dargNode: any) => Promise<any> | boolean | void;
   dragSort?: boolean | string;
 }
 
@@ -122,8 +123,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     dragSort = false,
     dataSource: newdataSource,
     onRow,
-    treeTable,
+    treeDataIndex,
     refresh,
+    onDrop,
     ...restPros
   } = props;
 
@@ -172,7 +174,27 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     const dataKey = _data.map((item) => item[rowKey]);
     dataKeys.current = new Set(dataKey);
   };
-
+  const moveRow = (dropData: DropDataType) => {
+    //  let data: any[] = dataSource.rows || dataSource;
+    console.log(dataSource);
+    const moveResult = moveRowData(dataSource, dropData, rowKey);
+    if (onDrop) {
+      const retVal = onDrop(moveResult.dargNode);
+      if (retVal !== undefined) {
+        if (typeof retVal === 'boolean') {
+          if (retVal === true) {
+            setDataSource(moveResult.dataSource);
+          }
+        } else if (retVal.then) {
+          retVal.then(() => {
+            setDataSource(moveResult.dataSource);
+          });
+        }
+      }
+    } else {
+      setDataSource(moveResult.dataSource);
+    }
+  };
   const loadData = async () => {
     if (counter.whetherRemote) {
       const { _filters, ...restParams } = newParams;
@@ -380,13 +402,54 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const tableColumn = useMemo(() => {
     const newPropsColumns = propsColumns.filter((it) => it.hidden !== true);
 
-    return genColumnList({
+    let cols = genColumnList({
       columns: newPropsColumns,
       map: counter.columnsMap,
       counter,
     }).sort(tableColumnSort(counter.columnsMap));
+    // .map(({ onCell, ...props }: any) => {
+    //   props.onCell = (record: any, rowIndex: any) => {
+    //     let colProp = onCell && onCell(record, rowIndex);
+    //     if (!colProp) {
+    //       colProp = {};
+    //     }
+    //     if (dragSort) {
+    //       colProp = {
+    //         ...colProp,
+    //         record,
+    //         rowIndex,
+    //         moveRow: moveRow,
+    //         index: rowIndex,
+    //         treeDataIndex,
+    //         dataIndex: props.dataIndex,
+    //       };
+    //     }
+    //     return colProp;
+    //   };
+    //   return props;
+    // });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [propsColumns, counter]);
+    if (treeDataIndex) {
+      cols.find((col) => {
+        if (col.dataIndex === treeDataIndex) {
+          const onCell = col.onCell;
+          col.onCell = (record: any, rowIndex: any): any => {
+            return {
+              record,
+              rowIndex,
+              moveRow: moveRow,
+              index: rowIndex,
+              treeDataIndex,
+              rowKey,
+              dataIndex: col.dataIndex,
+            };
+          };
+        }
+      });
+    }
+
+    return cols;
+  }, [propsColumns, counter, dataSource]);
   /** Table Column 变化的时候更新一下，这个参数将会用于渲染 */
 
   useDeepCompareEffect(() => {
@@ -460,18 +523,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     changeRowSelect(_rowKeys, _rows);
   };
 
-  const moveRow = React.useCallback(
-    (dropData: DropDataType) => {
-      //  let data: any[] = dataSource.rows || dataSource;
-      const newDataSouce = moveRowData(dataSource, dropData, rowKey);
-
-      setDataSource(newDataSouce);
-
-      //setUpdateSource(true)
-    },
-    [dataSource, setDataSource],
-  );
-
   // const findRow = (id: any) => {
   //   const { row, index, parentIndex } = findFromData(dataSource, id, rowKey);
   //   return {
@@ -543,6 +594,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       components = {
         body: {
           row: DraggableBodyRow,
+          cell: DraggableBodyCell,
         },
       };
     }
@@ -569,7 +621,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
             ...onRowProps,
             record,
             index,
-            treeTable,
+            treeDataIndex,
             moveRow,
             // findRow,
             rowKey,
@@ -577,6 +629,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         }
         return onRowProps;
       },
+
       loading,
       rowKey: key,
       rowSelection: cRowSelection,
