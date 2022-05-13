@@ -361,37 +361,38 @@ export function defaultActionRender<T>(row: T, config: ActionRenderConfig<T, New
   ];
 }
 
+type UseEditableArrayProps<RecordType> = RowEditableConfig<RecordType> & {
+  /** @name 点击编辑 */
+  clickEdit: boolean;
+  containsDeletedData: boolean;
+  rowKey: string;
+  getRowKey: GetRowKey<RecordType>;
+  dataSource: RecordType[];
+  oldKeyMap: Map<React.Key, any>;
+  onValuesChange?: (
+    record: RecordType,
+    dataSource: RecordType[],
+    index: number,
+    changeValue: RecordType,
+  ) => void;
+  childrenColumnName: string | undefined;
+  setDataSource: (dataSource: RecordType[]) => void;
+};
+
 /**
  * 一个方便的hooks 用于维护编辑的状态
  *
  * @param props
  */
-function useEditableArray<RecordType>(
-  props: RowEditableConfig<RecordType> & {
-    /** @name 点击编辑 */
-    clickEdit: boolean;
-    containsDeletedData: boolean;
-    rowKey: string;
-    getRowKey: GetRowKey<RecordType>;
-    dataSource: RecordType[];
-    oldKeyMap: Map<React.Key, any>;
-    onValuesChange?: (
-      record: RecordType,
-      dataSource: RecordType[],
-      index: number,
-      changeValue: RecordType,
-    ) => void;
-    childrenColumnName: string | undefined;
-    setDataSource: (dataSource: RecordType[]) => void;
-  },
-) {
+function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) {
   const [newLineRecord, setNewLineRecord] = useState<NewLineConfig<RecordType> | undefined>(
     undefined,
   );
-
   const [fouceDataIndex, setFouceDataIndex] = useState<string>('');
   const newLineRecordRef = useRef<NewLineConfig<RecordType> | undefined>(undefined);
   const editComRef = useRef<any>();
+  const innerParams = useRef<UseEditableArrayProps<RecordType>>(props);
+  innerParams.current = props;
 
   // 这里这么做是为了存上次的状态，不然每次存一下再拿
   newLineRecordRef.current = newLineRecord;
@@ -516,7 +517,7 @@ function useEditableArray<RecordType>(
   };
 
   const onValuesChange = (value: RecordType, values: any) => {
-    let { dataSource } = props;
+    let dataSource = innerParams.current.dataSource;
     const childrenColumnName = props.childrenColumnName || 'children';
     // 这里是把正在编辑中的所有表单数据都修改掉
     // 不然会用 props 里面的 dataSource，数据只有正在编辑中的
@@ -527,7 +528,7 @@ function useEditableArray<RecordType>(
           childrenColumnName,
           containsDeletedData: props.containsDeletedData,
           oldKeyMap: props.oldKeyMap,
-          data: dataSource,
+          data: innerParams.current.dataSource,
           getRowKey: props.getRowKey,
           row: editRow,
           key: recordKey,
@@ -641,7 +642,7 @@ function useEditableArray<RecordType>(
         },
       ) => {
         const actionProps = {
-          data: props.dataSource,
+          data: innerParams.current.dataSource,
           getRowKey: props.getRowKey,
           row: editRow,
           key: recordKey,
@@ -650,7 +651,6 @@ function useEditableArray<RecordType>(
           containsDeletedData: props.containsDeletedData,
         };
         const res = await props?.onDelete?.(recordKey, editRow);
-
         props.setDataSource(editableRowByKey(actionProps, 'delete'));
         return res;
       },
@@ -668,7 +668,7 @@ function useEditableArray<RecordType>(
           return res;
         }
         const actionProps = {
-          data: props.dataSource,
+          data: innerParams.current.dataSource,
           getRowKey: props.getRowKey,
           row: editRow,
           key: recordKey,

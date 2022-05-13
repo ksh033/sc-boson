@@ -195,7 +195,7 @@ const CForm: React.FC<CFormProps> = (props) => {
     if (newWidth) {
       widthObj = { width: newWidth };
     }
-    const { rules, required, ...viewItemProps } = itemProps;
+    const { rules, required, render, ...viewItemProps } = itemProps;
     return (
       <>
         {action === 'view' || readonly ? (
@@ -207,10 +207,10 @@ const CForm: React.FC<CFormProps> = (props) => {
           >
             <ViewItem
               key={`form-item-${name}`}
-              render={item.render}
+              render={item.render || itemProps.render}
               // name={viewName}
-              // fieldProps={fieldProps}
-              // value={itValue}
+              //fieldProps={fieldProps}
+              value={itValue}
               // layout={layout}
               // {...itemProps}
               initialValue={initialValues}
