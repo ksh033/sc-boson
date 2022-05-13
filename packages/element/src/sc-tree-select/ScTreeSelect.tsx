@@ -139,8 +139,8 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
       if (!request) {
         throw Error('no remote request method');
       }
-      const { props, children, ...data } = treeNode;
-      let rParams = data;
+      const { children, ...treeRestProps } = treeNode;
+      let rParams = treeRestProps;
       if (loadDataPramsFormat) {
         rParams = loadDataPramsFormat(treeNode);
       }
@@ -153,7 +153,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
       // eslint-disable-next-line no-param-reassign
       treeNode.children = formatTreeData(rdata);
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      setTreeData(connetData(treeData, treeNode.props.data));
+      setTreeData(connetData(treeData, treeNode));
       resolve();
     });
   };
