@@ -116,8 +116,10 @@ export default function useEditPage(
       return pageProps.action;
     }
     if (config.pageType === PageType.page) {
-      if (match && match.params) {
+      if (match && match.params && match.params.editpage) {
         return match.params.editpage;
+      } else {
+        return record && record['action'];
       }
     }
     return '';
