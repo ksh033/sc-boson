@@ -11,7 +11,7 @@ import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interfa
 import { columnRender, removeDeletedData } from './utils';
 import useEditableArray from './useEditableArray';
 import useMountMergeState from '../_util/useMountMergeState';
-import { useEventListener, useMount, useSetState, useThrottleFn } from 'ahooks';
+import { useEventListener, useMount, useSetState, useThrottleFn, useUpdateEffect } from 'ahooks';
 import { validateRules } from './validateUtil';
 import Container from '../sc-table/container';
 import { genColumnList, tableColumnSort } from '../sc-table/utils';
@@ -154,7 +154,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         oldValueRef.current = kvMap;
       }
     }
-  }, [props.value]);
+  }, [value]);
 
   /* 绑定actionRef */
 
@@ -182,7 +182,6 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         editable?.form?.setFieldsValue({
           [key]: newItem,
         });
-        console.log(12);
         setValue(newVlaue);
       }
     }
@@ -235,7 +234,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     };
   }, []);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (Array.isArray(value) && value.length > 0) {
       const editList = value.filter((it) => {
         return editableUtils.editableKeys.indexOf(it[rowKey]) !== -1;

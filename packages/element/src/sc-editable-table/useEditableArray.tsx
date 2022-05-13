@@ -391,8 +391,8 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
   const [fouceDataIndex, setFouceDataIndex] = useState<string>('');
   const newLineRecordRef = useRef<NewLineConfig<RecordType> | undefined>(undefined);
   const editComRef = useRef<any>();
-  const innerParams = useRef<UseEditableArrayProps<RecordType>>(props);
-  innerParams.current = props;
+  // const innerParams = useRef<UseEditableArrayProps<RecordType>>(props);
+  // innerParams.current = props;
 
   // 这里这么做是为了存上次的状态，不然每次存一下再拿
   newLineRecordRef.current = newLineRecord;
@@ -517,7 +517,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
   };
 
   const onValuesChange = (value: RecordType, values: any) => {
-    let dataSource = innerParams.current.dataSource;
+    let dataSource = props.dataSource;
     const childrenColumnName = props.childrenColumnName || 'children';
     // 这里是把正在编辑中的所有表单数据都修改掉
     // 不然会用 props 里面的 dataSource，数据只有正在编辑中的
@@ -528,7 +528,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
           childrenColumnName,
           containsDeletedData: props.containsDeletedData,
           oldKeyMap: props.oldKeyMap,
-          data: innerParams.current.dataSource,
+          data: dataSource,
           getRowKey: props.getRowKey,
           row: editRow,
           key: recordKey,
@@ -642,7 +642,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
         },
       ) => {
         const actionProps = {
-          data: innerParams.current.dataSource,
+          data: props.dataSource,
           getRowKey: props.getRowKey,
           row: editRow,
           key: recordKey,
@@ -668,7 +668,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
           return res;
         }
         const actionProps = {
-          data: innerParams.current.dataSource,
+          data: props.dataSource,
           getRowKey: props.getRowKey,
           row: editRow,
           key: recordKey,
