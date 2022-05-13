@@ -158,7 +158,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         : -1;
       if (itIdx === -1) {
         list.push(
-          <Option key={inputKey} value={inputKey}>
+          <Option key={inputKey} value={input}>
             {input}
           </Option>,
         );

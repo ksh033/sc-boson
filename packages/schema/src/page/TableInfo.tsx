@@ -74,7 +74,7 @@ export default class TableInfo {
    * @param col 添加显示列
    * @returns
    */
-  addCol(col: ProColumn) {
+  addCol<T extends ProColumn = ProColumn>(col: T) {
     const newCol = { ...col };
     this.tableInfo.columns.push(newCol);
     return this;
@@ -86,7 +86,7 @@ export default class TableInfo {
    * @param col
    * @returns
    */
-  changeCol(dataIndex: string, col: ProColumn) {
+  changeCol<T extends ProColumn = ProColumn>(dataIndex: string, col: T) {
     const oldCol = this.findCol(dataIndex);
     if (oldCol) {
       const { item, colIndex } = oldCol;
@@ -104,7 +104,7 @@ export default class TableInfo {
     return this;
   }
   /** 添加操作列 */
-  addOpCol(col?: ProColumnType<any> & { max?: number }) {
+  addOpCol<T extends ProColumn = ProColumn>(col?: T & { max?: number }) {
     const defaultCol: ProColumnType<any> & { max?: number } = {
       title: '操作',
       align: 'center',

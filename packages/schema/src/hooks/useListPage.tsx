@@ -381,7 +381,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       request,
       onChange: pageChange,
       toolbar: [],
-      scroll: { x: 'max-content' },
+      scroll: { x: '100%' },
     };
   };
 
