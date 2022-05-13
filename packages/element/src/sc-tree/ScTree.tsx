@@ -288,7 +288,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
 
   const onLoadData = useCallback(
     (node: any): Promise<void> => {
-      const { key, children, isLeaf } = node;
+      const { key, children } = node;
       // eslint-disable-next-line no-async-promise-executor
 
       return new Promise<any>(async (resolve) => {

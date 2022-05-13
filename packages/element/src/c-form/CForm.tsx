@@ -43,6 +43,7 @@ export interface CFormProps extends FormProps {
   anchor?: boolean | any;
   action: 'edit' | 'add' | 'view';
   form: any;
+  readonlyFormItem?: boolean;
 }
 const WIDTH_SIZE_ENUM = {
   // 适用于短数字，短文本或者选项
@@ -67,7 +68,7 @@ const CForm: React.FC<CFormProps> = (props) => {
     wrapperCol = {},
     labelAlign = 'right',
     anchor = false,
-
+    readonlyFormItem = false,
     initialValues,
     action,
     form,
@@ -195,49 +196,43 @@ const CForm: React.FC<CFormProps> = (props) => {
     if (newWidth) {
       widthObj = { width: newWidth };
     }
-    const { rules, required, render, ...viewItemProps } = itemProps;
     return (
       <>
         {action === 'view' || readonly ? (
-          <FormItem
+          <ViewItem
             key={`form-item-${name}`}
-            name={name}
-            {...viewItemProps}
-            className="sc-viem-form-item"
+            render={item.render || itemProps.render}
+            readonlyFormItem={readonlyFormItem}
+            name={viewName}
+            fieldProps={itemProps}
+            value={itValue}
+            layout={layout}
+            initialValue={initialValues}
+            form={waForm}
+            {...itemProps}
           >
-            <ViewItem
-              key={`form-item-${name}`}
-              render={item.render || itemProps.render}
-              // name={viewName}
-              //fieldProps={fieldProps}
-              value={itValue}
-              // layout={layout}
-              // {...itemProps}
-              initialValue={initialValues}
-            >
-              {viewUseComponent || component.customView
-                ? !isElemnet
-                  ? React.createElement(component, {
-                      ...item.props,
-                      readonly: true,
-                      initialValues,
-                      value: itValue,
-                      fieldProps,
-                      className,
-                      style: { ...item.props.style, ...widthObj },
-                    })
-                  : React.cloneElement(component, {
-                      ...item.props,
-                      readonly: true,
-                      initialValues,
-                      value: itValue,
-                      fieldProps,
-                      className,
-                      style: { ...item.props.style, ...widthObj },
-                    })
-                : null}
-            </ViewItem>
-          </FormItem>
+            {viewUseComponent || component.customView
+              ? !isElemnet
+                ? React.createElement(component, {
+                    ...item.props,
+                    readonly: true,
+                    initialValues,
+                    value: itValue,
+                    fieldProps,
+                    className,
+                    style: { ...item.props.style, ...widthObj },
+                  })
+                : React.cloneElement(component, {
+                    ...item.props,
+                    readonly: true,
+                    initialValues,
+                    value: itValue,
+                    fieldProps,
+                    className,
+                    style: { ...item.props.style, ...widthObj },
+                  })
+              : null}
+          </ViewItem>
         ) : (
           <FormItem key={`form-item-${name}`} name={name} {...itemProps}>
             {!isElemnet
