@@ -434,19 +434,20 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
 
   useLayoutEffect(() => {
     if (
+      props.clickEdit &&
+      editableType === 'multiple' &&
       Array.isArray(props.editableKeys) &&
-      props.editableKeys.length === 0 &&
-      editableType === 'multiple'
+      props.editableKeys.length === 0
     ) {
-      if (props.clickEdit) {
-        if (Array.isArray(props.dataSource) && props.dataSource.length > 0) {
-          setEditableRowKeys([props.dataSource[0][props.rowKey]]);
-        }
-      } else {
-        setEditableRowKeys(setAllEditable(props.dataSource));
+      if (Array.isArray(props.dataSource) && props.dataSource.length > 0) {
+        setEditableRowKeys([props.dataSource[0][props.rowKey]]);
       }
     }
-  }, [props.clickEdit, JSON.stringify(props.dataSource)]);
+
+    if (!Boolean(props.clickEdit) && editableType === 'multiple') {
+      setEditableRowKeys(setAllEditable(props.dataSource));
+    }
+  }, [props.clickEdit, JSON.stringify(props.dataSource), editableKeys.length]);
 
   /** 一个用来标志的set 提供了方便的 api 来去重什么的 */
   const editableKeysSet = useMemo(() => {
