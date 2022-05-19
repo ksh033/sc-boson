@@ -18,6 +18,7 @@ import { genColumnList, tableColumnSort } from '../sc-table/utils';
 import ScTable from '../sc-table';
 import isObject from 'lodash/isObject';
 
+let timer: any = null;
 export type RecordCreatorProps<T> = {
   record: T | ((index: number) => T);
   /**
@@ -264,9 +265,13 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     }
     return [...value, row];
   };
-
-  const firstEditable = propsColumns?.find((it) => it.editable);
-  const lastEditItem = propsColumns?.filter((it) => it.editable).pop();
+  const editableList = propsColumns?.filter((it) => it.editable);
+  let firstEditable: any = null;
+  let lastEditItem: any = null;
+  if (Array.isArray(editableList) && editableList.length > 0) {
+    firstEditable = editableList[0];
+    lastEditItem = editableList[editableList.length - 1];
+  }
 
   const rowIndexRender = (text: any, rowData: T, index: number) => {
     if (pagination) {
@@ -481,39 +486,41 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     };
   };
 
-  const changeEnter = useCallback(
-    (event: any) => {
-      const { editableKeys } = editableUtils;
-      if (clickEdit && Array.isArray(editableKeys) && editableKeys.length > 0) {
-        if (event && event.target) {
-          const { key, target } = event;
-          if (key === 'Tab') {
-            const dataIndex = lastEditItem?.dataIndex;
-            const itemId = `${editableKeys[0]}_${dataIndex}`;
-            if (target.nodeName === 'INPUT') {
-              if (target.blur) {
-                target?.blur();
-              }
+  const changeEnter = (event: any) => {
+    const { editableKeys } = editableUtils;
+    if (clickEdit && Array.isArray(editableKeys) && editableKeys.length > 0) {
+      if (event && event.target) {
+        const { key, target } = event;
+        if (key === 'Tab') {
+          const dataIndex = lastEditItem?.dataIndex;
+          const itemId = `${editableKeys[0]}_${dataIndex}`;
+          if (target.nodeName === 'INPUT') {
+            if (target.blur) {
+              target?.blur();
             }
-            if (target.id && target.id === itemId) {
-              const index = value.findIndex((it) => it[rowKey] === editableKeys[0]);
-              if (index !== -1 && value.length > index + 1) {
+          }
+          if (target.id && target.id === itemId) {
+            clearTimeout(timer);
+            const index = value.findIndex((it) => it[rowKey] === editableKeys[0]);
+            if (index !== -1 && value.length > index + 1) {
+              console.log(String(firstEditable?.dataIndex));
+              editableUtils.setFouce('');
+              timer = setTimeout(() => {
                 editableUtils.setFouce(String(firstEditable?.dataIndex));
                 editableUtils.clearAllEditKeysAndSetOne(value[index + 1][rowKey]);
-              }
+                clearTimeout(timer);
+                timer = null;
+              }, 0);
             }
           }
         }
       }
-    },
-    [
-      JSON.stringify(value),
-      editableUtils.editableKeys.join(','),
-      JSON.stringify(firstEditable?.dataIndex),
-    ],
-  );
+    }
+  };
 
-  useEventListener('keydown', changeEnter);
+  useEventListener('keydown', changeEnter, {
+    target: divRef.current,
+  });
 
   const {
     record,
