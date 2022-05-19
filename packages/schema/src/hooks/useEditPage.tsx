@@ -311,7 +311,11 @@ export default function useEditPage(
 
     if (config.pageType === PageType.page) {
       defaultOptions.close = () => {
-        history?.go(-1);
+        if (config.path) {
+          history.push(config.path);
+        } else {
+          history?.go(-1);
+        }
       };
     }
 
@@ -353,7 +357,11 @@ export default function useEditPage(
 
     if (config.pageType === PageType.page) {
       defaultOptions.close = () => {
-        history?.go(-1);
+        if (config.path) {
+          history.push(config.path);
+        } else {
+          history?.go(-1);
+        }
       };
     }
     const buttons: any[] = [];
