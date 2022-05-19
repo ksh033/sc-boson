@@ -1,13 +1,17 @@
 @import '../../style/index.less';
+
 .sc-table-transfer {
   position: relative;
   // display: flex;
   height: 100%;
+  width: 100%;
+
   &-search-wrapper {
     position: relative;
     width: 100%;
     padding: 10px;
   }
+
   .sc-table {
     .ant-card {
       .ant-card-body {
@@ -15,17 +19,22 @@
       }
     }
   }
+
   .sc-searchbar {
     margin: 10px;
+
     .ant-card-body {
       padding: 0px;
     }
+
     .ant-form-item {
       margin-bottom: 0px;
     }
   }
+
   &-search {
     padding: 0 8px;
+
     &-action {
       position: absolute;
       top: 50%;
@@ -37,13 +46,16 @@
       color: rgba(0, 0, 0, 0.25);
       line-height: 32px;
       text-align: center;
+
       .anticon {
         color: rgba(0, 0, 0, 0.25);
         transition: all 0.3s;
+
         &:hover {
           color: rgba(0, 0, 0, 0.45);
         }
       }
+
       span& {
         pointer-events: none;
       }
