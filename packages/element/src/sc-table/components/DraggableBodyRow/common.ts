@@ -1,44 +1,39 @@
-import update from "immutability-helper";
-
-export const ItemTypes = "DraggableBodyRow";
+/* eslint-disable no-param-reassign */
+export const ItemTypes = 'DraggableBodyRow';
 export type DropDataType = {
   dragId: string;
   dragIndex: number;
   dropToGap: boolean;
   dropId: string;
-  dropIndex: number
-}
+  dropIndex: number;
+};
 export type DraggableBodyRowType = {
   record: any;
   treeDataIndex?: string;
 
-
   index: number;
-  rowKey: string,
-  className: string,
-  style: any,
-  moveRow: (moveData: DropDataType) => { dataSouce: any, dargNode: any }
-
-
-}
+  rowKey: string;
+  className: string;
+  style: any;
+  moveRow: (moveData: DropDataType) => { dataSouce: any; dargNode: any };
+};
 export type DraggableBodyCellType = DraggableBodyRowType & {
-  dataIndex: string
-}
+  dataIndex: string;
+};
 // 操作类型
 export const optionsTyps = {
-  didDrop: "didDrop", // 拖拽出区域
-  hover: "hover",
-  drop: "drop" // 放置
+  didDrop: 'didDrop', // 拖拽出区域
+  hover: 'hover',
+  drop: 'drop', // 放置
 };
 
 // 数据类型
 export const dataType = {
-  group: "group",
-  child: "child"
+  group: 'group',
+  child: 'child',
 };
 
 export const getParam = (data: any, dragId: any, dropId: any, rowKey: string) => {
-
   //const dragRowData=findFromData(data,dragId,rowKey)
   //const dropRowData=findFromData(data,dropId,rowKey)
   let dragRow, dropRow;
@@ -47,7 +42,7 @@ export const getParam = (data: any, dragId: any, dropId: any, rowKey: string) =>
 
   for (let i = 0; i < data.length; i++) {
     // 父节点拖拽
-    let parentDom = data[i];
+    const parentDom = data[i];
     if (parentDom[rowKey] === dragId) {
       dragRow = parentDom;
       dragIndex = i;
@@ -85,11 +80,17 @@ export const getParam = (data: any, dragId: any, dropId: any, rowKey: string) =>
     dragIndex,
     dropIndex,
     dragParentIndex,
-    dropParentIndex
+    dropParentIndex,
   };
 };
 
-const loop = (data: string | any[], key: any, rowKey: string, parentNode: any, callback: (arg0: any, arg1: number, arg2: any, parentNode: any) => any) => {
+const loop = (
+  data: string | any[],
+  key: any,
+  rowKey: string,
+  parentNode: any,
+  callback: (arg0: any, arg1: number, arg2: any, parentNode: any) => any,
+) => {
   for (let i = 0; i < data.length; i++) {
     if (data[i][rowKey] === key) {
       return callback(data[i], i, data, parentNode);
@@ -100,10 +101,8 @@ const loop = (data: string | any[], key: any, rowKey: string, parentNode: any, c
   }
 };
 export const moveRowData = (dataSource: any, moveData: DropDataType, rowKey: string) => {
-
-
   const { dragId, dropId, dragIndex, dropIndex, dropToGap } = moveData;
-  let data: any[] = dataSource.rows || dataSource;
+  const data: any[] = dataSource.rows || dataSource;
 
   let dragObj: any;
   loop(data, dragId, rowKey, null, (item, index, arr) => {
@@ -111,44 +110,41 @@ export const moveRowData = (dataSource: any, moveData: DropDataType, rowKey: str
     dragObj = item;
   });
 
-
   if (!dropToGap) {
     // Drop on the content
-    loop(data, dropId, rowKey, null, (item, _index, _arr, parentNode) => {
+    loop(data, dropId, rowKey, null, (item) => {
       item.children = item.children || [];
       // where to insert 示例添加到头部，可以是随意位置
-      dragObj.parentId = item[rowKey]
+      dragObj.parentId = item[rowKey];
       item.children = [dragObj, ...item.children];
       dragObj.dargPos = 0;
-
     });
   } else {
     let ar: any[] = [];
     let i: number = -1;
-    let parentNode: any
+    let parentNode: any;
     let dropItem: any;
-    loop(data, dropId, rowKey, null, (_item, index, arr, parentNode) => {
+    loop(data, dropId, rowKey, null, (_item, index, arr, pNode) => {
       ar = arr;
       i = index;
-      parentNode = parentNode
-      dropItem = _item
+      parentNode = pNode;
+      dropItem = _item;
     });
-
-
+    console.log(parentNode);
     //if (parentNode) {
     //dragObj.parentId = parentNode[rowKey]
     //} else {
-    dragObj.parentId = dropItem.parentId
+    dragObj.parentId = dropItem.parentId;
     // }
     let dargPos;
     if (dragIndex < dropIndex) {
       ar.splice(i + 1, 0, dragObj);
-      dargPos = i + 1
+      dargPos = i + 1;
     } else {
       ar.splice(i, 0, dragObj);
-      dargPos = i
+      dargPos = i;
     }
-    dragObj.dargPos = dargPos
+    dragObj.dargPos = dargPos;
   }
 
   // let data: any[] = dataSource.rows || dataSource;
@@ -271,25 +267,24 @@ export const moveRowData = (dataSource: any, moveData: DropDataType, rowKey: str
   }
 
   return { dataSource, dargNode: dragObj };
-}
+};
 
-
-export const findNodeData = (data: any[], id: any, rowKey: string): { data: any, index: number } | null => {
+export const findNodeData = (
+  data: any[],
+  id: any,
+  rowKey: string,
+): { data: any; index: number } | null => {
   for (let i = 0; i < data.length; i++) {
-
     const item = data[i];
     if (item[rowKey] === id) {
-
       return { data: item, index: i };
     }
     if (item.children && item.children.length > 0) {
-      const tnode = findNodeData(item.children, id, rowKey)
+      const tnode = findNodeData(item.children, id, rowKey);
       if (tnode) {
         return tnode;
       }
     }
-
-
   }
   return null;
 };

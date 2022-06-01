@@ -21,12 +21,14 @@ type ColumnSettingProps<T = any> = {
   checkable?: boolean;
 };
 
-const ToolTipIcon: React.FC<PropsWithChildren<{
-  title: string;
-  columnKey: string | number;
-  show: boolean;
-  fixed?: FixedType;
-}>> = ({ title, show, children, columnKey, fixed }) => {
+const ToolTipIcon: React.FC<
+  PropsWithChildren<{
+    title: string;
+    columnKey: string | number;
+    show: boolean;
+    fixed?: FixedType;
+  }>
+> = ({ title, show, children, columnKey, fixed }) => {
   const { columnsMap, setColumnsMap } = Container.useContainer();
   if (!show) {
     return null;
@@ -201,7 +203,7 @@ const GroupCheckboxList: React.FC<{
 
   localColumns.forEach((item) => {
     const { fixed } = item;
-    if (fixed === 'left') {
+    if (fixed === true || fixed === 'left') {
       leftList.push(item);
       return;
     }

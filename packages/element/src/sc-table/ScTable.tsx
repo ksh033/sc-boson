@@ -142,6 +142,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   }, [JSON.stringify(params)]);
 
   const counter = Container.useContainer();
+
   const isGone = useRef(false);
   const { loading, run } = useRequest(
     request ||
@@ -175,8 +176,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     dataKeys.current = new Set(dataKey);
   };
   const moveRow = (dropData: DropDataType) => {
-    //  let data: any[] = dataSource.rows || dataSource;
-    console.log(dataSource);
     const moveResult = moveRowData(dataSource, dropData, rowKey);
     if (onDrop) {
       const retVal = onDrop(moveResult.dargNode);
@@ -402,7 +401,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const tableColumn = useMemo(() => {
     const newPropsColumns = propsColumns.filter((it) => it.hidden !== true);
 
-    let cols = genColumnList({
+    const cols = genColumnList({
       columns: newPropsColumns,
       map: counter.columnsMap,
       counter,
@@ -432,7 +431,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     if (treeDataIndex) {
       cols.find((col) => {
         if (col.dataIndex === treeDataIndex) {
-          const onCell = col.onCell;
           col.onCell = (record: any, rowIndex: any): any => {
             return {
               record,
@@ -638,6 +636,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       pagination: paginationProps,
       ...restPros,
       components,
+      size: counter.tableSize,
       onChange: handleTableChange,
     };
   };

@@ -1,5 +1,5 @@
 import { createContainer } from 'unstated-next';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import type { FixedType } from 'rc-table/es/interface';
 import type { ScTableProps } from './index';
@@ -37,10 +37,16 @@ function useContainer(props: UseContainerProps = {}) {
   // 用于排序的数组
   const sortKeyColumns = useRef<string[]>([]);
 
-  const [tableSize, setTableSize] = useMergedState<DensitySize>(props.size || 'middle', {
-    value: props.size,
-    onChange: props.onSizeChange,
-  });
+  // const [tableSize, setTableSize] = useMergedState<DensitySize>(props.size || 'middle', {
+  //   value: props.size,
+  //   onChange: props.onSizeChange,
+  // });
+
+  const [tableSize, setTableSize] = useState<DensitySize>(props.size || 'middle');
+
+  useEffect(() => {
+    setTableSize(props.size);
+  }, [props.size]);
 
   const [columnsMap, setColumnsMap] = useMergedState<Record<string, ColumnsState>>(
     props.columnsStateMap || {},
@@ -53,7 +59,6 @@ function useContainer(props: UseContainerProps = {}) {
   const [filtersArg, setFiltersArg] = useMergedState<Record<string, FilterValue | null>>({});
 
   const [sortOrderMap, setSortOrderMap] = useMergedState<Record<string, string>>({});
-
   return {
     action: actionRef,
     setAction: (newAction?: ActionType) => {

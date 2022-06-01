@@ -1,15 +1,11 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import React, { useRef } from 'react';
-import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd';
-import {
-  dataType,
-  ItemTypes,
-  optionsTyps,
-  DropDataType,
-  DraggableBodyRowType,
-  DraggableBodyCellType,
-} from './common';
+import type { DropTargetMonitor } from 'react-dnd';
+import { useDrop } from 'react-dnd';
+import type { DropDataType, DraggableBodyCellType } from './common';
+import { ItemTypes } from './common';
 const DraggableBodyCell = (props: DraggableBodyCellType & { children: any; rowIndex: any }) => {
-  let {
+  const {
     children,
     dataIndex,
     record,
@@ -42,22 +38,22 @@ const DraggableBodyCell = (props: DraggableBodyCellType & { children: any; rowIn
         //   monitor.getClientOffset()
         // 是否可以拖拽替换
         //let isOver = monitor.isOver();
-        let isNextOver = monitor.isOver({ shallow: true });
+        const isNextOver = monitor.isOver({ shallow: true });
         return {
           isNextOver,
           dropNextClassName: 'drop-over-downward',
         };
       },
       drop: (item: any, monitor) => {
-        let opt: DropDataType = {
+        const opt: DropDataType = {
           dragId: item.id, // 拖拽id
           dragIndex: item.index,
           dropToGap: false,
           dropId: record[rowKey], // 要放置位置行的id
           dropIndex: index,
         };
-        const didDrop = monitor.didDrop();
-        let isOver = monitor.isOver({ shallow: true });
+        // const didDrop = monitor.didDrop();
+        const isOver = monitor.isOver({ shallow: true });
         if (isOver) moveRow(opt);
       },
     },
@@ -81,7 +77,7 @@ const DraggableBodyCell = (props: DraggableBodyCellType & { children: any; rowIn
             style={{ flex: 1 }}
             //@ts-ignore
             ref={nextRef}
-          ></div>
+          />
         </div>
       ) : (
         children
