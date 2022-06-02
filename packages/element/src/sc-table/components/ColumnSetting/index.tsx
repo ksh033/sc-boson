@@ -1,4 +1,5 @@
-import React, { PropsWithChildren, useContext, useEffect, useRef } from 'react';
+import type { PropsWithChildren } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import {
   SettingOutlined,
   VerticalAlignMiddleOutlined,

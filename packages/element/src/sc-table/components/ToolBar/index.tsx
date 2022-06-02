@@ -93,11 +93,11 @@ function renderDefaultOption<T>(
     .filter((item) => item)
     .map((key) => {
       const value = options[key];
-      if (!value) {
+      if (value == null) {
         return null;
       }
       if (key === 'setting') {
-        return <ColumnSetting {...options[key]} columns={columns} key={key} />;
+        return <ColumnSetting {...(value || {})} columns={columns} key={key} />;
       }
       if (key === 'fullScreen') {
         return (
