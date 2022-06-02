@@ -1,11 +1,12 @@
 import { createContainer } from 'unstated-next';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import type { FixedType } from 'rc-table/es/interface';
 import type { ScTableProps } from './index';
 import type { DensitySize } from './components/ToolBar/DensityIcon';
 import type { ActionType } from './typing';
 import type { FilterValue } from 'antd/es/table/interface';
+import { genColumnKey } from './utils';
 
 export type ColumnsState = {
   show?: boolean;
@@ -20,6 +21,7 @@ export type UseContainerProps = {
   onSizeChange?: (size: DensitySize) => void;
   params?: any;
   request?: (params: any) => Promise<any>; // 请求数据的远程方法
+  columns?: any[];
 };
 
 export type SearchKeywordState = {
@@ -31,6 +33,21 @@ function useContainer(props: UseContainerProps = {}) {
   const actionRef = useRef<ActionType>();
   const propsRef = useRef<ScTableProps<any>>();
   const whetherRemote = props.request !== undefined && props.request !== null;
+
+  const defaultColumnKeyMap = useMemo(() => {
+    const columnKeyMap = {};
+    props.columns?.forEach(({ key, dataIndex, fixed, disable }, index) => {
+      const columnKey = genColumnKey(key ?? (dataIndex as React.Key), index);
+      if (columnKey) {
+        columnKeyMap[columnKey] = {
+          show: true,
+          fixed,
+          disable,
+        };
+      }
+    });
+    return columnKeyMap;
+  }, [props.columns]);
 
   // 共享状态比较难，就放到这里了
   const [keyWords, setKeyWords] = useState<string | undefined>('');
@@ -49,7 +66,7 @@ function useContainer(props: UseContainerProps = {}) {
   }, [props.size]);
 
   const [columnsMap, setColumnsMap] = useMergedState<Record<string, ColumnsState>>(
-    props.columnsStateMap || {},
+    props.columnsStateMap || defaultColumnKeyMap,
     {
       value: props.columnsStateMap,
       onChange: props.onColumnsStateChange,

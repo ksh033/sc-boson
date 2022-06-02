@@ -271,39 +271,49 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       changeRowSelect(crowKeys, crows);
     }
   };
-  const updateAction = () => {
-    const userAction = {
-      pagination: innerPagination,
-      data: dataSource,
-      selectedRowKeys: action.current.rowKeys || rowKeys,
-      selectedRows: action.current.rows || rows,
-      reload: () => {
-        loadData();
-      },
-      setFiltersArg: counter.setFiltersArg,
-      setSortOrderMap: counter.setSortOrderMap,
-      clearRowKeys: () => {
-        action.current = {
-          rowKeys: [],
-          rows: [],
-        };
-        setRowKeys([]);
-        setRows([]);
-        if (onSelectRow) {
-          onSelectRow([], []);
-        }
-      },
-    };
-    if (saveRef && typeof saveRef === 'function') {
-      saveRef(userAction);
-    }
-    if (saveRef && typeof saveRef !== 'function') {
-      saveRef.current = userAction;
-    }
+
+  const userAction = {
+    pagination: innerPagination,
+    data: dataSource,
+    selectedRowKeys: action.current.rowKeys || rowKeys,
+    selectedRows: action.current.rows || rows,
+    reload: () => {
+      loadData();
+    },
+    setFiltersArg: counter.setFiltersArg,
+    setSortOrderMap: counter.setSortOrderMap,
+    columnsMap: counter.columnsMap,
+    getColumnsMap: () => {
+      return counter.columnsMap;
+    },
+    clearRowKeys: () => {
+      action.current = {
+        rowKeys: [],
+        rows: [],
+      };
+      setRowKeys([]);
+      setRows([]);
+      if (onSelectRow) {
+        onSelectRow([], []);
+      }
+    },
   };
 
+  if (saveRef) {
+    // @ts-ignore
+    saveRef.current = userAction;
+  }
+
+  /** 绑定 action ref */
+  React.useImperativeHandle(
+    saveRef,
+    () => {
+      return userAction;
+    },
+    [],
+  );
+
   useEffect(() => {
-    updateAction();
     if (data) {
       getDataKeys(data.rows || []);
     }
@@ -586,7 +596,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
 
     const key = rowKey || 'key';
-    updateAction();
     let components = null;
     if (dragSort) {
       components = {

@@ -21,6 +21,8 @@ type ColumnSettingProps<T = any> = {
   checkable?: boolean;
 };
 
+const OpColKey = '_OperateKey';
+
 const ToolTipIcon: React.FC<
   PropsWithChildren<{
     title: string;
@@ -202,21 +204,23 @@ const GroupCheckboxList: React.FC<{
   // const intl = useIntl();
 
   localColumns.forEach((item) => {
-    const { fixed } = item;
-    if (fixed === true || fixed === 'left') {
-      leftList.push(item);
-      return;
-    }
-    if (fixed === 'right') {
-      rightList.push(item);
-      return;
-    }
+    if (item.dataIndex !== OpColKey) {
+      const { fixed } = item;
+      if (fixed === true || fixed === 'left') {
+        leftList.push(item);
+        return;
+      }
+      if (fixed === 'right') {
+        rightList.push(item);
+        return;
+      }
 
-    /** 不在 setting 中展示的 */
-    // if (item.hideInSetting) {
-    // return;
-    // }
-    list.push(item);
+      /** 不在 setting 中展示的 */
+      // if (item.hideInSetting) {
+      // return;
+      // }
+      list.push(item);
+    }
   });
 
   const showRight = rightList && rightList.length > 0;

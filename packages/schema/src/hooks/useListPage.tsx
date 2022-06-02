@@ -65,6 +65,18 @@ export interface UseListPageProp<S> {
   reload: () => void;
 }
 
+const setLocalSearchParams = (key: string | number, params: any) => {
+  const searchParam = JSON.parse(sessionStorage.getItem('SEARCH_PARAMS') || '{}');
+  const oldParams = searchParam[key] || {};
+  searchParam[key] = {
+    ...oldParams,
+    ...(params || {}),
+  };
+  sessionStorage.setItem('SEARCH_PARAMS', JSON.stringify(searchParam));
+};
+
+export { setLocalSearchParams };
+
 export default function ListPage<S>(config: PageConfig, props: any): UseListPageProp<S> {
   const { service, pageType = 'listpage' } = config;
   const { location } = props || {};
@@ -77,6 +89,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const ordersRef = useRef<any>({});
   const submitRef = useRef<any>({});
   const searchInitParams = useRef<any>();
+
   const schemaContext = useSchemaContext();
 
   const getSearchParams = () => {
