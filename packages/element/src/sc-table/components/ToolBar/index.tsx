@@ -99,13 +99,13 @@ function renderDefaultOption<T>(
       if (key === 'setting') {
         return <ColumnSetting {...(value || {})} columns={columns} key={key} />;
       }
-      if (key === 'fullScreen') {
-        return (
-          <span key={key} onClick={value === true ? defaultOptions[key] : value}>
-            <FullScreenIcon />
-          </span>
-        );
-      }
+      // if (key === 'fullScreen') {
+      //   return (
+      //     <span key={key} onClick={value === true ? defaultOptions[key] : value}>
+      //       <FullScreenIcon />
+      //     </span>
+      //   );
+      // }
       const optionItem = getButtonText(defaultOptions)[key];
       if (optionItem) {
         return (
@@ -152,7 +152,7 @@ function ToolBar<T>({
       density: true,
       setting: true,
       search: false,
-      fullScreen: () => action?.current?.fullScreen?.(),
+      // fullScreen: () => action?.current?.fullScreen?.(),
     };
     if (propsOptions === false) {
       return [];
@@ -160,9 +160,7 @@ function ToolBar<T>({
 
     const options = {
       ...defaultOptions,
-      ...(propsOptions || {
-        fullScreen: false,
-      }),
+      ...propsOptions,
     };
 
     return renderDefaultOption<T>(

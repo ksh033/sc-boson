@@ -272,46 +272,46 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
   };
 
-  const userAction = {
-    pagination: innerPagination,
-    data: dataSource,
-    selectedRowKeys: action.current.rowKeys || rowKeys,
-    selectedRows: action.current.rows || rows,
-    reload: () => {
-      loadData();
-    },
-    setFiltersArg: counter.setFiltersArg,
-    setSortOrderMap: counter.setSortOrderMap,
-    columnsMap: counter.columnsMap,
-    getColumnsMap: () => {
-      return counter.columnsMap;
-    },
-    clearRowKeys: () => {
-      action.current = {
-        rowKeys: [],
-        rows: [],
-      };
-      setRowKeys([]);
-      setRows([]);
-      if (onSelectRow) {
-        onSelectRow([], []);
-      }
-    },
+  const updateAction = () => {
+    const userAction = {
+      pagination: innerPagination,
+      data: dataSource,
+      selectedRowKeys: action.current.rowKeys || rowKeys,
+      selectedRows: action.current.rows || rows,
+      reload: () => {
+        loadData();
+      },
+      setFiltersArg: counter.setFiltersArg,
+      setSortOrderMap: counter.setSortOrderMap,
+      columnsMap: counter.columnsMap,
+      getColumnsMap: () => {
+        return counter.columnsMap;
+      },
+      clearRowKeys: () => {
+        action.current = {
+          rowKeys: [],
+          rows: [],
+        };
+        setRowKeys([]);
+        setRows([]);
+        if (onSelectRow) {
+          onSelectRow([], []);
+        }
+      },
+    };
+
+    return userAction;
   };
 
-  if (saveRef) {
-    // @ts-ignore
-    saveRef.current = userAction;
+  if (saveRef && typeof saveRef === 'function') {
+    saveRef(updateAction());
+  }
+  if (saveRef && typeof saveRef !== 'function') {
+    saveRef.current = updateAction();
   }
 
   /** 绑定 action ref */
-  React.useImperativeHandle(
-    saveRef,
-    () => {
-      return userAction;
-    },
-    [],
-  );
+  React.useImperativeHandle(saveRef, updateAction);
 
   useEffect(() => {
     if (data) {
