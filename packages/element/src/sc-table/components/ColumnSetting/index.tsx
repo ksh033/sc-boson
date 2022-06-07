@@ -1,18 +1,18 @@
-import type { PropsWithChildren } from 'react';
-import React, { useContext, useEffect, useRef } from 'react';
 import {
   SettingOutlined,
+  VerticalAlignBottomOutlined,
   VerticalAlignMiddleOutlined,
   VerticalAlignTopOutlined,
-  VerticalAlignBottomOutlined,
 } from '@ant-design/icons';
 import type { TableColumnType } from 'antd';
-import { Checkbox, Tree, Popover, ConfigProvider, Tooltip } from 'antd';
+import { Checkbox, ConfigProvider, Popover, Tooltip, Tree } from 'antd';
+import type { DataNode } from 'antd/es/tree';
 import classNames from 'classnames';
 import type { FixedType } from 'rc-table/es/interface';
+import type { PropsWithChildren } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import type { ColumnsState } from '../../container';
 import Container from '../../container';
-import type { DataNode } from 'antd/es/tree';
 import { genColumnKey } from '../../utils';
 // import type { ProColumns } from '../../typing';
 // import type { TableColumnType } from 'antd';
@@ -179,7 +179,16 @@ const CheckboxList: React.FC<{
       checkedKeys={checkedKeys}
       showLine={false}
       titleRender={(node) => {
-        return <CheckboxListItem className={className} {...node} columnKey={node.key} />;
+        const { title, ...restNode } = node;
+        const newTitle = typeof node.title === 'function' ? node.title(node) : node.title;
+        return (
+          <CheckboxListItem
+            className={className}
+            {...restNode}
+            columnKey={node.key}
+            title={newTitle}
+          />
+        );
       }}
       height={280}
       treeData={treeData as DataNode[]}

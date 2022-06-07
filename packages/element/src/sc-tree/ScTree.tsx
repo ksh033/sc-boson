@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react';
-import { Tree, Input, Space } from 'antd';
+import { useThrottle, useUpdateEffect } from 'ahooks';
+import { Input, Space, Tree } from 'antd';
 import type { DataNode } from 'antd/es/tree';
-import { useUpdateEffect, useThrottle } from 'ahooks';
-import useMergedState from 'rc-util/es/hooks/useMergedState';
-import { updateTreeData, addTreeData, deleteTreeData, defaultNode } from './utils';
-import type { ScTreeProps, ActionType, ActionFunctionVO, DefaultAction } from './typing';
 import type { NodeMouseEventParams } from 'rc-tree/es/contextTypes';
+import useMergedState from 'rc-util/es/hooks/useMergedState';
+import React, { useMemo } from 'react';
+import type { ActionFunctionVO, ActionType, DefaultAction, ScTreeProps } from './typing';
+import { addTreeData, defaultNode, deleteTreeData, updateTreeData } from './utils';
 
 const { useState, useEffect, useRef, useCallback } = React;
 const { Search } = Input;
@@ -34,6 +34,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     loadDataPramsFormat,
     onMouseEnter,
     onMouseLeave,
+    onDataChange,
     ...restProps
   } = props;
   const isGone = useRef(false);
@@ -69,10 +70,8 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
   };
 
   const [treeData, setTreeData] = useMergedState<any[]>([], {
-    defaultValue: data,
-    postState: (value: any) => {
-      return formatTreeData(value);
-    },
+    value: data,
+    onChange: onDataChange,
   });
   const [showKey, setShowKey] = useState<string | number>('');
 
@@ -162,21 +161,17 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
           </>
         ) : null;
 
+      const title = typeof rowData.title === 'function' ? rowData.title(rowData) : rowData.title;
+
       return (
         <Space key={`${rowData.key}`}>
-          {rowData.title}
-          {actionDom}
+          <div>{title}</div>
+          <Space>{actionDom}</Space>
         </Space>
       );
     },
     [allAction, props.actionRender, showKey],
   );
-
-  useUpdateEffect(() => {
-    if (!request) {
-      setTreeData(data);
-    }
-  }, [data]);
 
   const [value, setValue] = useState<any>();
   const throttledValue = useThrottle(value, {
@@ -316,7 +311,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
 
   const treeProps = useMemo(() => {
     const inTreeProps: ScTreeProps = {
-      treeData,
+      treeData: formatTreeData(treeData),
       defaultExpandAll,
       defaultExpandParent,
       titleRender,
@@ -328,12 +323,12 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     return inTreeProps;
   }, [treeData, defaultExpandAll, defaultExpandParent, titleRender, async, onLoadData]);
 
-  const handleMouseEnter = (e: NodeMouseEventParams<HTMLSpanElement>) => {
+  const handleMouseEnter = (e: NodeMouseEventParams<DataNode, HTMLSpanElement>) => {
     setShowKey(e.node.key);
     onMouseEnter?.(e);
   };
 
-  const handleMouseLeave = (e: NodeMouseEventParams<HTMLSpanElement>) => {
+  const handleMouseLeave = (e: NodeMouseEventParams<DataNode, HTMLSpanElement>) => {
     setShowKey('');
     onMouseLeave?.(e);
   };

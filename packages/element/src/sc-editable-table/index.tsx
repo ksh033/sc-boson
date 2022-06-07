@@ -1,22 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
-import type { TableProps, TablePaginationConfig } from 'antd/es/table/Table';
-import type { ProTableProps, ActionType, TableRowSelection } from './typing';
-import type { ButtonProps } from 'antd/es/button/index';
-import useMergedState from 'rc-util/es/hooks/useMergedState';
 import { PlusOutlined } from '@ant-design/icons';
-import { Form, Button } from 'antd';
+import { Button, Form } from 'antd';
+import type { ButtonProps } from 'antd/es/button/index';
+import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
+import useMergedState from 'rc-util/es/hooks/useMergedState';
+import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
+import type { ActionType, ProTableProps, TableRowSelection } from './typing';
 
-import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
-import { columnRender, removeDeletedData } from './utils';
-import useEditableArray from './useEditableArray';
-import useMountMergeState from '../_util/useMountMergeState';
 import { useEventListener, useMount, useSetState, useThrottleFn, useUpdateEffect } from 'ahooks';
-import { validateRules } from './validateUtil';
+import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
+import isObject from 'lodash/isObject';
+import ScTable from '../sc-table';
 import Container from '../sc-table/container';
 import { genColumnList, tableColumnSort } from '../sc-table/utils';
-import ScTable from '../sc-table';
-import isObject from 'lodash/isObject';
+import useMountMergeState from '../_util/useMountMergeState';
+import useEditableArray from './useEditableArray';
+import { columnRender, removeDeletedData } from './utils';
+import { validateRules } from './validateUtil';
 
 let timer: any = null;
 export type RecordCreatorProps<T> = {
@@ -388,9 +388,9 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   const rowSelection: TableRowSelection = {
     selectedRowKeys,
     ...propsRowSelection,
-    onChange: (keys, rows) => {
+    onChange: (keys, rows, info) => {
       if (propsRowSelection && propsRowSelection.onChange) {
-        propsRowSelection.onChange(keys, rows);
+        propsRowSelection.onChange(keys, rows, info);
       }
       setSelectedRowsAndKey(keys, rows);
     },
