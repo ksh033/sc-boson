@@ -1,6 +1,6 @@
 import { Modal, Upload } from 'antd';
 import type { UploadChangeParam } from 'antd/es/upload';
-import type { UploadFile, UploadListType } from 'antd/es/upload/interface';
+import type { UploadFile } from 'antd/es/upload/interface';
 import UploadList from 'antd/es/upload/UploadList';
 import type { CSSProperties } from 'react';
 import React, { memo, useState } from 'react';
@@ -35,7 +35,7 @@ const preView = (file: string, isModal: boolean) => {
 
 const SortableItem = SortableElement<SortableItemParams>((params: SortableItemParams) => {
   // todo 自定义显示
-  const iconRender = (file: UploadFile<any>, listType?: UploadListType) => {
+  const iconRender = (file: UploadFile<any>) => {
     return preView(file.url || '', false);
   };
 
