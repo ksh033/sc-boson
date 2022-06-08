@@ -36,8 +36,6 @@ const preView = (file: string, isModal: boolean) => {
 const SortableItem = SortableElement<SortableItemParams>((params: SortableItemParams) => {
   // todo 自定义显示
   const iconRender = (file: UploadFile<any>, listType?: UploadListType) => {
-    console.log(file);
-    console.log(listType);
     return preView(file.url || '', false);
   };
 
