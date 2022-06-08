@@ -70,9 +70,10 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
   };
 
   const [treeData, setTreeData] = useMergedState<any[]>([], {
-    value: data,
+    defaultValue: data,
     onChange: onDataChange,
   });
+
   const [showKey, setShowKey] = useState<string | number>('');
 
   /**
@@ -132,6 +133,12 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
       actionFunction(key, _rowData, updateTreeData);
     },
   };
+
+  useUpdateEffect(() => {
+    if (!request) {
+      setTreeData(data);
+    }
+  }, [data]);
 
   const titleRender = useCallback(
     (rowData: DataNode) => {
