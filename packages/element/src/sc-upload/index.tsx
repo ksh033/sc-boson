@@ -1,24 +1,30 @@
+import { Modal, Upload } from 'antd';
+import type { UploadChangeParam } from 'antd/es/upload';
+import type { UploadFile, UploadListType } from 'antd/es/upload/interface';
+import UploadList from 'antd/es/upload/UploadList';
 import type { CSSProperties } from 'react';
 import React, { memo, useState } from 'react';
 import type { SortEnd } from 'react-sortable-hoc';
 import { arrayMove, SortableContainer, SortableElement } from 'react-sortable-hoc';
-import type { UploadFile } from 'antd/es/upload/interface';
-import type { UploadChangeParam } from 'antd/es/upload';
-import UploadList from 'antd/es/upload/UploadList';
-import { Modal, Upload } from 'antd';
 import { imagePreview } from './pictureUtil';
 import type { Props, SortableItemParams, SortableListParams } from './types';
 
 export { UploadFile } from 'antd/es/upload/interface';
 
-const preView = (file: string) => {
+const preView = (file: string, isModal: boolean) => {
   if (file !== '') {
     if (/\.(gif|jpg|jpeg|png|GIF|JPEG|JPG|PNG)$/.test(file)) {
-      return <img src={file} alt="avatar" style={{ width: '100%' }} />;
+      return (
+        <img
+          src={file}
+          alt="avatar"
+          style={{ width: '100%', height: isModal ? '560px' : '100%' }}
+        />
+      );
     }
     if (/\.(mp4|rmvb|avi|ts)$/.test(file)) {
       return (
-        <video controls autoPlay style={{ width: '100%' }}>
+        <video controls autoPlay style={{ width: '100%', height: isModal ? '560px' : '100%' }}>
           <source src={file} type="video/mp4" />
         </video>
       );
@@ -29,9 +35,11 @@ const preView = (file: string) => {
 
 const SortableItem = SortableElement<SortableItemParams>((params: SortableItemParams) => {
   // todo 自定义显示
-  // const iconRender = (file: UploadFile<any>, listType?: UploadListType) => {
-  //   return null;
-  // };
+  const iconRender = (file: UploadFile<any>, listType?: UploadListType) => {
+    console.log(file);
+    console.log(listType);
+    return preView(file.url || '', false);
+  };
 
   return (
     <UploadList
@@ -39,7 +47,7 @@ const SortableItem = SortableElement<SortableItemParams>((params: SortableItemPa
       showDownloadIcon={false}
       listType={params.props.listType}
       onPreview={params.onPreview}
-      // iconRender={iconRender}
+      iconRender={iconRender}
       onRemove={params.onRemove}
       items={[params.item]}
     />
@@ -112,8 +120,9 @@ const PicturesGrid: React.FC<Props> = memo(({ onChange: onFileChange, ...props }
         footer={null}
         onCancel={() => setPreviewImage('')}
         bodyStyle={{ padding: 0 }}
+        width={400}
       >
-        {preView(previewImage)}
+        {preView(previewImage, true)}
       </Modal>
     </>
   );
