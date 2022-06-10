@@ -72,6 +72,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
   const [treeData, setTreeData] = useMergedState<any[]>([], {
     defaultValue: data,
     onChange: onDataChange,
+    postState: formatTreeData,
   });
 
   const [showKey, setShowKey] = useState<string | number>('');
@@ -318,7 +319,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
 
   const treeProps = useMemo(() => {
     const inTreeProps: ScTreeProps = {
-      treeData: formatTreeData(treeData),
+      treeData: treeData,
       defaultExpandAll,
       defaultExpandParent,
       titleRender,
