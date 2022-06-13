@@ -1,13 +1,15 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import * as React from 'react';
+import { SearchOutlined } from '@ant-design/icons';
+import { useDebounceFn, useUpdateEffect } from 'ahooks';
+import { Divider, Input, Select, Spin, Tooltip } from 'antd';
 import type { SelectProps } from 'antd/es/select';
-import { Empty, Select, Spin, Tooltip } from 'antd';
-import { useUpdateEffect, useDebounceFn } from 'ahooks';
+import * as React from 'react';
 
 const { useMemo, useLayoutEffect, useState, useRef } = React;
 const { Option, OptGroup } = Select;
-export interface ScSelectProps extends SelectProps<any> {
+export interface ScSelectProps extends Omit<SelectProps<any>, 'placeholder'> {
   textField?: any;
   valueField?: string;
   groupField?: string;
@@ -25,6 +27,8 @@ export interface ScSelectProps extends SelectProps<any> {
   singleInput?: boolean;
   openReloadData?: boolean;
   preHandle?: (params: any) => boolean;
+  placeholder?: string;
+  searchInputPlaceholder?: string;
 }
 
 const ScSelect: React.FC<ScSelectProps> = (props) => {
@@ -49,6 +53,10 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     groupField = 'group',
     onDropdownVisibleChange,
     preHandle,
+    placeholder = '请选择',
+    searchInputPlaceholder = '请输入查询',
+    defaultActiveFirstOption = true,
+    allowClear = false,
     ...restProps
   } = props;
   const isGone = useRef(false);
@@ -130,11 +138,19 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     };
   }, []);
 
+  const getTextField = (item: any) => {
+    let text = typeof textField === 'string' ? item[textField] : textField(item);
+    if (text == null) {
+      text = item.label;
+    }
+    return text;
+  };
+
   const renderList = (cData: any[], level: string = '1') => {
     const list: any[] = [];
     cData.forEach((item: any, index: number) => {
       if (valueField && textField) {
-        let text = typeof textField === 'string' ? item[textField] : textField(item);
+        let text = getTextField(item);
         if (tip) {
           text = <Tooltip title={text}>{text}</Tooltip>;
         }
@@ -152,7 +168,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     if (singleInput && input !== '') {
       const itIdx = Array.isArray(dataSource)
         ? dataSource.findIndex((it) => {
-            const text = typeof textField === 'string' ? it[textField] : textField(it);
+            const text = getTextField(it);
             return text.indexOf(input) != -1;
           })
         : -1;
@@ -172,7 +188,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
           const newList =
             singleInput && input !== ''
               ? dataSource.filter((it) => {
-                  const text = typeof textField === 'string' ? it[textField] : textField(it);
+                  const text = getTextField(it);
                   return text.indexOf(input) != -1;
                 })
               : dataSource;
@@ -191,7 +207,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         list = Object.keys(groupMap).map((key, i) => {
           const childList = renderList(groupMap[key], `${i}`);
           return (
-            <OptGroup key={i} label={key}>
+            <OptGroup key={`group-${i}`} label={key}>
               {childList}
             </OptGroup>
           );
@@ -202,8 +218,9 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     return list;
   }, [JSON.stringify(dataSource), group, input, inputKey, singleInput, textField]);
 
-  const handleSearch = (value: any) => {
-    if (value.trim()) {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.trim() !== '') {
       if (remoteSearch && request) {
         //if (value.trim()) {
         debounce.cancel();
@@ -219,7 +236,6 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     setInputKey(inputKey - 1);
     onSearch && onSearch(value);
   };
-
   // if (remoteSearch) {
   //   if (request) {
   //     selectProps['onSearch'] = (value: any) => {
@@ -246,20 +262,51 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   };
 
   const handleChange = (value: any, option: any) => {
-    setInput('');
+    if (!singleInput) {
+      setInput('');
+    }
     onChange && onChange(value, option);
   };
   return (
     <Select
       //   用于解决后端返回value为null时，组件不展示输入提示文字问题
       value={selectProps.value === null ? undefined : selectProps.value}
-      showSearch={showSearch}
       onDropdownVisibleChange={handleDropdownVisibleChange}
       loading={loading}
-      onSearch={showSearch ? handleSearch : null}
+      // onSearch={showSearch ? handleSearch : null}
       onChange={handleChange}
-      searchValue={input}
-      defaultActiveFirstOption={false}
+      // searchValue={input}
+      defaultActiveFirstOption={defaultActiveFirstOption}
+      placeholder={placeholder}
+      allowClear={allowClear}
+      dropdownRender={(menu) => {
+        return (
+          <Spin spinning={loading} tip="加载中...">
+            {showSearch ? (
+              <>
+                <div style={{ padding: '4px 8px' }}>
+                  <Input
+                    placeholder={searchInputPlaceholder || placeholder || '请输入'}
+                    prefix={
+                      <SearchOutlined
+                        className="site-form-item-icon"
+                        style={{ color: '#00000073' }}
+                      />
+                    }
+                    onChange={handleSearch}
+                    value={input}
+                    style={{ width: '100%' }}
+                    allowClear={allowClear}
+                  />
+                </div>
+
+                <Divider style={{ margin: '4px 0' }} />
+              </>
+            ) : null}
+            {menu}
+          </Spin>
+        );
+      }}
       //notFoundContent={loading ? <Spin size="small" /> : <Empty />}
       ref={ref}
       {...selectProps}
