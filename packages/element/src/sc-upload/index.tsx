@@ -77,53 +77,55 @@ const SortableList = SortableContainer<SortableListParams>((params: SortableList
   );
 });
 
-const PicturesGrid: React.FC<Props> = memo(({ onChange: onFileChange, ...props }) => {
-  const [previewImage, setPreviewImage] = useState('');
-  const fileList = props.fileList || [];
-  const onSortEnd = ({ oldIndex, newIndex }: SortEnd) => {
-    onFileChange({ fileList: arrayMove(fileList, oldIndex, newIndex) });
-  };
+const PicturesGrid: React.FC<Props> = memo(
+  ({ onChange: onFileChange, preWidth = 650, ...props }) => {
+    const [previewImage, setPreviewImage] = useState('');
+    const fileList = props.fileList || [];
+    const onSortEnd = ({ oldIndex, newIndex }: SortEnd) => {
+      onFileChange({ fileList: arrayMove(fileList, oldIndex, newIndex) });
+    };
 
-  const onChange = ({ fileList: newFileList }: UploadChangeParam) => {
-    onFileChange({ fileList: newFileList });
-  };
+    const onChange = ({ fileList: newFileList }: UploadChangeParam) => {
+      onFileChange({ fileList: newFileList });
+    };
 
-  const onRemove = (file: UploadFile) => {
-    const newFileList = fileList.filter((item) => item.uid !== file.uid);
-    onFileChange({ fileList: newFileList });
-  };
+    const onRemove = (file: UploadFile) => {
+      const newFileList = fileList.filter((item) => item.uid !== file.uid);
+      onFileChange({ fileList: newFileList });
+    };
 
-  const onPreview = async (file: UploadFile) => {
-    await imagePreview(file, ({ image }) => {
-      setPreviewImage(image);
-    });
-  };
+    const onPreview = async (file: UploadFile) => {
+      await imagePreview(file, ({ image }) => {
+        setPreviewImage(image);
+      });
+    };
 
-  return (
-    <>
-      <SortableList
-        // 当移动 1 之后再触发排序事件，默认是0，会导致无法触发图片的预览和删除事件
-        distance={1}
-        items={fileList}
-        onSortEnd={onSortEnd}
-        axis="xy"
-        helperClass="SortableHelper"
-        props={props}
-        onChange={onChange}
-        onRemove={onRemove}
-        onPreview={onPreview}
-      />
-      <Modal
-        visible={!!previewImage}
-        footer={null}
-        onCancel={() => setPreviewImage('')}
-        bodyStyle={{ padding: 0 }}
-        width={400}
-      >
-        {preView(previewImage, true)}
-      </Modal>
-    </>
-  );
-});
+    return (
+      <>
+        <SortableList
+          // 当移动 1 之后再触发排序事件，默认是0，会导致无法触发图片的预览和删除事件
+          distance={1}
+          items={fileList}
+          onSortEnd={onSortEnd}
+          axis="xy"
+          helperClass="SortableHelper"
+          props={props}
+          onChange={onChange}
+          onRemove={onRemove}
+          onPreview={onPreview}
+        />
+        <Modal
+          visible={!!previewImage}
+          footer={null}
+          onCancel={() => setPreviewImage('')}
+          bodyStyle={{ padding: 0 }}
+          width={preWidth}
+        >
+          {preView(previewImage, true)}
+        </Modal>
+      </>
+    );
+  },
+);
 
 export default PicturesGrid;

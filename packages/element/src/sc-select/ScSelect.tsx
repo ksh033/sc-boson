@@ -218,8 +218,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     return list;
   }, [JSON.stringify(dataSource), group, input, inputKey, singleInput, textField]);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+  const onSearchInputChange = (value: string) => {
     if (value.trim() !== '') {
       if (remoteSearch && request) {
         //if (value.trim()) {
@@ -235,6 +234,11 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     setInput(value);
     setInputKey(inputKey - 1);
     onSearch && onSearch(value);
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    onSearchInputChange(value);
   };
   // if (remoteSearch) {
   //   if (request) {
@@ -267,48 +271,58 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     }
     onChange && onChange(value, option);
   };
+
+  let defaultSelectProps: any = {
+    dropdownRender: (menu: any) => {
+      return (
+        <Spin spinning={loading} tip="加载中...">
+          {showSearch ? (
+            <>
+              <div style={{ padding: '4px 8px' }}>
+                <Input
+                  placeholder={searchInputPlaceholder || placeholder || '请输入'}
+                  prefix={
+                    <SearchOutlined
+                      className="site-form-item-icon"
+                      style={{ color: '#00000073' }}
+                    />
+                  }
+                  onChange={handleSearch}
+                  value={input}
+                  style={{ width: '100%' }}
+                  allowClear={allowClear}
+                />
+              </div>
+
+              <Divider style={{ margin: '4px 0' }} />
+            </>
+          ) : null}
+          {menu}
+        </Spin>
+      );
+    },
+  };
+
+  if (selectProps.dropdownRender) {
+    defaultSelectProps = {
+      showSearch: showSearch,
+      onSearch: showSearch ? onSearchInputChange : null,
+      searchValue: input,
+    };
+  }
+
   return (
     <Select
       //   用于解决后端返回value为null时，组件不展示输入提示文字问题
       value={selectProps.value === null ? undefined : selectProps.value}
       onDropdownVisibleChange={handleDropdownVisibleChange}
       loading={loading}
-      // onSearch={showSearch ? handleSearch : null}
       onChange={handleChange}
-      // searchValue={input}
       defaultActiveFirstOption={defaultActiveFirstOption}
       placeholder={placeholder}
       allowClear={allowClear}
-      dropdownRender={(menu) => {
-        return (
-          <Spin spinning={loading} tip="加载中...">
-            {showSearch ? (
-              <>
-                <div style={{ padding: '4px 8px' }}>
-                  <Input
-                    placeholder={searchInputPlaceholder || placeholder || '请输入'}
-                    prefix={
-                      <SearchOutlined
-                        className="site-form-item-icon"
-                        style={{ color: '#00000073' }}
-                      />
-                    }
-                    onChange={handleSearch}
-                    value={input}
-                    style={{ width: '100%' }}
-                    allowClear={allowClear}
-                  />
-                </div>
-
-                <Divider style={{ margin: '4px 0' }} />
-              </>
-            ) : null}
-            {menu}
-          </Spin>
-        );
-      }}
-      //notFoundContent={loading ? <Spin size="small" /> : <Empty />}
       ref={ref}
+      {...defaultSelectProps}
       {...selectProps}
     >
       {children}

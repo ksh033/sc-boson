@@ -1,11 +1,11 @@
-import type { UploadFile } from 'antd/es/upload/interface';
 import type { UploadProps } from 'antd/es/upload';
-import type { UploadChangeParam } from 'antd/es/upload/interface';
+import type { UploadChangeParam, UploadFile } from 'antd/es/upload/interface';
 import type { ReactNode } from 'react';
 
 export type Props = {
   onChange: (params: { fileList: UploadFile[] }) => void;
   children?: ReactNode;
+  preWidth?: number | string;
 } & UploadProps;
 
 type SortableParams = {
