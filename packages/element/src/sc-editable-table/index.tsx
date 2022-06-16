@@ -14,8 +14,9 @@ import ScTable from '../sc-table';
 import Container from '../sc-table/container';
 import { genColumnList, tableColumnSort } from '../sc-table/utils';
 import useMountMergeState from '../_util/useMountMergeState';
+import EditableCell from './EditableCell';
 import useEditableArray from './useEditableArray';
-import { columnRender, removeDeletedData } from './utils';
+import { removeDeletedData } from './utils';
 import { validateRules } from './validateUtil';
 
 let timer: any = null;
@@ -43,6 +44,8 @@ export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
   onChange?: (value: T[]) => void;
   /** @name 点击编辑 */
   clickEdit?: boolean;
+  /** @name 点击类型 */
+  clickType?: 'row' | 'cell';
   /** @name 原先的 table OnChange */
   onTableChange?: TableProps<T>['onChange'];
   /** @name 是否包含删除数据 */
@@ -79,6 +82,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     columns: propsColumns,
     rowSelection: propsRowSelection = false,
     clickEdit = false,
+    clickType = 'row',
     containsDeletedData = false,
     recordCreatorProps = false,
     maxLength,
@@ -280,109 +284,76 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     return index + 1;
   };
 
-  const columns = useMemo(() => {
-    const newPropsColumns = propsColumns?.filter((it) => it.hidden !== true);
-    let newColumns: any = newPropsColumns?.map((columnProps) => {
-      let newFixed: any = columnProps.fixed;
-      let { width } = columnProps;
-      if (columnProps.dataIndex === 'options') {
-        if (columnProps.fixed === undefined || columnProps.fixed === null) {
-          newFixed = 'right';
-        }
-        if (width === undefined || width === null) {
-          width = 90;
-        }
+  const newPropsColumns = propsColumns?.filter((it) => it.hidden !== true);
+  let columns: any = newPropsColumns?.map((columnProps) => {
+    let newFixed: any = columnProps.fixed;
+    let { width } = columnProps;
+    if (columnProps.dataIndex === 'options') {
+      if (columnProps.fixed === undefined || columnProps.fixed === null) {
+        newFixed = 'right';
       }
+      if (width === undefined || width === null) {
+        width = 90;
+      }
+    }
 
-      return {
-        ...columnProps,
-        fixed: newFixed,
-        width,
-        onCell(data: any, index?: number | undefined) {
-          const cellProps: any = columnProps.onCell ? columnProps.onCell(data, index) : {};
-          return {
-            ...cellProps,
-            onClick: (e: any) => {
-              if (cellProps && cellProps?.onClick) {
-                cellProps?.onClick(e);
-              }
-              if (columnProps.editable) {
-                editableUtils.setFouce(String(columnProps.dataIndex));
-              } else if (firstEditable) {
-                editableUtils.setFouce(String(firstEditable.dataIndex));
-              }
-            },
-          };
-        },
-        render: (text: any, rowData: T, index: number) => {
-          if (readonly) {
-            if (columnProps.render) {
-              const renderDom = columnProps.render(text, rowData, index, {
-                ...editableUtils,
-              });
-              return renderDom;
+    return {
+      ...columnProps,
+      fixed: newFixed,
+      width,
+      onCell(data: any, index?: number | undefined) {
+        const cellProps: any = columnProps.onCell ? columnProps.onCell(data, index) : {};
+        return {
+          ...cellProps,
+          onClick: (e: any) => {
+            if (cellProps && cellProps?.onClick) {
+              cellProps?.onClick(e);
             }
-            return text;
-          }
-
-          const renderProps = {
-            columnProps,
-            text,
-            rowData,
-            index,
-            editableUtils,
-            clickEdit,
-            errorLine,
-          };
-          const { isEditable } = editableUtils.isEditable(rowData);
-          if (
-            errorLine?.index === rowData.rowIndex &&
-            errorLine?.field === columnProps.dataIndex &&
-            !isEditable
-          ) {
-            return (
-              <span className="ant-input-affix-wrapper ant-input ant-input-status-error">
-                {columnRender<T>(renderProps)}
-              </span>
-            );
-          }
-          return columnRender<T>(renderProps);
-        },
-      };
+            if (columnProps.editable) {
+              editableUtils.setFouce(String(columnProps.dataIndex));
+            } else if (firstEditable) {
+              editableUtils.setFouce(String(firstEditable.dataIndex));
+            }
+          },
+        };
+      },
+      render: (text: any, rowData: T, index: number) => {
+        return (
+          <EditableCell
+            columnProps={columnProps}
+            text={text}
+            rowData={rowData}
+            index={index}
+            editableUtils={editableUtils}
+            readonly={readonly}
+            errorLine={errorLine}
+            clickType={clickType}
+          />
+        );
+      },
+    };
+  });
+  if (Array.isArray(columns)) {
+    columns = genColumnList<any>({
+      columns: columns,
+      map: counter.columnsMap,
+      counter,
+    }).sort(tableColumnSort(counter.columnsMap));
+  }
+  if (showIndex) {
+    columns.unshift({
+      dataIndex: '_rowIndex',
+      title: '序号',
+      width: 60,
+      fixed: true,
+      render: rowIndexRender,
     });
-    if (Array.isArray(newColumns)) {
-      newColumns = genColumnList<any>({
-        columns: newColumns,
-        map: counter.columnsMap,
-        counter,
-      }).sort(tableColumnSort(counter.columnsMap));
-    }
-    if (showIndex) {
-      newColumns.unshift({
-        dataIndex: '_rowIndex',
-        title: '序号',
-        width: 60,
-        fixed: true,
-        render: rowIndexRender,
-      });
-    }
-    if (readonly) {
-      newColumns = newColumns.filter((it: { dataIndex: string }) => {
-        return it.dataIndex !== 'options';
-      });
-    }
-    return newColumns;
-  }, [
-    propsColumns,
-    editableUtils.editableKeys.join(','),
-    editableUtils.fouceDataIndex,
-    clickEdit,
-    JSON.stringify(errorLine),
-    JSON.stringify(counter),
-    JSON.stringify(innerPagination),
-    showIndex,
-    readonly,
-  ]);
+  }
+  if (readonly) {
+    columns = columns.filter((it: { dataIndex: string }) => {
+      return it.dataIndex !== 'options';
+    });
+  }
 
   /** 行选择相关的问题 */
   const rowSelection: TableRowSelection = {

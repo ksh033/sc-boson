@@ -1,9 +1,9 @@
-import React from 'react';
 import { Form, Space } from 'antd';
+import type { DataIndex } from 'rc-table/es/interface';
+import React from 'react';
+import { defaultComponent } from './defaultComponent';
 import type { ProColumns, ProTableEditableFnType } from './typing';
 import type { UseEditableUtilType } from './useEditableArray';
-import { defaultComponent } from './defaultComponent';
-import type { DataIndex } from 'rc-table/es/interface';
 
 /** 转化列的定义 */
 type ColumnRenderInterface<T> = {
@@ -14,11 +14,12 @@ type ColumnRenderInterface<T> = {
   editableUtils: UseEditableUtilType;
   // fouceDataIndex: string;
   clickEdit: boolean;
+  clickType: 'row' | 'cell';
 };
 const isNil = (value: any) => value === null || value === undefined;
 
 /** 判断可不可编辑 */
-function isEditableCell<T>(
+export function isEditableCell<T>(
   text: any,
   rowData: T,
   index: number,
@@ -46,7 +47,7 @@ function isEditableCell<T>(
 export const spellNamePath = (
   base: React.Key,
   dataIndex: React.Key | React.Key[] | any,
-): React.Key[] | React.Key | undefined => {
+): React.Key[] => {
   if (Array.isArray(dataIndex)) {
     return [base, ...dataIndex];
   }

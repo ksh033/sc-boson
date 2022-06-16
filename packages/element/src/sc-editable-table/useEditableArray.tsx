@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { GetRowKey } from 'antd/es/table/interface';
-import type { FormInstance } from 'antd/es/form/index';
-import useMergedState from 'rc-util/es/hooks/useMergedState';
-import useLazyKVMap from 'antd/es/table/hooks/useLazyKVMap';
 import { LoadingOutlined } from '@ant-design/icons';
 import { message, Popconfirm } from 'antd';
-import ReactDOM from 'react-dom';
+import type { FormInstance } from 'antd/es/form/index';
+import useLazyKVMap from 'antd/es/table/hooks/useLazyKVMap';
+import type { GetRowKey } from 'antd/es/table/interface';
+import useMergedState from 'rc-util/es/hooks/useMergedState';
 import set from 'rc-util/es/utils/set';
+import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
 import useMountMergeState from '../_util/useMountMergeState';
 import { removeDeletedData } from './utils';
 
@@ -389,6 +389,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
     undefined,
   );
   const [fouceDataIndex, setFouceDataIndex] = useState<string>('');
+  const [cellEditKey, setCellEditKey] = useState<string>('');
   const newLineRecordRef = useRef<NewLineConfig<RecordType> | undefined>(undefined);
   const editComRef = useRef<any>();
   // const innerParams = useRef<UseEditableArrayProps<RecordType>>(props);
@@ -702,6 +703,8 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
     setEditableRowKeys,
     fouceDataIndex,
     setFouce,
+    cellEditKey,
+    setCellEditKey,
     editComRef,
     isEditable,
     actionRender,
