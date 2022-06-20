@@ -1,4 +1,5 @@
-import { Modal, Upload } from 'antd';
+import { FileOutlined, LoadingOutlined } from '@ant-design/icons';
+import { Modal, Spin, Upload } from 'antd';
 import type { UploadChangeParam } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import UploadList from 'antd/es/upload/UploadList';
@@ -6,7 +7,6 @@ import type { CSSProperties } from 'react';
 import React, { memo, useState } from 'react';
 import type { SortEnd } from 'react-sortable-hoc';
 import { arrayMove, SortableContainer, SortableElement } from 'react-sortable-hoc';
-import { imagePreview } from './pictureUtil';
 import type { Props, SortableItemParams, SortableListParams } from './types';
 
 export { UploadFile } from 'antd/es/upload/interface';
@@ -30,12 +30,15 @@ const preView = (file: string, isModal: boolean) => {
       );
     }
   }
-  return <img src={file} alt="avatar" style={{ width: '100%' }} />;
+  return <FileOutlined style={{ width: '100%', color: '#40a9ff' }} />;
 };
 
 const SortableItem = SortableElement<SortableItemParams>((params: SortableItemParams) => {
   // todo 自定义显示
   const iconRender = (file: UploadFile<any>) => {
+    if (file.status === 'uploading') {
+      return <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />;
+    }
     return preView(file.url || '', false);
   };
 
@@ -56,19 +59,27 @@ const listStyle: CSSProperties = {
   display: 'flex',
   flexWrap: 'wrap',
   maxWidth: '100%',
+  alignItems: 'center',
 };
 const SortableList = SortableContainer<SortableListParams>((params: SortableListParams) => {
+  const listType = params.props.listType || 'picture-card';
+  console.log('params.items', params.items);
   return (
     <div style={listStyle} className="sc-sort-list">
       {params.items.map((item, index) => (
-        <SortableItem
+        <div
+          className={[listType === 'picture' ? 'upload-list-inline' : ''].join(' ')}
           key={`${item.uid}`}
-          index={index}
-          item={item}
-          props={params.props}
-          onPreview={params.onPreview}
-          onRemove={params.onRemove}
-        />
+        >
+          <SortableItem
+            key={`sort-${item.uid}`}
+            index={index}
+            item={item}
+            props={params.props}
+            onPreview={params.onPreview}
+            onRemove={params.onRemove}
+          />{' '}
+        </div>
       ))}
       <Upload {...params.props} showUploadList={false} onChange={params.onChange}>
         {params.props.children}
@@ -94,11 +105,11 @@ const PicturesGrid: React.FC<Props> = memo(
       onFileChange({ fileList: newFileList });
     };
 
-    const onPreview = async (file: UploadFile) => {
-      await imagePreview(file, ({ image }) => {
-        setPreviewImage(image);
-      });
-    };
+    // const onPreview = async (file: UploadFile) => {
+    //   await imagePreview(file, ({ image }) => {
+    //     setPreviewImage(image);
+    //   });
+    // };
 
     return (
       <>
@@ -112,7 +123,7 @@ const PicturesGrid: React.FC<Props> = memo(
           props={props}
           onChange={onChange}
           onRemove={onRemove}
-          onPreview={onPreview}
+          // onPreview={onPreview}
         />
         <Modal
           visible={!!previewImage}

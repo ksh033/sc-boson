@@ -10,7 +10,7 @@ export type Props = {
 
 type SortableParams = {
   props: Omit<Props, 'onChange'>;
-  onPreview: (file: UploadFile) => void;
+  onPreview?: (file: UploadFile) => void;
   onRemove: (file: UploadFile) => void | boolean;
 };
 
