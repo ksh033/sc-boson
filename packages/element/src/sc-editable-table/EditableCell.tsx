@@ -77,24 +77,6 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
     );
   }
 
-  if (columnProps.dataIndex === 'options') {
-    return (
-      <Form.Item shouldUpdate noStyle>
-        {(form: any) => (
-          <Space size={16}>
-            {editableUtils.actionRender(
-              {
-                ...rowData,
-                index: columnProps.index || index,
-              },
-              form,
-            )}
-          </Space>
-        )}
-      </Form.Item>
-    );
-  }
-
   if (clickType === 'row') {
     const mode =
       isEditable &&
@@ -103,6 +85,23 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
         : 'read';
 
     if (mode === 'edit') {
+      if (columnProps.dataIndex === 'options') {
+        return (
+          <Form.Item shouldUpdate noStyle>
+            {(form: any) => (
+              <Space size={16}>
+                {editableUtils.actionRender(
+                  {
+                    ...rowData,
+                    index: columnProps.index || index,
+                  },
+                  form,
+                )}
+              </Space>
+            )}
+          </Form.Item>
+        );
+      }
       const autoFocus = columnProps?.dataIndex === editableUtils.fouceDataIndex;
       const Cmp = defaultComponent(columnProps, name, text, rowData, autoFocus);
       return Cmp;
