@@ -401,20 +401,17 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
   const editableType = props.type || 'single';
   const [getRecordByKey] = useLazyKVMap(props.dataSource, 'children', props.getRowKey);
 
-  const setAllEditable = useCallback(
-    (rdata: any[]) => {
-      if (editableType === 'multiple' && Array.isArray(rdata)) {
-        return rdata.map((item: RecordType) => {
-          return item[props.rowKey];
-        });
-      }
-      return [];
-    },
-    [editableType],
-  );
+  const setAllEditable = (rdata: any[]) => {
+    if (editableType === 'multiple' && Array.isArray(rdata)) {
+      return rdata.map((item: RecordType) => {
+        return item[props.rowKey];
+      });
+    }
+    return [];
+  };
 
   const [editableKeys, setEditableRowKeys] = useMergedState<React.Key[]>([], {
-    value: props.editableKeys || setAllEditable(props.dataSource),
+    value: props.editableKeys,
     onChange: props.onChange
       ? (keys) => {
           props?.onChange?.(
