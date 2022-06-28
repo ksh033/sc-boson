@@ -17,6 +17,7 @@ type EditableCellProps<T> = {
   readonly: boolean;
   errorLine?: ErrorLineState;
   clickType?: 'row' | 'cell';
+  clickEdit: boolean;
 };
 
 const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
@@ -29,6 +30,7 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
     readonly,
     errorLine,
     clickType = 'row',
+    clickEdit,
   } = props;
   const [editing, setEditing] = useState(false);
 
@@ -105,6 +107,24 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
       const autoFocus = columnProps?.dataIndex === editableUtils.fouceDataIndex;
       const Cmp = defaultComponent(columnProps, name, text, rowData, autoFocus);
       return Cmp;
+    }
+
+    if (clickEdit && columnProps.dataIndex === 'options') {
+      return (
+        <Form.Item shouldUpdate noStyle>
+          {(form: any) => (
+            <Space size={16}>
+              {editableUtils.actionRender(
+                {
+                  ...rowData,
+                  index: columnProps.index || index,
+                },
+                form,
+              )}
+            </Space>
+          )}
+        </Form.Item>
+      );
     }
   } else {
     const mode = !isEditableCell(

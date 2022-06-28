@@ -326,6 +326,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
             readonly={readonly}
             errorLine={errorLine}
             clickType={clickType}
+            clickEdit={clickEdit}
           />
         );
       },
