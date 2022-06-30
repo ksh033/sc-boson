@@ -58,7 +58,6 @@ function useContainer(props: UseContainerProps = {}) {
     });
     return columnKeyMap;
   }, [props.columns, props.columnsState?.defaultValue, defaultColumnsStateMap]);
-  console.log(defaultColumnKeyMap);
 
   // 共享状态比较难，就放到这里了
   const [keyWords, setKeyWords] = useState<string | undefined>('');
