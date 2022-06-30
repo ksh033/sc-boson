@@ -85,7 +85,6 @@ function useContainer(props: UseContainerProps = {}) {
       onChange: props.columnsState?.onChange,
     },
   );
-  console.log(columnsMap);
 
   const [filtersArg, setFiltersArg] = useMergedState<Record<string, FilterValue | null>>({});
 

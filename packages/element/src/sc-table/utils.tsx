@@ -279,8 +279,16 @@ export function genColumnList<T>(props: {
   const { columns, map, counter } = props;
   return columns
     .map((columnProps, columnsIndex) => {
-      const { dataIndex, valueEnum, valueType, children, filters = [], canSearch } = columnProps;
-      const columnKey = genColumnKey(dataIndex, columnsIndex);
+      const {
+        dataIndex,
+        valueEnum,
+        valueType,
+        children,
+        filters = [],
+        canSearch,
+        key,
+      } = columnProps;
+      const columnKey = genColumnKey(dataIndex || key, columnsIndex);
       // 这些都没有，说明是普通的表格不需要 pro 管理
       const noNeedPro = !dataIndex && !valueEnum && !valueType && !children;
       if (noNeedPro) {

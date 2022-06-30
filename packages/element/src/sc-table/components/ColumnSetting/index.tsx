@@ -160,7 +160,7 @@ const CheckboxList: React.FC<{
         const tempConfig = columnsMap[columnKey] || {};
         const newSetting = { ...tempConfig };
         if (e.checked) {
-          delete newSetting.show;
+          newSetting.show = true;
         } else {
           newSetting.show = false;
         }
