@@ -1,27 +1,27 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
-import * as React from 'react';
+import { useRequest, useSetState, useUpdateEffect } from 'ahooks';
 import type { CardProps } from 'antd';
-import { Table, Tooltip, Divider, Card } from 'antd';
-import type { TableProps, TablePaginationConfig } from 'antd/es/table/Table';
-import { useUpdateEffect, useRequest, useSetState } from 'ahooks';
+import { Card, Divider, Table, Tooltip } from 'antd';
+import type { ColumnType } from 'antd/es/table';
+import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
+import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
+import * as React from 'react';
+import useDeepCompareEffect from '../_util/useDeepCompareEffect';
+import type { DropDataType } from './components/DraggableBodyRow/common';
+import { moveRowData } from './components/DraggableBodyRow/common';
+import type { ListToolBarProps } from './components/ListToolBar';
 import type { OptionConfig, ToolBarProps } from './components/ToolBar';
 import Toolbar from './components/ToolBar';
 import Container from './container';
-import type { ListToolBarProps } from './components/ListToolBar';
-import { genColumnList, tableColumnSort, genColumnKey } from './utils';
-import useDeepCompareEffect from '../_util/useDeepCompareEffect';
-import type { ColumnType } from 'antd/es/table';
-import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
-import type { DropDataType } from './components/DraggableBodyRow/common';
-import { moveRowData } from './components/DraggableBodyRow/common';
+import { genColumnKey, genColumnList, tableColumnSort } from './utils';
 
 import isArray from 'lodash/isArray';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import DraggableBodyRow from './components/DraggableBodyRow';
 import DraggableBodyCell from './components/DraggableBodyRow/DraggableBodyCell';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { DndProvider } from 'react-dnd';
 
 const { useState, useEffect, useRef, useMemo } = React;
 export type { ColumnsType } from 'antd/es/table/Table';
@@ -210,7 +210,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
           _data = onLoad(_data);
         }
         setDataSource(_data);
-        getDataKeys(_data.rows || []);
+        if (Array.isArray(_data)) {
+          getDataKeys(_data);
+        } else {
+          getDataKeys(_data.rows || []);
+        }
       }
     }
   };
@@ -261,13 +265,15 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       // 先过滤掉当前有数据的选择项
       crowKeys = crowKeys.filter((item) => !_dataKeys.has(item));
       crows = crows.filter((item) => !_dataKeys.has(item[rowKey]));
-
       crowKeys = [...crowKeys, ..._rowKeys].filter((item) => item !== undefined && item !== null);
       const srowKeys = new Set(crowKeys);
-      crows = [...crows, ..._rows].filter(
-        (item) => item !== undefined && item !== null && srowKeys.has(item[rowKey]),
-      );
+      crowKeys = Array.from(srowKeys);
+      const map = new Map<string, any>();
 
+      [...crows, ..._rows].forEach((item) => {
+        map.set(item[rowKey], item);
+      });
+      crows = crowKeys.map((key) => map.get(key));
       changeRowSelect(crowKeys, crows);
     }
   };
