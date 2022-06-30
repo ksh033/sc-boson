@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from 'react';
-import type { TableColumnType } from 'antd';
-import { Button } from 'antd';
-import { Input, Space, Typography } from 'antd';
-import type { ActionType } from './typing';
-import get from 'rc-util/es/utils/get';
-import omitUndefinedAndEmptyArr from '../_util/omitUndefinedAndEmptyArr';
-import LabelIconTip from '../_util/LabelIconTip';
-import type { ColumnsState, useContainer } from './container';
 import { SearchOutlined } from '@ant-design/icons';
+import type { TableColumnType } from 'antd';
+import { Button, Input, Space, Typography } from 'antd';
 import { cloneElement } from 'antd/es/_util/reactNode';
+import get from 'rc-util/es/utils/get';
+import React from 'react';
+import LabelIconTip from '../_util/LabelIconTip';
+import omitUndefinedAndEmptyArr from '../_util/omitUndefinedAndEmptyArr';
+import type { useContainer } from './container';
+import type { ColumnsState } from './ScTable';
+import type { ActionType } from './typing';
 
 export const { isValidElement } = React;
 
@@ -279,16 +279,8 @@ export function genColumnList<T>(props: {
   const { columns, map, counter } = props;
   return columns
     .map((columnProps, columnsIndex) => {
-      const {
-        key,
-        dataIndex,
-        valueEnum,
-        valueType,
-        children,
-        filters = [],
-        canSearch,
-      } = columnProps;
-      const columnKey = genColumnKey(key, columnsIndex);
+      const { dataIndex, valueEnum, valueType, children, filters = [], canSearch } = columnProps;
+      const columnKey = genColumnKey(dataIndex, columnsIndex);
       // 这些都没有，说明是普通的表格不需要 pro 管理
       const noNeedPro = !dataIndex && !valueEnum && !valueType && !children;
       if (noNeedPro) {
@@ -336,6 +328,7 @@ export function genColumnList<T>(props: {
       }
 
       const tempColumns: any = {
+        key: columnKey,
         index: columnsIndex,
         ...extraProps,
         ...columnProps,

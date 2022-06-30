@@ -30,7 +30,7 @@ export interface CustomSearchComponentProps {
   value?: any;
   onChange?: (e: any) => void;
 }
-
+export const OpColKey = '_OperateKey';
 export declare type CustomSearchComponent =
   | React.ReactNode
   | ((props: CustomSearchComponentProps) => React.ReactNode);
@@ -52,6 +52,23 @@ export declare type ScProColumn<RecordType = unknown> = (
   | ScProColumnGroupType<RecordType>
   | ScProColumnType<RecordType>
 )[];
+
+export type ColumnsState = {
+  show?: boolean;
+  fixed?: 'right' | 'left' | undefined;
+  order?: number;
+  disable?:
+    | boolean
+    | {
+        checkbox: boolean;
+      };
+};
+
+export type ColumnsStateType = {
+  defaultValue?: Record<string, ColumnsState>;
+  value?: Record<string, ColumnsState>;
+  onChange?: (map: Record<string, ColumnsState>) => void;
+};
 
 export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   onSelectRow?: (selectedRowKeys: string[], selectedRows: any[]) => void; // 当选中时触发
@@ -89,6 +106,7 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   cardProps?: CardProps;
   /** @name table 列属性 */
   columns?: ScProColumn<T>;
+  columnsState?: ColumnsStateType;
   treeDataIndex?: string;
   onDrop?: (dargNode: any) => Promise<any> | boolean | void;
   dragSort?: boolean | string;
@@ -126,6 +144,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     treeDataIndex,
     refresh,
     onDrop,
+    columnsState,
     ...restPros
   } = props;
 
@@ -422,28 +441,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       map: counter.columnsMap,
       counter,
     }).sort(tableColumnSort(counter.columnsMap));
-    // .map(({ onCell, ...props }: any) => {
-    //   props.onCell = (record: any, rowIndex: any) => {
-    //     let colProp = onCell && onCell(record, rowIndex);
-    //     if (!colProp) {
-    //       colProp = {};
-    //     }
-    //     if (dragSort) {
-    //       colProp = {
-    //         ...colProp,
-    //         record,
-    //         rowIndex,
-    //         moveRow: moveRow,
-    //         index: rowIndex,
-    //         treeDataIndex,
-    //         dataIndex: props.dataIndex,
-    //       };
-    //     }
-    //     return colProp;
-    //   };
-    //   return props;
-    // });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (treeDataIndex) {
       cols.find((col) => {
         if (col.dataIndex === treeDataIndex) {

@@ -1,18 +1,18 @@
 /* eslint-disable no-empty-pattern */
-import React, { useEffect, useMemo } from 'react';
 import { ReloadOutlined, SettingOutlined } from '@ant-design/icons';
-import type { TableColumnType } from 'antd';
-import { Tooltip } from 'antd';
-import type { SearchProps } from 'antd/es/input';
 import type { IntlType } from '@ant-design/pro-provider';
 import { useIntl } from '@ant-design/pro-provider';
+import { Tooltip } from 'antd';
+import type { SearchProps } from 'antd/es/input';
+import React, { useEffect, useMemo } from 'react';
+import Container from '../../container';
+import { OpColKey, ScProColumnType } from '../../ScTable';
+import type { ActionType } from '../../typing';
+import ColumnSetting from '../ColumnSetting';
 import type { ListToolBarProps } from '../ListToolBar';
 import ListToolBar from '../ListToolBar';
-import ColumnSetting from '../ColumnSetting';
-import FullScreenIcon from './FullscreenIcon';
 import DensityIcon from './DensityIcon';
-import Container from '../../container';
-import type { ActionType } from '../../typing';
+import FullScreenIcon from './FullscreenIcon';
 
 export type OptionConfig = {
   density?: boolean;
@@ -50,7 +50,7 @@ export type ToolBarProps<T = unknown> = {
   selectedRows?: T[];
   className?: string;
   onSearch?: (keyWords: string) => void;
-  columns: TableColumnType<T>[];
+  columns: ScProColumnType<T>[];
 };
 
 function getButtonText({}: OptionConfig & {
@@ -87,7 +87,7 @@ function renderDefaultOption<T>(
   defaultOptions: OptionConfig & {
     intl: IntlType;
   },
-  columns: TableColumnType<T>[],
+  columns: ScProColumnType<T>[],
 ) {
   return Object.keys(options)
     .filter((item) => item)
@@ -97,7 +97,7 @@ function renderDefaultOption<T>(
         return null;
       }
       if (key === 'setting') {
-        return <ColumnSetting {...(value || {})} columns={columns} key={key} />;
+        return <ColumnSetting<any> {...(value || {})} columns={columns} key={key} />;
       }
       // if (key === 'fullScreen') {
       //   return (
@@ -169,7 +169,7 @@ function ToolBar<T>({
         ...defaultOptions,
         intl,
       },
-      columns,
+      columns.filter((it) => it.dataIndex !== OpColKey),
     );
   }, [action, columns, intl, propsOptions]);
   // 操作列表

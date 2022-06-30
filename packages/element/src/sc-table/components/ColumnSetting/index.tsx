@@ -11,8 +11,8 @@ import classNames from 'classnames';
 import type { FixedType } from 'rc-table/es/interface';
 import type { PropsWithChildren } from 'react';
 import React, { useContext, useEffect, useRef } from 'react';
-import type { ColumnsState } from '../../container';
 import Container from '../../container';
+import { ColumnsState, OpColKey } from '../../ScTable';
 import { genColumnKey } from '../../utils';
 // import type { ProColumns } from '../../typing';
 // import type { TableColumnType } from 'antd';
@@ -21,8 +21,6 @@ type ColumnSettingProps<T = any> = {
   draggable?: boolean;
   checkable?: boolean;
 };
-
-const OpColKey = '_OperateKey';
 
 const ToolTipIcon: React.FC<
   PropsWithChildren<{

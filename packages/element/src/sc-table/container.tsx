@@ -1,18 +1,12 @@
-import { createContainer } from 'unstated-next';
-import { useState, useRef, useEffect, useMemo } from 'react';
-import useMergedState from 'rc-util/es/hooks/useMergedState';
-import type { FixedType } from 'rc-table/es/interface';
-import type { ScTableProps } from './index';
-import type { DensitySize } from './components/ToolBar/DensityIcon';
-import type { ActionType } from './typing';
 import type { FilterValue } from 'antd/es/table/interface';
+import useMergedState from 'rc-util/es/hooks/useMergedState';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { createContainer } from 'unstated-next';
+import type { DensitySize } from './components/ToolBar/DensityIcon';
+import type { ScTableProps } from './index';
+import type { ColumnsState } from './ScTable';
+import type { ActionType } from './typing';
 import { genColumnKey } from './utils';
-
-export type ColumnsState = {
-  show?: boolean;
-  fixed?: FixedType;
-  order?: number;
-};
 
 export type UseContainerProps = {
   columnsStateMap?: Record<string, ColumnsState>;
@@ -22,6 +16,7 @@ export type UseContainerProps = {
   params?: any;
   request?: (params: any) => Promise<any>; // 请求数据的远程方法
   columns?: any[];
+  columnsState?: ScTableProps<any>['columnsState'];
 };
 
 export type SearchKeywordState = {
@@ -33,21 +28,37 @@ function useContainer(props: UseContainerProps = {}) {
   const actionRef = useRef<ActionType>();
   const propsRef = useRef<ScTableProps<any>>();
   const whetherRemote = props.request !== undefined && props.request !== null;
+  const defaultColumnsStateMap = useMemo(() => {
+    return props.columnsState && props.columnsState.defaultValue
+      ? props.columnsState.defaultValue
+      : {};
+  }, []);
 
   const defaultColumnKeyMap = useMemo(() => {
     const columnKeyMap = {};
     props.columns?.forEach(({ key, dataIndex, fixed, disable }, index) => {
       const columnKey = genColumnKey(key ?? (dataIndex as React.Key), index);
       if (columnKey) {
-        columnKeyMap[columnKey] = {
-          show: true,
-          fixed,
-          disable,
-        };
+        if (props.columnsState?.defaultValue) {
+          const state = defaultColumnsStateMap[columnKey] || {};
+          columnKeyMap[columnKey] = {
+            show: false,
+            fixed,
+            disable,
+            ...state,
+          };
+        } else {
+          columnKeyMap[columnKey] = {
+            show: true,
+            fixed,
+            disable,
+          };
+        }
       }
     });
     return columnKeyMap;
-  }, [props.columns]);
+  }, [props.columns, props.columnsState?.defaultValue, defaultColumnsStateMap]);
+  console.log(defaultColumnKeyMap);
 
   // 共享状态比较难，就放到这里了
   const [keyWords, setKeyWords] = useState<string | undefined>('');
@@ -66,12 +77,15 @@ function useContainer(props: UseContainerProps = {}) {
   }, [props.size]);
 
   const [columnsMap, setColumnsMap] = useMergedState<Record<string, ColumnsState>>(
-    props.columnsStateMap || defaultColumnKeyMap,
+    () => {
+      return props.columnsState?.value || defaultColumnKeyMap;
+    },
     {
-      value: props.columnsStateMap,
-      onChange: props.onColumnsStateChange,
+      value: props.columnsState?.value,
+      onChange: props.columnsState?.onChange,
     },
   );
+  console.log(columnsMap);
 
   const [filtersArg, setFiltersArg] = useMergedState<Record<string, FilterValue | null>>({});
 
