@@ -5,10 +5,10 @@ import type {
   FormItemProp as ScFormItemProp,
   FormLayout,
 } from '@scboson/sc-element/es/c-form';
-import type { ScProColumnType } from '@scboson/sc-element/es/sc-table';
 import type { SearchBarItem } from '@scboson/sc-element/es/sc-search-bar';
+import type { ScProColumnType } from '@scboson/sc-element/es/sc-table';
+import type { ButtonProps, ButtonType } from 'antd/es/button';
 import type React from 'react';
-import type { ButtonType, ButtonProps } from 'antd/es/button';
 import type { CmpTypes, PropsType } from './register';
 
 interface FormItemProp<T = any> extends ScFormItemProp {
@@ -71,7 +71,9 @@ export interface ButtonTypeProps extends ButtonProps {
   /** 调用远程服务方法 */
   serverName?: string;
   // 是否可见
-  visible?: ((value: any, record: any, index: number) => boolean | ButtonTypeProps) | boolean;
+  visible?:
+    | ((value: any, record: any, index: number) => boolean | ButtonTypeProps | React.ReactElement)
+    | boolean;
   //
   /**
    * 返回true 表示继续 ，false 表示中断, values: 在表单中是表单数据 在页面调整和弹出是对应的参数

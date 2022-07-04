@@ -1,17 +1,17 @@
+import { ScTable } from '@scboson/sc-element';
+import _ from 'lodash';
+import React from 'react';
+import { bindEvents, operationButtonsBindEvent } from '../event/BindEventUtil';
 import type {
-  ProColumn,
-  ProColumns,
-  PageConfig,
   ButtonTypeProps,
   HButtonType,
+  PageConfig,
+  ProColumn,
+  ProColumns,
   ProColumnType,
 } from '../interface';
-import _ from 'lodash';
 import { ToolButtons } from '../interface';
 import OpColButton from './OpColButton';
-import { bindEvents, operationButtonsBindEvent } from '../event/BindEventUtil';
-import { ScTable } from '@scboson/sc-element';
-import React from 'react';
 
 const { Operation } = ScTable;
 const OpColKey = '_OperateKey';
@@ -186,12 +186,13 @@ export default class TableInfo {
                 }
                 if (_.isFunction(visible)) {
                   const retValue = visible(value, record, index);
-                  if (_.isBoolean(retValue)) {
+                  if (React.isValidElement(retValue)) {
+                    tbuttons.push(retValue);
+                  } else if (_.isBoolean(retValue)) {
                     if (retValue === true) {
                       tbuttons.push(restButton);
                     }
-                  }
-                  if (_.isObject(retValue)) {
+                  } else if (_.isObject(retValue)) {
                     const newButton = _.merge(restButton, retValue);
                     tbuttons.push(newButton);
                   }
