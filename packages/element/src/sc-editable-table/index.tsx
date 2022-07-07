@@ -18,6 +18,7 @@ import EditableCell from './EditableCell';
 import useEditableArray from './useEditableArray';
 import { removeDeletedData } from './utils';
 import { validateRules } from './validateUtil';
+import TitleSet from './titleUtil';
 
 let timer: any = null;
 export type RecordCreatorProps<T> = {
@@ -267,6 +268,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     }
     return [...value, row];
   };
+
   const editableList = propsColumns?.filter((it) => it.editable);
   let firstEditable: any = null;
   let lastEditItem: any = null;
@@ -274,6 +276,17 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     firstEditable = editableList[0];
     lastEditItem = editableList[editableList.length - 1];
   }
+  // 统一设置
+  const onTotalSetChange = (dataIndex: string, rvalue: any) => {
+    if (Array.isArray(value) && value.length > 0) {
+      const newData = value.map((item: any) => {
+        // eslint-disable-next-line no-param-reassign
+        item[dataIndex] = rvalue;
+        return item;
+      });
+      setValue(newData);
+    }
+  };
 
   const rowIndexRender = (text: any, rowData: T, index: number) => {
     if (pagination) {
@@ -283,7 +296,8 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   };
 
   const newPropsColumns = propsColumns?.filter((it) => it.hidden !== true);
-  let columns: any = newPropsColumns?.map((columnProps) => {
+  let columns: any = newPropsColumns?.map((rcolumnProps) => {
+    const { totalSet, ...columnProps } = rcolumnProps;
     let newFixed: any = columnProps.fixed;
     let { width } = columnProps;
     if (columnProps.dataIndex === 'options') {
@@ -297,6 +311,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
 
     return {
       ...columnProps,
+      title: TitleSet(rcolumnProps, onTotalSetChange),
       fixed: newFixed,
       width,
       onCell(data: any, index?: number | undefined) {
