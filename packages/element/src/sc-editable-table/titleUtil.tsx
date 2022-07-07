@@ -1,20 +1,12 @@
 import React from 'react';
 import { Space, Input } from 'antd';
-import { CModal } from '@scboson/sc-element';
-import PageSchema from '@scboson/sc-schema';
+import CModal from '../c-modal';
 import type { ProColumns } from './typing';
-
-const { cmps } = PageSchema;
 
 const UnifiedSetComponent = (props: { pageProps: any }) => {
   const { pageProps } = props;
 
-  let component: any = <Input />;
-  if (typeof pageProps.component === 'string' && cmps[pageProps.component]) {
-    component = cmps[pageProps.component];
-  } else {
-    component = pageProps.component;
-  }
+  let component: any = pageProps.component || <Input />;
   const { rowData, ...cprops } = pageProps.props || {};
 
   const isElement = React.isValidElement(component);

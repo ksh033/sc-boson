@@ -11,7 +11,7 @@ function camelCase(name: any) {
 // Just import style for https://github.com/ant-design/ant-design/issues/3745
 // @ts-ignore
 const req = require.context('./src', true, /^\.\/[^_][\w-]+\/style\/index\.tsx?$/);
-req.keys().forEach((mod) => {
+req.keys().forEach((mod: any) => {
   let v = req(mod);
   if (v && v.default) {
     v = v.default;
