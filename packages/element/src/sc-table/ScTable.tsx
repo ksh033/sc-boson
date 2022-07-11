@@ -87,9 +87,7 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   selectedRows?: any[]; // 选中的对象
   pagination?: false | TablePaginationConfig;
   saveRef?: any; // React.MutableRefObject<any> | ((saveRef: any) => void) 获取组件对外暴露的参数
-  getRecord?: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => any; // 获取选中行的表单对象
   rowSelected?: boolean; // 列选中
-  onCustomRow?: (record: any, index: number) => any; // 自定义行事件为了合并现有的方法
   /** @name 渲染操作栏 */
   toolBarRender?: ToolBarProps<T>['toolBarRender'] | false;
   /** @name 左上角的 title */
@@ -121,14 +119,12 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     className = '',
     checkbox = false,
     rowSelection = { type: 'checkbox' },
-    getRecord,
     request,
     onLoad,
     onSelectRow,
     selectedRowKeys,
     saveRef,
     rowSelected = true,
-    onCustomRow,
     pagination,
     toolBarRender,
     options = false,
@@ -250,16 +246,18 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const changeRowSelect = (_rowKeys: string[], _rows: any[] = []) => {
     if (onSelectRow) {
       // 过滤不可选择的数据
-      const crows = _rows.filter((item) => {
-        let checkConfig: any = { disabled: false };
-        if (typeof getCheckboxProps === 'function') {
-          checkConfig = getCheckboxProps(item);
-        }
-        if (checkConfig?.disabled) {
-          return false;
-        }
-        return true;
-      });
+      const crows = _rows
+        .filter((it) => it != null)
+        .filter((item) => {
+          let checkConfig: any = { disabled: false };
+          if (typeof getCheckboxProps === 'function') {
+            checkConfig = getCheckboxProps(item);
+          }
+          if (checkConfig?.disabled) {
+            return false;
+          }
+          return true;
+        });
 
       let crowKeys = crows.map((item) => item[`${rowKey}`]);
       crowKeys = [...new Set(crowKeys)];
@@ -290,7 +288,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       const map = new Map<string, any>();
 
       [...crows, ..._rows].forEach((item) => {
-        map.set(item[rowKey], item);
+        if (item != null) {
+          map.set(item[rowKey], item);
+        }
       });
       crows = crowKeys.map((key) => map.get(key));
       changeRowSelect(crowKeys, crows);
@@ -489,16 +489,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       ? {
           selectedRowKeys: rowKeys,
           onChange: handleRowSelectChange,
-          onSelect: (record: any, selected: any, _selectedRows: any, nativeEvent: any) => {
-            if (getRecord) {
-              getRecord(record, selected, _selectedRows, nativeEvent);
-            }
-          },
           ...rowSelection,
           getCheckboxProps,
         }
       : undefined;
-  }, [JSON.stringify(rowKeys), handleRowSelectChange, getRecord, getCheckboxProps, rowSelection]);
+  }, [JSON.stringify(rowKeys), handleRowSelectChange, getCheckboxProps, rowSelection]);
 
   const handleRowSelect = (record: any) => {
     let checkConfig: any = { disabled: false };
