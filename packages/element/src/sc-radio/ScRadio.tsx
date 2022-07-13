@@ -1,20 +1,12 @@
-import React, { useRef } from 'react';
-import { useUpdateEffect } from 'ahooks';
+import React from 'react';
+import { useRequest, useUpdateEffect } from 'ahooks';
 import { Radio } from 'antd';
 import type { RadioGroupProps } from 'antd/es/radio';
 import type { DataComponentProps } from '../Component';
-import useFetchData from '../_util/useFetchData';
 
-const RadioButton = Radio.Button;
-const { useEffect, useMemo, useCallback, useLayoutEffect, useState } = React;
+const { useLayoutEffect, useState } = React;
 
-const RADIO_TYPE: any = {
-  radio: Radio,
-  button: RadioButton,
-};
-export interface ScRadioProps extends RadioGroupProps, DataComponentProps {
-  radioType?: 'button' | 'radio';
-}
+export type ScRadioProps = RadioGroupProps & DataComponentProps;
 
 const ScRadio: React.FC<ScRadioProps> = (props) => {
   const {
@@ -24,13 +16,11 @@ const ScRadio: React.FC<ScRadioProps> = (props) => {
     className = '',
     textField = 'label',
     valueField = 'value',
-    radioType = 'radio',
     request,
     autoload,
     onLoad,
     ...restProps
   } = props;
-  const isGone = useRef(false);
   const [dataSource, setDataSource] = useState(data);
 
   const redioProps = {
@@ -40,26 +30,30 @@ const ScRadio: React.FC<ScRadioProps> = (props) => {
     autoload,
     ...restProps,
   };
+  const { run } = useRequest(
+    request ||
+      new Promise((resolve) => {
+        resolve(null);
+      }),
+    {
+      manual: true,
+    },
+  );
 
-  const loadData = useCallback(async () => {
-    if (!request) {
-      throw 'no remote request method';
-    }
-    let _data = await useFetchData(request, params);
-    if (isGone.current) return;
-    if (onLoad) {
-      _data = onLoad(_data);
-    }
-    setDataSource(_data);
-  }, [request, params]);
+  const loadData = () => {
+    run(params).then((res: any) => {
+      let newList = res;
+      if (onLoad) {
+        newList = onLoad(newList);
+      }
+      setDataSource(newList);
+    });
+  };
 
   useLayoutEffect(() => {
     if (autoload) {
       loadData();
     }
-    return () => {
-      isGone.current = true;
-    };
   }, []);
 
   useUpdateEffect(() => {
@@ -68,39 +62,20 @@ const ScRadio: React.FC<ScRadioProps> = (props) => {
     }
   }, [data]);
 
-  if (params !== null) {
-    useEffect(() => {
-      if (autoload) {
-        loadData();
-      }
-    }, [params]);
-  }
-
-  const Cmp = RADIO_TYPE[radioType];
-  const children: any[] = useMemo(() => {
-    const list: any[] = [];
-    if (dataSource && dataSource.length > 0) {
-      dataSource.forEach((item: any, index: number) => {
-        if (valueField && textField) {
-          if (typeof textField === 'string') {
-            list.push(
-              <Cmp key={index} value={item[valueField]}>
-                {item[textField]}
-              </Cmp>,
-            );
-          } else {
-            list.push(
-              <Cmp key={index} value={item[valueField]}>
-                {textField(item)}
-              </Cmp>,
-            );
-          }
-        }
+  const formValue = (val: any[]) => {
+    if (Array.isArray(val) && val.length > 0) {
+      return val.map((it) => {
+        const label = typeof textField === 'string' ? it[textField] : textField(it);
+        return {
+          ...it,
+          value: it[valueField],
+          label: label,
+        };
       });
     }
-    return list;
-  }, [dataSource]);
+    return [];
+  };
 
-  return <Radio.Group {...redioProps}>{children}</Radio.Group>;
+  return <Radio.Group options={formValue(dataSource)} {...redioProps} />;
 };
 export default ScRadio;

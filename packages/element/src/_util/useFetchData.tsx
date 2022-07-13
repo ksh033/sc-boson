@@ -11,13 +11,14 @@ const useFetchData = async (
 ): Promise<any> => {
   if (request) {
     try {
-      let dataSource: RequestData = await request(options);
+      const dataSource: RequestData = await request(options);
       if (callBack) {
         callBack(dataSource);
       }
       return dataSource;
     } catch (e) {
       console.log('请求出错:', e);
+      throw e;
     }
   }
   return [];
