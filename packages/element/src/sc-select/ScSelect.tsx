@@ -6,6 +6,7 @@ import { useDebounceFn, useUpdateEffect } from 'ahooks';
 import { Divider, Input, Select, Spin, Tooltip } from 'antd';
 import type { SelectProps } from 'antd/es/select';
 import * as React from 'react';
+import { setTimeout } from 'timers';
 
 const { useMemo, useLayoutEffect, useState, useRef } = React;
 const { Option, OptGroup } = Select;
@@ -30,7 +31,7 @@ export interface ScSelectProps extends Omit<SelectProps<any>, 'placeholder'> {
   placeholder?: string;
   searchInputPlaceholder?: string;
 }
-
+let timeout: any = null;
 const ScSelect: React.FC<ScSelectProps> = (props) => {
   const {
     data = [],
@@ -68,7 +69,9 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   const [inputKey, setInputKey] = useState(-1);
   const selectProps: any = { params, ...restProps };
   const [loading, setLoading] = useState(false);
+  const [dropdownOpen, setOpen] = useState(false);
   const ref = useRef<any>();
+  const inputRef = useRef<any>();
   // const [searchValue,setSearchValue]=useState("");
 
   const setCustomRef = () => {
@@ -148,6 +151,12 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
 
   const renderList = (cData: any[], level: string = '1') => {
     const list: any[] = [];
+    if (!(remoteSearch && request)) {
+      cData.filter((item) => {
+        const text = getTextField(item);
+        return text.indexOf(input) > -1;
+      });
+    }
     cData.forEach((item: any, index: number) => {
       if (valueField && textField) {
         let text = getTextField(item);
@@ -251,7 +260,26 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   //   }
   // }
 
+  useUpdateEffect(() => {
+    if (
+      dropdownOpen &&
+      showSearch &&
+      loading === false &&
+      inputRef.current &&
+      inputRef.current.focus
+    ) {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+
+      timeout = setTimeout(() => {
+        inputRef.current.focus();
+      }, 50);
+    }
+  }, [dropdownOpen, inputRef.current, loading]);
+
   const handleDropdownVisibleChange = (open: boolean) => {
+    setOpen(open);
     if (open) {
       if (!autoload && request && Array.isArray(dataSource) && dataSource.length === 0) {
         if (!remoteSearch) {
@@ -291,6 +319,8 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
                   value={input}
                   style={{ width: '100%' }}
                   allowClear={allowClear}
+                  ref={inputRef}
+                  autoFocus
                 />
               </div>
 
