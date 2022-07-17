@@ -146,7 +146,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     if (text == null) {
       text = item.label;
     }
-    return text;
+    return String(text);
   };
 
   const renderList = (cData: any[], level: string = '1') => {
@@ -159,7 +159,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     }
     cData.forEach((item: any, index: number) => {
       if (valueField && textField) {
-        let text = getTextField(item);
+        let text: any = getTextField(item);
         if (tip) {
           text = <Tooltip title={text}>{text}</Tooltip>;
         }
