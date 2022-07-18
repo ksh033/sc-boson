@@ -273,7 +273,9 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
       }
 
       timeout = setTimeout(() => {
-        inputRef.current.focus();
+        inputRef.current.focus({
+          preventScroll: true,
+        });
       }, 50);
     }
   }, [dropdownOpen, inputRef.current, loading]);
@@ -320,7 +322,6 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
                   style={{ width: '100%' }}
                   allowClear={allowClear}
                   ref={inputRef}
-                  autoFocus
                 />
               </div>
 
