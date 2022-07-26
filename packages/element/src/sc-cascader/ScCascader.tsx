@@ -10,6 +10,7 @@ const { useCallback, useState, useLayoutEffect } = React;
 
 export type ScCascaderProps = CascaderProps<any> & {
   pIdField?: string;
+  searchValueField?: string;
   asyn?: boolean;
   textField?: string;
   valueField?: string;
@@ -26,6 +27,7 @@ const ScCascader: React.FC<ScCascaderProps> = (props) => {
     data = [],
     textField = 'label',
     valueField = 'value',
+    searchValueField,
     pIdField = 'pid',
     request,
     autoload = false,
@@ -102,7 +104,7 @@ const ScCascader: React.FC<ScCascaderProps> = (props) => {
       const targetOption = selectedOptions[selectedOptions.length - 1];
       targetOption.loading = true;
       const payload = { ...params };
-      payload[`${pIdField}`] = targetOption.value;
+      payload[`${pIdField}`] = targetOption[searchValueField || 'value'];
       if (!request) {
         throw 'no remote request method';
       }
