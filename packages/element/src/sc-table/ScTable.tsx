@@ -243,7 +243,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     });
   }, [rowSelection.getCheckboxProps]);
 
-  const changeRowSelect = (_rowKeys: string[], _rows: any[] = []) => {
+  const changeRowSelect = (_rowKeys: string[], rrows: any[] = []) => {
+    const _rows = rrows.filter((it) => it != null);
     if (onSelectRow) {
       // 过滤不可选择的数据
       const crows = _rows
@@ -273,9 +274,14 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   };
 
   const handleRowSelectChange = (_rowKeys: string[], _rows: any[] = []) => {
+    if (rowSelection?.type === 'radio') {
+      changeRowSelect(_rowKeys, _rows);
+      return;
+    }
     const _dataKeys = dataKeys.current;
     let crowKeys = [...(action.current.rowKeys || [])];
     let crows = [...(action.current.rows || [])];
+
     if (pagination === false || request === undefined || request === null) {
       changeRowSelect(_rowKeys, _rows);
     } else {
