@@ -1,6 +1,6 @@
 {
   "name": "@scboson/client-plugin",
-  "version": "2.0.0-beta.8",
+  "version": "2.0.0-beta.9",
   "description": "博思客户端",
   "main": "./es/index.js",
   "module": "./es/index.js",
