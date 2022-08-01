@@ -37,21 +37,6 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
   const [moveDom, setDoveDom] = useState(null);
   const [enabledMove, setEnabledMove] = useState(false);
 
-  useLayoutEffect(() => {
-    if (canMove) {
-      window.addEventListener('mousedown', startMove);
-      window.addEventListener('mousemove', handleMove);
-      window.addEventListener('mouseup', endMove);
-    }
-    return () => {
-      if (canMove) {
-        window.removeEventListener('mousedown', startMove);
-        window.removeEventListener('mousemove', handleMove);
-        window.removeEventListener('mouseup', endMove);
-      }
-    };
-  }, []);
-
   const endMove = () => {
     setEnabledMove(false);
   };
@@ -95,7 +80,6 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
     if (className && className === 'ant-modal-title') {
       e.preventDefault();
       const { parentNode } = e.target.parentNode.parentNode;
-      // console.log('startMove')
       // 启动移动，并初始化偏移值
       let _x = 0;
       let _y = 100;
@@ -116,6 +100,21 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
       setDoveDom(parentNode);
     }
   };
+
+  useLayoutEffect(() => {
+    if (canMove) {
+      window.addEventListener('mousedown', startMove);
+      window.addEventListener('mousemove', handleMove);
+      window.addEventListener('mouseup', endMove);
+    }
+    return () => {
+      if (canMove) {
+        window.removeEventListener('mousedown', startMove);
+        window.removeEventListener('mousemove', handleMove);
+        window.removeEventListener('mouseup', endMove);
+      }
+    };
+  }, []);
 
   const fullsreenControl = useMemo(() => {
     let _fullsreenControl = null;

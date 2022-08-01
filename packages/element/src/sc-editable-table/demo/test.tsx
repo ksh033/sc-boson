@@ -103,6 +103,6 @@ export default () => {
         },
         onChange: setEditableRowKeys,
       }}
-    ></ScEditableTable>
+    />
   );
 };

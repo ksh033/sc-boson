@@ -45,7 +45,6 @@ export default () => {
       },
     };
   };
-  console.log(saveRef);
   return (
     <ScTree
       saveRef={saveRef}
