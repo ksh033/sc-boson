@@ -2,6 +2,7 @@ import React from 'react';
 import CModal from './CModal';
 import type { CModalDialogProps } from './CModal';
 import { Modal } from 'antd';
+import debounce from 'lodash/debounce';
 export { CModalDialogProps };
 export default {
   show: (props: CModalDialogProps) => {
@@ -31,6 +32,11 @@ export default {
     return CModal(config);
   },
   confirm: (props: Omit<CModalDialogProps, 'content'> & { content?: React.ReactNode }) => {
-    return Modal.confirm(props);
+    const { onOk, ...newProps } = props;
+    const newonOk = props.onOk ? debounce(props.onOk, 200) : undefined;
+    return Modal.confirm({
+      ...newProps,
+      onOk: newonOk,
+    });
   },
 };

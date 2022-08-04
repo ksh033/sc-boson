@@ -472,6 +472,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   };
 
   const changeEnter = (event: any) => {
+    event.preventDefault();
     const { editableKeys } = editableUtils;
     if (clickEdit && Array.isArray(editableKeys) && editableKeys.length > 0) {
       if (event && event.target) {
