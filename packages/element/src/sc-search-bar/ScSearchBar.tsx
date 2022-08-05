@@ -1,23 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import * as React from 'react';
-import { Button, Col, Form, Row, Card } from 'antd';
-import type { FormInstance, FormProps } from 'antd/es/form';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import useMediaQuery from 'use-media-antd-query';
-import classNames from 'classnames';
-import type { MutableRefObject } from 'react';
-import { useState, useCallback, useMemo } from 'react';
-import Advances from './Advances';
-import Quicks from './Quicks';
-import SearchButtons from './SearchButton';
-import isBrowser from '../_util/isBrowser';
-import { MyContext } from './context-manager';
-import RcResizeObserver from 'rc-resize-observer';
-import type { FormItemProp } from '../c-form/interface';
 import { useDebounceFn } from 'ahooks';
-import classnames from 'classnames';
+import { Button, Card, Col, Form, Row } from 'antd';
+import type { FormProps } from 'antd/es/form';
+import { default as classNames, default as classnames } from 'classnames';
+import RcResizeObserver from 'rc-resize-observer';
+import type { MutableRefObject } from 'react';
+import * as React from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import type { FormItemProp } from '../c-form/interface';
+import isBrowser from '../_util/isBrowser';
 import useMountMergeState from '../_util/useMountMergeState';
+import Advances from './Advances';
+import { MyContext } from './context-manager';
+import Quicks from './Quicks';
+import ScFormItem from './ScFormItem';
+import SearchButtons from './SearchButton';
 import './style';
 
 const FormItem = Form.Item;
@@ -83,7 +82,7 @@ const CONFIG_SPAN_BREAKPOINTS = {
   xl: 1057,
   xxl: Infinity,
 };
-const WIDTH_SIZE_ENUM = {
+export const WIDTH_SIZE_ENUM = {
   // 适用于短数字，短文本或者选项
   xs: 104,
   s: 216,
@@ -395,7 +394,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
       if (hidden) {
         return;
       }
-      const createCmp = renderFormItem(item, index);
+      // const createCmp = renderFormItem(item, index);
       // 如果 formItem 自己配置了 hidden，默认使用它自己的
       const colSize = item?.columnSize ? item?.columnSize : 1;
       const colSpan = Math.min(spanSize.span * (colSize || 1), 24);
@@ -415,11 +414,21 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
       currentSpan += colSpan;
 
       if (lightFilter) {
-        cols.push(<Col key={itemKey}>{createCmp}</Col>);
+        cols.push(
+          <Col key={itemKey}>
+            <ScFormItem item={item} index={index} form={wrapForm} lightFilter={lightFilter} />
+          </Col>,
+        );
       } else {
         cols.push(
           <Col key={itemKey} span={colSpan}>
-            {createCmp}
+            <ScFormItem
+              item={item}
+              index={index}
+              form={wrapForm}
+              lightFilter={lightFilter}
+              onSubmit={run}
+            />
           </Col>,
         );
       }
