@@ -2,7 +2,7 @@ import useKeyPress from './useKeyPress';
 import { Form } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import classnames from 'classnames';
-import $ from 'jquery';
+// import $ from 'jquery';
 import React, { useEffect } from 'react';
 import type { SearchFormItemProp } from './ScSearchBar';
 import { WIDTH_SIZE_ENUM } from './ScSearchBar';
@@ -25,19 +25,49 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
   // const id = Array.isArray(fieldName) ? fieldName.join('_') : fieldName || '';
   useEffect(() => {}, []);
   let input: any;
-  const Inputs = $(`.ant-modal .sc-field-${index} *[form]`);
+  // const Inputs = $(`.ant-modal .sc-field-${index} *[form]`);
 
-  if (Inputs.length > 0) {
-    input = Inputs[Inputs.length - 1];
-  }
-  if (input == null) {
-    const inputList = $(`.ant-modal .sc-field-${index} input`);
-    if (inputList.length > 0) {
-      input = inputList[inputList.length - 1];
+  // if (Inputs.length > 0) {
+  //   input = Inputs[Inputs.length - 1];
+  // }
+  // if (input == null) {
+  //   const inputList = $(`.ant-modal .sc-field-${index} input`);
+  //   if (inputList.length > 0) {
+  //     input = inputList[inputList.length - 1];
+  //   }
+  // }
+
+  function getInput(root: any) {
+    if (Array.isArray(root.children) && root.children.length > 0) {
+      for (let x = 0; x < root.children.length; x++) {
+        if (root.children[x].nodeName === 'INPUT') {
+          input = root.children[x];
+          return;
+        }
+        getInput(root.children[x]);
+      }
     }
   }
 
-  // console.log(input);
+  function gets(root: any) {
+    if (root.children.length > 0) {
+      for (let x = 0; x < root.children.length; x++) {
+        if (root.children[x].attributes.form != null) {
+          input = root.children[x];
+          return;
+        }
+        gets(root.children[x]);
+      }
+    }
+  }
+
+  const AntModal = window.document.querySelectorAll(`.ant-modal .sc-field-${index}`);
+  if (AntModal.length > 0) {
+    gets(AntModal[0]);
+    if (input == null) {
+      getInput(AntModal[0]);
+    }
+  }
 
   useKeyPress(
     'enter',
