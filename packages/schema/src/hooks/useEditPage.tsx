@@ -1,20 +1,20 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable prefer-destructuring */
-import React from 'react';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
+// @ts-ignore
+import { useSetState } from 'ahooks';
+import { isObject, isString } from 'lodash';
+import moment from 'moment';
 // @ts-ignore
 import { history } from 'umi';
-import type { FormFilterProp, DialogOptions, HButtonType, ButtonTypeProps } from '../interface';
-import { PageConfig, PageType, ToolButtons, Action } from '../interface';
+import { Schema } from '../context';
+import type { ButtonTypeProps, DialogOptions, FormFilterProp, HButtonType } from '../interface';
+import { Action, PageConfig, PageType, ToolButtons } from '../interface';
+import FormInfo from '../page/FormInfo';
 import schema from '../pageConfigUitls';
 import type { UseListPageProp } from './useListPage';
 import ListPage from './useListPage';
-import FormInfo from '../page/FormInfo';
-import { Schema } from '../context';
-import { isObject, isString } from 'lodash';
-import { useSetState } from 'ahooks';
-import moment from 'moment';
 
 // import ButtonTool from '../page/OpColButton';
 
@@ -84,7 +84,7 @@ export default function useEditPage(
   } else if (location && location.query) {
     record = location.query;
   }
-  const [pageData, setPageData] = useSetState<any>();
+  const [pageData, setPageData] = useSetState<any>({});
   const pageEntryTimeRef = useRef<string>(moment().format('YYYY-MM-DD HH:mm:ss'));
 
   const setData = (data: any) => {

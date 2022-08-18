@@ -1,20 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
+import { useMount, useSetState, useUnmount, useUpdateEffect } from 'ahooks';
+import assign from 'lodash/assign';
+import isObject from 'lodash/isObject';
 import { useRef } from 'react';
-import type { ProColumn, FormSearchItem, ProColumnType, HButtonType } from '../interface';
+import { useSchemaContext } from '../context';
 import type { BaseResult } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
-import { useSchemaContext } from '../context';
-import { PageType, PageConfig } from '../interface';
-import { useSetState, useUnmount, useMount, useUpdateEffect } from 'ahooks';
-import type { TableInfoProps } from '../page/TableInfo';
+import type { FormSearchItem, HButtonType, ProColumn, ProColumnType } from '../interface';
+import { PageConfig, PageType } from '../interface';
 import type { SearchInfoProps } from '../page/SearchInfo';
-import TableInfo from '../page/TableInfo';
 import SearchInfo from '../page/SearchInfo';
-import _ from 'lodash';
+import type { TableInfoProps } from '../page/TableInfo';
+import TableInfo from '../page/TableInfo';
 import schema from '../pageConfigUitls';
 
 export { PageConfig, PageType };
+export { setLocalSearchParams };
 export interface SearchConfig {
   tableKey?: string;
 
@@ -75,8 +77,6 @@ const setLocalSearchParams = (key: string | number, params: any) => {
   sessionStorage.setItem('SEARCH_PARAMS', JSON.stringify(searchParam));
 };
 
-export { setLocalSearchParams };
-
 export default function ListPage<S>(config: PageConfig, props: any): UseListPageProp<S> {
   const { service, pageType = 'listpage' } = config;
   const { location } = props || {};
@@ -102,7 +102,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     return searchParam[key];
   };
 
-  const [pageData, setPageData] = useSetState<any>();
+  const [pageData, setPageData] = useSetState<any>({});
 
   const getValue = (obj: any) =>
     Object.keys(obj)
@@ -257,8 +257,8 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
         if (item.formItemProps && item.formItemProps.defaultValue) {
           if (item.name || item.id) {
             initParams_[name || id] = item.formItemProps.defaultValue;
-          } else if (_.isObject(item.formItemProps.defaultValue)) {
-            _.assign(initParams_, item.formItemProps.defaultValue);
+          } else if (isObject(item.formItemProps.defaultValue)) {
+            assign(initParams_, item.formItemProps.defaultValue);
           }
         }
       });

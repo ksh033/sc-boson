@@ -34,7 +34,7 @@
   "license": "MIT",
   "dependencies": {
     "@ant-design/icons": "^4.0.0",
-    "ahooks": "^2.9.6",
+    "ahooks": "^3.6.2",
     "antd": "^4.20.0",
     "array-move": "^4.0.0",
     "classnames": "^2.2.6",
@@ -58,7 +58,7 @@
     "lib/**/style/*"
   ],
   "peerDependencies": {
-    "ahooks": "^2.9.6",
+    "ahooks": "^3.6.2",
     "antd": "^4.x",
     "react": ">=16.9.0",
     "react-dom": ">=16.9.0"

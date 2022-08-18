@@ -2,7 +2,10 @@
 import { CModal } from '@scboson/sc-element';
 import type { ButtonTypeProps } from '../interface';
 // @ts-ignore
+
 import { history } from 'umi';
+
+
 
 const defaultOptions = {
   showFull: false,
@@ -158,7 +161,7 @@ function remove(props: ButtonTypeProps, event?: any) {
           }
         }
       },
-      onCancel() {},
+      onCancel() { },
     });
   }
 }
@@ -183,10 +186,10 @@ function confirm(props: ButtonTypeProps, event?: any) {
             if (callBack) {
               callBack(data, params);
             }
-          } catch (ex) {}
+          } catch (ex) { }
         }
       },
-      onCancel() {},
+      onCancel() { },
     });
   }
 }

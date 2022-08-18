@@ -28,8 +28,8 @@
   },
   "dependencies": {
     "@scboson/sc-element": "beta",
-    "ahooks": "^2.9.6",
+    "ahooks": "^3.6.2",
     "lodash": "^4.17.21",
-    "umi": "^3.2.10"
+    "@umijs/max": "^4.0.0"
   }
 }
