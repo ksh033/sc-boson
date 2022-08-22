@@ -4,7 +4,7 @@ const omitUndefinedAndEmptyArr = <T>(obj: T): T => {
     if (Array.isArray(obj[key]) && obj[key]?.length === 0) {
       return;
     }
-    if (obj[key] === undefined) {
+    if (obj[key] == null || String(obj[key]).trim() === '') {
       return;
     }
     newObj[key] = obj[key];

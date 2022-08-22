@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
-import { useRequest, useSetState, useUpdateEffect } from 'ahooks';
+import { useRequest, useSafeState, useSetState, useUpdateEffect } from 'ahooks';
 import type { CardProps } from 'antd';
 import { Card, Divider, Table, Tooltip } from 'antd';
 import type { ColumnType } from 'antd/es/table';
@@ -22,8 +22,8 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import DraggableBodyRow from './components/DraggableBodyRow';
 import DraggableBodyCell from './components/DraggableBodyRow/DraggableBodyCell';
-
-const { useState, useEffect, useRef, useMemo } = React;
+import { useRefFunction } from '../_util/useRefFunction';
+const { useEffect, useRef, useMemo } = React;
 export type { ColumnsType } from 'antd/es/table/Table';
 
 export interface CustomSearchComponentProps {
@@ -168,11 +168,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       manual: true,
     },
   );
-  const [dataSource, setDataSource] = useState<any>(data || newdataSource);
-  const [rowKeys, setRowKeys] = useState(selectedRowKeys || []);
-  const [rows, setRows] = useState<any[]>(selectedRows || []);
+  const [dataSource, setDataSource] = useSafeState<any>(data || newdataSource);
+  const [rowKeys, setRowKeys] = useSafeState(selectedRowKeys || []);
+  const [rows, setRows] = useSafeState<any[]>(selectedRows || []);
 
-  const [updateSource, setUpdateSource] = useState<boolean>(false);
+  const [updateSource, setUpdateSource] = useSafeState<boolean>(false);
 
   const [innerPagination, setPagination] = useSetState<TablePaginationConfig>({
     current: 1,
@@ -186,10 +186,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
   const dataKeys = useRef<Set<any>>(new Set([]));
 
-  const getDataKeys = (_data: any[]) => {
+  const getDataKeys = useRefFunction((_data: any[]) => {
     const dataKey = _data.map((item) => item[rowKey]);
     dataKeys.current = new Set(dataKey);
-  };
+  });
   const moveRow = (dropData: DropDataType) => {
     const moveResult = moveRowData(dataSource, dropData, rowKey);
     if (onDrop) {
@@ -243,7 +243,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     });
   }, [rowSelection.getCheckboxProps]);
 
-  const changeRowSelect = (_rowKeys: string[], rrows: any[] = []) => {
+  const changeRowSelect = useRefFunction((_rowKeys: string[], rrows: any[] = []) => {
     const _rows = rrows.filter((it) => it != null);
     if (onSelectRow) {
       // 过滤不可选择的数据
@@ -271,9 +271,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     };
     setRowKeys(_rowKeys);
     setRows(_rows);
-  };
+  });
 
-  const handleRowSelectChange = (_rowKeys: string[], _rows: any[] = []) => {
+  const handleRowSelectChange = useRefFunction((_rowKeys: string[], _rows: any[] = []) => {
     if (rowSelection?.type === 'radio') {
       changeRowSelect(_rowKeys, _rows);
       return;
@@ -301,7 +301,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       crows = crowKeys.map((key) => map.get(key));
       changeRowSelect(crowKeys, crows);
     }
-  };
+  });
 
   const updateAction = () => {
     const userAction = {
@@ -407,36 +407,38 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
   }, [selectedRowKeys]);
 
-  const handleTableChange = (
-    _pagination: TablePaginationConfig,
-    _filtersArg: Record<string, FilterValue | null>,
-    _sorter: any,
-    extra: TableCurrentDataSource<any>,
-  ) => {
-    if (_pagination && _pagination.current && _pagination.pageSize) {
-      setPagination({
-        current: _pagination.current,
-        pageSize: _pagination.pageSize,
-      });
-    }
+  const handleTableChange = useRefFunction(
+    (
+      _pagination: TablePaginationConfig,
+      _filtersArg: Record<string, FilterValue | null>,
+      _sorter: any,
+      extra: TableCurrentDataSource<any>,
+    ) => {
+      if (_pagination && _pagination.current && _pagination.pageSize) {
+        setPagination({
+          current: _pagination.current,
+          pageSize: _pagination.pageSize,
+        });
+      }
 
-    counter.setFiltersArg(_filtersArg);
-    const ordersMap = {};
-    if (Array.isArray(_sorter)) {
-      _sorter.forEach((it) => {
-        ordersMap[it.field] = it.order;
-      });
-    }
-    if (Object.prototype.toString.call(_sorter) === '[object Object]' && _sorter !== null) {
-      const { field, order } = _sorter;
-      ordersMap[field] = order;
-    }
-    counter.setSortOrderMap(ordersMap);
+      counter.setFiltersArg(_filtersArg);
+      const ordersMap = {};
+      if (Array.isArray(_sorter)) {
+        _sorter.forEach((it) => {
+          ordersMap[it.field] = it.order;
+        });
+      }
+      if (Object.prototype.toString.call(_sorter) === '[object Object]' && _sorter !== null) {
+        const { field, order } = _sorter;
+        ordersMap[field] = order;
+      }
+      counter.setSortOrderMap(ordersMap);
 
-    if (onChange) {
-      onChange(_pagination, _filtersArg, _sorter, extra);
-    }
-  };
+      if (onChange) {
+        onChange(_pagination, _filtersArg, _sorter, extra);
+      }
+    },
+  );
 
   // ---------- 列计算相关 start  -----------------
   const tableColumn = useMemo(() => {
@@ -501,7 +503,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       : undefined;
   }, [JSON.stringify(rowKeys), handleRowSelectChange, getCheckboxProps, rowSelection]);
 
-  const handleRowSelect = (record: any) => {
+  const handleRowSelect = useRefFunction((record: any) => {
     let checkConfig: any = { disabled: false };
     if (typeof getCheckboxProps === 'function') {
       checkConfig = getCheckboxProps(record);
@@ -533,7 +535,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       }
     }
     changeRowSelect(_rowKeys, _rows);
-  };
+  });
 
   // const findRow = (id: any) => {
   //   const { row, index, parentIndex } = findFromData(dataSource, id, rowKey);
@@ -647,10 +649,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       dataSource: _row,
       columns,
       pagination: paginationProps,
-      ...restPros,
       components,
       size: counter.tableSize,
       onChange: handleTableChange,
+      ...restPros,
     };
   };
 

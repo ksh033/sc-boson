@@ -1,13 +1,14 @@
 import React from 'react';
-import { Space, Input } from 'antd';
+import { Input } from 'antd';
 import CModal from '../c-modal';
 import type { ProColumns } from './typing';
+import EditOutlined from '@ant-design/icons/EditOutlined';
 
 const UnifiedSetComponent = (props: { pageProps: any }) => {
   const { pageProps } = props;
 
   let component: any = pageProps.component || <Input />;
-  const { rowData, ...cprops } = pageProps.props || {};
+  const { rowData, totalSetRender, ...cprops } = pageProps.props || {};
 
   const isElement = React.isValidElement(component);
   component = !isElement
@@ -17,6 +18,10 @@ const UnifiedSetComponent = (props: { pageProps: any }) => {
     : React.cloneElement(component, {
         ...cprops,
       });
+
+  if (totalSetRender) {
+    component = totalSetRender(component, props);
+  }
 
   return <div style={{ padding: '14px' }}>{component}</div>;
 };
@@ -51,21 +56,26 @@ const handleClick = (rColumn: any, onChange: (dataIndex: string, value: any) => 
 
 const TitleSet = (column: ProColumns<any>, onChange: (dataIndex: string, value: any) => void) => {
   let newTitle = typeof column.title === 'function' ? column.title({}) : column.title;
-  if (column.totalSet) {
+  if (column.editable) {
     newTitle = (
-      <Space direction="vertical">
-        <span>{newTitle}</span>
-        <a
-          onClick={() => {
-            handleClick(column, onChange);
-          }}
-        >
-          统一设置
-        </a>
-      </Space>
+      <>
+        <EditOutlined style={{ marginRight: '8px' }} />
+        {newTitle}
+        {column.totalSet ? (
+          <a
+            style={{ marginLeft: '8px' }}
+            onClick={() => {
+              handleClick(column, onChange);
+            }}
+          >
+            统一设置
+          </a>
+        ) : null}
+      </>
     );
   }
-  return newTitle;
+
+  return <div className="sc-cell-th">{newTitle}</div>;
 };
 
 export default TitleSet;

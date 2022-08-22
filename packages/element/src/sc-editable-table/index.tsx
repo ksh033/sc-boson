@@ -1,34 +1,33 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form } from 'antd';
 import type { ButtonProps } from 'antd/es/button/index';
 import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
-import useMergedState from 'rc-util/es/hooks/useMergedState';
-import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
-import type { ActionType, ProTableProps, TableRowSelection } from './typing';
-
-import { useEventListener, useMount, useSetState, useThrottleFn, useUpdateEffect } from 'ahooks';
+import React, { useImperativeHandle, useRef } from 'react';
+import type { ActionType, ProTableProps } from './typing';
+import { useClickAway, useCreation, useMount, useSafeState, useSetState } from 'ahooks';
 import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
 import isObject from 'lodash/isObject';
 import ScTable from '../sc-table';
-import Container from '../sc-table/container';
-import { genColumnList, tableColumnSort } from '../sc-table/utils';
-import useMountMergeState from '../_util/useMountMergeState';
-import EditableCell from './EditableCell';
-import useEditableArray from './useEditableArray';
 import { removeDeletedData } from './utils';
 import { validateRules } from './validateUtil';
 import TitleSet from './titleUtil';
+import { useDeepCompareEffectDebounce } from '../_util/useDeepCompareEffect';
+import NeEditTableCell from './components/NeEditTableCell';
+import { useRefFunction } from '../_util/useRefFunction';
+import Container from './container';
+import useEditableArray from './useEditableArray';
+import { useForm } from 'antd/es/form/Form';
+import isEqual from 'lodash/isEqual';
+import omitUndefinedAndEmptyArr from '../_util/omitUndefinedAndEmptyArr';
+import { getTargetElement } from 'ahooks/es/utils/dom';
+// import { useWhyDidYouUpdate } from 'ahooks';
+import EditableCell from './components/EditableCell';
+import BatchButton from './components/BatchButton';
 
-let timer: any = null;
+type TargetElement = HTMLElement | Element | Document | Window;
+let targetElement: TargetElement | null | undefined = null;
 export type RecordCreatorProps<T> = {
   record: T | ((index: number) => T);
-  /**
-   * 新增一行的类型
-   *
-   * @augments dataSource 将会新增一行数据到 dataSource 中，不支持取消，只能删除
-   * @augments cache 将会把数据放到缓存中，取消后消失
-   */
   newRecordType?: 'dataSource' | 'cache';
 };
 
@@ -40,6 +39,14 @@ export function runFunction<T extends any[]>(valueEnum: any, ...rest: T) {
   return valueEnum;
 }
 
+export type BatchOptionsType =
+  | false
+  | {
+      allClear: boolean;
+      batchSelect: boolean;
+    };
+
+const defaultBatchOptions = { allClear: true, batchSelect: true };
 export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
   value?: T[];
   onChange?: (value: T[]) => void;
@@ -65,6 +72,10 @@ export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
   rowKey?: string; // 行key
   showIndex?: boolean; // 是否显示序号
   readonly?: boolean; // 是否只读
+  needDeletePopcon?: boolean; //删除时是否询问
+  dragSort?: boolean | string;
+  onClickEditActive?: (recordKey: any) => void;
+  batchOptions?: BatchOptionsType;
 };
 
 export type ErrorLineState = {
@@ -72,9 +83,7 @@ export type ErrorLineState = {
   index: number;
 } | null;
 
-// const defaultEffectOptions = {
-//   wait: 500,
-// };
+const defaultScroll = { x: 'max-content', y: '600px' };
 
 function EditableTable<T extends Record<string, any>>(props: EditableProTableProps<T>) {
   const {
@@ -83,24 +92,70 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     columns: propsColumns,
     rowSelection: propsRowSelection = false,
     clickEdit = false,
-    clickType = 'row',
     containsDeletedData = false,
     recordCreatorProps = false,
     maxLength,
-    pagination = false,
+    pagination: propsPagination,
     editable,
     showIndex = false,
     readonly = false,
-    scroll = { x: 'max-content' },
+    scroll,
+    onClickEditActive,
     onRow,
+    batchOptions = defaultBatchOptions,
     ...rest
   } = props;
   let tableId = 'tableForm';
   const divRef = useRef<HTMLDivElement>(null);
-
-  const counter = Container.useContainer();
+  const container = Container.useContainer();
   const actionRef = useRef<ActionType>();
+  const valueRef = useRef<T[]>([]);
+
+  const [innerForm] = useForm(props.editable?.form);
+
+  // 初始化的数据
   const oldValueRef = useRef<Map<React.Key, any> | undefined>();
+  const isNeCell = clickEdit === true && props.editable?.type === 'multiple';
+
+  // 状态集合
+  const [pagination, setPagination] = useSetState({ current: 1, pageSize: 100 });
+  const [checkbox, setCheckbox] = useSafeState(false);
+  // const [value, setValue] = useState<any[]>([]);
+
+  const value = useCreation(() => {
+    let list = props.value || [];
+
+    if (Array.isArray(props.value)) {
+      list = props.value.map((it: T, idx: number) => {
+        return {
+          rowIndex: `${idx}`,
+          ...it,
+        };
+      });
+    }
+    return list;
+  }, [props.value]);
+
+  const setValue = (list: any[]) => {
+    console.log('setValue');
+    props.onChange?.(list);
+  };
+  valueRef.current = value;
+  // const [value, setValue] = useMergedState<T[]>(() => props.value || [], {
+  //   value: props.value,
+  //   onChange: props.onChange,
+  //   postState: (list: T[]) => {
+  //     if (Array.isArray(list)) {
+  //       return list.map((it: T, idx: number) => {
+  //         return {
+  //           rowIndex: idx,
+  //           ...it,
+  //         };
+  //       });
+  //     }
+  //     return [];
+  //   },
+  // });
 
   // ============================ RowKey ============================
   const getRowKey = React.useMemo<any>(() => {
@@ -109,73 +164,46 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     }
     return (record: T, index: number) => (record as any)?.[rowKey as string] ?? index;
   }, [rowKey]);
-  const [innerPagination, setPagination] = useSetState({
-    current: pagination && pagination.current ? pagination.current : 1,
-    pageSize: pagination && pagination.pageSize ? pagination.pageSize : 10,
-  });
-  const [value, setValue] = useMergedState<T[]>(() => props.value || [], {
-    value: props.value,
-    onChange: props.onChange,
-    postState: (list: T[]) => {
-      if (Array.isArray(list)) {
-        return list.map((it: T, idx: number) => {
-          return {
-            rowIndex: idx,
-            ...it,
-          };
-        });
-      }
-      return [];
-    },
-  });
 
-  // 处理默认聚焦
-  // const [fouceDataIndex, setFouceDataIndex] = useState<string>('');
-  const [selectedRowKeys, setSelectedRowKeys] = useMountMergeState<React.ReactText[]>([], {
-    value: propsRowSelection ? propsRowSelection.selectedRowKeys : undefined,
-  });
-  const [selectedRows, setSelectedRows] = useMountMergeState<T[]>([]);
-  const [errorLine, setErrorLine] = useMountMergeState<ErrorLineState>(null);
+  if (oldValueRef.current === undefined) {
+    if (Array.isArray(props.value) && props.value.length > 0) {
+      const kvMap = new Map<React.Key, any>();
+      props.value.forEach((item, index) => {
+        const recordKey = `${getRowKey(item, index)}`;
+        kvMap.set(recordKey, item);
+      });
+      oldValueRef.current = kvMap;
+    }
+  }
 
-  const setSelectedRowsAndKey = useCallback(
-    (keys: React.ReactText[], rows: T[]) => {
-      setSelectedRowKeys(keys);
-      setSelectedRows(rows);
-    },
-    [setSelectedRowKeys, setSelectedRows],
-  );
+  const onTabelRow = useRefFunction((selectedRowKeys: any[], selectedRows: any[]) => {
+    container.selectedRef.current = {
+      selectedRowKeys,
+      selectedRows,
+    };
+  });
 
   useMount(() => {
     tableId += Math.ceil(Math.random() * 10);
   });
 
-  useEffect(() => {
-    if (oldValueRef.current === undefined) {
-      if (Array.isArray(props.value) && props.value.length > 0) {
-        const kvMap = new Map<React.Key, any>();
-        props.value.forEach((item, index) => {
-          const recordKey = `${getRowKey(item, index)}`;
-          kvMap.set(recordKey, item);
-        });
-        oldValueRef.current = kvMap;
-      }
+  useDeepCompareEffectDebounce(() => {
+    if (propsPagination && Object.prototype.toString.call(propsPagination) === '[object Object]') {
+      setPagination(propsPagination);
     }
-  }, [value]);
+  }, [JSON.stringify(propsPagination)]);
 
   /* 绑定actionRef */
-
-  useEffect(() => {
+  if (propsActionRef) {
     if (typeof propsActionRef === 'function' && actionRef.current) {
       propsActionRef(actionRef.current);
+    } else {
+      // @ts-ignore
+      propsActionRef.current = actionRef.current;
     }
-  }, [propsActionRef]);
-
-  if (propsActionRef) {
-    // @ts-ignore
-    propsActionRef.current = actionRef.current;
   }
 
-  const setRowData = (key: string, data: any) => {
+  const setRowData = useRefFunction((key: string, data: any) => {
     if (Array.isArray(value) && value.length > 0 && isObject(data)) {
       const index = value.findIndex((it) => it[rowKey] === key);
       if (index > -1) {
@@ -191,7 +219,47 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         setValue(newVlaue);
       }
     }
+  });
+
+  const omitEmpty = (list: any[]) => {
+    let newList = [];
+    if (Array.isArray(list) && list.length > 0) {
+      newList = list.map((it) => omitUndefinedAndEmptyArr(it));
+    }
+    return newList;
   };
+
+  const closeSave = useRefFunction(() => {
+    const newValueRef = omitEmpty(valueRef.current);
+    const newValue = omitEmpty(value);
+    if (!isEqual(newValueRef, newValue)) {
+      setValue(newValueRef);
+    }
+  });
+
+  useClickAway(() => {
+    if (isNeCell && container.curretEdit.current != null) {
+      container.closePre();
+    }
+  }, divRef);
+
+  const setDataSource = useRefFunction((_data: any[]) => {
+    if (isNeCell) {
+      const currentRecordKey = container.curretEdit.current?.recordKey;
+      if (currentRecordKey != null && currentRecordKey !== '') {
+        const index = _data.findIndex((it) => {
+          const recordKey = `${getRowKey(it, index)}`;
+          return recordKey === currentRecordKey;
+        });
+        console.log('index', index);
+        if (index === -1) {
+          container.curretEdit.current = null;
+        }
+      }
+    }
+    props.editable?.onValuesChange?.(undefined as any, _data, 0);
+    setValue(_data);
+  });
 
   /** 可编辑行的相关配置 */
   const editableUtils = useEditableArray<any>({
@@ -203,19 +271,26 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     childrenColumnName: props.expandable?.childrenColumnName,
     dataSource: value || [],
     oldKeyMap: oldValueRef.current || new Map(),
-    setDataSource: (_data) => {
-      props.editable?.onValuesChange?.(undefined as any, _data, 0);
-      setValue(_data);
+    valueRef: valueRef,
+    setValueRef: (_data: any[]) => {
+      if (isNeCell) {
+        valueRef.current = _data;
+      } else {
+        setValue(_data);
+      }
     },
+    setDataSource: setDataSource,
   });
 
-  const userAction: ActionType = {
+  const userAction: any = {
     ...editableUtils,
-    selectedRows,
+    clearAllEditKeysAndSetOne: (recordKey: string) => {
+      container.appointEditable(recordKey);
+    },
     setRowData,
     validateRules: (data: any[]) => {
       if (props.columns) {
-        return validateRules(props.columns, data, setErrorLine);
+        return validateRules(props.columns, data);
       }
       return Promise.resolve(true);
     },
@@ -232,17 +307,57 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     [],
   );
 
-  useEffect(() => {
+  useMount(() => {
     return () => {
       actionRef.current = undefined;
     };
-  }, []);
+  });
 
-  useUpdateEffect(() => {
+  const save = async (key: React.Key) => {
+    try {
+      const row = (await innerForm.validateFields()) as any;
+      const newData = [...value];
+      const index = newData.findIndex((item) => key === item[rowKey]);
+      if (index > -1) {
+        const item = newData[index];
+        newData.splice(index, 1, {
+          ...item,
+          ...(row[key] || {}),
+        });
+        setValue(newData);
+      } else {
+        newData.push(row);
+      }
+      valueRef.current = newData;
+      // requestAnimationFrame(() => {
+      //   props.onChange?.(newData);
+      // });
+    } catch (errInfo) {
+      console.log('Validate Failed:', errInfo);
+    }
+  };
+
+  useDeepCompareEffectDebounce(() => {
+    // valueRef.current = props.value || [];
+    // const newValueRef = omitEmpty(props.value || []);
+    // const newValue = omitEmpty(valueRef.current);
+    // console.log('useDeepCompareEffectDebounce isEqual', isEqual(newValueRef, newValue));
+    // if (!isEqual(newValueRef, newValue)) {
+    //   setValue(props.value || []);
+    // }
     if (Array.isArray(value) && value.length > 0) {
-      const editList = value.filter((it) => {
-        return editableUtils.editableKeys.indexOf(it[rowKey]) !== -1;
-      });
+      let editList: any[] = [];
+      if (isNeCell) {
+        if (container.curretEdit.current != null) {
+          editList = value.filter((it) => {
+            return it[rowKey] === container.curretEdit.current?.recordKey;
+          });
+        }
+      } else {
+        editList = value.filter((it) => {
+          return editableUtils.editableKeys.indexOf(it[rowKey]) !== -1;
+        });
+      }
       if (editList.length > 0) {
         let fieldsValue = {};
         editList.forEach((it: any) => {
@@ -251,15 +366,15 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
             [it[rowKey]]: it,
           };
         });
-        props.editable?.form?.setFieldsValue(fieldsValue);
+        innerForm.setFieldsValue(fieldsValue);
       }
     }
-  }, [JSON.stringify(value)]);
+  }, [props.value]);
 
   /** 如果有 ellipsis ，设置 tableLayout 为 fixed */
   const tableLayout = props.columns?.some((item) => item.ellipsis) ? 'fixed' : 'auto';
 
-  const editableDataSource = (): T[] => {
+  const editableDataSource = useRefFunction((): T[] => {
     const { defaultValue: row } = editableUtils.newLineRecord || {};
 
     // 如果有分页的功能，我们加到这一页的末尾
@@ -267,17 +382,10 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       return [...value].splice(pagination?.current * pagination?.pageSize - 1, 0, row);
     }
     return [...value, row];
-  };
+  });
 
-  const editableList = propsColumns?.filter((it) => it.editable);
-  let firstEditable: any = null;
-  let lastEditItem: any = null;
-  if (Array.isArray(editableList) && editableList.length > 0) {
-    firstEditable = editableList[0];
-    lastEditItem = editableList[editableList.length - 1];
-  }
   // 统一设置
-  const onTotalSetChange = (dataIndex: string, rvalue: any) => {
+  const onTotalSetChange = useRefFunction((dataIndex: string, rvalue: any) => {
     if (Array.isArray(value) && value.length > 0) {
       const newData = value.map((item: any) => {
         // eslint-disable-next-line no-param-reassign
@@ -286,20 +394,21 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       });
       setValue(newData);
     }
-  };
+  });
 
-  const rowIndexRender = (text: any, rowData: T, index: number) => {
-    if (pagination) {
-      return (innerPagination.current - 1) * innerPagination.pageSize + index + 1;
-    }
-    return index + 1;
-  };
-
-  const newPropsColumns = propsColumns?.filter((it) => it.hidden !== true);
-  let columns: any = newPropsColumns?.map((rcolumnProps) => {
+  const newPropsColumns = propsColumns?.filter((it) => it.hidden !== true) || [];
+  let columns: any[] = newPropsColumns?.map((rcolumnProps) => {
     const { totalSet, ...columnProps } = rcolumnProps;
     let newFixed: any = columnProps.fixed;
     let { width } = columnProps;
+
+    let newDataIndex: string = '';
+    if (Array.isArray(columnProps.dataIndex)) {
+      newDataIndex = [...columnProps.dataIndex].join('-');
+    } else {
+      newDataIndex = String(columnProps.dataIndex);
+    }
+
     if (columnProps.dataIndex === 'options') {
       if (columnProps.fixed === undefined || columnProps.fixed === null) {
         newFixed = 'right';
@@ -309,58 +418,130 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       }
     }
 
-    return {
+    const newColumnProps = {
+      ellipsis: true,
       ...columnProps,
       title: TitleSet(rcolumnProps, onTotalSetChange),
       fixed: newFixed,
       width,
-      onCell(data: any, index?: number | undefined) {
-        const cellProps: any = columnProps.onCell ? columnProps.onCell(data, index) : {};
-        return {
-          ...cellProps,
-          onClick: (e: any) => {
-            if (cellProps && cellProps?.onClick) {
-              cellProps?.onClick(e);
-            }
-            if (columnProps.editable) {
-              editableUtils.setFouce(String(columnProps.dataIndex));
-            } else if (firstEditable) {
-              editableUtils.setFouce(String(firstEditable.dataIndex));
-            }
-          },
-        };
-      },
-      render: (text: any, rowData: T, index: number) => {
-        return (
-          <EditableCell
-            columnProps={columnProps}
-            text={text}
-            rowData={rowData}
-            index={index}
-            editableUtils={editableUtils}
-            readonly={readonly}
-            errorLine={errorLine}
-            clickType={clickType}
-            clickEdit={clickEdit}
-          />
-        );
-      },
     };
+    if (!Boolean(rcolumnProps.editable) && newDataIndex !== 'options') {
+      return newColumnProps;
+    }
+
+    if (isNeCell) {
+      if (columnProps.render || Boolean(rcolumnProps.editable)) {
+        newColumnProps.shouldCellUpdate = (prevRecord: any, nextRecord: any) => {
+          if (Object.prototype.toString.call(nextRecord[newDataIndex]) === '[objet Object]') {
+            return !isEqual(prevRecord[newDataIndex], nextRecord[newDataIndex]);
+          } else {
+            return prevRecord[newDataIndex] != nextRecord[newDataIndex];
+          }
+        };
+      }
+      return {
+        ...newColumnProps,
+        className: newDataIndex !== 'options' ? 'sc-cell-td' : '',
+        render(val: any, record: any, index: number) {
+          const recordKey = getRowKey(record, index);
+          const cellProps = {
+            record,
+            text: val,
+            recordKey: recordKey,
+            index: index,
+            editableUtils: editableUtils,
+            columnProps: columnProps,
+            dataIndex: rcolumnProps.dataIndex || '',
+            editable: Boolean(rcolumnProps.editable),
+            readonly: readonly,
+            closeSave: closeSave,
+            save: save,
+            onClickEditActive: onClickEditActive,
+          };
+          return <NeEditTableCell {...cellProps} />;
+        },
+      };
+    } else {
+      if (rcolumnProps.dataIndex === 'options') {
+        newColumnProps.render = (text, record, index) => {
+          return columnProps?.render?.(text, record, index, {
+            ...editableUtils,
+          });
+        };
+      }
+      return {
+        ...newColumnProps,
+        render(val: any, record: any, index: number) {
+          const cellProps = {
+            record,
+            index: index,
+            text: val,
+            columnProps: columnProps,
+            editableUtils: editableUtils,
+            readonly: readonly,
+          };
+          return <EditableCell {...cellProps} />;
+        },
+      };
+    }
+
+    // if (isNeCell) {
+    //   if (!Boolean(rcolumnProps.editable) && rcolumnProps.dataIndex !== 'options') {
+    //     return newColumnProps;
+    //   }
+    //   return {
+    //     ...newColumnProps,
+    //     onCell: (record: any, index: number) => {
+    //       const recordKey = getRowKey(record, index);
+    //       return {
+    //         record,
+    //         recordKey: recordKey,
+    //         index: index,
+    //         actionRender: editableUtils.actionRender,
+    //         columnProps: columnProps,
+    //         dataIndex: rcolumnProps.dataIndex,
+    //         editable: rcolumnProps.editable,
+    //         readonly: readonly,
+    //         closeSave: closeSave,
+    //         save: save,
+    //       };
+    //     },
+    //   };
+    // } else {
+    //   if (rcolumnProps.dataIndex === 'options') {
+    //     newColumnProps.render = (text, record, index) => {
+    //       return columnProps?.render?.(text, record, index, {
+    //         ...editableUtils,
+    //       });
+    //     };
+    //   }
+    //   return {
+    //     ...newColumnProps,
+    //     onCell: (record: any, index: number) => {
+    //       return {
+    //         record,
+    //         index: index,
+    //         columnProps: columnProps,
+    //         editableUtils: editableUtils,
+    //         readonly: readonly,
+    //       };
+    //     },
+    //   };
+    // }
   });
-  if (Array.isArray(columns)) {
-    columns = genColumnList<any>({
-      columns: columns,
-      map: counter.columnsMap,
-      counter,
-    }).sort(tableColumnSort(counter.columnsMap));
-  }
+
   if (showIndex) {
     columns.unshift({
       dataIndex: '_rowIndex',
       title: '序号',
       width: 60,
       fixed: true,
-      render: rowIndexRender,
+      render: (text: any, rowData: T, index: number) => {
+        if (propsPagination) {
+          return (pagination.current - 1) * pagination.pageSize + index + 1;
+        }
+        return index + 1;
+      },
     });
   }
   if (readonly) {
@@ -369,144 +550,62 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     });
   }
 
-  /** 行选择相关的问题 */
-  const rowSelection: TableRowSelection = {
-    selectedRowKeys,
-    ...propsRowSelection,
-    onChange: (keys, rows, info) => {
-      if (propsRowSelection && propsRowSelection.onChange) {
-        propsRowSelection.onChange(keys, rows, info);
+  const changeEnter = useRefFunction((event: any) => {
+    if (event && event.keyCode === 9) {
+      event.preventDefault();
+      if (event.target && event.target.nodeName === 'INPUT') {
+        if (event.target.blur) {
+          event.target?.blur();
+        }
       }
-      setSelectedRowsAndKey(keys, rows);
-    },
-  };
-  const paginationProps = useMemo(() => {
-    let lPagination: any = {
-      showQuickJumper: true,
-      total: value.length,
-    };
+      const dataIndex = container.curretEdit.current?.dataIndex || '';
+      const recordKey = container.curretEdit.current?.recordKey || '';
+      container.closePre();
+      container.startNext(dataIndex, recordKey);
+    }
+  });
 
-    if (pagination === false) {
-      lPagination = false;
-    } else if (typeof pagination === 'object' && pagination !== null) {
-      lPagination = {
-        ...lPagination,
+  useDeepCompareEffectDebounce(() => {
+    if (divRef.current == null) return;
+    targetElement = getTargetElement(divRef.current, window)!;
+    if (!targetElement.addEventListener || !isNeCell) {
+      return;
+    }
+    targetElement.addEventListener('keydown', changeEnter, false);
+    return () => {
+      if (targetElement != null && targetElement.removeEventListener) {
+        targetElement.removeEventListener('keydown', changeEnter, false);
+      }
+    };
+  }, [divRef.current]);
+
+  const paginationProps = useCreation(() => {
+    if (pagination) {
+      return {
+        total: value.length,
+        showTotal: (rowTotal: any, range: any[]) => {
+          return <span>{`共${rowTotal}条记录,当前${range[0]}-${range[1]}条`}</span>;
+        },
         ...pagination,
       };
-    } else {
-      lPagination = {
-        ...lPagination,
-        ...innerPagination,
-      };
     }
-    return lPagination;
-  }, [JSON.stringify(innerPagination), JSON.stringify(pagination), value.length]);
+    return false;
+  }, [JSON.stringify(pagination), value.length]);
 
-  const getTableProps = () => {
-    let tData = editableUtils.newLineRecord ? editableDataSource() : value;
-    const childrenColumnName = props.childrenColumnName || 'children';
-    tData = removeDeletedData(tData, childrenColumnName, false);
-    return {
-      ...rest,
-      columns,
-      rowSelection: propsRowSelection === false ? undefined : rowSelection,
-      dataSource: tData,
-      pagination: paginationProps,
-      onChange: (
-        changePagination: TablePaginationConfig,
-        filters: Record<string, (React.Key | boolean)[] | null>,
-        sorter: SorterResult<any> | SorterResult<any>[],
-        extra: TableCurrentDataSource<T>,
-      ) => {
-        counter.setFiltersArg(filters);
-        const ordersMap = {};
-        if (Array.isArray(sorter)) {
-          sorter.forEach((it: any) => {
-            ordersMap[it.field] = it.order;
-          });
-        } else if (
-          Object.prototype.toString.call(sorter) === '[object Object]' &&
-          sorter !== null
-        ) {
-          const { field, order } = sorter;
-          if (field) {
-            const rkey: string = `${field}`;
-            ordersMap[rkey] = order;
-          }
-        }
-        counter.setSortOrderMap(ordersMap);
-        setPagination({
-          current: changePagination.current,
-          pageSize: changePagination.pageSize,
-        });
-        if (rest.onTableChange) {
-          rest.onTableChange(changePagination, filters, sorter, extra);
-        }
-      },
-      onRow: (record: T, index?: number) => {
-        let result: any = onRow && onRow(record, index);
-        if (result === undefined || result === null) {
-          result = {};
-        }
-        if (result) {
-          const customClick = result.onClick;
-          result.onClick = (event: any) => {
-            event.stopPropagation(); // 阻止合成事件间的冒泡
-            if (typeof customClick === 'function') {
-              customClick(event);
-            }
-            if (clickEdit) {
-              if (editableUtils.editableKeys.length > 0) {
-                editableUtils.clearAllEditKeysAndSetOne(record[rowKey]);
-              } else {
-                editableUtils.startEditable(record[rowKey]);
-              }
-            }
-          }; // 点击行
-        }
-        return {
-          ...result,
-        };
-      },
-    };
-  };
-
-  const changeEnter = (event: any) => {
-    const { editableKeys } = editableUtils;
-    if (clickEdit && Array.isArray(editableKeys) && editableKeys.length > 0) {
-      if (event && event.target) {
-        const { key, target } = event;
-        if (key === 'Tab') {
-          event.preventDefault();
-          const dataIndex = lastEditItem?.dataIndex;
-          const itemId = `${editableKeys[0]}_${dataIndex}`;
-          if (target.nodeName === 'INPUT') {
-            if (target.blur) {
-              target?.blur();
-            }
-          }
-          if (target.id && target.id === itemId) {
-            clearTimeout(timer);
-            const index = value.findIndex((it) => it[rowKey] === editableKeys[0]);
-            if (index !== -1 && value.length > index + 1) {
-              console.log(String(firstEditable?.dataIndex));
-              editableUtils.setFouce('');
-              timer = setTimeout(() => {
-                editableUtils.setFouce(String(firstEditable?.dataIndex));
-                editableUtils.clearAllEditKeysAndSetOne(value[index + 1][rowKey]);
-                clearTimeout(timer);
-                timer = null;
-              }, 0);
-            }
-          }
-        }
+  // 分页组件切换
+  const onChangeRef = useRefFunction(
+    (
+      _pagination: TablePaginationConfig,
+      filters: Record<string, (React.Key | boolean)[] | null>,
+      sorter: SorterResult<any> | SorterResult<any>[],
+      extra: TableCurrentDataSource<T>,
+    ) => {
+      setPagination({ current: _pagination.current, pageSize: _pagination.pageSize });
+      if (rest.onTableChange) {
+        rest.onTableChange(_pagination, filters, sorter, extra);
       }
-    }
-  };
-
-  useEventListener('keydown', changeEnter, {
-    target: divRef.current,
-  });
+    },
+  );
 
   const {
     record,
@@ -516,17 +615,14 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   } = recordCreatorProps || {
     onClick: () => {},
   };
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const createClick = (e: any) => {
-    // eslint-disable-next-line no-underscore-dangle
+  // 新增一行
+  const createClick = useRefFunction((e: any) => {
     const _record = runFunction(record, value.length) || {};
     actionRef?.current?.addEditRecord(_record, { newRecordType });
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    restButtonProps.onClick && restButtonProps.onClick(e);
-  };
+    restButtonProps?.onClick?.(e);
+  });
 
-  const creatorButtonDom = useMemo(() => {
+  const creatorButtonDom = useCreation(() => {
     if (maxLength && maxLength <= value?.length) {
       return false;
     }
@@ -556,33 +652,108 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     restButtonProps,
     createClick,
     creatorButtonText,
-    counter,
   ]);
 
-  const { run } = useThrottleFn(editableUtils.onValuesChange, { wait: 300 });
+  const dataSource: any[] = useCreation(() => {
+    let tData = editableUtils.newLineRecord ? editableDataSource() : value;
+    tData = removeDeletedData(tData, props.childrenColumnName || 'children', containsDeletedData);
+    return tData;
+  }, [
+    containsDeletedData,
+    editableDataSource,
+    editableUtils.newLineRecord,
+    props.childrenColumnName,
+    value,
+  ]);
+
+  const batchButtonDom = useCreation(() => {
+    return recordCreatorProps === false && propsPagination !== false && dataSource.length > 0 ? (
+      <BatchButton
+        checkbox={checkbox}
+        setCheckbox={setCheckbox}
+        batchOptions={batchOptions}
+        onDeleteByKeys={editableUtils.onDeleteByKeys}
+      />
+    ) : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    JSON.stringify(recordCreatorProps),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    JSON.stringify(propsPagination),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    JSON.stringify(batchOptions),
+    dataSource.length,
+    editableUtils.onDeleteByKeys,
+  ]);
+
+  const onValuesChange = (changedValues: any, values: any) => {
+    editableUtils.onValuesChange(changedValues, values);
+  };
+
+  // const CellCom = useMemo(() => {
+  //   return isNeCell ? NeEditTableCell : EditableCell;
+  // }, [isNeCell]);
+
+  // const components = useMemo(() => {
+  //   return {
+  //     body: {
+  //       cell: CellCom,
+  //     },
+  //   };
+  // }, [CellCom]);
+
+  const rowSelection = useCreation(() => {
+    return propsRowSelection === false ? undefined : propsRowSelection;
+  }, [propsRowSelection]);
+
+  const tableScroll = useCreation(() => {
+    return scroll ? scroll : defaultScroll;
+  }, [scroll]);
+
+  // useWhyDidYouUpdate('useWhyDidYouUpdateComponent', {
+  //   ...props,
+  //   ...editableUtils,
+  //   pagination,
+  //   ...container,
+  // });
+  console.log('TableRender');
 
   return (
     <div id={tableId} className="sc-editable-table" ref={divRef}>
-      <Form component={false} form={props.editable?.form} onValuesChange={run} key="table">
+      <Form
+        component={false}
+        form={innerForm}
+        // 这里做三次
+        onValuesChange={onValuesChange}
+        key="table"
+      >
         <ScTable
-          {...getTableProps()}
+          bordered
+          checkbox={checkbox}
+          {...rest}
+          columns={columns}
+          rowSelection={rowSelection}
+          dataSource={dataSource}
+          pagination={paginationProps}
+          onChange={onChangeRef}
+          // components={components}
           rowKey={rowKey}
-          tableLayout={tableLayout}
           size="small"
+          rowSelected={false}
+          tableLayout={tableLayout}
+          selectedRowKeys={container.selectedRef.current.selectedRowKeys}
           rowClassName={() => 'editable-row'}
-          scroll={scroll}
+          onSelectRow={onTabelRow}
+          scroll={tableScroll}
         />
+        {readonly || batchOptions === false ? null : batchButtonDom}
         {readonly ? null : creatorButtonDom}
       </Form>
     </div>
   );
 }
 
-/**
- * 🏆 Use Ant Design Table like a Pro! 更快 更好 更方便
- *
- * @param props
- */
 const ProviderWarp = <T extends Record<string, any>>(props: EditableProTableProps<T>) => {
   return (
     <Container.Provider initialState={props}>

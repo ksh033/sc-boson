@@ -3,9 +3,11 @@
 .row-dragging {
   background: #fafafa;
   border: 1px solid #ccc;
+
   .sc-table-operation {
     visibility: visible;
   }
+
   .ant-table-cell-fix-left,
   .ant-table-cell-fix-right {
     background-color: transparent;
@@ -19,13 +21,11 @@
 .row-dragging .drag-visible {
   visibility: visible;
 }
+
 .sc-table {
   position: relative;
-
   overflow: hidden;
-  .ant-table-pagination {
-    margin-top: 24px;
-  }
+
   tr.drop-over-downward td,
   .drop-over-downward {
     border-bottom: 1px solid #1890ff;
@@ -38,15 +38,18 @@
 
   &-operation {
     display: inline-block;
+
     .ant-btn {
       padding: 0px;
       color: #1890ff;
       border: none;
       box-shadow: none;
+
       &:hover {
         color: #40a9ff;
       }
     }
+
     .ant-btn.disabled,
     .ant-btn[disabled],
     .ant-btn.disabled:hover,
@@ -62,10 +65,12 @@
       border-color: #d9d9d9;
     }
   }
+
   &-alert {
     margin-bottom: 16px;
   }
 }
+
 @import '../components/ToolBar/index.less';
 @import '../components/ListToolBar/index.less';
 @import '../components/ColumnSetting/index.less';

@@ -23,7 +23,7 @@ export type ProCoreActionType<T = {}> = {
   T;
 
 export type ActionType = ProCoreActionType & {
-  selectedRows: any[];
+  selectedRows?: any[];
   fullScreen?: () => void;
   validateRules?: (value: any[]) => Promise<any>;
   clearAllEditKeysAndSetOne: (key: string) => void;
