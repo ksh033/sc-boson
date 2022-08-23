@@ -39,6 +39,19 @@ export function runFunction<T extends any[]>(valueEnum: any, ...rest: T) {
   return valueEnum;
 }
 
+function getTargetNode(child: any, parent: any) {
+  if (child && parent) {
+    let parentNode = child.parentNode;
+    while (parentNode) {
+      if (parent === parentNode) {
+        return true;
+      }
+      parentNode = parentNode.parentNode;
+    }
+  }
+  return false;
+}
+
 export type BatchOptionsType =
   | false
   | {
@@ -248,8 +261,9 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     }
   });
 
-  useClickAway(() => {
-    if (isNeCell) {
+  useClickAway((event) => {
+    const flag = getTargetNode(event.target, document.getElementById('root'));
+    if (isNeCell && flag) {
       container.closePre();
     }
   }, divRef);
