@@ -587,7 +587,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
     //   startEditable(recordKey);
     // }
 
-    if (editableType === 'multiple' && isNeCell) {
+    if (editableType === 'multiple') {
       props.setValueRef(dataSource);
       return;
     }
@@ -606,9 +606,9 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
     };
 
     propsOnValuesChange.run(editRow, dataSource, idx, value);
-    if (editableType === 'multiple') {
-      props.setValueRef(dataSource);
-    }
+    // if (editableType === 'multiple') {
+    //   props.setValueRef(dataSource);
+    // }
   });
 
   /**

@@ -125,8 +125,8 @@ function useContainer(props: EditableProTableContext = {}) {
     if (length === 0 || editableListLength === 0) {
       initStartRef.current = null;
     }
-    console.log('group', group);
-    console.log('groupMap', groupMap);
+    // console.log('group', group);
+    // console.log('groupMap', groupMap);
     groupRef.current = group;
     groupRecordKeyMap.current = groupMap;
     editableMap.current = getEditableMap;
@@ -183,8 +183,8 @@ function useContainer(props: EditableProTableContext = {}) {
       endEditable =
         groupRef.current[groupMapItem.fisColIndex][groupMapItem.secColIndex].endEditable;
     }
-    console.log('endEditable', endEditable);
-    console.log('typeof endEditable ', typeof endEditable === 'function');
+    // console.log('endEditable', endEditable);
+    // console.log('typeof endEditable ', typeof endEditable === 'function');
     if (typeof endEditable === 'function') {
       endEditable();
     }

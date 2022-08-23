@@ -23,6 +23,7 @@ import { getTargetElement } from 'ahooks/es/utils/dom';
 // import { useWhyDidYouUpdate } from 'ahooks';
 import EditableCell from './components/EditableCell';
 import BatchButton from './components/BatchButton';
+import useMergedState from 'rc-util/es/hooks/useMergedState';
 
 type TargetElement = HTMLElement | Element | Document | Window;
 let targetElement: TargetElement | null | undefined = null;
@@ -85,6 +86,8 @@ export type ErrorLineState = {
 
 const defaultScroll = { x: 'max-content', y: '600px' };
 
+const OptionsName = 'options';
+
 function EditableTable<T extends Record<string, any>>(props: EditableProTableProps<T>) {
   const {
     actionRef: propsActionRef,
@@ -118,45 +121,45 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   const isNeCell = clickEdit === true && props.editable?.type === 'multiple';
 
   // 状态集合
-  const [pagination, setPagination] = useSetState({ current: 1, pageSize: 100 });
+  const [pagination, setPagination] = useSetState({ current: 1, pageSize: 50 });
   const [checkbox, setCheckbox] = useSafeState(false);
   // const [value, setValue] = useState<any[]>([]);
 
-  const value = useCreation(() => {
-    let list = props.value || [];
+  // const value = useCreation(() => {
+  //   let list = props.value || [];
 
-    if (Array.isArray(props.value)) {
-      list = props.value.map((it: T, idx: number) => {
-        return {
-          rowIndex: `${idx}`,
-          ...it,
-        };
-      });
-    }
-    return list;
-  }, [props.value]);
+  //   if (Array.isArray(props.value)) {
+  //     list = props.value.map((it: T, idx: number) => {
+  //       return {
+  //         rowIndex: `${idx}`,
+  //         ...it,
+  //       };
+  //     });
+  //   }
+  //   return list;
+  // }, [props.value]);
 
-  const setValue = (list: any[]) => {
-    console.log('setValue');
-    props.onChange?.(list);
-  };
+  // const setValue = (list: any[]) => {
+  //   console.log('setValue');
+  //   props.onChange?.(list);
+  // };
+
+  const [value, setValue] = useMergedState<T[]>(() => props.value || [], {
+    value: props.value,
+    onChange: props.onChange,
+    postState: (list: T[]) => {
+      if (Array.isArray(list)) {
+        return list.map((it: T, idx: number) => {
+          return {
+            rowIndex: idx,
+            ...it,
+          };
+        });
+      }
+      return [];
+    },
+  });
   valueRef.current = value;
-  // const [value, setValue] = useMergedState<T[]>(() => props.value || [], {
-  //   value: props.value,
-  //   onChange: props.onChange,
-  //   postState: (list: T[]) => {
-  //     if (Array.isArray(list)) {
-  //       return list.map((it: T, idx: number) => {
-  //         return {
-  //           rowIndex: idx,
-  //           ...it,
-  //         };
-  //       });
-  //     }
-  //     return [];
-  //   },
-  // });
-
   // ============================ RowKey ============================
   const getRowKey = React.useMemo<any>(() => {
     if (typeof rowKey === 'function') {
@@ -251,7 +254,6 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           const recordKey = `${getRowKey(it, index)}`;
           return recordKey === currentRecordKey;
         });
-        console.log('index', index);
         if (index === -1) {
           container.curretEdit.current = null;
         }
@@ -273,11 +275,12 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     oldKeyMap: oldValueRef.current || new Map(),
     valueRef: valueRef,
     setValueRef: (_data: any[]) => {
-      if (isNeCell) {
-        valueRef.current = _data;
-      } else {
-        setValue(_data);
-      }
+      valueRef.current = _data;
+      // if (isNeCell) {
+      //   valueRef.current = _data;
+      // } else {
+      //   setValue(_data);
+      // }
     },
     setDataSource: setDataSource,
   });
@@ -386,15 +389,31 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
 
   // 统一设置
   const onTotalSetChange = useRefFunction((dataIndex: string, rvalue: any) => {
-    if (Array.isArray(value) && value.length > 0) {
-      const newData = value.map((item: any) => {
-        // eslint-disable-next-line no-param-reassign
-        item[dataIndex] = rvalue;
-        return item;
-      });
-      setValue(newData);
+    if (props.editable?.type === 'multiple') {
+      if (Array.isArray(valueRef.current) && valueRef.current.length > 0) {
+        const newData = valueRef.current.map((item: any) => {
+          // eslint-disable-next-line no-param-reassign
+          item[dataIndex] = rvalue;
+          return item;
+        });
+        setValue(newData);
+      }
+    } else {
+      if (Array.isArray(value) && value.length > 0) {
+        const newData = value.map((item: any) => {
+          // eslint-disable-next-line no-param-reassign
+          item[dataIndex] = rvalue;
+          return item;
+        });
+        setValue(newData);
+      }
     }
   });
+
+  const hasOptions = useCreation(() => {
+    const index = propsColumns?.findIndex((it) => it.dataIndex === OptionsName);
+    return index != null && index > -1;
+  }, [propsColumns]);
 
   const newPropsColumns = propsColumns?.filter((it) => it.hidden !== true) || [];
   let columns: any[] = newPropsColumns?.map((rcolumnProps) => {
@@ -409,23 +428,21 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       newDataIndex = String(columnProps.dataIndex);
     }
 
-    if (columnProps.dataIndex === 'options') {
+    if (columnProps.dataIndex === OptionsName) {
       if (columnProps.fixed === undefined || columnProps.fixed === null) {
         newFixed = 'right';
       }
-      if (width === undefined || width === null) {
-        width = 90;
-      }
     }
-
+    if (width == null) {
+      width = 90;
+    }
     const newColumnProps = {
-      ellipsis: true,
       ...columnProps,
       title: TitleSet(rcolumnProps, onTotalSetChange),
       fixed: newFixed,
       width,
     };
-    if (!Boolean(rcolumnProps.editable) && newDataIndex !== 'options') {
+    if (!Boolean(rcolumnProps.editable) && newDataIndex !== OptionsName) {
       return newColumnProps;
     }
 
@@ -441,7 +458,16 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       }
       return {
         ...newColumnProps,
-        className: newDataIndex !== 'options' ? 'sc-cell-td' : '',
+        className: newDataIndex !== OptionsName ? 'sc-cell-td' : '',
+        onHeaderCell: () => {
+          return {
+            onClick: () => {
+              if (isNeCell) {
+                closeSave();
+              }
+            }, // 点击表头行
+          };
+        },
         render(val: any, record: any, index: number) {
           const recordKey = getRowKey(record, index);
           const cellProps = {
@@ -462,7 +488,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         },
       };
     } else {
-      if (rcolumnProps.dataIndex === 'options') {
+      if (rcolumnProps.dataIndex === OptionsName) {
         newColumnProps.render = (text, record, index) => {
           return columnProps?.render?.(text, record, index, {
             ...editableUtils,
@@ -471,6 +497,15 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       }
       return {
         ...newColumnProps,
+        onCell: () => {
+          return {
+            onMouseLeave: () => {
+              if (Boolean(clickEdit) === false && props.editable?.type === 'multiple') {
+                closeSave();
+              }
+            },
+          };
+        },
         render(val: any, record: any, index: number) {
           const cellProps = {
             record,
@@ -546,7 +581,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   }
   if (readonly) {
     columns = columns.filter((it: { dataIndex: string }) => {
-      return it.dataIndex !== 'options';
+      return it.dataIndex !== OptionsName;
     });
   }
 
@@ -667,7 +702,11 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   ]);
 
   const batchButtonDom = useCreation(() => {
-    return recordCreatorProps === false && propsPagination !== false && dataSource.length > 0 ? (
+    return recordCreatorProps === false &&
+      propsPagination !== false &&
+      dataSource.length > 0 &&
+      hasOptions &&
+      props.editable?.type === 'multiple' ? (
       <BatchButton
         checkbox={checkbox}
         setCheckbox={setCheckbox}
@@ -685,6 +724,8 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     JSON.stringify(batchOptions),
     dataSource.length,
     editableUtils.onDeleteByKeys,
+    hasOptions,
+    props.editable?.type,
   ]);
 
   const onValuesChange = (changedValues: any, values: any) => {

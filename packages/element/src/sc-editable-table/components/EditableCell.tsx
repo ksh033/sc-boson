@@ -24,7 +24,6 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
       ...editableUtils,
     });
   }
-  console.log('readonly', readonly);
 
   if (readonly) {
     return <>{renderDom}</>;
@@ -34,8 +33,6 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
     ...record,
     index,
   });
-  console.log('isEditable', isEditable);
-  console.log('recordKey', recordKey);
   const name = spellNamePath(
     recordKey || index,
     columnProps?.key || columnProps?.dataIndex || index,
@@ -46,8 +43,6 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
     !isEditableCell(text, record, index, columnProps?.editable, columnProps?.dataIndex)
       ? 'edit'
       : 'read';
-  console.log('mode', mode);
-  console.log('renderDom', renderDom);
   if (mode === 'edit') {
     if (columnProps.dataIndex === 'options') {
       return (
@@ -62,7 +57,6 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
         </Space>
       );
     }
-    console.log('defaultComponent');
     return defaultComponent({
       columnProps,
       name,

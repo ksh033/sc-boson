@@ -219,7 +219,6 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
     closeSave,
     onClickEditActive,
   } = props;
-  console.log('NeEditTableCell');
   const container = Container.useContainer();
   const [editing, setEditing] = useSafeState(false);
   // const text = record[dataIndex];
