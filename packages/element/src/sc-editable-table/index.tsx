@@ -23,7 +23,6 @@ import { getTargetElement } from 'ahooks/es/utils/dom';
 // import { useWhyDidYouUpdate } from 'ahooks';
 import EditableCell from './components/EditableCell';
 import BatchButton from './components/BatchButton';
-import useMergedState from 'rc-util/es/hooks/useMergedState';
 
 type TargetElement = HTMLElement | Element | Document | Window;
 let targetElement: TargetElement | null | undefined = null;
@@ -88,6 +87,12 @@ const defaultScroll = { x: 'max-content', y: '600px' };
 
 const OptionsName = 'options';
 
+const TdCell = (props: any) => {
+  // 去除不必要的函数处理
+  const { onMouseEnter, onContextMenu, onDoubleClick, ...restProps } = props;
+  return <td {...restProps} />;
+};
+
 function EditableTable<T extends Record<string, any>>(props: EditableProTableProps<T>) {
   const {
     actionRef: propsActionRef,
@@ -125,40 +130,40 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   const [checkbox, setCheckbox] = useSafeState(false);
   // const [value, setValue] = useState<any[]>([]);
 
-  // const value = useCreation(() => {
-  //   let list = props.value || [];
+  const value = useCreation(() => {
+    let list = props.value || [];
 
-  //   if (Array.isArray(props.value)) {
-  //     list = props.value.map((it: T, idx: number) => {
-  //       return {
-  //         rowIndex: `${idx}`,
-  //         ...it,
-  //       };
-  //     });
-  //   }
-  //   return list;
-  // }, [props.value]);
+    if (Array.isArray(props.value)) {
+      list = props.value.map((it: T, idx: number) => {
+        return {
+          rowIndex: `${idx}`,
+          ...it,
+        };
+      });
+    }
+    return list;
+  }, [props.value]);
 
-  // const setValue = (list: any[]) => {
-  //   console.log('setValue');
-  //   props.onChange?.(list);
-  // };
+  const setValue = (list: any[]) => {
+    console.log('setValue');
+    props.onChange?.(list);
+  };
 
-  const [value, setValue] = useMergedState<T[]>(() => props.value || [], {
-    value: props.value,
-    onChange: props.onChange,
-    postState: (list: T[]) => {
-      if (Array.isArray(list)) {
-        return list.map((it: T, idx: number) => {
-          return {
-            rowIndex: idx,
-            ...it,
-          };
-        });
-      }
-      return [];
-    },
-  });
+  // const [value, setValue] = useMergedState<T[]>(() => props.value || [], {
+  //   value: props.value,
+  //   onChange: props.onChange,
+  //   postState: (list: T[]) => {
+  //     if (Array.isArray(list)) {
+  //       return list.map((it: T, idx: number) => {
+  //         return {
+  //           rowIndex: idx,
+  //           ...it,
+  //         };
+  //       });
+  //     }
+  //     return [];
+  //   },
+  // });
   valueRef.current = value;
   // ============================ RowKey ============================
   const getRowKey = React.useMemo<any>(() => {
@@ -778,7 +783,9 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           dataSource={dataSource}
           pagination={paginationProps}
           onChange={onChangeRef}
-          // components={components}
+          components={{
+            body: { cell: TdCell },
+          }}
           rowKey={rowKey}
           size="small"
           rowSelected={false}
