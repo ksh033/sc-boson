@@ -164,7 +164,10 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   //     return [];
   //   },
   // });
-  valueRef.current = value;
+  useDeepCompareEffectDebounce(() => {
+    valueRef.current = value;
+  }, [value]);
+
   // ============================ RowKey ============================
   const getRowKey = React.useMemo<any>(() => {
     if (typeof rowKey === 'function') {
@@ -246,7 +249,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   });
 
   useClickAway(() => {
-    if (isNeCell && container.curretEdit.current != null) {
+    if (isNeCell) {
       container.closePre();
     }
   }, divRef);
