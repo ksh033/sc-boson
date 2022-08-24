@@ -485,7 +485,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           return {
             onClick: () => {
               if (isNeCell) {
-                container.closePre();
+                closeSave();
               }
             }, // 点击表头行
           };

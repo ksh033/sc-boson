@@ -59,18 +59,22 @@ const TitleSet = (column: ProColumns<any>, onChange: (dataIndex: string, value: 
   if (column.editable) {
     newTitle = (
       <>
-        <EditOutlined style={{ marginRight: '8px' }} />
-        {newTitle}
-        {column.totalSet ? (
-          <a
-            style={{ marginLeft: '8px' }}
-            onClick={() => {
-              handleClick(column, onChange);
-            }}
-          >
-            统一设置
-          </a>
-        ) : null}
+        <div>
+          <EditOutlined style={{ marginRight: '8px' }} />
+          {newTitle}
+        </div>
+        <div>
+          {column.totalSet ? (
+            <a
+              style={{ marginLeft: '8px' }}
+              onClick={() => {
+                handleClick(column, onChange);
+              }}
+            >
+              统一设置
+            </a>
+          ) : null}
+        </div>
       </>
     );
   }
