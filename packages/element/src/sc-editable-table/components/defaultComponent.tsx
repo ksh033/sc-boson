@@ -62,7 +62,7 @@ const defaultComponent = (comprops: defaultComponentProps) => {
   }
 
   return (
-    <Form.Item name={name} {...formItemProps} initialValue={initVal} noStyle>
+    <Form.Item name={name} {...formItemProps} initialValue={initVal} noStyle preserve={false}>
       {component}
     </Form.Item>
   );
