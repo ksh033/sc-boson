@@ -336,11 +336,12 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
   }
 
   const autoFocus = container.getDataIndex(dataIndex || '') === container.fouceDataIndexRef.current;
-
+  const newColumnProps =
+    container.editItemMap[container.getDataIndex(dataIndex || '')] || columnProps;
   return editing ? (
     <div className="sc-cell-cmp-td">
       {defaultComponent({
-        columnProps,
+        columnProps: newColumnProps,
         name,
         text,
         record,

@@ -3,6 +3,7 @@ import { createContainer } from 'unstated-next';
 import type { ProColumns } from './typing';
 import type { DataIndex } from 'rc-table/es/interface';
 import { useRefFunction } from '../_util/useRefFunction';
+import { useCreation } from 'ahooks';
 
 type EditableProTableContext = {
   value?: any[];
@@ -90,6 +91,15 @@ function useContainer(props: EditableProTableContext = {}) {
     });
     return map;
   }, [editableList.length]);
+
+  const editItemMap = useCreation(() => {
+    const map: Record<string, ProColumns<any>> = {};
+    editableList.forEach((col) => {
+      const name: string = getDataIndex(col.dataIndex || '');
+      map[name] = col;
+    });
+    return map;
+  }, [editableList]);
 
   // 初始化
   const initCreateTwoDimension = useRefFunction(() => {
@@ -204,6 +214,7 @@ function useContainer(props: EditableProTableContext = {}) {
     initStartRef,
     selectedRef,
     groupRecordKeyMap,
+    editItemMap,
   };
 }
 
