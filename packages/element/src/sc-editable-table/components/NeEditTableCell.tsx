@@ -255,7 +255,7 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
     }, 1);
   };
 
-  let renderDom = text;
+  let renderDom = record[container.getDataIndex(dataIndex || '')];
   if (columnProps.render) {
     renderDom = columnProps.render(text, record, index, {
       ...editableUtils,
