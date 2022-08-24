@@ -748,6 +748,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     editableUtils.onDeleteByKeys,
     hasOptions,
     props.editable?.type,
+    checkbox,
   ]);
 
   const onValuesChange = (changedValues: any, values: any) => {
