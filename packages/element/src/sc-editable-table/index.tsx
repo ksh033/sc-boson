@@ -126,12 +126,11 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     batchOptions = defaultBatchOptions,
     ...rest
   } = props;
-  let tableId = 'tableForm';
   const divRef = useRef<HTMLDivElement>(null);
   const container = Container.useContainer();
   const actionRef = useRef<ActionType>();
   const valueRef = useRef<T[]>([]);
-
+  const tableId = useRef<string>('tableForm' + Math.ceil(Math.random() * 10));
   const [innerForm] = useForm(props.editable?.form);
 
   // 初始化的数据
@@ -207,10 +206,6 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     };
   });
 
-  useMount(() => {
-    tableId += Math.ceil(Math.random() * 10);
-  });
-
   useDeepCompareEffectDebounce(() => {
     if (propsPagination && Object.prototype.toString.call(propsPagination) === '[object Object]') {
       setPagination(propsPagination);
@@ -260,13 +255,13 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       setValue(newValueRef);
     }
   });
-
+  const TableDiv = window.document.querySelectorAll(`#${tableId.current} table`);
   useClickAway((event) => {
     const flag = getTargetNode(event.target, document.getElementById('root'));
     if (isNeCell && flag) {
       container.closePre();
     }
-  }, divRef);
+  }, TableDiv[0] as HTMLElement);
 
   const setDataSource = useRefFunction((_data: any[]) => {
     if (isNeCell) {
@@ -784,7 +779,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   console.log('TableRender');
 
   return (
-    <div id={tableId} className="sc-editable-table" ref={divRef}>
+    <div id={tableId.current} className="sc-editable-table" ref={divRef}>
       <Form
         component={false}
         form={innerForm}

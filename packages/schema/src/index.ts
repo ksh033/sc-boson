@@ -15,7 +15,11 @@ export const omitUndefinedAndEmptyArr = (obj: any): any => {
   } else if (Object.prototype.toString.call(obj) === '[object Object]') {
     newObj = {};
     Object.keys(obj || {}).forEach((key) => {
-      newObj[key] = omitUndefinedAndEmptyArr(obj[key]);
+      if (key.indexOf('_') === -1) {
+        newObj[key] = omitUndefinedAndEmptyArr(obj[key]);
+      } else {
+        newObj[key] = obj[key];
+      }
     });
   } else {
     newObj = obj;
