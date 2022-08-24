@@ -13,6 +13,7 @@ import TableInfo from '../page/TableInfo';
 import SearchInfo from '../page/SearchInfo';
 import _ from 'lodash';
 import schema from '../pageConfigUitls';
+import { omitUndefinedAndEmptyArr } from '../index';
 
 export { PageConfig, PageType };
 export interface SearchConfig {
@@ -152,13 +153,13 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   });
 
   const onSubmitSearchForm = (_params: any) => {
-    const newParams = _params;
+    const newParams = omitUndefinedAndEmptyArr(_params);
     newParams.orders = ordersRef.current;
     newParams._filters = filterRef.current;
 
     if (JSON.stringify(newParams) !== JSON.stringify(state.params)) {
       setState({
-        params: _params,
+        params: omitUndefinedAndEmptyArr(_params),
         pagination: { ...state.pagination, current: 1 },
       });
     } else {

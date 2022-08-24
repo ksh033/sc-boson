@@ -3,6 +3,7 @@ import { CModal } from '@scboson/sc-element';
 import type { ButtonTypeProps } from '../interface';
 // @ts-ignore
 import { history } from 'umi';
+import { omitUndefinedAndEmptyArr } from '../index';
 
 const defaultOptions = {
   showFull: false,
@@ -250,6 +251,7 @@ function formSubmit(props: ButtonTypeProps) {
           }
         }
         newValue.pageEntryTime = pageEntryTime;
+        newValue = omitUndefinedAndEmptyArr(newValue);
         if (service) {
           try {
             const data = await service(newValue);
@@ -286,6 +288,7 @@ function formUpdate(props: ButtonTypeProps) {
           }
         }
         newValue.pageEntryTime = pageEntryTime;
+        newValue = omitUndefinedAndEmptyArr(newValue);
         if (service) {
           try {
             const data = await service(newValue);
