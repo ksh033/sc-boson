@@ -210,7 +210,7 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
     columnProps,
     record,
     index,
-    text,
+    // text,
     readonly,
     dataIndex,
     editable,
@@ -221,7 +221,7 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
   } = props;
   const container = Container.useContainer();
   const [editing, setEditing] = useSafeState(false);
-  // const text = record[dataIndex];
+  const text = record[container.getDataIndex(dataIndex || '')];
   const name = useMemo(() => {
     return spellNamePath(recordKey || index, dataIndex || index);
   }, [dataIndex, index, recordKey]);
@@ -255,7 +255,7 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
     }, 1);
   };
 
-  let renderDom = record[container.getDataIndex(dataIndex || '')];
+  let renderDom = text;
   if (columnProps.render) {
     renderDom = columnProps.render(text, record, index, {
       ...editableUtils,
