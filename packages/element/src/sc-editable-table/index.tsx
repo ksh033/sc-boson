@@ -252,7 +252,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     const newValueRef = omitEmpty(valueRef.current);
     const newValue = omitEmpty(value);
     if (!isEqual(newValueRef, newValue)) {
-      setValue(newValueRef);
+      setValue(valueRef.current);
     }
   });
   const TableDiv = window.document.querySelectorAll(`#${tableId.current} .ant-table-container`);
