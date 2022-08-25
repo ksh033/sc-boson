@@ -83,14 +83,16 @@ function useContainer(props: EditableProTableContext = {}) {
 
   const editableListLength = editableList.length;
 
-  const getEditableMap = useMemo(() => {
+  const getEditableMap = useCreation(() => {
     const map: Record<string, number> = {};
     editableList.forEach((col, index: number) => {
       const name: string = getDataIndex(col.dataIndex || '');
       map[name] = index;
     });
     return map;
-  }, [editableList.length]);
+  }, [editableList]);
+
+  // console.log('getEditableMap', getEditableMap);
 
   const editItemMap = useCreation(() => {
     const map: Record<string, ProColumns<any>> = {};

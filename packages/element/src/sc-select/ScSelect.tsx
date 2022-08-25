@@ -119,7 +119,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   const debounce = useDebounceFn(
     (value) => {
       const searchParam: any = {};
-      searchParam[searchField] = value;
+      searchParam[searchField] = String(value).trim();
       loadData(searchParam);
     },
     { wait: 500 },
@@ -183,7 +183,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         : -1;
       if (itIdx === -1) {
         list.push(
-          <Option key={inputKey} value={input}>
+          <Option key={inputKey} value={String(input).trim()}>
             {input}
           </Option>,
         );

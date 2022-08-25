@@ -255,13 +255,15 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       setValue(newValueRef);
     }
   });
-  const TableDiv = window.document.querySelectorAll(`#${tableId.current} table`);
+  const TableDiv = window.document.querySelectorAll(`#${tableId.current} .ant-table-container`);
+  console.log('TableDiv', TableDiv);
+  const tableRef: HTMLElement | null = TableDiv.length > 0 ? (TableDiv[0] as HTMLElement) : null;
   useClickAway((event) => {
     const flag = getTargetNode(event.target, document.getElementById('root'));
     if (isNeCell && flag) {
       container.closePre();
     }
-  }, TableDiv[0] as HTMLElement);
+  }, tableRef);
 
   const setDataSource = useRefFunction((_data: any[]) => {
     if (isNeCell) {
