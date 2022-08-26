@@ -12,6 +12,8 @@ import { fill, dig } from './utils';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import { useDebounceFn, useSafeState } from 'ahooks';
 import isEqual from 'lodash/isEqual';
+import type { RecordCreatorProps } from './index';
+import type { ButtonProps } from 'antd/es/button';
 
 export function genNonDuplicateID() {
   let str = '';
@@ -447,6 +449,12 @@ type UseEditableArrayProps<RecordType> = RowEditableConfig<RecordType> & {
   setDataSource: (dataSource: RecordType[]) => void;
   needDeletePopcon?: boolean; //删除时是否询问
   setValueRef: (dataSource: RecordType[]) => void;
+  recordCreatorProps?:
+    | (RecordCreatorProps<RecordType> &
+        ButtonProps & {
+          creatorButtonText?: React.ReactNode;
+        })
+    | false;
 };
 
 /**
@@ -586,8 +594,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
     //   cancelEditable(recordKey);
     //   startEditable(recordKey);
     // }
-
-    if (editableType === 'multiple') {
+    if (editableType === 'multiple' && props.recordCreatorProps === false) {
       props.setValueRef(dataSource);
       return;
     }
@@ -629,10 +636,13 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
       message.warn(props.onlyOneLineEditorAlertMessage || '只能同时编辑一行');
       return false;
     }
-    const tRow = {
-      ...row,
-      editableAction: 'ADD',
-    };
+    let tRow = row;
+    if (props.containsDeletedData) {
+      tRow = {
+        ...row,
+        editableAction: 'ADD',
+      };
+    }
 
     tRow[props.rowKey] = genNonDuplicateID();
     const recordKey = props.getRowKey(tRow, props.dataSource.length);
