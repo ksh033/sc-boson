@@ -294,6 +294,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     dataSource: value || [],
     oldKeyMap: oldValueRef.current || new Map(),
     valueRef: valueRef,
+    setValue: setValue,
     setValueRef: (_data: any[]) => {
       valueRef.current = _data;
       // if (isNeCell) {

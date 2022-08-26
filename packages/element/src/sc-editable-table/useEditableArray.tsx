@@ -9,7 +9,7 @@ import { useDeepCompareEffectDebounce } from '../_util/useDeepCompareEffect';
 import { useRefFunction } from '../_util/useRefFunction';
 import { fill, dig } from './utils';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
-import { useDebounceFn, useSafeState } from 'ahooks';
+import { useSafeState } from 'ahooks';
 import isEqual from 'lodash/isEqual';
 
 export function genNonDuplicateID() {
@@ -447,6 +447,7 @@ type UseEditableArrayProps<RecordType> = RowEditableConfig<RecordType> & {
   needDeletePopcon?: boolean; //删除时是否询问
   setValueRef: (dataSource: RecordType[]) => void;
   canCreateAdd?: boolean;
+  setValue: (dataSource: RecordType[]) => void;
 };
 
 /**
@@ -551,16 +552,6 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
     return true;
   });
 
-  const propsOnValuesChange = useDebounceFn(
-    async (...rest: any[]) => {
-      //@ts-ignore
-      props.onValuesChange?.(...rest);
-    },
-    {
-      wait: 64,
-    },
-  );
-
   const onValuesChange = useRefFunction((value: any, values: any) => {
     let dataSource = props.dataSource;
     const childrenColumnName = props.childrenColumnName || 'children';
@@ -584,11 +575,13 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
     //   cancelEditable(recordKey);
     //   startEditable(recordKey);
     // }
-    if (editableType === 'multiple' && props.canCreateAdd === false) {
+    if (editableType === 'multiple') {
       props.setValueRef(dataSource);
-      return;
+      if (props.canCreateAdd === false) return;
     }
-
+    if (editableType === 'multiple') {
+      props.setValue(dataSource);
+    }
     const recordKey = String(Object.keys(value).pop());
     let idx = 0;
     const editRow = dataSource.find((item, index) => {
@@ -602,10 +595,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
       ...values[recordKey],
     };
 
-    propsOnValuesChange.run(editRow, dataSource, idx, value);
-    if (editableType === 'multiple') {
-      props.setDataSource(dataSource);
-    }
+    props.onValuesChange?.(editRow, dataSource, idx, value);
   });
 
   /**
