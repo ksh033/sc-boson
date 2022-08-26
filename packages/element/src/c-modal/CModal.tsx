@@ -16,8 +16,8 @@ export const destroyFns: any[] = [];
 const IS_REACT_16 = !!ReactDOM.createPortal;
 
 type CustButtonType = { text: string; onClick?: () => any; buttonProps?: ButtonProps };
-export type CModalDialogProps = Omit<ModalFuncProps, 'content'> &
-  Omit<ScModalProps, 'children'> & {
+export type CModalDialogProps = Omit<ModalFuncProps, 'content' | 'close'> &
+  Omit<ScModalProps, 'children' | 'content' | 'close'> & {
     afterClose?: () => void;
     close?: (...args: any[]) => void;
     autoFocusButton?: null | 'ok' | 'cancel';
@@ -125,11 +125,12 @@ const CModalDialog = (props: CModalDialogProps) => {
   // let customFooter=hideFooter
 
   let dlgContent = null;
+  const dlgCprops = { close, pageProps: props.pageProps };
   if (props.content) {
     if (React.isValidElement(props.content)) {
-      dlgContent = React.cloneElement(props.content, { close, pageProps: props.pageProps });
+      dlgContent = React.cloneElement<any>(props.content, dlgCprops);
     } else {
-      dlgContent = React.createElement<any>(props.content, { close, pageProps: props.pageProps });
+      dlgContent = React.createElement<any>(props.content, dlgCprops);
     }
   }
 

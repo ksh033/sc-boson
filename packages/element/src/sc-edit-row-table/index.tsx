@@ -1,13 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import zhCN from 'antd/es/locale/zh_CN';
-import React, { useState, useContext, useEffect, ReactNode, useRef, PropsWithChildren } from 'react';
+import type { ReactNode, PropsWithChildren } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { Table, Input, Popconfirm, Form, ConfigProvider, InputNumber } from 'antd';
 import { useUpdateEffect } from 'ahooks';
-import { TableProps } from 'antd/es/table/Table';
+import type { TableProps } from 'antd/es/table/Table';
 
 const EditableContext = React.createContext<any>(null);
 
-interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
+interface EditableCellProps {
   editing: boolean; // 编辑状态
   rowEditable?: boolean; // 整行可编辑
   cellEditable?: boolean; // 单个属性是否可编辑

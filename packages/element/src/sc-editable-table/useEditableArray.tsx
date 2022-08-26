@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { LoadingOutlined } from '@ant-design/icons';
 import { Button, message, Popconfirm } from 'antd';
 import type { FormInstance } from 'antd/es/form/index';
@@ -12,8 +11,6 @@ import { fill, dig } from './utils';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import { useDebounceFn, useSafeState } from 'ahooks';
 import isEqual from 'lodash/isEqual';
-import type { RecordCreatorProps } from './index';
-import type { ButtonProps } from 'antd/es/button';
 
 export function genNonDuplicateID() {
   let str = '';
@@ -449,12 +446,7 @@ type UseEditableArrayProps<RecordType> = RowEditableConfig<RecordType> & {
   setDataSource: (dataSource: RecordType[]) => void;
   needDeletePopcon?: boolean; //删除时是否询问
   setValueRef: (dataSource: RecordType[]) => void;
-  recordCreatorProps?:
-    | (RecordCreatorProps<RecordType> &
-        ButtonProps & {
-          creatorButtonText?: React.ReactNode;
-        })
-    | false;
+  canCreateAdd?: boolean;
 };
 
 /**
@@ -464,9 +456,7 @@ type UseEditableArrayProps<RecordType> = RowEditableConfig<RecordType> & {
  */
 function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) {
   const editableType = props.type || 'single';
-  const [newLineRecord, setNewLineRecord] = useSafeState<NewLineConfig<RecordType> | undefined>(
-    void 0,
-  );
+  const [newLineRecord, setNewLineRecord] = useSafeState<NewLineConfig<any> | undefined>(void 0);
   const newLineRecordRef = useRef<NewLineConfig<RecordType> | undefined>(newLineRecord);
   // 这里这么做是为了存上次的状态，不然每次存一下再拿
   newLineRecordRef.current = newLineRecord;
@@ -571,7 +561,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
     },
   );
 
-  const onValuesChange = useRefFunction((value: RecordType, values: any) => {
+  const onValuesChange = useRefFunction((value: any, values: any) => {
     let dataSource = props.dataSource;
     const childrenColumnName = props.childrenColumnName || 'children';
     Object.keys(values).forEach((recordKey) => {
@@ -594,12 +584,12 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
     //   cancelEditable(recordKey);
     //   startEditable(recordKey);
     // }
-    if (editableType === 'multiple' && props.recordCreatorProps === false) {
+    if (editableType === 'multiple' && props.canCreateAdd === false) {
       props.setValueRef(dataSource);
       return;
     }
 
-    const recordKey = Object.keys(value).pop()?.toString() as string;
+    const recordKey = String(Object.keys(value).pop());
     let idx = 0;
     const editRow = dataSource.find((item, index) => {
       const key = props.getRowKey(item, index);
@@ -613,9 +603,9 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
     };
 
     propsOnValuesChange.run(editRow, dataSource, idx, value);
-    // if (editableType === 'multiple') {
-    //   props.setValueRef(dataSource);
-    // }
+    if (editableType === 'multiple') {
+      props.setDataSource(dataSource);
+    }
   });
 
   /**

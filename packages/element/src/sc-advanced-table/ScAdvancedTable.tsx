@@ -1,10 +1,12 @@
+/* eslint-disable react/no-find-dom-node */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { Button, Dropdown, Checkbox } from 'antd';
 //@ts-ignore
 import { Resizable } from 'react-resizable';
-import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
 
-import {HTML5Backend} from 'react-dnd-html5-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import type { ScTableProps } from '../sc-table';
 import ScTable from '../sc-table';
 import { DownOutlined } from '@ant-design/icons';
@@ -62,14 +64,13 @@ function dragDirection(
   return '';
 }
 
-
 const type = 'DraggableBodyRow';
 
-const DraggableBodyRow = ({ index, moveRow, className, style, ...restProps }:any) => {
+const DraggableBodyRow = ({ index, moveRow, className, style, ...restProps }: any) => {
   const ref = React.useRef();
   const [{ isOver, dropClassName }, drop] = useDrop({
     accept: type,
-    collect: (monitor:any) => {
+    collect: (monitor: any) => {
       const { index: dragIndex } = monitor.getItem() || {};
       if (dragIndex === index) {
         return {};
@@ -79,14 +80,14 @@ const DraggableBodyRow = ({ index, moveRow, className, style, ...restProps }:any
         dropClassName: dragIndex < index ? ' drop-over-downward' : ' drop-over-upward',
       };
     },
-    drop: (item:any) => {
+    drop: (item: any) => {
       moveRow(item.index, index);
     },
   });
   const [, drag] = useDrag({
     type,
     item: { index },
-    collect: (monitor:any) => ({
+    collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
     }),
   });
@@ -155,8 +156,8 @@ function isSameColumn(a: any | null, b: any | null) {
 
 // }
 
-export default class ScAdvancedTable<T> extends React.PureComponent<
-  ScAdvancedTableProps<T>,
+export default class ScAdvancedTable extends React.PureComponent<
+  ScAdvancedTableProps<any>,
   ScAdvancedTableState
 > {
   static defaultProps = {
@@ -179,9 +180,9 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
   };
   constructor(props: any) {
     super(props);
-    let { columns, showOrderNumber } = props;
+    let { columns } = props;
     this.doms = {};
-    if (showOrderNumber) {
+    if (props.showOrderNumber) {
       columns = [
         {
           title: '序号',
@@ -260,11 +261,13 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
     window.removeEventListener('resize', this.resize.bind(this));
   }
   resize() {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const _that = this;
 
     if (_that.centerTable) {
       const ctable = _that.centerTable.querySelector('.ant-table-body');
-      let { columns, initResize } = _that.state;
+      let { columns } = _that.state;
+      const { initResize } = _that.state;
       let widthAll = 0;
       columns.map((col: any) => {
         if (initResize) {
@@ -318,7 +321,8 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
       showOrderNumber,
       ...resProps
     } = this.props;
-    let { initColumns, columns, showColumnsSelect } = this.state;
+    let { columns } = this.state;
+    const { initColumns, showColumnsSelect } = this.state;
     let otherProps = {};
     let components = {};
 
@@ -439,14 +443,14 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
             <div className={'sc-advanced-table-part'}>{customToolbar}</div>
           </div>
         )}
-       
+
         <DndProvider backend={HTML5Backend}>
           <ScTable
             saveRef={this.saveRef('tableNode')}
             {...resProps}
             {...otherProps}
             columns={columns}
-          ></ScTable>
+          />
         </DndProvider>
       </div>
     );
