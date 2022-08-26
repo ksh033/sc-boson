@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type * as H from 'history';
 
 import type { RouteComponentProps as BasicRouteProps, match } from 'react-router-dom';
@@ -48,11 +49,11 @@ export type Route = {
 } & MenuDataItem;
 export type WithFalse<T> = T | false;
 
-export type RouterTypes<P> = {
-  computedMatch?: match<P>;
+export type RouterTypes<T> = Omit<BasicRouteProps<any>, 'location'> & {
+  computedMatch?: match<any>;
   route?: Route;
   location: BasicRouteProps['location'] | { pathname?: string };
-} & Omit<BasicRouteProps, 'location'>;
+};
 
 export type MessageDescriptor = {
   id: any;
