@@ -468,15 +468,15 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     }
 
     if (isNeCell) {
-      if (columnProps.render || Boolean(rcolumnProps.editable)) {
-        newColumnProps.shouldCellUpdate = (prevRecord: any, nextRecord: any) => {
-          if (Object.prototype.toString.call(nextRecord[newDataIndex]) === '[objet Object]') {
-            return !isEqual(prevRecord[newDataIndex], nextRecord[newDataIndex]);
-          } else {
-            return prevRecord[newDataIndex] != nextRecord[newDataIndex];
-          }
-        };
-      }
+      // if (!Boolean(rcolumnProps.editable)) {
+      //   newColumnProps.shouldCellUpdate = (prevRecord: any, nextRecord: any) => {
+      //     if (Object.prototype.toString.call(nextRecord[newDataIndex]) === '[objet Object]') {
+      //       return !isEqual(prevRecord[newDataIndex], nextRecord[newDataIndex]);
+      //     } else {
+      //       return prevRecord[newDataIndex] != nextRecord[newDataIndex];
+      //     }
+      //   };
+      // }
       return {
         ...newColumnProps,
         className: newDataIndex !== OptionsName ? 'sc-cell-td' : '',
