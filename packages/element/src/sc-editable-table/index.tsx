@@ -4,7 +4,7 @@ import type { ButtonProps } from 'antd/es/button/index';
 import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
 import React, { useImperativeHandle, useRef } from 'react';
 import type { ActionType, ProTableProps } from './typing';
-import { useClickAway, useCreation, useMount, useSafeState, useSetState } from 'ahooks';
+import { useCreation, useMount, useSafeState, useSetState } from 'ahooks';
 import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
 import isObject from 'lodash/isObject';
 import ScTable from '../sc-table';
@@ -39,18 +39,18 @@ export function runFunction<T extends any[]>(valueEnum: any, ...rest: T) {
   return valueEnum;
 }
 
-function getTargetNode(child: any, parent: any) {
-  if (child && parent) {
-    let parentNode = child.parentNode;
-    while (parentNode) {
-      if (parent === parentNode) {
-        return true;
-      }
-      parentNode = parentNode.parentNode;
-    }
-  }
-  return false;
-}
+// function getTargetNode(child: any, parent: any) {
+//   if (child && parent) {
+//     let parentNode = child.parentNode;
+//     while (parentNode) {
+//       if (parent === parentNode) {
+//         return true;
+//       }
+//       parentNode = parentNode.parentNode;
+//     }
+//   }
+//   return false;
+// }
 
 export type BatchOptionsType =
   | false
@@ -255,15 +255,15 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       setValue(valueRef.current);
     }
   });
-  const TableDiv = window.document.querySelectorAll(`#${tableId.current} .ant-table-container`);
-  console.log('TableDiv', TableDiv);
-  const tableRef: HTMLElement | null = TableDiv.length > 0 ? (TableDiv[0] as HTMLElement) : null;
-  useClickAway((event) => {
-    const flag = getTargetNode(event.target, document.getElementById('root'));
-    if (isNeCell && flag) {
-      container.closePre();
-    }
-  }, tableRef);
+  // const TableDiv = window.document.querySelectorAll(`#${tableId.current} .ant-table-container`);
+  // console.log('TableDiv', TableDiv);
+  // const tableRef: HTMLElement | null = TableDiv.length > 0 ? (TableDiv[0] as HTMLElement) : null;
+  // useClickAway((event) => {
+  //   const flag = getTargetNode(event.target, document.getElementById('root'));
+  //   if (isNeCell && flag) {
+  //     container.closePre();
+  //   }
+  // }, tableRef);
 
   const setDataSource = useRefFunction((_data: any[]) => {
     if (isNeCell) {
@@ -487,6 +487,15 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
                 closeSave();
               }
             }, // 点击表头行
+          };
+        },
+        onCell: () => {
+          return {
+            onBlur: () => {
+              if (isNeCell) {
+                closeSave();
+              }
+            },
           };
         },
         render(val: any, record: any, index: number) {
