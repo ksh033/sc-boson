@@ -76,6 +76,16 @@ const ScRadio: React.FC<ScRadioProps> = (props) => {
     return [];
   };
 
-  return <Radio.Group options={formValue(dataSource)} {...redioProps} />;
+  return (
+    <Radio.Group options={formValue(dataSource)} {...redioProps}>
+      {formValue(dataSource).map((it) => {
+        return (
+          <Radio value={it.value} key={it.value}>
+            {it.label}
+          </Radio>
+        );
+      })}
+    </Radio.Group>
+  );
 };
 export default ScRadio;

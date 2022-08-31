@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from 'antd';
+import { Input, Space } from 'antd';
 import CModal from '../c-modal';
 import type { ProColumns } from './typing';
 import EditOutlined from '@ant-design/icons/EditOutlined';
@@ -23,7 +23,12 @@ const UnifiedSetComponent = (props: { pageProps: any }) => {
     component = totalSetRender(component, props);
   }
 
-  return <div style={{ padding: '14px' }}>{component}</div>;
+  return (
+    <Space style={{ padding: '14px' }}>
+      {pageProps.title ? <span>{pageProps.title}:</span> : null}
+      {component}
+    </Space>
+  );
 };
 
 const handleClick = (rColumn: any, onChange: (dataIndex: string, value: any) => void) => {
@@ -43,6 +48,7 @@ const handleClick = (rColumn: any, onChange: (dataIndex: string, value: any) => 
     content: UnifiedSetComponent,
     pageProps: {
       component: rColumn.component,
+      title: rColumn.title,
       props: {
         onChange: handleChange,
         ...(rColumn.props || {}),
@@ -58,7 +64,7 @@ const TitleSet = (column: ProColumns<any>, onChange: (dataIndex: string, value: 
   let newTitle = typeof column.title === 'function' ? column.title({}) : column.title;
   if (column.editable) {
     newTitle = (
-      <>
+      <div style={{ padding: '10px 0' }}>
         <div>
           <EditOutlined style={{ marginRight: '8px' }} />
           {newTitle}
@@ -75,7 +81,7 @@ const TitleSet = (column: ProColumns<any>, onChange: (dataIndex: string, value: 
             </a>
           ) : null}
         </div>
-      </>
+      </div>
     );
   }
 
