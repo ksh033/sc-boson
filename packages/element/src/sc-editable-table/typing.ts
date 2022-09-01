@@ -2,6 +2,7 @@ import type { ColumnProps, TableProps } from 'antd/es/table/index';
 import type { FormInstance, FormItemProps } from 'antd';
 import type { ComponentClass, FunctionComponent } from 'react';
 import type { UseEditableUtilType } from './useEditableArray';
+import { ScTableProps } from '../sc-table';
 
 export type RowEditableType = 'single' | 'multiple';
 export type ParamsType = Record<string, any>;
@@ -140,7 +141,7 @@ export type ProTableProps<T> = {
   rowSelection?: TableProps<T>['rowSelection'] | false;
   /** @name 初始化的参数，可以操作 table */
   actionRef?: React.MutableRefObject<ActionType | undefined> | ((actionRef: ActionType) => void);
-} & Omit<TableProps<T>, 'columns' | 'rowSelection' | 'onChange'>;
+} & Omit<ScTableProps<T>, 'columns' | 'rowSelection' | 'onChange'>;
 
 export interface TableComponent<P> extends React.FC<P> {
   customView?: boolean;

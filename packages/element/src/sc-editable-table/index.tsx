@@ -124,6 +124,8 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     onClickEditActive,
     onRow,
     batchOptions = defaultBatchOptions,
+    onSelectRow,
+    selectedRowKeys: propsSelectRowKeys,
     ...rest
   } = props;
   const divRef = useRef<HTMLDivElement>(null);
@@ -204,6 +206,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       selectedRowKeys,
       selectedRows,
     };
+    onSelectRow?.(selectedRowKeys, selectedRows);
   });
 
   useDeepCompareEffectDebounce(() => {
@@ -816,7 +819,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           size="small"
           rowSelected={false}
           tableLayout={tableLayout}
-          selectedRowKeys={container.selectedRef.current.selectedRowKeys}
+          selectedRowKeys={propsSelectRowKeys || container.selectedRef.current.selectedRowKeys}
           rowClassName={() => 'editable-row'}
           onSelectRow={onTabelRow}
           scroll={tableScroll}
