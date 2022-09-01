@@ -459,7 +459,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     }
     const newColumnProps = {
       ...columnProps,
-      title: TitleSet(rcolumnProps, onTotalSetChange),
+      title: TitleSet(rcolumnProps, onTotalSetChange, readonly),
       fixed: newFixed,
       width,
     };

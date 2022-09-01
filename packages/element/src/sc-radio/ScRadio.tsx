@@ -77,10 +77,10 @@ const ScRadio: React.FC<ScRadioProps> = (props) => {
   };
 
   return (
-    <Radio.Group options={formValue(dataSource)} {...redioProps}>
+    <Radio.Group {...redioProps}>
       {formValue(dataSource).map((it) => {
         return (
-          <Radio value={it.value} key={it.value}>
+          <Radio value={it.value} key={it.value} disabled={it.disabled}>
             {it.label}
           </Radio>
         );

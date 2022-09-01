@@ -60,13 +60,17 @@ const handleClick = (rColumn: any, onChange: (dataIndex: string, value: any) => 
   });
 };
 
-const TitleSet = (column: ProColumns<any>, onChange: (dataIndex: string, value: any) => void) => {
+const TitleSet = (
+  column: ProColumns<any>,
+  onChange: (dataIndex: string, value: any) => void,
+  readonly: boolean,
+) => {
   let newTitle = typeof column.title === 'function' ? column.title({}) : column.title;
   if (column.editable) {
     newTitle = (
       <div style={{ padding: '10px 0' }}>
         <div>
-          <EditOutlined style={{ marginRight: '8px' }} />
+          {!Boolean(readonly) ? <EditOutlined style={{ marginRight: '8px' }} /> : null}
           {newTitle}
         </div>
         <div>
