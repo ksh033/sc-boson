@@ -159,7 +159,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
 
     if (JSON.stringify(newParams) !== JSON.stringify(state.params)) {
       setState({
-        params: omitUndefinedAndEmptyArr(_params),
+        params: newParams,
         pagination: { ...state.pagination, current: 1 },
       });
     } else {
