@@ -532,6 +532,11 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         ...newColumnProps,
         onCell: () => {
           return {
+            onBlur: () => {
+              if (Boolean(clickEdit) === false && props.editable?.type === 'multiple') {
+                closeSave();
+              }
+            },
             onMouseLeave: () => {
               if (Boolean(clickEdit) === false && props.editable?.type === 'multiple') {
                 closeSave();
