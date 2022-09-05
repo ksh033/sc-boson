@@ -197,7 +197,7 @@ export const getColumnSearchProps = (
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => {
       let dom = (
         <Input
-          placeholder={`请输入${columnProps.title}`}
+          placeholder={`请输入`}
           value={selectedKeys[0]}
           onChange={(e) => {
             setSelectedKeys(e.target.value ? [e.target.value] : []);
@@ -237,6 +237,7 @@ export const getColumnSearchProps = (
             <Button
               onClick={() => {
                 clearFilters();
+                confirm();
               }}
               size="small"
               style={{ width: 90 }}
