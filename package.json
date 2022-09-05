@@ -27,10 +27,8 @@
     "tsc:duplicate": "tsc -p ./tests/tsconfig.duplicate.json",
     "update:deps": "yarn upgrade"
   },
-
   "resolutions": {
-
-  
+    "dumi": "1.1.6"
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",
