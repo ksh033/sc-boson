@@ -18,9 +18,9 @@ export const renderColumnsTitle = (item: any) => {
   if (title && typeof title === 'function') {
     return title(item, 'table', <LabelIconTip label={title} tooltip={item.tooltip || item.tip} />);
   }
-  if (React.isValidElement(title)) {
-    return title;
-  }
+  // if (React.isValidElement(title)) {
+  //   return title;
+  // }
   return <LabelIconTip label={title} tooltip={item.tooltip || item.tip} />;
 };
 
