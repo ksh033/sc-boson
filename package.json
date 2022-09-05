@@ -31,6 +31,7 @@
     "dumi": "1.1.6"
   },
   "devDependencies": {
+    "@types/responselike": "1.0.0",
     "@babel/core": "^7.8.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
