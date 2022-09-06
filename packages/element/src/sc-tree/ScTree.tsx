@@ -70,7 +70,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
   };
 
   const [treeData, setTreeData] = useMergedState<any[]>([], {
-    value: data,
+    defaultValue: data,
     onChange: onDataChange,
     postState: formatTreeData,
   });
