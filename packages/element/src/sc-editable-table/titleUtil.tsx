@@ -68,7 +68,7 @@ const TitleSet = (
   let newTitle = typeof column.title === 'function' ? column.title({}) : column.title;
   if (column.editable) {
     newTitle = (
-      <div style={{ padding: '10px 0' }}>
+      <div style={{ padding: '4px 8px' }}>
         <div>
           {!Boolean(readonly) ? <EditOutlined style={{ marginRight: '8px' }} /> : null}
           {newTitle}
@@ -76,7 +76,6 @@ const TitleSet = (
         <div>
           {column.totalSet ? (
             <a
-              style={{ marginLeft: '8px' }}
               onClick={() => {
                 handleClick(column, onChange);
               }}
