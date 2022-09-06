@@ -48,7 +48,10 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         let rIsLeaf = item.isLeaf;
         const otherAttr = { disabled: disabled || false, metaInfo, dataRef: dataRef || restItem };
         const title = render
-          ? render(dataRef || restItem)
+          ? render({
+              ...dataRef,
+              ...(restItem || {}),
+            })
           : item[textField || 'title'] || item.title;
         if (Array.isArray(children) && children.length > 0) {
           rChildren = formatTreeData(children);
@@ -70,7 +73,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
   };
 
   const [treeData, setTreeData] = useMergedState<any[]>([], {
-    defaultValue: data,
+    value: data,
     onChange: onDataChange,
     postState: formatTreeData,
   });
