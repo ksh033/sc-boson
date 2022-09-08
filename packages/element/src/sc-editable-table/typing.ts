@@ -122,6 +122,7 @@ export type ProColumns<RecordType = unknown> = Omit<ColumnProps<RecordType>, 're
   canSearch?: boolean;
   editable?: boolean | ProTableEditableFnType<RecordType>;
   totalSet?: boolean;
+  totalSetFormat?: (list: any[], dataIndex: string, changeValue: any) => any[];
   component?: FunctionComponent<any> | ComponentClass<any, any> | any;
   /** 自定义的 formItemProps render */
   formItemProps?: FormItemProps;

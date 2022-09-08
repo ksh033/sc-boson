@@ -412,27 +412,43 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   });
 
   // 统一设置
-  const onTotalSetChange = useRefFunction((dataIndex: string, rvalue: any) => {
-    if (props.editable?.type === 'multiple') {
-      if (Array.isArray(valueRef.current) && valueRef.current.length > 0) {
-        const newData = valueRef.current.map((item: any) => {
-          // eslint-disable-next-line no-param-reassign
-          item[dataIndex] = rvalue;
-          return item;
-        });
-        setValue(newData);
+  const onTotalSetChange = useRefFunction(
+    (
+      dataIndex: string,
+      rvalue: any,
+      fn?: (list: any[], dataIndex: string, changeValue: any) => any[],
+    ) => {
+      if (props.editable?.type === 'multiple') {
+        if (Array.isArray(valueRef.current) && valueRef.current.length > 0) {
+          let newData = [];
+          if (fn) {
+            newData = fn(valueRef.current, dataIndex, rvalue);
+          } else {
+            newData = valueRef.current.map((item: any) => {
+              // eslint-disable-next-line no-param-reassign
+              item[dataIndex] = rvalue;
+              return item;
+            });
+          }
+
+          setValue(newData);
+        }
+      } else {
+        if (Array.isArray(value) && value.length > 0) {
+          let newData = [];
+          if (fn) {
+            newData = fn(value, dataIndex, rvalue);
+          } else {
+            newData = value.map((item: any) => {
+              item[dataIndex] = rvalue;
+              return item;
+            });
+          }
+          setValue(newData);
+        }
       }
-    } else {
-      if (Array.isArray(value) && value.length > 0) {
-        const newData = value.map((item: any) => {
-          // eslint-disable-next-line no-param-reassign
-          item[dataIndex] = rvalue;
-          return item;
-        });
-        setValue(newData);
-      }
-    }
-  });
+    },
+  );
 
   const hasOptions = useCreation(() => {
     const index = propsColumns?.findIndex((it) => it.dataIndex === OptionsName);

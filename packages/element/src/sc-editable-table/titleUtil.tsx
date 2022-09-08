@@ -31,7 +31,14 @@ const UnifiedSetComponent = (props: { pageProps: any }) => {
   );
 };
 
-const handleClick = (rColumn: any, onChange: (dataIndex: string, value: any) => void) => {
+const handleClick = (
+  rColumn: any,
+  onChange: (
+    dataIndex: string,
+    value: any,
+    fn?: (list: any[], dataIndex: string, changeValue: any) => any[],
+  ) => void,
+) => {
   let ref: any = null;
 
   const handleChange = (value: any) => {
@@ -55,14 +62,18 @@ const handleClick = (rColumn: any, onChange: (dataIndex: string, value: any) => 
       },
     },
     onOk: () => {
-      onChange(rColumn.dataIndex, ref);
+      onChange(rColumn.dataIndex, ref, rColumn.totalSetFormat);
     },
   });
 };
 
 const TitleSet = (
   column: ProColumns<any>,
-  onChange: (dataIndex: string, value: any) => void,
+  onChange: (
+    dataIndex: string,
+    value: any,
+    fn?: (list: any[], dataIndex: string, changeValue: any) => any[],
+  ) => void,
   readonly: boolean,
 ) => {
   let newTitle = typeof column.title === 'function' ? column.title({}) : column.title;
