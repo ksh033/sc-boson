@@ -141,6 +141,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     refresh,
     onDrop,
     columnsState,
+    components: componentsProps,
     ...restPros
   } = props;
 
@@ -602,7 +603,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
 
     const key = rowKey || 'key';
-    let components = null;
+    let components = componentsProps;
     if (dragSort) {
       components = {
         body: {
