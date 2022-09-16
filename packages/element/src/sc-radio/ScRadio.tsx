@@ -1,13 +1,18 @@
-import React from 'react';
 import { useRequest, useUpdateEffect } from 'ahooks';
 import { Radio } from 'antd';
 import type { RadioGroupProps } from 'antd/es/radio';
+import React from 'react';
 import type { DataComponentProps } from '../Component';
 
 const { useLayoutEffect, useState } = React;
 
 export type ScRadioProps = RadioGroupProps & DataComponentProps;
 
+const defaultReq = () => {
+  return new Promise((resolve) => {
+    resolve(null);
+  });
+};
 const ScRadio: React.FC<ScRadioProps> = (props) => {
   const {
     data = [],
@@ -30,18 +35,12 @@ const ScRadio: React.FC<ScRadioProps> = (props) => {
     autoload,
     ...restProps,
   };
-  const { run } = useRequest(
-    request ||
-      new Promise((resolve) => {
-        resolve(null);
-      }),
-    {
-      manual: true,
-    },
-  );
+  const { runAsync } = useRequest(request || defaultReq, {
+    manual: true,
+  });
 
   const loadData = () => {
-    run(params).then((res: any) => {
+    runAsync(params).then((res: any) => {
       let newList = res;
       if (onLoad) {
         newList = onLoad(newList);

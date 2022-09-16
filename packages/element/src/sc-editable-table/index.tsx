@@ -15,10 +15,10 @@ import Container from '../sc-table/container';
 import { genColumnList, tableColumnSort } from '../sc-table/utils';
 import useMountMergeState from '../_util/useMountMergeState';
 import EditableCell from './EditableCell';
+import TitleSet from './titleUtil';
 import useEditableArray from './useEditableArray';
 import { removeDeletedData } from './utils';
 import { validateRules } from './validateUtil';
-import TitleSet from './titleUtil';
 
 let timer: any = null;
 export type RecordCreatorProps<T> = {
@@ -109,7 +109,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     }
     return (record: T, index: number) => (record as any)?.[rowKey as string] ?? index;
   }, [rowKey]);
-  const [innerPagination, setPagination] = useSetState({
+  const [innerPagination, setPagination] = useSetState<{ current: number; pageSize: number }>({
     current: pagination && pagination.current ? pagination.current : 1,
     pageSize: pagination && pagination.pageSize ? pagination.pageSize : 10,
   });
@@ -435,10 +435,13 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           }
         }
         counter.setSortOrderMap(ordersMap);
-        setPagination({
-          current: changePagination.current,
-          pageSize: changePagination.pageSize,
-        });
+        if (changePagination.current && changePagination.pageSize) {
+          setPagination({
+            current: changePagination.current,
+            pageSize: changePagination.pageSize,
+          });
+        }
+
         if (rest.onTableChange) {
           rest.onTableChange(changePagination, filters, sorter, extra);
         }

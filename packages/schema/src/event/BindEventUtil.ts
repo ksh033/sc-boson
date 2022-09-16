@@ -2,10 +2,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { ButtonTypeProps, PageConfig } from '../interface';
 import { useRequest } from 'ahooks';
-import { BaseResult } from '@ahooksjs/use-request/es/types';
+
 import defaultEvents from './DefaultEvents';
 import type { HButtonType } from '../interface';
 import React from 'react';
+import { Result } from 'ahooks/lib/useRequest/src/types';
 
 // interface useFormatEventProps {
 //   bindEvent: <T extends ButtonTypeProps>(button: T) => T;
@@ -17,12 +18,14 @@ function formatUseReq<R = any, P extends any[] = any>(
   serviveName: string,
   service?: any,
   isTable?: boolean,
-): BaseResult<R, P> | null {
+): Result<R, P> | null {
   if (service && service[serviveName]) {
     if (isTable) {
       return service[serviveName];
     }
-    return useRequest(service[serviveName], { manual: true, throwOnError: true });
+
+    return useRequest(service[serviveName], { manual: true })
+    //return useRequest(service[serviveName], { manual: true, throwOnError: true });
   }
   return null;
 }
@@ -45,7 +48,7 @@ const bindEvent = (
     if (remote) {
       newBtn.loading = remote?.loading;
       options = {
-        service: remote.run || remote,
+        service: remote.runAsync || remote,
       };
     }
     if (newBtn.options) {
@@ -80,13 +83,13 @@ const bindEvent = (
       let callBackFun: any = null
       if (newBtn.callBack) {
         callBackFun = newBtn.callBack;
-      } 
+      }
       callBack = (values: any, newValue: any) => {
 
         if (callBackFun) {
           callBackFun(values, newValue)
         }
-        if (options.callBack){
+        if (options.callBack) {
           options.callBack(values, newValue)
         }
         if (defaultCallback) {
@@ -173,4 +176,4 @@ const operationButtonsBindEvent = (
   return newBtn;
 };
 
-export { BaseResult, bindEvent, bindEvents, formatUseReq, operationButtonsBindEvent };
+export { Result, bindEvent, bindEvents, formatUseReq, operationButtonsBindEvent };

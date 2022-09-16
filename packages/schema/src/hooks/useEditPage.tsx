@@ -7,7 +7,7 @@ import { useSetState } from 'ahooks';
 import { isObject, isString } from 'lodash';
 import moment from 'moment';
 // @ts-ignore
-import { history } from 'umi';
+import { history } from '@@/core/history';
 import { Schema } from '../context';
 import type { ButtonTypeProps, DialogOptions, FormFilterProp, HButtonType } from '../interface';
 import { Action, PageConfig, PageType, ToolButtons } from '../interface';
@@ -19,6 +19,7 @@ import ListPage from './useListPage';
 // import ButtonTool from '../page/OpColButton';
 
 export { PageConfig, Action };
+
 interface initProps {
   callback?: (res: any) => any; // 回调函数
   name?: string; // 服务名, 默认名称为 queryById

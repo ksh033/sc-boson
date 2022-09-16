@@ -6,6 +6,8 @@
     "jsx": "preserve",
     "esModuleInterop": true,
     "experimentalDecorators": true,
+    "module":"esnext", // add this line
+
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,

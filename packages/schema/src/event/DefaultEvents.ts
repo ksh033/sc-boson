@@ -2,11 +2,15 @@
 import { CModal } from '@scboson/sc-element';
 import type { ButtonTypeProps } from '../interface';
 // @ts-ignore
+import { history } from '@@/core/history';
 
-import { history } from 'umi';
+// import { getHistory } from '../utils';
 
+// let history: any = null
 
-
+// getHistory().then((data) => {
+//   history = data;
+// });
 const defaultOptions = {
   showFull: false,
   okCancel: false,

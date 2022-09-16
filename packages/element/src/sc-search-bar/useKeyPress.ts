@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import type { BasicTarget } from 'ahooks/es/utils/dom';
-import { getTargetElement } from 'ahooks/es/utils/dom';
+import type { BasicTarget } from 'ahooks/es/utils/domTarget';
+import { getTargetElement } from 'ahooks/es/utils/domTarget';
 
 export type KeyPredicate = (event: KeyboardEvent) => boolean;
 export type keyType = KeyboardEvent['keyCode'] | KeyboardEvent['key'];
@@ -51,7 +51,7 @@ const modifierKey: any = {
 };
 
 // 返回空对象
-const noop = () => {};
+const noop = () => { };
 
 /**
  * 判断对象类型

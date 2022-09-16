@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-schema",
-  "version": "1.0.3-beta.54",
+  "version": "2.0.0-alpha.3",
   "description": "sc-schema",
   "keywords": [
     "schema"
@@ -21,13 +21,13 @@
     "src"
   ],
   "peerDependencies": {
-    "@scboson/sc-element": "beta",
+   
     "antd": "^4.x",
     "lodash": "^4.x",
     "react": "^16.x"
   },
   "dependencies": {
-    "@scboson/sc-element": "beta",
+    "@scboson/sc-element": "2.0.0-alpha.1",
     "ahooks": "^3.6.2",
     "lodash": "^4.17.21",
     "@umijs/max": "^4.0.0"

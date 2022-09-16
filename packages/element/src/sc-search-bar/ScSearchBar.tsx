@@ -208,7 +208,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     onReset?.(wrapForm.getFieldsValue());
   };
 
-  const { run } = useDebounceFn(
+  const { run } = useDebounceFn<any>(
     async () => {
       const fieldsValue = await wrapForm.validateFields();
       const values = { ...fieldsValue };

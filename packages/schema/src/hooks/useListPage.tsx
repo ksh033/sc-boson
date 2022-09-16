@@ -5,7 +5,7 @@ import assign from 'lodash/assign';
 import isObject from 'lodash/isObject';
 import { useRef } from 'react';
 import { useSchemaContext } from '../context';
-import type { BaseResult } from '../event/BindEventUtil';
+import type { Result } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
 import type { FormSearchItem, HButtonType, ProColumn, ProColumnType } from '../interface';
 import { PageConfig, PageType } from '../interface';
@@ -55,7 +55,7 @@ export interface UseListPageProp<S> {
   /** 批量绑定默认事件 */
   bindEvents: (buttons: HButtonType[]) => HButtonType[];
   /** 获取useRequest */
-  formatUseReq: <R = any, P extends any[] = any>(serviveName: string) => BaseResult<R, P> | null;
+  formatUseReq: <R = any, P extends any[] = any>(serviveName: string) => Result<R, P> | null;
 
   setParams: (value: any) => void;
   getPageParam: () => any;

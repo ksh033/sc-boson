@@ -1,14 +1,17 @@
-import type * as H from 'history';
+import { BasicRouteProps, StaticContext } from '@ant-design/pro-layout/es/typings';
 
-import type { RouteComponentProps as BasicRouteProps, match } from 'react-router-dom';
+export interface match<Params extends { [K in keyof Params]?: string } = Record<string, any>> {
+  params: Params;
+  isExact: boolean;
+  path: string;
+  url: string;
+}
+
+
+
 
 import type React from 'react';
 
-export type LinkProps = {
-  to: H.LocationDescriptor;
-  replace?: boolean;
-  innerRef?: React.Ref<HTMLAnchorElement>;
-} & React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
 export type MenuDataItem = {
   /** @name 子菜单 */

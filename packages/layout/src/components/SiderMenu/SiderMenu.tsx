@@ -1,19 +1,21 @@
-import type { CSSProperties } from 'react';
-import React, { useState, useCallback, useEffect } from 'react';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Layout } from 'antd';
-import classNames from 'classnames';
 import type { SiderProps } from 'antd/es/layout/Sider';
-import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import classNames from 'classnames';
+import type { CSSProperties } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import './index.less';
 import type { WithFalse } from '../../typings';
 import type { BaseMenuProps } from './BaseMenu';
 import BaseMenu from './BaseMenu';
 import MenuCounter from './Counter';
+import './index.less';
 
 const { Sider } = Layout;
 
-export const defaultRenderLogo = (logo: React.ReactNode|(()=>React.ReactNode)): React.ReactNode => {
+export const defaultRenderLogo = (
+  logo: React.ReactNode | (() => React.ReactNode),
+): React.ReactNode => {
   if (typeof logo === 'string') {
     return <img src={logo} alt="logo" />;
   }

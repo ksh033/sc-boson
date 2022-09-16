@@ -1,7 +1,7 @@
-import useKeyPress from './useKeyPress';
 import { Form } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import classnames from 'classnames';
+import useKeyPress from './useKeyPress';
 // import $ from 'jquery';
 import React, { useEffect } from 'react';
 import type { SearchFormItemProp } from './ScSearchBar';
@@ -14,7 +14,7 @@ type ScFormItemProps = {
   index: number;
   form: FormInstance;
   lightFilter?: boolean;
-  onSubmit?: () => Promise<void>;
+  onSubmit?: () => Promise<any>;
 };
 
 const ScFormItem: React.FC<ScFormItemProps> = (props) => {

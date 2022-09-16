@@ -2,9 +2,8 @@
 import React, { useCallback, useEffect } from 'react';
 import ScTable from '../sc-table';
 
-import type { TransferProps } from 'antd/es/transfer';
+import type { TransferDirection, TransferProps } from 'antd/es/transfer';
 import type { TransferListBodyProps } from 'antd/es/transfer/ListBody';
-import type { TransferDirection } from 'antd/es/transfer';
 
 import { Transfer } from 'antd';
 import Search from './search';
@@ -13,9 +12,9 @@ import difference from 'lodash/difference';
 import isArray from 'lodash/isArray';
 
 import { useSetState } from 'ahooks';
-import type { ScTableProps } from '../sc-table';
 import type { ScSearchBarProps } from '../sc-search-bar';
 import ScSearchBar from '../sc-search-bar';
+import type { ScTableProps } from '../sc-table';
 import './style';
 
 export type DataSource =
@@ -98,7 +97,8 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
     if (tdataSource) {
       const tkeys = tdataSource.map((item) => item[rowKey]);
 
-      setState({ targetKeys: tkeys, targetDataSource });
+      const temDataSouce = targetDataSource || [];
+      setState({ targetKeys: tkeys, targetDataSource: temDataSouce });
     } else if (keys) {
       setState({ targetKeys: keys });
     }
@@ -175,10 +175,12 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
   };
 
   const handleFilter = (direction: TransferDirection, e: React.ChangeEvent<HTMLInputElement>) => {
+    // @ts-ignore
     setState({ [`${direction}FilterValue`]: e.target.value });
   };
 
   const handleClear = useCallback((direction: TransferDirection) => {
+    // @ts-ignore
     setState({ [`${direction}FilterValue`]: '' });
   }, []);
   const handleLeftClear = () => handleClear('left');
@@ -280,9 +282,13 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
                 rows: filterData,
                 total,
               },
-              pagination: { ...leftTable.pagination, simple: true,onChange:function(){
-                onItemSelectAll(listSelectedKeys, false);
-              } },
+              pagination: {
+                ...leftTable.pagination,
+                simple: true,
+                onChange: function () {
+                  onItemSelectAll(listSelectedKeys, false);
+                },
+              },
               onLoad: leftTable.request
                 ? (data: any) => {
                     if (data && data.rows) {

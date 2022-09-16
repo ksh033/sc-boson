@@ -5,7 +5,7 @@ export interface DataComponentProps {
   valueField?: string;
   data?: any[];
   params?: any;
-  request?: (params: any) => Promise<void>;
+  request?: (...args: any) => Promise<any>;
   onLoad?: (dataSource: any) => any;
   modelKey?: string;
   loading?: boolean;

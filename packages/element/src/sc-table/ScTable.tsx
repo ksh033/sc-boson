@@ -159,10 +159,12 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const counter = Container.useContainer();
 
   const isGone = useRef(false);
-  const { loading, run } = useRequest(
+  const { loading, runAsync } = useRequest(
     request ||
-      new Promise((resolve) => {
-        resolve(null);
+      (() => {
+        return new Promise((resolve) => {
+          resolve(null);
+        });
       }),
     {
       manual: true,
@@ -218,7 +220,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         ..._filters,
         ...restParams,
       };
-      let _data = await run(payload);
+      let _data = await runAsync(payload);
       if (isGone.current) return;
       if (_data) {
         if (onLoad) {
