@@ -553,9 +553,9 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
                 closeSave();
               }
             },
-            onMouseLeave: () => {
+            onMouseLeave: (e: any) => {
               if (Boolean(clickEdit) === false && props.editable?.type === 'multiple') {
-                closeSave();
+                setTimeout(closeSave, 50);
               }
             },
           };
