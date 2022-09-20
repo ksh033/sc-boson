@@ -10,6 +10,7 @@ import type { ScSelectProps } from '../sc-select';
 import type { ScTableProps } from '../sc-table/ScTable';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import type { CheckboxProps } from 'antd/es/checkbox';
+import { useRefFunction } from '../_util/useRefFunction';
 
 export interface AreaDataProps {
   areaCode: string;
@@ -56,7 +57,12 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
   const [dropdownOpen, setOpen] = useState<boolean>(false);
 
   const [dataSource, setDataSource] = useState(props.data || []);
-  const [currentRowKey, setCurrentRowKey] = useState<any>('');
+  const currentRowKey = useRef<any>('');
+  // const [currentRowKey, setCurrentRowKey] = useState<any>('');
+
+  const setCurrentRowKey = (key: string) => {
+    currentRowKey.current = key;
+  };
   const actionRef = useRef<SelectTableActionType>();
   useEffect(() => {
     if (typeof propsActionRef === 'function' && actionRef.current) {
@@ -182,16 +188,14 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
   };
 
   useEffect(() => {
-    if (props.value !== undefined && props.value !== null) {
+    if (props.value != null) {
       const typeValue = getType(props.value);
       if (typeValue === '[object Object]') {
         const key = props.value[valueField] || props.value.value;
         handleRowSelect(getRecord(key));
-      }
-      if (typeValue === '[object String]' || typeValue === '[object Number]') {
+      } else if (typeValue === '[object String]' || typeValue === '[object Number]') {
         handleRowSelect(getRecord(props.value));
-      }
-      if (typeValue === '[object Array]' && props.value.length > 0) {
+      } else if (typeValue === '[object Array]' && props.value.length > 0) {
         if (labelInValue) {
           props.value.forEach((it: any) => {
             const key = it[valueField] || it.value;
@@ -263,9 +267,13 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
   };
 
   const onInputKeyDown = (event: any) => {
-    const { key } = event;
-    if (currentRowKey && currentRowKey !== '') {
-      const currentIndex = effectiveData.findIndex((it) => it[valueField] === currentRowKey);
+    event.preventDefault();
+    event.stopPropagation();
+    if (currentRowKey.current != null && currentRowKey.current !== '') {
+      const { key } = event;
+      const currentIndex = effectiveData.findIndex(
+        (it) => it[valueField] === currentRowKey.current,
+      );
       if (key === 'ArrowDown') {
         getRowKey(currentIndex, currentIndex + 1);
       }
@@ -273,12 +281,13 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
         getRowKey(currentIndex, currentIndex - 1);
       }
       if (key === 'Enter') {
-        const record = getRecord(currentRowKey);
+        const record = getRecord(currentRowKey.current);
         customSetValue(record);
         setOpen(false);
         handleRowSelect(record);
       }
     }
+    return;
   };
 
   const onClear = () => {
@@ -289,6 +298,60 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
       rows: [],
     };
   };
+
+  const getRowClassName = useRefFunction((record) => {
+    const key = record[valueField] || '';
+    const config = getCheckboxProps(record);
+    if (config.disabled) {
+      return 'sc-select-table-item-disabled';
+    }
+    const index = action.current.rowKeys.indexOf(key);
+    return key === currentRowKey && index === -1 ? 'sc-select-table-item-active' : '';
+  });
+
+  const onRow = useRefFunction((record: any) => {
+    return {
+      onClick: (event: any) => {
+        // 阻止合成事件间的冒泡
+        event.stopPropagation();
+        const config = getCheckboxProps(record);
+        if (!config.disabled) {
+          customSetValue(record);
+          setOpen(false);
+          handleRowSelect(record);
+        }
+      },
+    };
+  });
+
+  const dropdownRender = useRefFunction(() => {
+    return (
+      <ScTable
+        {...dropdownRenderProps}
+        dataSource={dataSource}
+        pagination={false}
+        size="small"
+        loading={loading}
+        checkbox={type === 'radio' ? false : true}
+        rowKey={valueField}
+        rowClassName={getRowClassName}
+        onRow={onRow}
+        rowSelection={
+          type === 'radio'
+            ? undefined
+            : {
+                type: type,
+                selectedRowKeys: action.current.rowKeys,
+                // renderCell: () => {
+                //   return null;
+                // },
+                getCheckboxProps,
+                ...dropdownRenderProps.rowSelection,
+              }
+        }
+      />
+    );
+  });
 
   return (
     <ScSelect
@@ -302,55 +365,7 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
       onDropdownVisibleChange={onDropdownVisibleChange}
       onInputKeyDown={onInputKeyDown}
       onClear={onClear}
-      dropdownRender={() => {
-        return (
-          <ScTable
-            {...dropdownRenderProps}
-            dataSource={dataSource}
-            pagination={false}
-            size="small"
-            loading={loading}
-            checkbox={type === 'radio' ? false : true}
-            rowKey={valueField}
-            rowClassName={(record) => {
-              const key = record[valueField] || '';
-              const config = getCheckboxProps(record);
-              if (config.disabled) {
-                return 'sc-select-table-item-disabled';
-              }
-              const index = action.current.rowKeys.indexOf(key);
-              return key === currentRowKey && index === -1 ? 'sc-select-table-item-active' : '';
-            }}
-            onRow={(record: any) => {
-              return {
-                onClick: (event: any) => {
-                  // 阻止合成事件间的冒泡
-                  event.stopPropagation();
-                  const config = getCheckboxProps(record);
-                  if (!config.disabled) {
-                    customSetValue(record);
-                    setOpen(false);
-                    handleRowSelect(record);
-                  }
-                },
-              };
-            }}
-            rowSelection={
-              type === 'radio'
-                ? undefined
-                : {
-                    type: type,
-                    selectedRowKeys: action.current.rowKeys,
-                    // renderCell: () => {
-                    //   return null;
-                    // },
-                    getCheckboxProps,
-                    ...dropdownRenderProps.rowSelection,
-                  }
-            }
-          />
-        );
-      }}
+      dropdownRender={dropdownRender}
     />
   );
 };

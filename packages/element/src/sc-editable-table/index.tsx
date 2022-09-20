@@ -4,7 +4,7 @@ import type { ButtonProps } from 'antd/es/button/index';
 import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
 import React, { useImperativeHandle, useRef } from 'react';
 import type { ActionType, ProTableProps } from './typing';
-import { useCreation, useMount, useSafeState, useSetState } from 'ahooks';
+import { useCreation, useDebounceFn, useMount, useSafeState, useSetState } from 'ahooks';
 import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
 import isObject from 'lodash/isObject';
 import ScTable from '../sc-table';
@@ -102,7 +102,7 @@ const OptionsName = 'options';
 
 const TdCell = (props: any) => {
   // 去除不必要的函数处理
-  const { onMouseEnter, onContextMenu, onDoubleClick, ...restProps } = props;
+  const { onMouseEnter, onContextMenu, onDoubleClick, onMouseOut, ...restProps } = props;
   return <td {...restProps} />;
 };
 
@@ -225,6 +225,31 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     }
   }
 
+  const omitEmpty = (list: any[]) => {
+    let newList = [];
+    if (Array.isArray(list) && list.length > 0) {
+      newList = list.map((it) => omitUndefinedAndEmptyArr(it));
+    }
+    return newList;
+  };
+
+  const closeSaceDebounce = useDebounceFn(
+    () => {
+      const newValueRef = omitEmpty(valueRef.current);
+      const newValue = omitEmpty(value);
+      if (!isEqual(newValueRef, newValue)) {
+        setValue(valueRef.current);
+      }
+    },
+    {
+      wait: 50,
+    },
+  );
+
+  const closeSave = useRefFunction(() => {
+    closeSaceDebounce.run();
+  });
+
   const setRowData = useRefFunction((key: string, data: any) => {
     if (Array.isArray(value) && value.length > 0 && isObject(data)) {
       const index = value.findIndex((it) => it[rowKey] === key);
@@ -235,30 +260,16 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           ...data,
         };
         newVlaue.splice(index, 1, newItem);
-        editable?.form?.setFieldsValue({
-          [key]: newItem,
-        });
+        // editable?.form?.setFieldsValue({
+        //   [key]: newItem,
+        // });
         valueRef.current = newVlaue;
+        // closeSave();
         setValue(newVlaue);
       }
     }
   });
 
-  const omitEmpty = (list: any[]) => {
-    let newList = [];
-    if (Array.isArray(list) && list.length > 0) {
-      newList = list.map((it) => omitUndefinedAndEmptyArr(it));
-    }
-    return newList;
-  };
-
-  const closeSave = useRefFunction(() => {
-    const newValueRef = omitEmpty(valueRef.current);
-    const newValue = omitEmpty(value);
-    if (!isEqual(newValueRef, newValue)) {
-      setValue(valueRef.current);
-    }
-  });
   // const TableDiv = window.document.querySelectorAll(`#${tableId.current} .ant-table-container`);
   // console.log('TableDiv', TableDiv);
   // const tableRef: HTMLElement | null = TableDiv.length > 0 ? (TableDiv[0] as HTMLElement) : null;
@@ -500,15 +511,15 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       return {
         ...newColumnProps,
         className: newDataIndex !== OptionsName ? 'sc-cell-td' : '',
-        onHeaderCell: () => {
-          return {
-            onClick: () => {
-              if (isNeCell) {
-                closeSave();
-              }
-            }, // 点击表头行
-          };
-        },
+        // onHeaderCell: () => {
+        //   return {
+        //     onClick: () => {
+        //       if (isNeCell) {
+        //         closeSave();
+        //       }
+        //     }, // 点击表头行
+        //   };
+        // },
         onCell: () => {
           return {
             onBlur: () => {
