@@ -579,9 +579,9 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
       props.setValueRef(dataSource);
       if (props.canCreateAdd === false) return;
     }
-    if (editableType === 'multiple') {
-      props.setValue(dataSource);
-    }
+    // if (editableType === 'multiple') {
+    //   props.setValue(dataSource);
+    // }
     const recordKey = String(Object.keys(value).pop());
     let idx = 0;
     const editRow = dataSource.find((item, index) => {

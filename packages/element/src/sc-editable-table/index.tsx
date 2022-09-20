@@ -238,6 +238,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         editable?.form?.setFieldsValue({
           [key]: newItem,
         });
+        valueRef.current = newVlaue;
         setValue(newVlaue);
       }
     }
@@ -553,9 +554,10 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
                 closeSave();
               }
             },
-            onMouseLeave: (e: any) => {
+            onMouseLeave: () => {
               if (Boolean(clickEdit) === false && props.editable?.type === 'multiple') {
-                setTimeout(closeSave, 50);
+                closeSave();
+                // setTimeout(, 50);
               }
             },
           };
