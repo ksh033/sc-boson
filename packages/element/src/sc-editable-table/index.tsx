@@ -4,7 +4,14 @@ import type { ButtonProps } from 'antd/es/button/index';
 import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
 import React, { useImperativeHandle, useRef } from 'react';
 import type { ActionType, ProTableProps } from './typing';
-import { useCreation, useDebounceFn, useMount, useSafeState, useSetState } from 'ahooks';
+import {
+  useClickAway,
+  useCreation,
+  useDebounceFn,
+  useMount,
+  useSafeState,
+  useSetState,
+} from 'ahooks';
 import type { SorterResult, TableCurrentDataSource } from 'antd/es/table/interface';
 import isObject from 'lodash/isObject';
 import ScTable from '../sc-table';
@@ -39,18 +46,18 @@ export function runFunction<T extends any[]>(valueEnum: any, ...rest: T) {
   return valueEnum;
 }
 
-// function getTargetNode(child: any, parent: any) {
-//   if (child && parent) {
-//     let parentNode = child.parentNode;
-//     while (parentNode) {
-//       if (parent === parentNode) {
-//         return true;
-//       }
-//       parentNode = parentNode.parentNode;
-//     }
-//   }
-//   return false;
-// }
+function getTargetNode(child: any, parent: any) {
+  if (child && parent) {
+    let parentNode = child.parentNode;
+    while (parentNode) {
+      if (parent === parentNode) {
+        return true;
+      }
+      parentNode = parentNode.parentNode;
+    }
+  }
+  return false;
+}
 
 export type BatchOptionsType =
   | false
@@ -242,7 +249,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       }
     },
     {
-      wait: 50,
+      wait: 25,
     },
   );
 
@@ -270,15 +277,15 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     }
   });
 
-  // const TableDiv = window.document.querySelectorAll(`#${tableId.current} .ant-table-container`);
+  const TableDiv = window.document.querySelectorAll(`#${tableId.current} .ant-table-container`);
   // console.log('TableDiv', TableDiv);
-  // const tableRef: HTMLElement | null = TableDiv.length > 0 ? (TableDiv[0] as HTMLElement) : null;
-  // useClickAway((event) => {
-  //   const flag = getTargetNode(event.target, document.getElementById('root'));
-  //   if (isNeCell && flag) {
-  //     container.closePre();
-  //   }
-  // }, tableRef);
+  const tableRef: HTMLElement | null = TableDiv.length > 0 ? (TableDiv[0] as HTMLElement) : null;
+  useClickAway((event) => {
+    const flag = getTargetNode(event.target, document.getElementById('root'));
+    if (!isNeCell && flag) {
+      closeSave();
+    }
+  }, tableRef);
 
   const setDataSource = useRefFunction((_data: any[]) => {
     if (isNeCell) {
@@ -511,15 +518,15 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       return {
         ...newColumnProps,
         className: newDataIndex !== OptionsName ? 'sc-cell-td' : '',
-        // onHeaderCell: () => {
-        //   return {
-        //     onClick: () => {
-        //       if (isNeCell) {
-        //         closeSave();
-        //       }
-        //     }, // 点击表头行
-        //   };
-        // },
+        onHeaderCell: () => {
+          return {
+            onClick: () => {
+              if (isNeCell) {
+                closeSave();
+              }
+            }, // 点击表头行
+          };
+        },
         onCell: () => {
           return {
             onBlur: () => {
@@ -562,6 +569,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           return {
             onBlur: () => {
               if (Boolean(clickEdit) === false && props.editable?.type === 'multiple') {
+                console.log('onBlur');
                 closeSave();
               }
             },
@@ -682,7 +690,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   }, [divRef.current]);
 
   const paginationProps = useCreation(() => {
-    if (pagination) {
+    if (propsPagination) {
       return {
         total: value.length,
         showTotal: (rowTotal: any, range: any[]) => {
@@ -692,7 +700,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       };
     }
     return false;
-  }, [JSON.stringify(pagination), value.length]);
+  }, [JSON.stringify(pagination), value.length, propsPagination]);
 
   // 分页组件切换
   const onChangeRef = useRefFunction(
