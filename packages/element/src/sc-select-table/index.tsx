@@ -11,6 +11,7 @@ import type { ScTableProps } from '../sc-table/ScTable';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import type { CheckboxProps } from 'antd/es/checkbox';
 import { useRefFunction } from '../_util/useRefFunction';
+import { useRequest } from 'ahooks';
 
 export interface AreaDataProps {
   areaCode: string;
@@ -46,6 +47,7 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
       disabled: record.disabled || false,
     }),
     loading,
+    request,
     ...restProps
   } = props;
 
@@ -54,6 +56,15 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
     onChange: props.onChange,
   });
 
+  const newReq = useRequest(
+    request ||
+      new Promise((resolve) => {
+        resolve(null);
+      }),
+    {
+      manual: true,
+    },
+  );
   const [dropdownOpen, setOpen] = useState<boolean>(false);
 
   const [dataSource, setDataSource] = useState(props.data || []);
@@ -267,8 +278,6 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
   };
 
   const onInputKeyDown = (event: any) => {
-    event.preventDefault();
-    event.stopPropagation();
     if (currentRowKey.current != null && currentRowKey.current !== '') {
       const { key } = event;
       const currentIndex = effectiveData.findIndex(
@@ -331,7 +340,7 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
         dataSource={dataSource}
         pagination={false}
         size="small"
-        loading={loading}
+        loading={loading || newReq.loading}
         checkbox={type === 'radio' ? false : true}
         rowKey={valueField}
         rowClassName={getRowClassName}
@@ -356,6 +365,7 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
   return (
     <ScSelect
       {...restProps}
+      request={newReq.run}
       valueField={valueField}
       textField={textField}
       value={newValue}
