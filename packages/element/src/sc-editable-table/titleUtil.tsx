@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Space } from 'antd';
+import { Input, Space, Button } from 'antd';
 import CModal from '../c-modal';
 import type { ProColumns } from './typing';
 import EditOutlined from '@ant-design/icons/EditOutlined';
@@ -86,13 +86,14 @@ const TitleSet = (
         </div>
         <div>
           {column.totalSet ? (
-            <a
+            <Button
+              type="link"
               onClick={() => {
                 handleClick(column, onChange);
               }}
             >
               统一设置
-            </a>
+            </Button>
           ) : null}
         </div>
       </div>
