@@ -242,33 +242,41 @@ function formSubmit(props: ButtonTypeProps) {
   if (options) {
     const { form, service, close, pageEntryTime } = options;
     if (form && form.current) {
-      form.current.validateFields().then(async (values: any) => {
-        let newValue = values;
-        if (preHandle) {
-          newValue = await preHandle(values);
-          if (newValue === null || newValue === false) {
-            return;
-          }
-        }
-        newValue.pageEntryTime = pageEntryTime;
-        newValue = omitUndefinedAndEmptyArr(newValue);
-        if (service) {
-          try {
-            const data = await service(newValue);
-            if (callBack) {
-              callBack(data, newValue);
+      form.current
+        .validateFields()
+        .then(async (values: any) => {
+          let newValue = values;
+          if (preHandle) {
+            newValue = await preHandle(values);
+            if (newValue === null || newValue === false) {
+              return;
             }
-            if (data === null || data.success === undefined || data.success === null) {
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-              close && close(data);
-            }
-          } catch (err) {
-            callBack?.(err, newValue);
           }
-        } else if (close) {
-          close();
-        }
-      });
+          newValue.pageEntryTime = pageEntryTime;
+          newValue = omitUndefinedAndEmptyArr(newValue);
+          if (service) {
+            try {
+              const data = await service(newValue);
+              if (callBack) {
+                callBack(data, newValue);
+              }
+              if (data === null || data.success === undefined || data.success === null) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                close && close(data);
+              }
+            } catch (err) {
+              callBack?.(err, newValue);
+            }
+          } else if (close) {
+            close();
+          }
+        })
+        .catch((error: { errorFields: { name: any }[] }) => {
+          form.current.scrollToField(error.errorFields[0].name, {
+            block: 'center',
+            behavior: 'smooth',
+          });
+        });
     }
   }
 }
@@ -279,33 +287,41 @@ function formUpdate(props: ButtonTypeProps) {
   if (options) {
     const { form, service, close, pageEntryTime } = options;
     if (form && form.current) {
-      form.current.validateFields().then(async (values: any) => {
-        let newValue = values;
-        if (preHandle) {
-          newValue = await preHandle(values);
-          if (newValue === null || newValue === false) {
-            return;
-          }
-        }
-        newValue.pageEntryTime = pageEntryTime;
-        newValue = omitUndefinedAndEmptyArr(newValue);
-        if (service) {
-          try {
-            const data = await service(newValue);
-            if (callBack) {
-              callBack(data, newValue);
+      form.current
+        .validateFields()
+        .then(async (values: any) => {
+          let newValue = values;
+          if (preHandle) {
+            newValue = await preHandle(values);
+            if (newValue === null || newValue === false) {
+              return;
             }
-            if (data === null || data.success === undefined || data.success === null) {
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-              close && close(data);
-            }
-          } catch (err) {
-            callBack?.(err, newValue);
           }
-        } else if (close) {
-          close();
-        }
-      });
+          newValue.pageEntryTime = pageEntryTime;
+          newValue = omitUndefinedAndEmptyArr(newValue);
+          if (service) {
+            try {
+              const data = await service(newValue);
+              if (callBack) {
+                callBack(data, newValue);
+              }
+              if (data === null || data.success === undefined || data.success === null) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                close && close(data);
+              }
+            } catch (err) {
+              callBack?.(err, newValue);
+            }
+          } else if (close) {
+            close();
+          }
+        })
+        .catch((error: { errorFields: { name: any }[] }) => {
+          form.current.scrollToField(error.errorFields[0].name, {
+            block: 'center',
+            behavior: 'smooth',
+          });
+        });
     }
   }
 }
