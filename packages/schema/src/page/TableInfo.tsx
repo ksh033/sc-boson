@@ -75,7 +75,7 @@ export default class TableInfo {
    * @returns
    */
   addCol<T = ProColumn>(col: T) {
-    const newCol = { ...col };
+    const newCol:any = { ...col };
     this.tableInfo.columns.push(newCol);
     return this;
   }

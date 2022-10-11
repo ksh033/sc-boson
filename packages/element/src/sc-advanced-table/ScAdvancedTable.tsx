@@ -319,7 +319,7 @@ export default class ScAdvancedTable<T> extends React.PureComponent<
       ...resProps
     } = this.props;
     let { initColumns, columns, showColumnsSelect } = this.state;
-    let otherProps = {};
+    let otherProps:any = {};
     let components = {};
 
     // 显示、隐藏列的选项

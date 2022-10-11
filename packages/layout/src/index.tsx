@@ -1,7 +1,9 @@
 import type { BasicLayoutProps } from './BasicLayout';
 import BasicLayout from './BasicLayout';
 import MasterLayout from './MasterLayout';
+import NewLayout from './NewLayout';
 import DefaultHeader from './Header';
+import defaultSettings from './defaultSettings'
 import type {
   TopNavHeaderProps,
   FooterProps,
@@ -48,7 +50,7 @@ export { default as ScCard } from '@ant-design/pro-card';
 
 export type { MenuDataItem } from './typings';
 
-const PageHeaderWrapper = PageContainer;
+//const PageHeaderWrapper = PageContainer;
 
 export {
   BasicLayout,
@@ -60,12 +62,14 @@ export {
   DefaultFooter,
   SettingDrawer,
   getPageTitle,
-  PageHeaderWrapper,
+ // PageHeaderWrapper,
   getMenuData,
   PageContainer,
   FooterToolbar,
   WaterMark,
   MasterLayout,
+  NewLayout,
+  defaultSettings
 };
 
 export type {
@@ -78,6 +82,7 @@ export type {
   SettingDrawerProps,
   SettingDrawerState,
   ProSettings,
+  
 };
 
 export default BasicLayout;

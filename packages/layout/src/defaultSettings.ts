@@ -1,8 +1,8 @@
 
 import type { ProSettings } from '@ant-design/pro-layout';
 
-const defaultSettings: ProSettings = {
-  navTheme: 'dark',
+const defaultSettings: ProSettings & { headerHeight: number } = {
+
   layout: 'side',
   contentWidth: 'Fluid',
   fixedHeader: false,
@@ -10,10 +10,11 @@ const defaultSettings: ProSettings = {
   menu: {
     locale: false,
   },
+  navTheme: "realDark",
   headerHeight: 48,
   title: '长嘴猫平台',
   iconfontUrl: '',
-  primaryColor: 'daybreak',
+  // primaryColor: 'daybreak',
   splitMenus: false,
 };
 export type { ProSettings };

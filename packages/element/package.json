@@ -35,7 +35,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.0.0",
     "ahooks": "^3.6.2",
-    "antd": "^4.20.0",
+    "antd": "^4.23.2",
     "array-move": "^4.0.0",
     "classnames": "^2.2.6",
     "immutability-helper": "^3.1.1",
@@ -48,10 +48,12 @@
     "react-resizable": "^3.0.1",
     "react-sortable-hoc": "^2.0.0",
     "unstated-next": "^1.1.0",
-    "use-media-antd-query": "^1.0.1"
+    "use-media-antd-query": "^1.0.1",
+    "@babel/runtime": "^7.18.3"
   },
   "resolutions": {
-    "antd": "^4.20.0"
+    "antd": "^4.23.2"
+    
   },
   "sideEffects": [
     "es/**/style/*",

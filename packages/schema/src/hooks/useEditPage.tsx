@@ -1,13 +1,18 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable prefer-destructuring */
-import React, { useRef, useState } from 'react';
-// @ts-ignore
+import React, { useRef, useState,useContext } from 'react';
+import { parse } from 'query-string';
+
 import { useSetState } from 'ahooks';
+import type { Location } from "history";
+import {SchemaContext, useSchemaContext} from '../context';
+import type {SchemaContextProp} from '../context';
 import { isObject, isString } from 'lodash';
 import moment from 'moment';
+import {useLocation,useParams,useOutletContext } from '@umijs/renderer-react'
 // @ts-ignore
-import { history } from '@@/core/history';
+//import { history } from "@@/core/history";
 import { Schema } from '../context';
 import type { ButtonTypeProps, DialogOptions, FormFilterProp, HButtonType } from '../interface';
 import { Action, PageConfig, PageType, ToolButtons } from '../interface';
@@ -15,7 +20,7 @@ import FormInfo from '../page/FormInfo';
 import schema from '../pageConfigUitls';
 import type { UseListPageProp } from './useListPage';
 import ListPage from './useListPage';
-
+import {} from '../context'
 // import ButtonTool from '../page/OpColButton';
 
 export { PageConfig, Action };
@@ -72,18 +77,37 @@ export default function useEditPage(
   props: any,
 ): UseEditPageProp<any> {
   const config = { ...defaultConfig, ...pageConfig };
+
+  const schemaContext = useSchemaContext();
+
+  const history=schemaContext.umi.history;
   const { dataTypeFormat } = Schema;
+const actionParams=useParams()
+
   const Page = ListPage(config, props);
   // const _editPageButtons: any[] = [];
   // const toolbar = new ButtonTool();
-
+  
+  ///let location:Location;
+  const layoutContext = useOutletContext<any>();
+  const {location,params}=layoutContext
+// console.log(layoutContext)
+//   try{
+ 
+//         location=useLocation()
+//      }catch(ex){
+//          // @ts-ignore
+//        location=window.location
+       
+//      }
+  
   // const { service } = config;
-  const { pageProps = {}, match, location } = props;
+  const { pageProps = {},  } = props;
   let record: any = '';
   if (config.pageType === PageType.modal) {
     record = pageProps.params;
-  } else if (location && location.query) {
-    record = location.query;
+  } else if (location && location.search) {
+    record = parse(location.search);
   }
   const [pageData, setPageData] = useSetState<any>({});
   const pageEntryTimeRef = useRef<string>(moment().format('YYYY-MM-DD HH:mm:ss'));
@@ -117,22 +141,21 @@ export default function useEditPage(
       return pageProps.action;
     }
     if (config.pageType === PageType.page) {
-      if (match && match.params && match.params.editpage) {
-        return match.params.editpage;
+      if (params && params.editpage) {
+        return params.editpage;
       } else {
         return record && record['action'];
       }
     }
     return '';
   };
-
   const getPageParam = () => {
     if (config.pageType === PageType.modal) {
       return pageProps.params;
     }
     if (config.pageType === PageType.page) {
-      if (location && location.query) {
-        return location.query;
+      if (location && location.search) {
+        return parse(location.search);
       }
     }
     return '';

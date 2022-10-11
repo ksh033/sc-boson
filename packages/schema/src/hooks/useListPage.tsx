@@ -1,12 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
+import { useOutletContext ,useLocation} from '@umijs/renderer-react';
 import { useMount, useSetState, useUnmount, useUpdateEffect } from 'ahooks';
 import assign from 'lodash/assign';
 import isObject from 'lodash/isObject';
+import type { Location } from "history";
+
 import { useRef } from 'react';
 import { useSchemaContext } from '../context';
 import type { Result } from '../event/BindEventUtil';
-import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
+import { bindEvent, bindEvents, formatUseReq,setHistory } from '../event/BindEventUtil';
 import type { FormSearchItem, HButtonType, ProColumn, ProColumnType } from '../interface';
 import { PageConfig, PageType } from '../interface';
 import type { SearchInfoProps } from '../page/SearchInfo';
@@ -79,7 +82,19 @@ const setLocalSearchParams = (key: string | number, params: any) => {
 
 export default function ListPage<S>(config: PageConfig, props: any): UseListPageProp<S> {
   const { service, pageType = 'listpage' } = config;
-  const { location } = props || {};
+  
+ //let location:Location;
+ const layoutContext = useOutletContext<any>();
+ console.log(layoutContext)
+ const {location}=layoutContext
+//  try{
+
+//        location=useLocation()
+//     }catch(ex){
+//         // @ts-ignore
+//       location=window.location
+      
+//     }
   // 查询表单
   const searchForm = useRef<any>();
   // 查询表格保存表单
@@ -91,7 +106,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const searchInitParams = useRef<any>();
 
   const schemaContext = useSchemaContext();
-
+    setHistory(schemaContext.umi.history)
   const getSearchParams = () => {
     if (!location) {
       return null;

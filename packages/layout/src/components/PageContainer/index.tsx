@@ -30,7 +30,9 @@ const PageContainer: React.FC<PageContainerProps> = (props) => {
   }, [footer]);
 
   return (
-    <APageContainer {...props} footer={efooter}>
+    <APageContainer {...props} header={{
+      ghost: false,
+    }} ghost={false} footer={efooter}>
       {children}
     </APageContainer>
   );

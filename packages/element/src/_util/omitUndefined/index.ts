@@ -1,5 +1,5 @@
 const omitUndefined = <T>(obj: T): T => {
-  const newObj = {} as T;
+  const newObj: any = {} as T;
   Object.keys(obj || {}).forEach((key) => {
     if (obj[key] !== undefined) {
       newObj[key] = obj[key];

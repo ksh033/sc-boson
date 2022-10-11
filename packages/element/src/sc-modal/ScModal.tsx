@@ -25,9 +25,11 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
     onToggleFullscreen,
     canMove,
     children,
+    visible ,
     ...resProps
   } = props;
 
+  const open=visible;
   const [state, setState] = useState({
     x: 0,
     y: 100,
@@ -151,7 +153,7 @@ const ScModal: React.FC<ScModalProps> = (props: ScModalProps) => {
   }, [wrapClassName, showFullscreen, fullscreen]);
 
   return (
-    <Modal wrapClassName={_wrapClassName} {...resProps}>
+    <Modal wrapClassName={_wrapClassName}  {...resProps} open={open}>
       {fullsreenControl}
       {children}
     </Modal>

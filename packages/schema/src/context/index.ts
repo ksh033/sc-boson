@@ -1,14 +1,16 @@
 import React from 'react';
 import type { UseEditPageProp } from '../hooks/useEditPage';
 import type { UseListPageProp } from '../hooks/useListPage';
-import type { History } from 'history-with-query';
+import type { History } from 'history';
 
 export interface UmiProp {
-  history?: History;
+  history: History;
   ModelProvider?: any;
 }
 export const umi: UmiProp = {
-  history: undefined,
+
+  //@ts-ignore
+  history: window.history,
   ModelProvider: undefined,
 };
 export interface SchemaContextProp {
@@ -24,8 +26,8 @@ export interface SchemaContextProp {
 
 export const Schema: SchemaContextProp = {
   umi,
-  dataTypeFormat: () => {},
-  dictFormat: () => {},
+  dataTypeFormat: () => { },
+  dictFormat: () => { },
   tableOpColCmp: null,
 };
 

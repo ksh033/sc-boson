@@ -710,6 +710,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       <Table {...tableProp()} />
     </Card>
   );
+
   return (
     <div className={prefixCls + className}>
       <DndProvider backend={HTML5Backend}>{tableAreaDom}</DndProvider>

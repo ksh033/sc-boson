@@ -53,7 +53,7 @@ export type BaseMenuProps = {
     ) => React.ReactNode
   >;
   postMenuData?: (menusData?: MenuDataItem[]) => MenuDataItem[];
-} & Partial<RouterTypes<Route>> &
+} & Partial<RouterTypes> &
   Omit<MenuProps, 'openKeys' | 'onOpenChange' | 'title'> &
   Partial<ProSettings>;
 
@@ -228,7 +228,7 @@ const getOpenKeysProps = (
   return openKeysProps;
 };
 
-const BaseMenu: React.FC<BaseMenuProps & PrivateSiderMenuProps> = (props) => {
+const BaseMenu: React.FC<BaseMenuProps & PrivateSiderMenuProps & {headerHeight?:any}> = (props) => {
   const {
     theme,
     mode,

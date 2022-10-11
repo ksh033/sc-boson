@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-/* eslint-disable react-hooks/exhaustive-deps */
 
 import type { CSSProperties } from 'react';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -26,15 +24,15 @@ import { gLocaleObject } from '@ant-design/pro-layout/es/locales';
 import type { BaseMenuProps } from '../components/SiderMenu/BaseMenu';
 import { DefaultFooter as Footer } from '@ant-design/pro-layout';
 import { RouteContext } from '@ant-design/pro-layout';
-import SiderMenu from '@ant-design/pro-layout/es/components/SiderMenu';
+import {SiderMenu} from '@ant-design/pro-layout/es/components/SiderMenu';
 import type { SiderMenuProps } from '@ant-design/pro-layout/es/components/SiderMenu/SiderMenu';
 import { getBreadcrumbProps } from '../utils/getBreadcrumbProps';
 import getMenuData from '../utils/getMenuData';
 import PageLoading from '../components/PageLoading';
-import MenuCounter from '@ant-design/pro-layout/es/components/SiderMenu/Counter';
+import {MenuCounter} from '@ant-design/pro-layout/es/components/SiderMenu/Counter';
 import WrapContent from '../WrapContent';
 import compatibleLayout from '../utils/compatibleLayout';
-import useCurrentMenuLayoutProps from '../utils/useCurrentMenuLayoutProps';
+import {useCurrentMenuLayoutProps} from '../utils/useCurrentMenuLayoutProps';
 import { clearMenuItem } from '../utils/utils';
 import type { WaterMarkProps } from '@ant-design/pro-layout/es/components/WaterMark';
 import type { AppMenuProps } from './Header';
@@ -58,14 +56,14 @@ const findAppCode = (pathname: string, appMenu?: AppMenuProps[]) => {
   return null;
 };
 
-export type MasterLayoutProps = Partial<RouterTypes<Route>> &
+export type MasterLayoutProps = Partial<RouterTypes> &
   SiderMenuProps & { setCurrentMenu?: (currentMenu: any) => void } & HeaderViewProps & {
     pure?: boolean;
     /** @name logo url */
     logo?: React.ReactNode | WithFalse<() => React.ReactNode>;
 
     /** @name 页面切换的时候触发 */
-    onPageChange?: (location?: RouterTypes<Route>['location'], currentMenu?: any) => void;
+    onPageChange?: (location?: RouterTypes['location'], currentMenu?: any) => void;
 
     loading?: boolean;
 
@@ -339,6 +337,7 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props: MasterLayoutProps) => {
     return menuItem;
   }, [matchMenus]);
 
+
   const currentMenuLayoutProps = useCurrentMenuLayoutProps(currentMenu);
 
   const {
@@ -572,7 +571,7 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props: MasterLayoutProps) => {
     </MenuCounter.Provider>
   );
 };
-
+// @ts-ignore
 MaterLayout.defaultProps = {
   logo: 'https://gw.alipayobjects.com/zos/antfincdn/PmY%24TNNDBI/logo.svg',
   ...defaultSettings,

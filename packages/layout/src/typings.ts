@@ -1,4 +1,5 @@
 import { BasicRouteProps, StaticContext } from '@ant-design/pro-layout/es/typings';
+import type * as H from 'history';
 
 export interface match<Params extends { [K in keyof Params]?: string } = Record<string, any>> {
   params: Params;
@@ -51,8 +52,8 @@ export type Route = {
 } & MenuDataItem;
 export type WithFalse<T> = T | false;
 
-export type RouterTypes<P> = {
-  computedMatch?: match<P>;
+export type RouterTypes = {
+  computedMatch?: match<any>;
   route?: Route;
   location: BasicRouteProps['location'] | { pathname?: string };
 } & Omit<BasicRouteProps, 'location'>;

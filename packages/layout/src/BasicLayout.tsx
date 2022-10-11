@@ -17,7 +17,7 @@ import { clearMenuItem } from './utils/utils';
 import SiderMenu from './components/SiderMenu';
 import getMenuData from './utils/getMenuData';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
-import useCurrentMenuLayoutProps from './utils/useCurrentMenuLayoutProps';
+import {useCurrentMenuLayoutProps} from './utils/useCurrentMenuLayoutProps';
 import compatibleLayout from './utils/compatibleLayout';
 import WrapContent from './WrapContent';
 import Header from './Header';
@@ -60,7 +60,7 @@ const renderSiderMenu = (props: BasicLayoutProps, matchMenuKeys: string[]): Reac
   if (splitMenus && openKeys !== false && !isMobile) {
     const [key] = matchMenuKeys;
     if (key) {
-      menuData = props.menuData?.find((item) => item.key === key)?.children || [];
+      menuData = props.menuData?.find((item:any) => item.key === key)?.children || [];
     } else {
       menuData = [];
     }
@@ -100,7 +100,7 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
   breadcrumb: Record<string, MenuDataItem>;
 };
 
-export type BasicLayoutProps = Partial<RouterTypes<Route>> &
+export type BasicLayoutProps = Partial<RouterTypes> &
   SiderMenuProps &
   HeaderProps & {
     pure?: boolean;
@@ -108,7 +108,7 @@ export type BasicLayoutProps = Partial<RouterTypes<Route>> &
     logo?: React.ReactNode | WithFalse<() => React.ReactNode>;
 
     /** @name 页面切换的时候触发 */
-    onPageChange?: (location?: RouterTypes<Route>['location']) => void;
+    onPageChange?: (location?: RouterTypes['location']) => void;
 
     loading?: boolean;
 

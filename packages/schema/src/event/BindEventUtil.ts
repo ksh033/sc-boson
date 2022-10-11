@@ -34,11 +34,14 @@ const bindEvent = (
   btn: HButtonType & { request?: any },
   config: PageConfig,
   defaultCallback?: (values: any) => void,
+
   isTable?: boolean,
+
 ): HButtonType => {
   if (React.isValidElement(btn)) {
     return btn;
   }
+
 
   const newBtn = { ...btn };
   if (newBtn.buttonType) {
@@ -175,5 +178,6 @@ const operationButtonsBindEvent = (
   delete newBtn.serverName;
   return newBtn;
 };
+const setHistory = defaultEvents.setHistory
 
-export { Result, bindEvent, bindEvents, formatUseReq, operationButtonsBindEvent };
+export { Result, bindEvent, bindEvents, formatUseReq, operationButtonsBindEvent, setHistory };

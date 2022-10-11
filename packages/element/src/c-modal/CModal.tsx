@@ -1,15 +1,17 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import type { ButtonProps, ModalFuncProps } from 'antd';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
 import classNames from 'classnames';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import ScModal from '../sc-modal';
+import { createRoot } from 'react-dom/client';
+import { render as reactRender, unmount as reactUnmount } from 'rc-util/lib/React/render';
 
 import type { ScModalProps } from '../sc-modal';
 
-import ModalPageTpl from './ModalPageTpl';
 import ActionButton from './ActionButton';
+import ModalPageTpl from './ModalPageTpl';
 
 export const destroyFns: any[] = [];
 
@@ -127,7 +129,7 @@ const CModalDialog = (props: CModalDialogProps) => {
   let dlgContent = null;
   if (props.content) {
     if (React.isValidElement(props.content)) {
-      dlgContent = React.cloneElement(props.content, { close, pageProps: props.pageProps });
+      dlgContent = React.cloneElement<any>(props.content, { close, pageProps: props.pageProps });
     } else {
       dlgContent = React.createElement<any>(props.content, { close, pageProps: props.pageProps });
     }
@@ -143,6 +145,7 @@ const CModalDialog = (props: CModalDialogProps) => {
       onCancel={() => {
         return close && close({ triggerCancel: true });
       }}
+    
       visible={visible}
       title={props.title}
       onToggleFullscreen={onToggleFullscreen}
@@ -182,10 +185,8 @@ const CModalDialog = (props: CModalDialogProps) => {
   );
 };
 export default function CModal(config: any) {
-  const div = document.createElement('div');
-  document.body.appendChild(div);
+  const container = document.createDocumentFragment();
   let currentConfig = { ...config, close, onToggleFullscreen, visible: true };
-
   function close(...args: any[]) {
     currentConfig = {
       ...currentConfig,
@@ -218,10 +219,10 @@ export default function CModal(config: any) {
   }
 
   function destroy(...args: any[]) {
-    const unmountResult = ReactDOM.unmountComponentAtNode(div);
-    if (unmountResult && div.parentNode) {
-      div.parentNode.removeChild(div);
-    }
+    // const unmountResult = ReactDOM.unmountComponentAtNode(div);
+    // if (unmountResult && div.parentNode) {
+    //   div.parentNode.removeChild(div);
+    // }
     const triggerCancel = args.some((param) => param && param.triggerCancel);
     if (config.onCancel && triggerCancel) {
       config.onCancel(...args);
@@ -233,11 +234,17 @@ export default function CModal(config: any) {
         break;
       }
     }
+    reactUnmount(container);
   }
 
   function render(props: any) {
     // const app = getDvaApp();
-    ReactDOM.render(<CModalDialog {...props} />, div);
+    setTimeout(() => {
+      reactRender(<CModalDialog {...props} />,container);
+
+    })
+   
+  
   }
 
   render(currentConfig);

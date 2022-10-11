@@ -29,7 +29,11 @@
   "dependencies": {
     "@scboson/sc-element": "2.0.0-alpha.1",
     "ahooks": "^3.6.2",
-    "lodash": "^4.17.21",
-    "@umijs/max": "^4.0.0"
+    "lodash": "^4.17.21" ,
+    "@umijs/max": "^4.0.0",
+    "@umijs/renderer-react":"^4.0.21",
+
+    "@babel/runtime": "^7.18.3"
+
   }
 }

@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import { Layout } from 'antd';
 import type { GlobalHeaderProps } from '@ant-design/pro-layout/es/components/GlobalHeader';
-import GlobalHeader from '@ant-design/pro-layout/es/components/GlobalHeader';
+import {GlobalHeader} from '@ant-design/pro-layout/es/components/GlobalHeader';
 import { TopNavHeader } from '@ant-design/pro-layout';
 import type { WithFalse } from '@ant-design/pro-layout/es/typings';
 import type { PrivateSiderMenuProps } from '@ant-design/pro-layout/es/components/SiderMenu/SiderMenu';
@@ -40,6 +40,7 @@ export type HeaderViewProps = GlobalHeaderProps & {
   location: any;
   appMenuProps: any;
   appSelectedKeys: any;
+  headerHeight:number
 };
 
 type HeaderViewState = {

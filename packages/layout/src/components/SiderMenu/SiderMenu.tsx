@@ -84,7 +84,7 @@ export const defaultRenderLogoAndTitle = (
   );
 };
 
-const SiderMenu: React.FC<SiderMenuProps & PrivateSiderMenuProps> = (props) => {
+const SiderMenu: React.FC<SiderMenuProps & PrivateSiderMenuProps&{headerHeight?:any}> = (props) => {
   const {
     collapsed,
     fixSiderbar,

@@ -3,11 +3,10 @@
     "baseUrl": "./",
     "target": "esnext",
     "moduleResolution": "node",
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "module":"esnext", // add this line
-
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
@@ -20,10 +19,10 @@
       "@scboson/sc-h5sdk": ["./packages/h5skd/src/index.tsx"],
       "@scboson/sc-schema": ["./packages/schema/src/index.tsx"],
       "@scboson/sc-utils": ["./packages/utils/src/index.js"],
-      "@scboson/client-plugin": ["./packages/clientplugin/src/index.ts"]
-    }
+      "@scboson/client-plugin": ["./packages/clientplugin/src/index.ts"]     }
   },
   "include": [
+    "typings.d.ts",
     "**/src/**/*",
     "**/docs/**/*",
     "scripts/**/*",
@@ -36,4 +35,5 @@
     "packages/element/BindEventUtil.ts"
   ],
   "plugins": [{ "transform": "typescript-transform-paths", "afterDeclarations": true }]
+  
 }

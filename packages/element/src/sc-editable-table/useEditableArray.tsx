@@ -479,7 +479,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
   const startEditable = (recordKey: React.Key) => {
     // 如果是单行的话，不允许多行编辑
     if (editableKeysSet.size > 0 && editableType === 'single') {
-      message.warn(props.onlyOneLineEditorAlertMessage || '只能同时编辑一行');
+      message.warn('只能同时编辑一行');
       return false;
     }
     // 防止多次渲染
@@ -515,7 +515,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
     return true;
   };
 
-  const onValuesChange = (value: RecordType, values: any) => {
+  const onValuesChange = (value: any, values: any) => {
     let dataSource = props.dataSource;
     const childrenColumnName = props.childrenColumnName || 'children';
     // 这里是把正在编辑中的所有表单数据都修改掉

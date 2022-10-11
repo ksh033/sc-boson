@@ -1,11 +1,11 @@
-const { utils } = require('umi');
+const { yParser, execa, chalk } = require('@umijs/utils');
 const { join } = require('path');
 const exec = require('./utils/exec');
 const inquirer = require('inquirer');
 const getPackages = require('./utils/getPackages');
 const isNextVersion = require('./utils/isNextVersion');
 
-const { yParser, execa, chalk } = utils;
+
 const cwd = process.cwd();
 const args = yParser(process.argv);
 const lernaCli = require.resolve('lerna/cli');
@@ -30,7 +30,8 @@ async function release() {
 
   // Check git status
   if (!args.skipGitStatusCheck) {
-    const gitStatus = execa.sync('git', ['status', '--porcelain']).stdout;
+
+    const gitStatus = execa.execaSync('git', ['status', '--porcelain']).stdout;
     if (gitStatus.length) {
       printErrorAndExit(`Your git status is not clean. Aborting.`);
     }
@@ -40,7 +41,7 @@ async function release() {
 
   // Check npm registry
   logStep('check npm registry');
-  const userRegistry = execa.sync('npm', ['config', 'get', 'registry']).stdout;
+  const userRegistry = execa.execaSync('npm', ['config', 'get', 'registry']).stdout;
   console.log(userRegistry)
   // if (userRegistry.includes('http://172.18.169.70:8081/repository/npm')) {
   //   printErrorAndExit(`Release failed, please use ${chalk.blue('npm run release')}.`);
@@ -49,7 +50,7 @@ async function release() {
     const registry = chalk.blue('http://172.18.164.116:4873');
     printErrorAndExit(`Release failed, npm registry must be ${registry}.`);
   }
- 
+
 
   let updated = null;
 
@@ -86,13 +87,13 @@ async function release() {
 
     const conventionalGraduate = args.conventionalGraduate
       ? ['--conventional-graduate'].concat(
-          Array.isArray(args.conventionalGraduate) ? args.conventionalGraduate.join(',') : [],
-        )
+        Array.isArray(args.conventionalGraduate) ? args.conventionalGraduate.join(',') : [],
+      )
       : [];
     const conventionalPrerelease = args.conventionalPrerelease
       ? ['--conventional-prerelease'].concat(
-          Array.isArray(args.conventionalPrerelease) ? args.conventionalPrerelease.join(',') : [],
-        )
+        Array.isArray(args.conventionalPrerelease) ? args.conventionalPrerelease.join(',') : [],
+      )
       : [];
 
     await exec(
@@ -134,7 +135,7 @@ async function release() {
   //process.env.NPM_CONFIG_OTP = otp;
 
   pkgs.forEach((pkg, index) => {
-    const pkgPath = join(cwd, 'packages', pkg!=="client-plugin"?pkg.replace('sc-', ''):'clientplugin');
+    const pkgPath = join(cwd, 'packages', pkg !== "client-plugin" ? pkg.replace('sc-', '') : 'clientplugin');
     const { name, version } = require(join(pkgPath, 'package.json'));
     const isNext = isNextVersion(version);
     let isPackageExist = null;
@@ -148,11 +149,11 @@ async function release() {
       console.log(
         `[${index + 1}/${pkgs.length}] Publish package ${name} ${isNext ? 'with next tag' : ''}`,
       );
-      const cliArgs = isNext ? ['publish', '--tag', 'beta'] : ['publish'];
-     const { stdout } = execa.sync('npm', cliArgs, {
-       cwd: pkgPath,
-     });
-     console.log(stdout);
+      const cliArgs = isNext ? ['publish', '--tag', 'alpha'] : ['publish'];
+      const { stdout } = execa.sync('npm', cliArgs, {
+        cwd: pkgPath,
+      });
+      console.log(stdout);
     }
   });
   logStep('done');
