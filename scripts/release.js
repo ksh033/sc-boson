@@ -41,6 +41,7 @@ async function release() {
 
   // Check npm registry
   logStep('check npm registry');
+  logStep(execa.execaSync('npm', ['config', 'get', 'registry']).command)
   const userRegistry = execa.execaSync('npm', ['config', 'get', 'registry']).stdout;
   console.log(userRegistry)
   // if (userRegistry.includes('http://172.18.169.70:8081/repository/npm')) {
