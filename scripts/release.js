@@ -20,7 +20,7 @@ function logStep(name) {
 }
 
 function packageExists({ name, version }) {
-  const { stdout } = execa.sync('npm', ['info', `${name}@${version}`]);
+  const { stdout } = execa.execaSync('npm', ['info', `${name}@${version}`]);
   return stdout.length > 0;
 }
 
@@ -41,7 +41,6 @@ async function release() {
 
   // Check npm registry
   logStep('check npm registry');
-  logStep(execa.execaSync('npm', ['config', 'get', 'registry']).command)
   const userRegistry = execa.execaSync('npm', ['config', 'get', 'registry']).stdout;
   console.log(userRegistry)
   // if (userRegistry.includes('http://172.18.169.70:8081/repository/npm')) {
@@ -58,7 +57,7 @@ async function release() {
   if (!args.publishOnly) {
     // Get updated packages
     logStep('check updated packages');
-    const updatedStdout = execa.sync(lernaCli, ['changed']).stdout;
+    const updatedStdout = execa.execaSync(lernaCli, ['changed']).stdout;
     updated = updatedStdout
       .split('\n')
       .map((pkg) => {
@@ -151,7 +150,7 @@ async function release() {
         `[${index + 1}/${pkgs.length}] Publish package ${name} ${isNext ? 'with next tag' : ''}`,
       );
       const cliArgs = isNext ? ['publish', '--tag', 'alpha'] : ['publish'];
-      const { stdout } = execa.sync('npm', cliArgs, {
+      const { stdout } = execa.execaSync('npm', cliArgs, {
         cwd: pkgPath,
       });
       console.log(stdout);
