@@ -5,12 +5,12 @@ import {
   ProLayout,
   ProLayoutProps
 } from "@ant-design/pro-layout";
-import './Layout.less';
+
 import Header from '../Header';
 import { AppMenuProps, HeaderViewProps } from './Header';
 export type AppProps = Omit<AppMenuProps, 'component'>;
 import { gLocaleObject } from '@ant-design/pro-layout/es/locales';
-import  './Layout.less';
+import  './index.less';
 
 import { TopLayoutToket} from "./style"
 
