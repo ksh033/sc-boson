@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-schema",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "description": "sc-schema",
   "keywords": [
     "schema"
@@ -21,19 +21,16 @@
     "src"
   ],
   "peerDependencies": {
-   
     "antd": "^4.x",
     "lodash": "^4.x",
     "react": "^16.x"
   },
   "dependencies": {
+    "@babel/runtime": "^7.18.3",
     "@scboson/sc-element": "2.0.0-alpha.1",
-    "ahooks": "^3.6.2",
-    "lodash": "^4.17.21" ,
     "@umijs/max": "^4.0.0",
-    "@umijs/renderer-react":"^4.0.21",
-
-    "@babel/runtime": "^7.18.3"
-
+    "@umijs/renderer-react": "^4.0.21",
+    "ahooks": "^3.6.2",
+    "lodash": "^4.17.21"
   }
 }

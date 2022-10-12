@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-h5sdk",
-  "version": "1.0.0-alpha.7",
+  "version": "1.0.0-alpha.8",
   "description": "sc-sdk",
   "keywords": [
     "utils"
@@ -18,11 +18,10 @@
     "lib"
   ],
   "dependencies": {
+    "@babel/runtime": "^7.18.3",
     "axios": "^0.19.0",
     "coordinate-convert": "^1.2.4",
-    "loadjs": "^4.0.1",
-    
-    "@babel/runtime": "^7.18.3"
+    "loadjs": "^4.0.1"
   },
   "peerDependencies": {
     "axios": "^0.19.0",

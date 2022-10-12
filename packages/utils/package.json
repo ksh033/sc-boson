@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-utils",
-  "version": "1.0.1-alpha.3",
+  "version": "1.0.1-alpha.4",
   "description": "utils",
   "keywords": [
     "utils"
@@ -8,7 +8,6 @@
   "main": "./lib/index.js",
   "publishConfig": {
     "access": "public"
-   
   },
   "license": "MIT",
   "files": [
@@ -17,13 +16,11 @@
     "src"
   ],
   "dependencies": {
+    "@babel/runtime": "^7.18.3",
     "crypto-js": "^3.1.9-1",
     "md5": "^2.2.1",
     "sockjs-client": "^1.3.0",
-    "stompjs": "^2.3.3",
-
-    
-    "@babel/runtime": "^7.18.3"
+    "stompjs": "^2.3.3"
   },
   "devDependencies": {
     "@types/sockjs-client": "^1.5.0",

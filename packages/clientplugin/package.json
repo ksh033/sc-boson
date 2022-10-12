@@ -1,6 +1,6 @@
 {
   "name": "@scboson/client-plugin",
-  "version": "2.0.0-alpha.12",
+  "version": "2.0.0-alpha.13",
   "description": "博思客户端",
   "main": "./es/index.js",
   "module": "./es/index.js",
@@ -34,10 +34,9 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@babel/runtime": "^7.18.3",
     "@types/uuid": "^3.4.4",
-    "uuid": "^3.3.2",
-    
-    "@babel/runtime": "^7.18.3"
+    "uuid": "^3.3.2"
   },
   "author": ""
 }
