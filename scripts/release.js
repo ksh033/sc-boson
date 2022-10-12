@@ -28,28 +28,28 @@ async function release() {
 
 
 
-  // Check git status
-  if (!args.skipGitStatusCheck) {
+  // // Check git status
+  // if (!args.skipGitStatusCheck) {
 
-    const gitStatus = execa.execaSync('git', ['status', '--porcelain']).stdout;
-    if (gitStatus.length) {
-      printErrorAndExit(`Your git status is not clean. Aborting.`);
-    }
-  } else {
-    logStep('git status check is skipped, since --skip-git-status-check is supplied');
-  }
-
-  // Check npm registry
-  logStep('check npm registry');
-  const userRegistry = execa.execaSync('npm', ['config', 'get', 'registry']).stdout;
-  console.log(userRegistry)
-  // if (userRegistry.includes('http://172.18.169.70:8081/repository/npm')) {
-  //   printErrorAndExit(`Release failed, please use ${chalk.blue('npm run release')}.`);
+  //   const gitStatus = execa.execaSync('git', ['status', '--porcelain']).stdout;
+  //   if (gitStatus.length) {
+  //     printErrorAndExit(`Your git status is not clean. Aborting.`);
+  //   }
+  // } else {
+  //   logStep('git status check is skipped, since --skip-git-status-check is supplied');
   // }
-  if (!userRegistry.includes('http://172.18.164.116:4873')) {
-    const registry = chalk.blue('http://172.18.164.116:4873');
-    printErrorAndExit(`Release failed, npm registry must be ${registry}.`);
-  }
+
+  // // Check npm registry
+  // logStep('check npm registry');
+  // const userRegistry = execa.execaSync('npm', ['config', 'get', 'registry']).stdout;
+  // console.log(userRegistry)
+  // // if (userRegistry.includes('http://172.18.169.70:8081/repository/npm')) {
+  // //   printErrorAndExit(`Release failed, please use ${chalk.blue('npm run release')}.`);
+  // // }
+  // if (!userRegistry.includes('http://172.18.164.116:4873')) {
+  //   const registry = chalk.blue('http://172.18.164.116:4873');
+  //   printErrorAndExit(`Release failed, npm registry must be ${registry}.`);
+  // }
 
 
   let updated = null;
@@ -72,12 +72,12 @@ async function release() {
     logStep('clean');
 
     // Build
-    if (!args.skipBuild) {
-      logStep('build');
-      await exec('npm', ['run', 'build']);
-    } else {
-      logStep('build is skipped, since args.skipBuild is supplied');
-    }
+    // if (!args.skipBuild) {
+    //   logStep('build');
+    //   await exec('npm', ['run', 'build']);
+    // } else {
+    //   logStep('build is skipped, since args.skipBuild is supplied');
+    // }
 
     // Bump version
     // Commit
