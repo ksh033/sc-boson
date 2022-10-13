@@ -310,6 +310,12 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
             <>
               <div style={{ padding: '4px 8px' }}>
                 <Input
+                  onKeyDown={(e) => {
+                    e.stopPropagation();
+                  }}
+                  onKeyUp={(e) => {
+                    e.stopPropagation();
+                  }}
                   placeholder={searchInputPlaceholder || placeholder || '请输入'}
                   prefix={
                     <SearchOutlined
