@@ -108,6 +108,7 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   treeDataIndex?: string;
   onDrop?: (dargNode: any) => Promise<any> | boolean | void;
   dragSort?: boolean | string;
+  multipleSort?: boolean;
 }
 
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
@@ -135,6 +136,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     cardBordered = false,
     onChange,
     dragSort = false,
+    multipleSort = false,
     dataSource: newdataSource,
     onRow,
     treeDataIndex,
@@ -449,6 +451,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       columns: newPropsColumns,
       map: counter.columnsMap,
       counter,
+      multipleSort,
     }).sort(tableColumnSort(counter.columnsMap));
     if (treeDataIndex) {
       cols.find((col) => {
@@ -469,7 +472,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
 
     return cols;
-  }, [propsColumns, counter, dataSource]);
+  }, [propsColumns, counter, dataSource, multipleSort]);
   /** Table Column 变化的时候更新一下，这个参数将会用于渲染 */
 
   useDeepCompareEffect(() => {

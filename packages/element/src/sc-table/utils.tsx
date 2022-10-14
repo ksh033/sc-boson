@@ -276,8 +276,9 @@ export function genColumnList<T>(props: {
   columns: any[];
   map: Record<string, ColumnsState>;
   counter: ReturnType<typeof useContainer>;
+  multipleSort: boolean;
 }): (TableColumnType<T> & { index?: number })[] {
-  const { columns, map, counter } = props;
+  const { columns, map, counter, multipleSort } = props;
   return columns
     .map((columnProps, columnsIndex) => {
       const {
@@ -308,24 +309,35 @@ export function genColumnList<T>(props: {
       if (columnProps.sorter && typeof columnProps.sorter === 'boolean') {
         if (counter.whetherRemote) {
           sorterProps = {
-            sorter: {
-              multiple: columnsIndex + 1,
-            },
+            sorter: multipleSort
+              ? {
+                  multiple: columnsIndex + 1,
+                }
+              : true,
             sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
           };
         } else {
           sorterProps = {
-            sorter: {
-              compare: (a: any, b: any) => {
-                if (isNumber(a[dataIndex])) {
-                  return Number(a[dataIndex]) - Number(b[dataIndex]);
+            sorter: multipleSort
+              ? {
+                  compare: (a: any, b: any) => {
+                    if (isNumber(a[dataIndex])) {
+                      return Number(a[dataIndex]) - Number(b[dataIndex]);
+                    }
+                    const as: string = String(a[dataIndex]);
+                    const bs: string = String(b[dataIndex]);
+                    return as.localeCompare(bs, 'zh-CN');
+                  },
+                  multiple: columnsIndex + 1,
                 }
-                const as: string = String(a[dataIndex]);
-                const bs: string = String(b[dataIndex]);
-                return as.localeCompare(bs, 'zh-CN');
-              },
-              multiple: columnsIndex + 1,
-            },
+              : (a: any, b: any) => {
+                  if (isNumber(a[dataIndex])) {
+                    return Number(a[dataIndex]) - Number(b[dataIndex]);
+                  }
+                  const as: string = String(a[dataIndex]);
+                  const bs: string = String(b[dataIndex]);
+                  return as.localeCompare(bs, 'zh-CN');
+                },
             sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
           };
         }
