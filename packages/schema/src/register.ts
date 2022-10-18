@@ -11,19 +11,20 @@ import {
   Switch,
   Upload,
   Cascader,
+  TimePicker,
 } from 'antd';
-import { InputProps, GroupProps } from 'antd/es/input';
-import { TreeSelectProps } from 'antd/es/tree-select';
-import { SelectProps } from 'antd/es/select';
-import { CheckboxProps } from 'antd/es/checkbox';
-import { RadioProps } from 'antd/es/radio';
-import { DatePickerProps, RangePickerProps } from 'antd/es/date-picker';
-import { CalendarProps } from 'antd/es/calendar';
+import type { InputProps, GroupProps } from 'antd/es/input';
+import type { TreeSelectProps } from 'antd/es/tree-select';
+import type { SelectProps } from 'antd/es/select';
+import type { CheckboxProps } from 'antd/es/checkbox';
+import type { RadioProps } from 'antd/es/radio';
+import type { DatePickerProps, RangePickerProps } from 'antd/es/date-picker';
+import type { CalendarProps } from 'antd/es/calendar';
 import type { AutoCompleteProps } from 'antd/es/auto-complete';
 import type { InputNumberProps } from 'antd/es/input-number';
 import type { SwitchProps } from 'antd/es/switch';
 import type { UploadProps } from 'antd/es/upload';
-import { CascaderProps } from 'antd/es/cascader';
+import type { CascaderProps } from 'antd/es/cascader';
 
 import {
   ScCascader,
@@ -36,11 +37,11 @@ import {
 } from '@scboson/sc-element';
 
 import { umi, Schema } from './context';
-import { ScTextAreaProps } from '@scboson/sc-element/es/sc-text-area';
-import { ScCascaderProps } from '@scboson/sc-element/es/sc-cascader';
-import { ScSelectProps } from '@scboson/sc-element/es/sc-select';
-import { ScTreeSelectProps } from '@scboson/sc-element/es/sc-tree-select';
-import { ScRadioProps } from '@scboson/sc-element/es/sc-radio';
+import type { ScTextAreaProps } from '@scboson/sc-element/es/sc-text-area';
+import type { ScCascaderProps } from '@scboson/sc-element/es/sc-cascader';
+import type { ScSelectProps } from '@scboson/sc-element/es/sc-select';
+import type { ScTreeSelectProps } from '@scboson/sc-element/es/sc-tree-select';
+import type { ScRadioProps } from '@scboson/sc-element/es/sc-radio';
 
 const { ScDatePicker, ScRangePicker } = ScDate;
 const { Group: InputGroup } = Input;
@@ -67,6 +68,7 @@ export const cmps: Record<string, any> = {
   ScCheckBox: ScCheckBox,
   ScRadio: ScRadio,
   InputGroup: InputGroup,
+  TimePicker: TimePicker,
 };
 
 export type CmpPropsTypes = {

@@ -9,7 +9,6 @@ export interface FormInfoProps {
   initialValues: any;
 }
 
-
 class FormInfo {
   formInfo: FormInfoProps;
 
@@ -117,13 +116,18 @@ class FormInfo {
     const oldCol = this.findFormItem(name);
     if (oldCol) {
       const { formItem, fieldSetIndex, itemIndex, groupIndex } = oldCol;
-      let newFormItem = {};
+      let newFormItem: any = {};
       if (_.isFunction(item)) {
         newFormItem = item(formItem);
       } else {
         newFormItem = item;
       }
-      newFormItem = _.merge(formItem, newFormItem);
+      const { component, ...restnewFormItem } = newFormItem;
+      newFormItem = _.merge(formItem, restnewFormItem);
+
+      if (component) {
+        newFormItem.component = component;
+      }
       // newFormItem = _.{ ...formItem, ...newFormItem };
       if (groupIndex >= 0) {
         if (itemIndex >= 0)
