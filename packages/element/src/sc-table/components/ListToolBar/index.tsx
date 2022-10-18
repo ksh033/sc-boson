@@ -175,7 +175,7 @@ const ListToolBar: React.FC<ListToolBarProps> = ({
   return (
     <div style={style} className={classNames(`${prefixCls}`, className)}>
       <div className={`${prefixCls}-container`}>
-        <Space className={`${prefixCls}-left`}>
+        <div className={`${prefixCls}-left`}>
           {tooltip || title || subTitle ? (
             <div className={`${prefixCls}-title`}>
               <LabelIconTip tooltip={tooltip} label={title} subTitle={subTitle} />
@@ -183,7 +183,7 @@ const ListToolBar: React.FC<ListToolBarProps> = ({
           ) : null}
           {menu && <HeaderMenu {...menu} prefixCls={prefixCls} />}
           {!hasTitle && searchNode && <div className={`${prefixCls}-search`}>{searchNode}</div>}
-        </Space>
+        </div>
         <Space className={`${prefixCls}-right`} size={16}>
           {hasTitle && searchNode ? (
             <div className={`${prefixCls}-search`}>{searchNode}</div>

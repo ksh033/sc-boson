@@ -58,11 +58,13 @@ const HeaderMenu: React.FC<ListToolBarHeaderMenuProps> = (props) => {
 
   if (type === 'tab') {
     return (
-      <Tabs activeKey={activeItem.key as string} onTabClick={(key) => setActiveKey(key)}>
-        {items.map(({ label, key, ...rest }) => {
-          return <Tabs.TabPane tab={label} key={key} {...rest} />;
-        })}
-      </Tabs>
+      <div className={classNames(`${prefixCls}-menu`)}>
+        <Tabs activeKey={activeItem.key as string} onTabClick={(key) => setActiveKey(key)}>
+          {items.map(({ label, key, ...rest }) => {
+            return <Tabs.TabPane tab={label} key={key} {...rest} />;
+          })}
+        </Tabs>
+      </div>
     );
   }
 
