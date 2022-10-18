@@ -777,7 +777,9 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   ]);
 
   const batchButtonDom = useCreation(() => {
+    console.log(propsPagination);
     return recordCreatorProps === false &&
+      propsPagination != null &&
       propsPagination !== false &&
       dataSource.length > 0 &&
       hasOptions &&
