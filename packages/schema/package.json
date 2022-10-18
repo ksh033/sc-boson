@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.3",
-    "@scboson/sc-element": "2.0.0-alpha.1",
+    "@scboson/sc-element": "alpha",
     "@umijs/max": "^4.0.0",
     "@umijs/renderer-react": "^4.0.21",
     "ahooks": "^3.6.2",
