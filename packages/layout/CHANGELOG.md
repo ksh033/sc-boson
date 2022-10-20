@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.4](http://58.22.61.222:18001/smart-city-ui/sc-boson.git/compare/@scboson/sc-layout@2.0.0-alpha.3...@scboson/sc-layout@2.0.0-alpha.4) (2022-10-20)
+
+**Note:** Version bump only for package @scboson/sc-layout
+
+
+
+
+
 # [2.0.0-alpha.3](http://bsgit28:18001/smart-city-ui/sc-boson/compare/@scboson/sc-layout@2.0.0-alpha.2...@scboson/sc-layout@2.0.0-alpha.3) (2022-10-12)
 
 **Note:** Version bump only for package @scboson/sc-layout
