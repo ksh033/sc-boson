@@ -85,7 +85,6 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   
  //let location:Location;
  const layoutContext = useOutletContext<any>();
- console.log(layoutContext)
  const {location}=layoutContext
 //  try{
 

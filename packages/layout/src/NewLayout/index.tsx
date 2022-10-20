@@ -10,9 +10,12 @@ import Header from '../Header';
 import { AppMenuProps, HeaderViewProps } from './Header';
 export type AppProps = Omit<AppMenuProps, 'component'>;
 import { gLocaleObject } from '@ant-design/pro-layout/es/locales';
+import { getMatchMenu } from '../utils/getMatchMenu';
+
 import  './index.less';
 
 import { TopLayoutToket} from "./style"
+import { RouterTypes } from '../typings';
 
 const findAppCode = (pathname: string, appMenu?: AppMenuProps[]) => {
   const keys = pathname.replace('//', '/').split('/');
@@ -35,9 +38,14 @@ const getAppMenus = (apps?: AppProps[]): AppMenuProps[] => {
   }
   return [];
 };
-export default (props: ProLayoutProps&HeaderViewProps&{
+type LayoutPro=ProLayoutProps&HeaderViewProps&{
+
   apps: AppProps[];
-}) => {
+
+    /** @name 页面切换的时候触发 */
+    onPageChange?: (location?: RouterTypes['location'], currentMenu?: any) => void;
+}
+export default (props: LayoutPro) => {
 
   const userConfig:ProLayoutProps= {
     layout: 'top',
@@ -61,7 +69,9 @@ const {
   appSelectedKeys,
   appMenuProps,
   rightContentRender,
+  menuData,
   //menuDataRender,
+  onPageChange,
   ...layoutProps
 } = props;
 const [appSelectedKey, setAppSelectedKey] = useState(null);
@@ -69,7 +79,6 @@ const appMenuData = getAppMenus(apps);
 
 const appkey = findAppCode(location.pathname, appMenuData);
 const appSelected = appSelectedKey || appSelectedKeys || appkey;
-console.log(appSelected)
 const headerRender = (
   props: ProLayoutProps & {
     appsMenu?:any,
@@ -101,14 +110,18 @@ const formatMessage = ({
   const locales = gLocaleObject();
   return locales[id] ? locales[id] : (defaultMessage as string);
 };
+const matchMenus = useMemo(() => {
+  return getMatchMenu(location.pathname || '/', menuData || [], true);
+}, [location.pathname, menuData]);
 
-// const [menuInfoData, setMenuInfoData] = useMergedState<{
-//   breadcrumb?: Record<string, MenuDataItem>;
-//   breadcrumbMap?: Map<string, MenuDataItem>;
-//   menuData?: MenuDataItem[];
-// }>(() => getMenuData(route?.routes || [], menu, formatMessage, menuDataRender));
+const matchMenuKeys = useMemo(
+  () => Array.from(new Set(matchMenus.map((item) => item.key || item.path || ''))),
+  [matchMenus],
+);
 
-// const { breadcrumb = {}, breadcrumbMap, menuData = [] } = menuInfoData;
+// 当前选中的menu，一般不会为空
+const currentMenu = (matchMenus[matchMenus.length - 1] || {});
+
 const menuProps = {
   ...resProps,
   selectedKeys:appSelected,
@@ -121,7 +134,7 @@ const menuProps = {
     }
   },
 };
-console.log(menuProps)
+
 
 
   return (
@@ -129,21 +142,16 @@ console.log(menuProps)
     <ProLayout
     navTheme="light"
     className='sc-master-top-layout'
-    token={TopLayoutToket}
+    token={{...TopLayoutToket,pageContainer:{marginBlockPageContainerContent:0,marginInlinePageContainerContent:0},hashId:'top-layout'}}
      {...userConfig}
-
      menuDataRender={(menuData)=>{
-
-      console.log("appMenus",menuData)
       return menuData
      }}
-      
-    //  headerRender={()=>{
-    //   return headerDom;
-    //  }}
-    
+     onPageChange={(location)=>{
+
+      onPageChange&&onPageChange(location,currentMenu)
+     }}
     menuProps={menuProps}
-    
      logo={logo} 
     layout="top"
     route={{routes:appMenuData}}
@@ -152,11 +160,10 @@ console.log(menuProps)
     menuData={appMenuData}
     fixedHeader={true}
     collapsedButtonRender={false}
-
     contentStyle={{flex:'auto',marginBlock:'0px',marginInline:'0px'}}
     >
     
-       <ProLayout   className='sc-master-content-layout'   token={TopLayoutToket} layout='mix' navTheme="realDark" {...layoutProps}   style={{height:'100%'}}  menuHeaderRender={false} headerRender={false} fixedHeader={false}   fixSiderbar={true} title={false}>
+       <ProLayout   className='sc-master-content-layout'  token={{hashId:'content-layout',...TopLayoutToket,pageContainer:{marginBlockPageContainerContent:0,marginInlinePageContainerContent:0}}} layout='mix' navTheme="realDark" {...layoutProps}   style={{height:'100%'}}  menuHeaderRender={false} headerRender={false} fixedHeader={false}   fixSiderbar={true} title={false}>
 
 
 

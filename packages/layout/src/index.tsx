@@ -27,31 +27,13 @@ import {
   WaterMark,
 } from '@ant-design/pro-layout';
 
+import {ProLayoutContext} from '@ant-design/pro-layout/es/context/ProLayoutContext'
 import { PageContainer } from '@ant-design/pro-layout';
-
 export { default as ScCard } from '@ant-design/pro-card';
-
-// import type { SettingDrawerProps, SettingDrawerState } from './components/SettingDrawer';
-// import SettingDrawer from './components/SettingDrawer';
-
-// import type { FooterProps } from './Footer';
-// import DefaultFooter from './Footer';
-// import GridContent from './components/GridContent';
-// import PageContainer from './components/PageContainer';
-// import type { PageContainerProps } from './components/PageContainer';
-// import type { RouteContextType } from './RouteContext';
-// import RouteContext from './RouteContext';
-// import getMenuData from './utils/getMenuData';
-// import getPageTitle from './getPageTitle';
-// import PageLoading from './components/PageLoading';
-// import FooterToolbar from './components/FooterToolbar';
-
-// export type { ProSettings as Settings, ProSettings } from "./defaultSettings";
+export { TopLayoutToket} from   './NewLayout/style';
 
 export type { MenuDataItem } from './typings';
-
 //const PageHeaderWrapper = PageContainer;
-
 export {
   BasicLayout,
   RouteContext,
@@ -69,7 +51,8 @@ export {
   WaterMark,
   MasterLayout,
   NewLayout,
-  defaultSettings
+  defaultSettings,
+  ProLayoutContext
 };
 
 export type {
@@ -82,7 +65,5 @@ export type {
   SettingDrawerProps,
   SettingDrawerState,
   ProSettings,
-  
 };
-
 export default BasicLayout;
