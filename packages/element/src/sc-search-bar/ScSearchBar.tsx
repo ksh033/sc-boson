@@ -472,7 +472,6 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
         );
       }
     });
-    console.log(spanSize.span);
     const offset = useMemo(() => {
       const offsetSpan = (currentSpan % 24) + spanSize.span;
       return 24 - offsetSpan;
