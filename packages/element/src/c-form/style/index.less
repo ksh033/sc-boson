@@ -1,36 +1,46 @@
 @import '../../style/index.less';
+
 .@{sc-prefix}-form,
 .@{sc-prefix}-searchbar {
   margin: 0px 16px;
+
   // 因为 light-filter 不需要定宽
   div:not(.@{sc-prefix}-pro-form-light-filter) {
     .@{sc-prefix}-field {
       // 适用于短数字，短文本或者选项
       max-width: 100%;
+
       &-xs {
         width: 104px;
       }
+
       &-s {
         width: 216px;
       }
+
       // 适用于较短字段录入、如姓名、电话、ID 等。
       &-sm {
         width: 216px;
       }
+
       &-m {
         width: 328px;
       }
+
       // 标准宽度，适用于大部分字段长度
       &-md {
         width: 328px;
       }
+
       &-l {
         width: 440px;
       }
+
       // 适用于较长字段录入，如长网址、标签组、文件路径等。
       &-lg {
         width: 440px;
       }
+
       // 适用于长文本录入，如长链接、描述、备注等，通常搭配自适应多行输入框或定高文本域使用。
       &-xl {
         width: 552px;
@@ -40,9 +50,8 @@
 }
 
 .sc-form-nav {
-  .ant-affix{
+  .ant-affix {}
 
-  }
   .ant-anchor {
     position: relative;
     display: flex;
@@ -50,6 +59,7 @@
 
     justify-content: flex-start;
     background: #fff;
+
     &::before {
       position: absolute;
       bottom: 0;
@@ -60,13 +70,16 @@
       border-bottom: 1px solid #ebedf0;
       content: '';
     }
-    &-wrapper{
+
+    &-wrapper {
       margin-left: -20px;
       margin-right: -15px;
     }
-    .ant-anchor-ink{
+
+    .ant-anchor-ink {
       display: none;
     }
+
     .ant-anchor-link {
       position: relative;
       padding: 18px 20px;
@@ -79,16 +92,19 @@
       text-overflow: ellipsis;
       cursor: pointer;
       transition: all 0.5s;
-      &-active{
+
+      &-active {
         border-bottom: 2px solid @primary-color ;
       }
     }
-  
+
   }
 }
+
 .sc-form-group-container {
   flex-wrap: wrap;
   max-width: 100%;
+
   // padding-left: 0px!important;
   // padding-right: 0px!important;
   .ant-space-item {
@@ -103,10 +119,12 @@
   &-hide-title {
     padding-top: 24px;
   }
+
   position: relative;
 
   margin-top: 8px;
   margin-bottom: 8px;
+
   &-title {
     position: relative;
     margin-bottom: 8px;
@@ -115,9 +133,11 @@
     font-size: 16px;
     border-bottom: solid 1px #f0f0f0;
   }
+
   &-subtitle {
-    font-weight:normal;
-    margin-left: 16px;;
+    font-weight: normal;
+    margin-left: 16px;
+    ;
     font-size: 12px;
     display: inline-block;
   }
@@ -130,11 +150,14 @@
     }
   }
 }
+
 .sc-viem-item {
   padding: 4px 0;
 }
-.sc-viem-form-item{
+
+.sc-viem-form-item {
   margin-bottom: 12px;
+
   .ant-form-item-label {
     font-weight: bold;
   }
@@ -155,6 +178,7 @@
   .sc-viem-item {
     margin-bottom: 0px;
   }
+
   .sc-viem-item-label {
     font-weight: bold;
     text-align: left;

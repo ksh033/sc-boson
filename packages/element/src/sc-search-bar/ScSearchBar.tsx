@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { boolean } from '@umijs/deps/compiled/yargs';
 import { useDebounceFn } from 'ahooks';
 import { Button, Card, Col, Form, Row } from 'antd';
 import type { FormProps } from 'antd/es/form';
@@ -51,6 +52,8 @@ export interface ScSearchBarProps extends FormProps {
   colConfig?: any;
   submitRef?: MutableRefObject<any>;
   customOptionButtons?: () => React.ReactNode[];
+  addonBefore?: React.ReactNode;
+  autoSubmitFiled?: boolean | string[] | ((changeVal: any, allVal: any) => boolean);
 }
 
 /** 默认的查询表单配置 */
@@ -182,6 +185,9 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     style,
     lightFilter = false,
     submitRef,
+    addonBefore,
+    autoSubmitFiled = false,
+    onValuesChange,
     ...resProps
   } = props;
 
@@ -226,9 +232,36 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     },
   );
 
-  if (lightFilter === true) {
-    resProps.onValuesChange = run;
-  }
+  const canAutoChange = (changedValues: any, values: any) => {
+    let flag = false;
+    if (autoSubmitFiled) {
+      if (typeof autoSubmitFiled === 'boolean') {
+        flag = autoSubmitFiled;
+      } else if (Array.isArray(autoSubmitFiled)) {
+        const set = new Set(autoSubmitFiled);
+        const intersettion = Object.keys(changedValues).filter((it) => set.has(it));
+        flag = intersettion.length > 0;
+      } else if (typeof autoSubmitFiled === 'function') {
+        flag = autoSubmitFiled(changedValues, values);
+      }
+    }
+    return flag;
+  };
+
+  const handleOnValuesChange = (changedValues: any, values: any) => {
+    if (lightFilter === true) {
+      run();
+    } else {
+      const flag = canAutoChange(changedValues, values);
+      if (flag) {
+        if (onSubmit) {
+          onSubmit(values);
+        }
+      }
+    }
+    onValuesChange?.(changedValues, values);
+  };
+
   const onFinish = useCallback(async () => {
     const fieldsValue = await wrapForm.validateFields();
     const values = { ...fieldsValue };
@@ -455,12 +488,10 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
     return (
       <Card bordered={false}>
-        <Form form={wrapForm} layout="horizontal" {...resProps}>
-          <Row gutter={lightFilter ? 12 : 24} justify="start" key="resize-observer-row">
-            {cols}
-            {customOptionButtons ? customOptionButtons() : buttonsRow}
-          </Row>
-        </Form>
+        <Row gutter={lightFilter ? 12 : 24} justify="start" key="resize-observer-row">
+          {cols}
+          {customOptionButtons ? customOptionButtons() : buttonsRow}
+        </Row>
       </Card>
     );
   };
@@ -491,7 +522,17 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
           }
         }}
       >
-        <div className={`${prefixCls}`}>{RenderForm()}</div>
+        <div>
+          <Form
+            form={wrapForm}
+            layout="horizontal"
+            onValuesChange={handleOnValuesChange}
+            {...resProps}
+          >
+            {addonBefore}
+            <div className={`${prefixCls}`}>{RenderForm()}</div>
+          </Form>
+        </div>
       </RcResizeObserver>
     </MyContext.Provider>
   );

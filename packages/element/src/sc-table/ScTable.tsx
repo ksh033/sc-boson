@@ -75,6 +75,7 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   data?: { rows: any[]; total: number; current: number; size: number }; // 列表数据
   request?: (params: any) => Promise<any>; // 请求数据的远程方法
   onLoad?: (data: any) => any; // 数据加载完成后触发,会多次触发
+  preLoadHandle?: (params: any) => boolean; // 请求参数限制
   refresh?: () => void; // 点击刷新数据
   params?: any; // 请求的参数
   prefixCls?: string; // 表格容器的 class 名
@@ -121,6 +122,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     checkbox = false,
     rowSelection = { type: 'checkbox' },
     request,
+    preLoadHandle,
     onLoad,
     onSelectRow,
     selectedRowKeys,
@@ -221,17 +223,23 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         ..._filters,
         ...restParams,
       };
-      let _data = await run(payload);
-      if (isGone.current) return;
-      if (_data) {
-        if (onLoad) {
-          _data = onLoad(_data);
-        }
-        setDataSource(_data);
-        if (Array.isArray(_data)) {
-          getDataKeys(_data);
-        } else {
-          getDataKeys(_data.rows || []);
+      let flag = true;
+      if (preLoadHandle) {
+        flag = preLoadHandle?.(payload);
+      }
+      if (flag) {
+        let _data = await run(payload);
+        if (isGone.current) return;
+        if (_data) {
+          if (onLoad) {
+            _data = onLoad(_data);
+          }
+          setDataSource(_data);
+          if (Array.isArray(_data)) {
+            getDataKeys(_data);
+          } else {
+            getDataKeys(_data.rows || []);
+          }
         }
       }
     }
@@ -562,10 +570,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       }
     }
 
-    _row.forEach((it: any, index: number) => {
-      it.key = index;
-    });
-
     let paginationProps: any = {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -604,6 +608,21 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         ...innerPagination,
       };
     }
+
+    _row.forEach((it: any, index: number) => {
+      if (request == null) {
+        it.key = index;
+      } else {
+        if (paginationProps) {
+          it.key =
+            Number(paginationProps.current || 1) * Number(paginationProps.pageSize || 10) +
+            index +
+            1;
+        } else {
+          it.key = index;
+        }
+      }
+    });
 
     const key = rowKey || 'key';
     let components = componentsProps;
