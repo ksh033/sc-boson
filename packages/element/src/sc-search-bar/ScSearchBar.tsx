@@ -444,17 +444,23 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
         currentSpan += 24 - (currentSpan % 24);
       }
 
-      currentSpan += colSpan;
+      const colProps = item.colProps || { span: colSpan };
+
+      if (typeof colProps.span === 'number') {
+        currentSpan += Number(colProps.span);
+      } else {
+        currentSpan += colSpan;
+      }
 
       if (lightFilter) {
         cols.push(
-          <Col key={itemKey}>
+          <Col key={itemKey} {...colProps}>
             <ScFormItem item={item} index={index} form={wrapForm} lightFilter={lightFilter} />
           </Col>,
         );
       } else {
         cols.push(
-          <Col key={itemKey} span={colSpan}>
+          <Col key={itemKey} {...colProps}>
             <ScFormItem
               item={item}
               index={index}
@@ -466,6 +472,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
         );
       }
     });
+    console.log(spanSize.span);
     const offset = useMemo(() => {
       const offsetSpan = (currentSpan % 24) + spanSize.span;
       return 24 - offsetSpan;
@@ -475,6 +482,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
       <Col
         offset={offset}
         span={spanSize.span}
+        flex="auto"
         style={{
           textAlign: 'right',
         }}
