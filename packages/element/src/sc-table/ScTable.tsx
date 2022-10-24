@@ -615,7 +615,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       } else {
         if (paginationProps) {
           it.key =
-            Number(paginationProps.current || 1) * Number(paginationProps.pageSize || 10) +
+            (Number(paginationProps.current || 1) - 1) * Number(paginationProps.pageSize || 10) +
             index +
             1;
         } else {
