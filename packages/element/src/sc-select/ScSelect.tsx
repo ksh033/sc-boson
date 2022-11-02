@@ -274,7 +274,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
 
       timeout = setTimeout(() => {
         // 如果传入的参数有搜索的参数进行赋值显示
-        if (params[searchField] != null) {
+        if (params && params[searchField] != null) {
           setInput(params[searchField] || '');
         }
         inputRef.current.focus({
