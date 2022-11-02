@@ -127,6 +127,10 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
 
   useUpdateEffect(() => {
     if (autoload) {
+      // 如果传入的参数有搜索的参数进行赋值显示
+      if (params[searchField] != null) {
+        setInput(params[searchField] || '');
+      }
       loadData();
     }
   }, [JSON.stringify(params)]);
