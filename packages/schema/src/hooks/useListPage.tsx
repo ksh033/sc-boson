@@ -316,17 +316,15 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
 
   const searchEvent = (event: any) => {
     if (event && event.target) {
-      const { key, target } = event;
-      if (target.nodeName === 'INPUT') {
-        if (key === 'Enter') {
-          if (submitRef.current && submitRef.current.click) {
-            submitRef.current.click();
-          }
+      const { key } = event;
+      if (key === 'Enter') {
+        if (submitRef.current && submitRef.current.click) {
+          submitRef.current.click();
         }
+      }
 
-        if (event.stopPropagation) {
-          event.stopPropagation();
-        }
+      if (event.stopPropagation) {
+        event.stopPropagation();
       }
     }
   };
@@ -338,15 +336,13 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     if (searchForm.current && searchForm.current.setFieldsValue) {
       searchForm.current.setFieldsValue(locSearchParams);
     }
-    const [pageCon] = document.getElementsByClassName('ant-pro-page-container');
-    if (pageCon && pageType === 'listpage') {
-      pageCon.addEventListener('keydown', searchEvent);
+    if (pageType === 'listpage') {
+      document.body.addEventListener('keydown', searchEvent);
     }
   });
   useUnmount(() => {
-    const [pageCon] = document.getElementsByClassName('ant-pro-page-container');
-    if (pageCon && pageType === 'listpage') {
-      pageCon.removeEventListener('keydown', searchEvent);
+    if (pageType === 'listpage') {
+      document.body.removeEventListener('keydown', searchEvent);
     }
   });
   useUpdateEffect(() => {
