@@ -261,13 +261,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   // }
 
   useUpdateEffect(() => {
-    if (
-      dropdownOpen &&
-      showSearch &&
-      loading === false &&
-      inputRef.current &&
-      inputRef.current.focus
-    ) {
+    if (dropdownOpen && showSearch && inputRef.current && inputRef.current.focus) {
       if (timeout) {
         clearTimeout(timeout);
       }
@@ -282,7 +276,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         });
       }, 50);
     }
-  }, [dropdownOpen, inputRef.current, loading]);
+  }, [dropdownOpen]);
 
   const handleDropdownVisibleChange = (open: boolean) => {
     setOpen(open);
