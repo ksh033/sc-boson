@@ -18,6 +18,7 @@ export interface ScTreeSelectProps extends TreeSelectProps<TreeNodeProps> {
   root: any;
   textField?: string;
   searchTextField?: string;
+  searchInputAllowClear?: boolean;
   pIdField?: string;
   keyField?: string;
   valueField?: string;
@@ -52,6 +53,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
     searchLoad,
     onSearch,
     allowClear = false,
+    searchInputAllowClear = false,
     onDropdownVisibleChange,
     loading = false,
     ...restProps
@@ -313,7 +315,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
                   onChange={handleSearch}
                   value={input}
                   style={{ width: '100%' }}
-                  allowClear={allowClear}
+                  allowClear={allowClear || searchInputAllowClear}
                   ref={inputRef}
                 />
               </div>
@@ -344,6 +346,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
     loadData: onLoadData,
     style: { width: '100%' },
     loading: loading,
+    allowClear: allowClear,
     ...restProps,
   };
 
