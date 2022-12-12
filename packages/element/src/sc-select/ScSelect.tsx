@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { SearchOutlined } from '@ant-design/icons';
 import { useDebounceFn, useUpdateEffect } from 'ahooks';
-import { Divider, Input, Select, Spin, Tooltip } from 'antd';
+import { Input, Select, Spin, Tooltip } from 'antd';
 import type { SelectProps } from 'antd/es/select';
 import * as React from 'react';
 import { setTimeout } from 'timers';
@@ -306,7 +306,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         <Spin spinning={loading} tip="加载中...">
           {showSearch ? (
             <>
-              <div style={{ padding: '4px 8px' }}>
+              <div style={{ padding: '4px' }}>
                 <Input
                   onKeyDown={(e) => {
                     e.stopPropagation();
@@ -328,8 +328,6 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
                   ref={inputRef}
                 />
               </div>
-
-              <Divider style={{ margin: '4px 0' }} />
             </>
           ) : null}
           {menu}
