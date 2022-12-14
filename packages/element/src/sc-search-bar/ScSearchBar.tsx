@@ -49,6 +49,7 @@ export interface ScSearchBarProps extends FormProps {
   preHandle?: (params: any) => boolean;
   onReset?: (params: any) => void;
   lightFilter?: boolean;
+  showSubmitBtn?: boolean;
   form?: any;
   colConfig?: any;
   submitRef?: MutableRefObject<any>;
@@ -188,6 +189,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     submitRef,
     addonBefore,
     autoSubmitFiled = false,
+    showSubmitBtn = true,
     onValuesChange,
     preHandle,
     ...resProps
@@ -485,21 +487,22 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
       return 24 - offsetSpan;
     }, [currentSpan, spanSize.span]);
 
-    const buttonsRow = lightFilter ? null : (
-      <Col
-        offset={offset}
-        span={spanSize.span}
-        flex="auto"
-        style={{
-          textAlign: 'right',
-        }}
-        key="option"
-      >
-        <Form.Item label=" " colon={false} className={classNames(`${prefixCls}-actions`)}>
-          {buttons}
-        </Form.Item>
-      </Col>
-    );
+    const buttonsRow =
+      lightFilter || showSubmitBtn ? null : (
+        <Col
+          offset={offset}
+          span={spanSize.span}
+          flex="auto"
+          style={{
+            textAlign: 'right',
+          }}
+          key="option"
+        >
+          <Form.Item label=" " colon={false} className={classNames(`${prefixCls}-actions`)}>
+            {buttons}
+          </Form.Item>
+        </Col>
+      );
 
     return (
       <Card bordered={false}>
