@@ -46,6 +46,7 @@ export interface ScSearchBarProps extends FormProps {
   span?: SpanConfig;
   children?: React.ReactNode;
   onSubmit?: (params: any) => void;
+  preHandle?: (params: any) => boolean;
   onReset?: (params: any) => void;
   lightFilter?: boolean;
   form?: any;
@@ -188,6 +189,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     addonBefore,
     autoSubmitFiled = false,
     onValuesChange,
+    preHandle,
     ...resProps
   } = props;
 
@@ -264,14 +266,20 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
   const onFinish = useCallback(async () => {
     const fieldsValue = await wrapForm.validateFields();
-    const values = { ...fieldsValue };
-    if (request) {
-      let rdata = await request(values);
-      if (onLoad) {
-        rdata = onLoad(rdata);
+    let flag = true;
+    if (preHandle) {
+      flag = preHandle(fieldsValue);
+    }
+    if (flag) {
+      const values = { ...fieldsValue };
+      if (request) {
+        let rdata = await request(values);
+        if (onLoad) {
+          rdata = onLoad(rdata);
+        }
+      } else if (onSubmit) {
+        onSubmit(values);
       }
-    } else if (onSubmit) {
-      onSubmit(values);
     }
   }, [onSubmit, request, onLoad]);
 
