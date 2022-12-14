@@ -213,22 +213,34 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
   React.useImperativeHandle(form, () => wrapForm);
 
-  const handleFormReset = () => {
-    wrapForm.resetFields();
-    onReset?.(wrapForm.getFieldsValue());
+  const handleFormReset = async () => {
+    let flag = true;
+    if (preHandle) {
+      flag = await preHandle(resProps.initialValues);
+    }
+    if (flag) {
+      wrapForm.resetFields();
+      onReset?.(wrapForm.getFieldsValue());
+    }
   };
 
   const { run } = useDebounceFn(
     async () => {
       const fieldsValue = await wrapForm.validateFields();
       const values = { ...fieldsValue };
-      if (request) {
-        let rdata = await request(values);
-        if (onLoad) {
-          rdata = onLoad(rdata);
+      let flag = true;
+      if (preHandle) {
+        flag = await preHandle(fieldsValue);
+      }
+      if (flag) {
+        if (request) {
+          let rdata = await request(values);
+          if (onLoad) {
+            rdata = onLoad(rdata);
+          }
+        } else if (onSubmit) {
+          onSubmit(values);
         }
-      } else if (onSubmit) {
-        onSubmit(values);
       }
     },
     {
@@ -270,7 +282,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     const fieldsValue = await wrapForm.validateFields();
     let flag = true;
     if (preHandle) {
-      flag = preHandle(fieldsValue);
+      flag = await preHandle(fieldsValue);
     }
     if (flag) {
       const values = { ...fieldsValue };
