@@ -500,7 +500,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     }, [currentSpan, spanSize.span]);
 
     const buttonsRow =
-      lightFilter || showSubmitBtn ? null : (
+      lightFilter || !showSubmitBtn ? null : (
         <Col
           offset={offset}
           span={spanSize.span}
