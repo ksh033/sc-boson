@@ -110,8 +110,8 @@ export default class TableInfo {
       align: 'center',
       dataIndex: OpColKey,
       fixed: 'right',
-      width: 180,
-      max: 4,
+      width: 200,
+      max: 3,
     };
     let newCol = null;
     const { item, colIndex } = this.findCol(OpColKey) || {};

@@ -7,7 +7,7 @@ import { useUpdateEffect } from 'ahooks';
 const { useState, useCallback } = React;
 
 const ScDatePicker: React.FC<any> = (props) => {
-  const { value, format = 'YYYY-MM-DD', onChange } = props;
+  const { value, format = 'YYYY-MM-DD', vformat = 'YYYY-MM-DD', onChange, ...restProps } = props;
 
   let val: string = '';
   if (value) {
@@ -19,8 +19,8 @@ const ScDatePicker: React.FC<any> = (props) => {
   const triggerChange = useCallback(
     (changedValue: any) => {
       let rValue = changedValue;
-      if (format && rValue) {
-        rValue = interopDefault(moment)(rValue).format(format);
+      if (vformat && rValue) {
+        rValue = interopDefault(moment)(rValue).format(vformat);
       }
       if (onChange) {
         onChange(rValue);
@@ -38,7 +38,7 @@ const ScDatePicker: React.FC<any> = (props) => {
     setDate(val);
   }, [value]);
 
-  return <DatePicker {...props} value={date} onChange={handleChange}></DatePicker>;
+  return <DatePicker {...restProps} format={format} value={date} onChange={handleChange}></DatePicker>;
 };
 
 export default ScDatePicker;
