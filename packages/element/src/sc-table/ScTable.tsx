@@ -225,7 +225,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       };
       let flag = true;
       if (preLoadHandle) {
-        flag = preLoadHandle?.(payload);
+        flag = await preLoadHandle?.(payload);
       }
       if (flag) {
         let _data = await run(payload);

@@ -215,7 +215,9 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
   const handleFormReset = async () => {
     let flag = true;
+    console.log(12);
     if (preHandle) {
+      console.log(12);
       flag = await preHandle(resProps.initialValues);
     }
     if (flag) {

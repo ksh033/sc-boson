@@ -3,7 +3,7 @@ import { Form } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import classnames from 'classnames';
 // import $ from 'jquery';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import type { SearchFormItemProp } from './ScSearchBar';
 import { WIDTH_SIZE_ENUM } from './ScSearchBar';
 
@@ -11,31 +11,28 @@ const FormItem = Form.Item;
 
 type ScFormItemProps = {
   item: SearchFormItemProp;
-  index: number;
+  index?: number;
   form: FormInstance;
   lightFilter?: boolean;
   onSubmit?: () => Promise<void>;
 };
 
+export function genNonDuplicateID() {
+  let str = '';
+  str = Math.random().toString(36).substr(3);
+  str += Date.now().toString(16).substr(4);
+  return str;
+}
+
 const ScFormItem: React.FC<ScFormItemProps> = (props) => {
-  const { item, index, form, lightFilter = false, onSubmit } = props;
+  const { item, form, lightFilter = false, onSubmit } = props;
   const { label, name, component, hasFormItem = true, fieldProps } = item;
   const fieldName = name;
 
-  // const id = Array.isArray(fieldName) ? fieldName.join('_') : fieldName || '';
+  const randomVal = useRef<string>(genNonDuplicateID());
+
   useEffect(() => {}, []);
   let input: any;
-  // const Inputs = $(`.ant-modal .sc-field-${index} *[form]`);
-
-  // if (Inputs.length > 0) {
-  //   input = Inputs[Inputs.length - 1];
-  // }
-  // if (input == null) {
-  //   const inputList = $(`.ant-modal .sc-field-${index} input`);
-  //   if (inputList.length > 0) {
-  //     input = inputList[inputList.length - 1];
-  //   }
-  // }
 
   function getInput(root: any) {
     if (Array.isArray(root.children) && root.children.length > 0) {
@@ -61,7 +58,7 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
     }
   }
 
-  const AntModal = window.document.querySelectorAll(`.ant-modal .sc-field-${index}`);
+  const AntModal = window.document.querySelectorAll(`.sc-search-bar-item-${randomVal.current}`);
   if (AntModal.length > 0) {
     gets(AntModal[0]);
     if (input == null) {
@@ -125,7 +122,7 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
           component,
           {
             // style: { width: '100%' },
-            key: `form-item-component-${index}`,
+            key: `form-item-component-${randomVal.current}`,
             ...restProps,
             className,
             style: { ...item.props?.style, ...widthObj },
@@ -135,7 +132,7 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
       } else {
         createCmp = React.createElement(component, {
           // style: { width: '100%' },
-          key: `form-item-component-${index}`,
+          key: `form-item-component-${randomVal.current}`,
           ...restProps,
           className,
           style: { ...item.props?.style, ...widthObj },
@@ -146,7 +143,7 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
 
   const fromConfig: any = { ...fieldProps };
   const formItemClassName = classnames(fieldProps?.className, {
-    [`sc-field-${index}`]: true,
+    [`sc-search-bar-item-${randomVal.current}`]: true,
   });
   if (hasFormItem) {
     if (createCmp) {
@@ -155,7 +152,7 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
           label={!lightFilter ? label : ''}
           name={fieldName}
           {...fromConfig}
-          key={`form-item-${index}`}
+          key={`form-item-${randomVal.current}`}
           className={formItemClassName}
         >
           {createCmp}
@@ -167,7 +164,7 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
         label={!lightFilter ? label : ''}
         name={fieldName}
         {...fromConfig}
-        key={`form-item-${index}`}
+        key={`form-item-${randomVal.current}`}
         className={formItemClassName}
       >
         {rchildren}

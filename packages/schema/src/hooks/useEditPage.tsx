@@ -181,8 +181,8 @@ export default function useEditPage(
             if (ret) {
               if (ret.then) {
                 // 判断是Promise方法
-                ret.then((res: any) => {
-                  setInitialValues(toDefaultValueChuange(res));
+                ret.then((result: any) => {
+                  setInitialValues(toDefaultValueChuange(result));
                   setLoading(false);
                 });
               } else {
