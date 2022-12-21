@@ -1,0 +1,24 @@
+:global {
+  .ant-drawer-custom {
+    width: 100vw;
+    height: 100vh;
+    text-align: initial;
+    vertical-align: middle;
+
+
+    &-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      .ant-btn+.ant-btn:not(.ant-dropdown-trigger) {
+        margin-bottom: 0;
+        margin-left: 8px;
+      }
+    }
+  }
+
+  .ant-drawer-body {
+    padding: 0;
+  }
+}
