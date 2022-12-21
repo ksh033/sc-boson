@@ -65,7 +65,7 @@ const CDrawerDialog = (props: CDrawerDialogProps) => {
   const style = props.style || {};
   const mask = props.mask === undefined ? true : props.mask;
   // 默认为 false，保持旧版默认行为
-  const maskClosable = props.maskClosable === undefined ? false : props.maskClosable;
+  const maskClosable = props.maskClosable === undefined ? true : props.maskClosable;
   const okText = props.okText || (okCancel ? '确定' : '确定');
   const cancelText = props.cancelText || '取消';
   const autoFocusButton = props.autoFocusButton === null ? false : props.autoFocusButton || 'ok';
@@ -186,13 +186,6 @@ export default function CDrawer(config: any) {
     currentConfig = {
       ...currentConfig,
       visible: false,
-      afterOpenChange: (open: boolean) => {
-        console.log('onClose');
-        if (open === false) {
-          console.log('onClose');
-          destroy(...args);
-        }
-      },
     };
     if (IS_REACT_16) {
       if (timer) {

@@ -1,10 +1,22 @@
 :global {
   .ant-drawer-custom {
-    width: 100vw;
-    height: 100vh;
-    text-align: initial;
-    vertical-align: middle;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    right: 0;
 
+    &-body-wrapper {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    &-body {
+      position: relative;
+      height: 100%;
+      overflow: auto;
+    }
 
     &-footer {
       display: flex;
