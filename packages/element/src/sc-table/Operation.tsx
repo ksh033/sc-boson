@@ -87,7 +87,7 @@ const Operation: React.FC<OperationProps> = (props) => {
   }, [buttons, max]);
 
   return (
-    <div className={'sc-table-operation'} style={{ display: 'inline-block' }}>
+    <div className={'sc-table-operation'} >
       {renderChild()}
     </div>
   );

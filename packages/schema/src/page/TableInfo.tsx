@@ -110,8 +110,8 @@ export default class TableInfo {
       align: 'center',
       dataIndex: OpColKey,
       fixed: 'right',
-      width: 200,
-      max: 3,
+      // width: 200,
+      max: 4,
     };
     let newCol = null;
     const { item, colIndex } = this.findCol(OpColKey) || {};
@@ -167,10 +167,30 @@ export default class TableInfo {
       colIndex = this.findCol(OpColKey)?.colIndex;
     }
     if (_.isNumber(colIndex)) {
-      const opCol = this.tableInfo.columns[colIndex];
+      const opCol: any = this.tableInfo.columns[colIndex];
       // @ts-ignore
       const { max } = opCol;
+      if (!opCol.width && opCol.dataIndex === OpColKey) {
+
+        let opColWidth = 0
+        for (let i = 0; i < opColButtons.length; i++) {
+
+          if (i < max) {
+            const temBtn: any = opColButtons[i];
+            const text = temBtn.text || "    "
+            opColWidth = opColWidth + (text.length * 14)//字条大小
+            if (i !== max - 1) {
+              opColWidth += 20 //按间距
+            }
+          }
+        }
+        if (opColButtons.length > max) {
+          opColWidth = opColWidth + 36
+        }
+        opCol.width = opColWidth
+      }
       if (!opCol.render) {
+
         opCol.render = (value: any, record: any, index: number) => {
           const tbuttons: HButtonType[] = [];
           opColButtons.forEach((button) => {
