@@ -1,4 +1,3 @@
-import useKeyPress from './useKeyPress';
 import { Form } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import classnames from 'classnames';
@@ -32,51 +31,59 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
   const randomVal = useRef<string>(genNonDuplicateID());
 
   useEffect(() => {}, []);
-  let input: any;
+  // let input: any;
 
-  function getInput(root: any) {
-    if (Array.isArray(root.children) && root.children.length > 0) {
-      for (let x = 0; x < root.children.length; x++) {
-        if (root.children[x].nodeName === 'INPUT') {
-          input = root.children[x];
-          return;
-        }
-        getInput(root.children[x]);
-      }
-    }
-  }
+  // function getInput(root: any) {
+  //   if (Array.isArray(root.children) && root.children.length > 0) {
+  //     for (let x = 0; x < root.children.length; x++) {
+  //       if (root.children[x].nodeName === 'INPUT') {
+  //         input = root.children[x];
+  //         return;
+  //       }
+  //       getInput(root.children[x]);
+  //     }
+  //   }
+  // }
 
-  function gets(root: any) {
-    if (root.children.length > 0) {
-      for (let x = 0; x < root.children.length; x++) {
-        if (root.children[x].attributes.form != null) {
-          input = root.children[x];
-          return;
-        }
-        gets(root.children[x]);
-      }
-    }
-  }
+  // function gets(root: any) {
+  //   if (root.children.length > 0) {
+  //     for (let x = 0; x < root.children.length; x++) {
+  //       if (root.children[x].attributes.form != null) {
+  //         input = root.children[x];
+  //         return;
+  //       }
+  //       gets(root.children[x]);
+  //     }
+  //   }
+  // }
 
-  const AntModal = window.document.querySelectorAll(`.sc-search-bar-item-${randomVal.current}`);
-  if (AntModal.length > 0) {
-    gets(AntModal[0]);
-    if (input == null) {
-      getInput(AntModal[0]);
-    }
-  }
+  // const AntModal = window.document.querySelectorAll(`.sc-search-bar-item-${randomVal.current}`);
+  // if (AntModal.length > 0) {
+  //   gets(AntModal[0]);
+  //   if (input == null) {
+  //     getInput(AntModal[0]);
+  //   }
+  // }
 
-  useKeyPress(
-    'enter',
-    () => {
+  // useKeyPress(
+  //   'enter',
+  //   () => {
+  //     console.log(12);
+  //     onSubmit?.();
+  //   },
+  //   {
+  //     target: () => {
+  //       return input;
+  //     },
+  //   },
+  // );
+
+  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (e.keyCode === 13) {
+      console.log(1333);
       onSubmit?.();
-    },
-    {
-      target: () => {
-        return input;
-      },
-    },
-  );
+    }
+  };
 
   const rchildren: React.ReactNode[] = [];
   if (Array.isArray(item.children) && item.children.length > 0) {
@@ -148,6 +155,21 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
   if (hasFormItem) {
     if (createCmp) {
       return (
+        <div onKeyDown={handleKeyDown}>
+          <FormItem
+            label={!lightFilter ? label : ''}
+            name={fieldName}
+            {...fromConfig}
+            key={`form-item-${randomVal.current}`}
+            className={formItemClassName}
+          >
+            {createCmp}
+          </FormItem>
+        </div>
+      );
+    }
+    return (
+      <div onKeyDown={handleKeyDown}>
         <FormItem
           label={!lightFilter ? label : ''}
           name={fieldName}
@@ -155,20 +177,9 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
           key={`form-item-${randomVal.current}`}
           className={formItemClassName}
         >
-          {createCmp}
+          {rchildren}
         </FormItem>
-      );
-    }
-    return (
-      <FormItem
-        label={!lightFilter ? label : ''}
-        name={fieldName}
-        {...fromConfig}
-        key={`form-item-${randomVal.current}`}
-        className={formItemClassName}
-      >
-        {rchildren}
-      </FormItem>
+      </div>
     );
   }
   return createCmp;

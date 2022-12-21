@@ -19,6 +19,7 @@ export { default as ScEditRowTable } from './sc-edit-row-table';
 export { default as ScEditableTable } from './sc-editable-table';
 export { default as CForm } from './c-form';
 export { default as CModal } from './c-modal';
+export { default as CDrawer } from './c-drawer';
 export { default as ScTextArea } from './sc-text-area';
 export { default as ScCaptcha } from './sc-captcha';
 export { default as ScUpload } from './sc-upload';

@@ -1,0 +1,36 @@
+:global {
+  .ant-drawer-custom {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    right: 0;
+
+    &-body-wrapper {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    &-body {
+      position: relative;
+      height: 100%;
+      overflow: auto;
+    }
+
+    &-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      .ant-btn+.ant-btn:not(.ant-dropdown-trigger) {
+        margin-bottom: 0;
+        margin-left: 8px;
+      }
+    }
+  }
+
+  .ant-drawer-body {
+    padding: 0;
+  }
+}
