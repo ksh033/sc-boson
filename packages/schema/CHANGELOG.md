@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.3-beta.89](http://58.22.61.222:18001/smart-city-ui/sc-boson.git/compare/@scboson/sc-schema@1.0.3-beta.88...@scboson/sc-schema@1.0.3-beta.89) (2022-12-21)
+
+**Note:** Version bump only for package @scboson/sc-schema
+
+
+
+
+
 ## [1.0.3-beta.88](http://58.22.61.222:18001/smart-city-ui/sc-boson.git/compare/@scboson/sc-schema@1.0.3-beta.87...@scboson/sc-schema@1.0.3-beta.88) (2022-12-21)
 
 **Note:** Version bump only for package @scboson/sc-schema
