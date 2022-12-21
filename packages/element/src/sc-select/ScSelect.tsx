@@ -264,9 +264,14 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     if (dropdownOpen && showSearch && inputRef.current && inputRef.current.focus) {
       if (timeout) {
         clearTimeout(timeout);
+        timeout = null;
       }
 
       timeout = setTimeout(() => {
+        if (timeout) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
         // 如果传入的参数有搜索的参数进行赋值显示
         if (params && params[searchField] != null) {
           setInput(params[searchField] || '');
@@ -274,9 +279,9 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         inputRef.current.focus({
           preventScroll: true,
         });
-      }, 50);
+      }, 100);
     }
-  }, [dropdownOpen]);
+  }, [dropdownOpen, inputRef.current]);
 
   const handleDropdownVisibleChange = (open: boolean) => {
     setOpen(open);
@@ -308,12 +313,6 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
             <>
               <div style={{ padding: '4px' }}>
                 <Input
-                  onKeyDown={(e) => {
-                    e.stopPropagation();
-                  }}
-                  onKeyUp={(e) => {
-                    e.stopPropagation();
-                  }}
                   placeholder={searchInputPlaceholder || placeholder || '请输入'}
                   prefix={
                     <SearchOutlined
