@@ -110,7 +110,7 @@ export default class TableInfo {
       align: 'center',
       dataIndex: OpColKey,
       fixed: 'right',
-      width: 200,
+      width: 220,
       max: 3,
     };
     let newCol = null;
