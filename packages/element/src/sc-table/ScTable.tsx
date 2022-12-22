@@ -181,7 +181,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
   const [innerPagination, setPagination] = useSetState<TablePaginationConfig>({
     current: 1,
-    pageSize: 10,
+    pageSize: pageSize,
   });
 
   const action = useRef<any>({
