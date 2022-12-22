@@ -43,7 +43,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     onLoad,
     request,
     remoteSearch = false,
-    showSearch = false,
+    showSearch: defaultSearch = false,
     searchField = '_search',
     customRef,
     group = false,
@@ -85,6 +85,12 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
       setDataSource(data || []);
     }
   }, [JSON.stringify(data)]);
+
+  const isRemote = useMemo(() => {
+    return request != null;
+  }, []);
+
+  const showSearch = isRemote ? true : defaultSearch;
 
   const loadData = async (searchParam?: any) => {
     if (!request) {
@@ -172,6 +178,19 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     });
     return list;
   };
+
+  const filterInput = (list: any[]) => {
+    if (Array.isArray(list)) {
+      return !isRemote && input !== ''
+        ? list.filter((it) => {
+            const text = getTextField(it);
+            return text.indexOf(input) != -1;
+          })
+        : list;
+    }
+    return [];
+  };
+
   const children: any[] = useMemo(() => {
     let list: any[] = [];
     if (singleInput && input !== '') {
@@ -194,13 +213,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         if (request) {
           list = renderList(dataSource);
         } else {
-          const newList =
-            singleInput && input !== ''
-              ? dataSource.filter((it) => {
-                  const text = getTextField(it);
-                  return text.indexOf(input) != -1;
-                })
-              : dataSource;
+          const newList = filterInput(dataSource);
           list = list.concat(renderList(newList));
         }
       } else {
@@ -213,19 +226,26 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
             groupMap[item[groupField]].push(item);
           }
         });
-        list = Object.keys(groupMap).map((key, i) => {
-          const childList = renderList(groupMap[key], `${i}`);
-          return (
-            <OptGroup key={`group-${i}`} label={key}>
-              {childList}
-            </OptGroup>
-          );
-        });
+        list = Object.keys(groupMap)
+          .map((key, i) => {
+            const itemList = groupMap[key];
+            const newItemList = filterInput(itemList);
+            if (Array.isArray(newItemList) && newItemList.length > 0) {
+              const childList = renderList(newItemList, `${i}`);
+              return (
+                <OptGroup key={`group-${i}`} label={key}>
+                  {childList}
+                </OptGroup>
+              );
+            }
+            return null;
+          })
+          .filter((it) => it != null);
       }
     }
 
     return list;
-  }, [JSON.stringify(dataSource), group, input, inputKey, singleInput, textField]);
+  }, [JSON.stringify(dataSource), group, input, inputKey, singleInput, textField, showSearch]);
 
   const onSearchInputChange = (value: string) => {
     if (value.trim() !== '') {
