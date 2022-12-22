@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.4-beta.126](https://192.168.10.60/sc-dva-antd-pro/compare/@scboson/sc-element@1.0.4-beta.125...@scboson/sc-element@1.0.4-beta.126) (2022-12-21)
+
+**Note:** Version bump only for package @scboson/sc-element
+
+
+
+
+
+## [1.0.4-beta.125](https://192.168.10.60/sc-dva-antd-pro/compare/@scboson/sc-element@1.0.4-beta.124...@scboson/sc-element@1.0.4-beta.125) (2022-12-21)
+
+**Note:** Version bump only for package @scboson/sc-element
+
+
+
+
+
+## [1.0.4-beta.124](https://192.168.10.60/sc-dva-antd-pro/compare/@scboson/sc-element@1.0.4-beta.123...@scboson/sc-element@1.0.4-beta.124) (2022-12-21)
+
+**Note:** Version bump only for package @scboson/sc-element
+
+
+
+
+
 ## [1.0.4-beta.123](https://192.168.10.60/sc-dva-antd-pro/compare/@scboson/sc-element@1.0.4-beta.122...@scboson/sc-element@1.0.4-beta.123) (2022-12-21)
 
 **Note:** Version bump only for package @scboson/sc-element
