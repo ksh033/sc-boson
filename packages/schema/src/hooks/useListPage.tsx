@@ -6,7 +6,7 @@ import type { BaseResult } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
 import { useSchemaContext } from '../context';
 import { PageType, PageConfig } from '../interface';
-import { useSetState, useMount, useUpdateEffect } from 'ahooks';
+import { useSetState, useMount, useUpdateEffect, useUnmount } from 'ahooks';
 import type { TableInfoProps } from '../page/TableInfo';
 import type { SearchInfoProps } from '../page/SearchInfo';
 import TableInfo from '../page/TableInfo';
@@ -79,7 +79,7 @@ const setLocalSearchParams = (key: string | number, params: any) => {
 export { setLocalSearchParams };
 
 export default function ListPage<S>(config: PageConfig, props: any): UseListPageProp<S> {
-  const { service } = config;
+  const { service, pageType = 'listpage' } = config;
   const { location } = props || {};
   // 查询表单
   const searchForm = useRef<any>();
@@ -89,6 +89,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const filterRef = useRef<any>({});
   const ordersRef = useRef<any>({});
   const submitRef = useRef<any>({});
+  const pageCon = useRef<any>();
   const searchInitParams = useRef<any>();
 
   const schemaContext = useSchemaContext();
@@ -314,20 +315,20 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     }
   };
 
-  // const searchEvent = (event: any) => {
-  //   if (event && event.target) {
-  //     const { key } = event;
-  //     if (key === 'Enter') {
-  //       if (submitRef.current && submitRef.current.click) {
-  //         submitRef.current.click();
-  //       }
-  //     }
+  const searchEvent = (event: any) => {
+    if (event && event.target) {
+      const { key } = event;
+      if (key === 'Enter') {
+        if (submitRef.current && submitRef.current.click) {
+          submitRef.current.click();
+        }
+      }
 
-  //     if (event.stopPropagation) {
-  //       event.stopPropagation();
-  //     }
-  //   }
-  // };
+      if (event.stopPropagation) {
+        event.stopPropagation();
+      }
+    }
+  };
   useMount(() => {
     const locSearchParams = getSearchParams();
     initSorter(locSearchParams);
@@ -336,15 +337,32 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     if (searchForm.current && searchForm.current.setFieldsValue) {
       searchForm.current.setFieldsValue(locSearchParams);
     }
-    // if (pageType === 'listpage') {
-    //   document.body.addEventListener('keydown', searchEvent);
-    // }
+    if (pageType === 'listpage') {
+
+
+      const cons = document.getElementsByClassName("sc-page-container");
+      if (cons.length > 0) {
+        pageCon.current = cons[0]
+        // pageCon.current.addEventListener('click', () => {
+
+        //   console.log('click')
+        // });
+        pageCon.current.addEventListener('keydown', searchEvent);
+        // pageCon.current.focus();
+      }
+      //document.body.addEventListener('keydown', searchEvent);
+    }
   });
-  // useUnmount(() => {
-  //   if (pageType === 'listpage') {
-  //     document.body.removeEventListener('keydown', searchEvent);
-  //   }
-  // });
+  useUnmount(() => {
+    if (pageType === 'listpage') {
+
+      if (pageCon.current) {
+        pageCon.current.removeEventListener('keydown', searchEvent);
+      }
+      //document.body.removeEventListener('keydown', searchEvent)
+
+    }
+  });
   useUpdateEffect(() => {
     if (location) {
       setSearchParams(state.params, state.pagination);
