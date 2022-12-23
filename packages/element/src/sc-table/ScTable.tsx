@@ -71,24 +71,42 @@ export type ColumnsStateType = {
 };
 
 export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
-  onSelectRow?: (selectedRowKeys: string[], selectedRows: any[]) => void; // 当选中时触发
-  data?: { rows: any[]; total: number; current: number; size: number }; // 列表数据
-  request?: (params: any) => Promise<any>; // 请求数据的远程方法
-  onLoad?: (data: any) => any; // 数据加载完成后触发,会多次触发
-  preLoadHandle?: (params: any) => boolean; // 请求参数限制
-  refresh?: () => void; // 点击刷新数据
-  params?: any; // 请求的参数
-  prefixCls?: string; // 表格容器的 class 名
-  className?: string; // 样式
-  pageSize?: number; // 每页显示多少数据
-  autoload?: boolean; // 是否自动加载 配合request使用
-  checkbox?: boolean; // 是否显示多选框
-  rowKey?: string; // 数据中哪个值作为选中的key
-  selectedRowKeys?: string[]; // 选中的key
-  selectedRows?: any[]; // 选中的对象
+  /** 当选中时触发 */
+  onSelectRow?: (selectedRowKeys: string[], selectedRows: any[]) => void;
+  /** 列表数据 */
+  data?: { rows: any[]; total: number; current: number; size: number };
+  /** 请求数据的远程方法 */
+  request?: (params: any) => Promise<any>;
+  /** 数据加载完成后触发,会多次触发 */
+  onLoad?: (data: any) => any;
+  /** 请求参数限制 */
+  preLoadHandle?: (params: any) => boolean;
+  /** 点击刷新数据 */
+  refresh?: () => void;
+  /** 请求的参数 */
+  params?: any;
+  /** 表格容器的 class 名 */
+  prefixCls?: string;
+  /** 样式 */
+  className?: string;
+  /** 每页显示多少数据 */
+  pageSize?: number;
+  /** 是否自动加载 配合request使用 */
+  autoload?: boolean;
+  /** 是否显示多选框 */
+  checkbox?: boolean;
+  /** 数据中哪个值作为选中的key */
+  rowKey?: string;
+  /** 复选时选中的key */
+  selectedRowKeys?: string[];
+  /** 复选时选中的对象 */
+  selectedRows?: any[];
+  /** 分页数据 */
   pagination?: false | TablePaginationConfig;
-  saveRef?: any; // React.MutableRefObject<any> | ((saveRef: any) => void) 获取组件对外暴露的参数
-  rowSelected?: boolean; // 列选中
+  /** React.MutableRefObject<any> | ((saveRef: any) => void) 获取组件对外暴露的参数 */
+  saveRef?: any;
+  /** 列选中 */
+  rowSelected?: boolean;
   /** @name 渲染操作栏 */
   toolBarRender?: ToolBarProps<T>['toolBarRender'] | false;
   /** @name 左上角的 title */
@@ -105,10 +123,15 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   cardProps?: CardProps;
   /** @name table 列属性 */
   columns?: ScProColumn<T>;
+  /** 受控的列状态，可以操作显示隐藏 */
   columnsState?: ColumnsStateType;
+  /** 树的张开字段 */
   treeDataIndex?: string;
+  /** 拖拽事件 */
   onDrop?: (dargNode: any) => Promise<any> | boolean | void;
+  /** 是否开起拖拽 */
   dragSort?: boolean | string;
+  /** 是否时复合排序 */
   multipleSort?: boolean;
 }
 
