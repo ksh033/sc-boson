@@ -1,19 +1,44 @@
 import * as React from 'react';
 import * as moment from 'moment';
-import { DatePicker, Select } from 'antd';
+import { DatePicker } from 'antd';
 import { useUpdateEffect } from 'ahooks';
 
 import interopDefault from '../_util/interopDefault';
-
+import type { RangePickerProps } from 'antd/es/date-picker/generatePicker'
 const { useState, useCallback } = React;
 
 const { RangePicker } = DatePicker;
-const { Option } = Select;
 
-const ScRangePicker: React.FC<any> = (props) => {
-  const { format = 'YYYY-MM-DD', vformat = 'YYYY-MM-DD', rangesList, value, onChange } = props;
-  const { rangesListProps = {}, ...resProps } = props;
+// years	y
+
+// months	M
+// weeks	w
+// days	d
+// hours	h
+// minutes	m
+// seconds	s
+// milliseconds	ms
+
+type RangesItem = {
+  text: string;
+  /**
+   * w:周,M:月，'d'：天，y:'年',h：小时，m:分钟，s:秒
+   */
+  type: 'w' | 'M' | 'd' | 'y' | 'h' | 'm' | 's',
+  value: number
+
+
+}
+type ScDatePickerProps<T> = RangePickerProps<T> & {
+  rangesList?: RangesItem[];
+  vformat?: string
+}
+const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
+  const { format = 'YYYY-MM-DD', vformat = 'YYYY-MM-DD', rangesList, ranges, value, onChange, ...resProps } = props;
+
   // let emptyItem={text:rangesTitle||'当天',value:"",type:'e'}
+
+  const [vranges, setVRanges] = useState<any>()
   let vals: any[] = [];
   if (value) {
     const sdate = interopDefault(moment)(value[0]).isValid()
@@ -24,13 +49,45 @@ const ScRangePicker: React.FC<any> = (props) => {
       : null;
     vals = [sdate, edate];
   }
-  const [values, setValues] = useState<any[]>(vals);
+  const [values, setValues] = useState<any>(vals);
   const [, setDateStrings] = useState<[string, string]>(['', '']);
+  const toRangs = () => {
+    const today = interopDefault(moment)({ format });
 
+    const tRanges = {};
+
+    rangesList?.forEach((item) => {
+
+      const afterDay = interopDefault(moment)({ format }).add(item.value, item.type);
+      tRanges[item.text] = [today, afterDay]
+
+    })
+
+    return tRanges
+
+  }
   useUpdateEffect(() => {
     setValues(vals);
+
   }, [value]);
 
+  useUpdateEffect(() => {
+
+    if (ranges) {
+
+      setVRanges(ranges)
+    }
+
+  }, [ranges])
+
+  useUpdateEffect(() => {
+
+    if (!ranges && rangesList) {
+      const temV = toRangs()
+      setVRanges(temV)
+    }
+
+  }, [rangesList])
   const triggerChange = useCallback(
     (changedValue: any): void => {
       // Should provide an event to pass value to Form.
@@ -42,7 +99,7 @@ const ScRangePicker: React.FC<any> = (props) => {
         ];
       }
       if (onChange) {
-        onChange(rChangedValue);
+        onChange(rChangedValue, [vformat, vformat]);
       }
     },
     [onChange, vformat],
@@ -57,68 +114,66 @@ const ScRangePicker: React.FC<any> = (props) => {
     [triggerChange],
   );
 
-  const onSelect = useCallback(
-    (selectIndex: any): void => {
-      // eslint-disable-next-line radix
-      const selectedItem = rangesList[parseInt(selectIndex)];
-      const { type } = selectedItem;
-      let rvals = [];
-      let strs: [string, string] = ['', ''];
-      if (selectedItem.value) {
-        const today = interopDefault(moment)({ format });
-        const afterDay = interopDefault(moment)({ format }).add(selectedItem.value, type);
-        rvals = [today, afterDay];
-        strs = [today.format(format), afterDay.format(format)];
-        setValues(rvals);
-        setDateStrings(strs);
-      } else {
-        const today = interopDefault(moment)({ format });
-        strs = [today.format(format), today.format(format)];
-        rvals = [today, today];
-      }
-      setValues(rvals);
-      setDateStrings(strs);
-      handleChange(rvals, strs);
-    },
-    [rangesList, handleChange, format],
-  );
 
-  const renderRight = (rangesAfter: any[]) => {
-    const cRangesAfter = rangesAfter || [];
-    let i = -1;
-    const operations = cRangesAfter.map((range: any) => {
-      const { text, type } = range;
-      const temValue = `${type}_${range.value}`;
-      i += 1;
-      return (
-        <Option key={temValue} value={i}>
-          {text}
-        </Option>
-      );
-    });
-    return (
-      <Select defaultValue={0} onSelect={onSelect} {...rangesListProps}>
-        {operations}
-      </Select>
-    );
-  };
+  // const onSelect = useCallback(
+  //   (selectIndex: any): void => {
+  //     // eslint-disable-next-line radix
+  //     const selectedItem = rangesList[parseInt(selectIndex)];
+  //     const { type } = selectedItem;
+  //     let rvals = [];
+  //     let strs: [string, string] = ['', ''];
+  //     if (selectedItem.value) {
+  //       const today = interopDefault(moment)({ format });
+  //       const afterDay = interopDefault(moment)({ format }).add(selectedItem.value, type);
+  //       rvals = [today, afterDay];
+  //       strs = [today.format(format), afterDay.format(format)];
+  //       setValues(rvals);
+  //       setDateStrings(strs);
+  //     } else {
+  //       const today = interopDefault(moment)({ format });
+  //       strs = [today.format(format), today.format(format)];
+  //       rvals = [today, today];
+  //     }
+  //     setValues(rvals);
+  //     setDateStrings(strs);
+  //     handleChange(rvals, strs);
+  //   },
+  //   [rangesList, handleChange, format],
+  // );
 
-  let operations: any = null;
-  if (rangesList && rangesList.length > 0) {
-    operations = renderRight(rangesList);
-  }
+  // const renderRight = (rangesAfter: any[]) => {
+  //   const cRangesAfter = rangesAfter || [];
+  //   let i = -1;
+  //   const operations = cRangesAfter.map((range: any) => {
+  //     const { text, type } = range;
+  //     const temValue = `${type}_${range.value}`;
+  //     i += 1;
+  //     return (
+  //       <Option key={temValue} value={i}>
+  //         {text}
+  //       </Option>
+  //     );
+  //   });
+  //   return (
+  //     <Select defaultValue={0} onSelect={onSelect} {...rangesListProps}>
+  //       {operations}
+  //     </Select>
+  //   );
+  // };
+
+  //let operations: any = null;
+  // if (rangesList && rangesList.length > 0) {
+  //   operations = renderRight(rangesList);
+  // }
   return (
-    <span className={'sc-date-picker'}>
-      <span>
-        <RangePicker
-          {...resProps}
-          onChange={handleChange}
-          value={values}
-          className={rangesList ? 'sc-date-picker-range-after' : ''}
-        ></RangePicker>
-      </span>
-      <span>{operations}</span>
-    </span>
+    <RangePicker
+      {...resProps}
+      onChange={handleChange}
+      value={values}
+
+      ranges={vranges}
+    //  className={rangesList ? 'sc-date-picker-range-after' : ''}
+    />
   );
 };
 
