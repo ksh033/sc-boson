@@ -5,8 +5,8 @@ import type { Moment } from 'moment';
 import interopDefault from '../_util/interopDefault';
 import { useUpdateEffect } from 'ahooks';
 
-const { useState, useCallback } = React;
-import type { PickerProps, } from 'antd/es/date-picker/generatePicker'
+const { useState, useCallback, useMemo } = React;
+import type { PickerProps, PickerDateProps } from 'antd/es/date-picker/generatePicker'
 
 export type ScDatePickerProps<DateType> = PickerProps<DateType> & {
   vformat?: string
@@ -19,10 +19,25 @@ export type ScDatePickerProps<DateType> = PickerProps<DateType> & {
    */
   todayAfter?: boolean
 
-}
+} & PickerDateProps<any>
 const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Moment>) => {
-  const { value, format = 'YYYY-MM-DD', todayAfter, todayBefor, vformat, disabledDate, onChange, ...restProps } = props;
+  const { value, format = 'YYYY-MM-DD', todayAfter, todayBefor, vformat, showTime, disabledDate, onChange, ...restProps } = props;
 
+
+  const newProps = useMemo(() => {
+    return {
+      ...restProps,
+      showTime:
+        typeof showTime === 'object' && showTime !== null
+          ? showTime
+          : typeof showTime === 'boolean' && showTime
+            ? {
+              hideDisabledOptions: true,
+              defaultValue: interopDefault(moment)('00:00:00', 'HH:mm:ss'),
+            }
+            : false,
+    };
+  }, [restProps, showTime]);
   // function disabledDate(current: any) {
   //   return current && current > moment(new Date());
   // }
@@ -85,7 +100,8 @@ const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Moment>) => {
     setDate(val);
   }, [value]);
 
-  return <DatePicker {...restProps} format={format} value={date} disabledDate={disData} onChange={handleChange} />;
+  return <DatePicker {...newProps} format={format} value={date} disabledDate={disData} onChange={handleChange} />;
 };
 
 export default ScDatePicker;
+

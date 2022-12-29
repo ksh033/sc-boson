@@ -5,7 +5,7 @@ import { useUpdateEffect } from 'ahooks';
 
 import interopDefault from '../_util/interopDefault';
 import type { RangePickerProps } from 'antd/es/date-picker/generatePicker'
-const { useState, useCallback } = React;
+const { useState, useCallback, useEffect } = React;
 
 const { RangePicker } = DatePicker;
 
@@ -71,7 +71,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
 
   }, [value]);
 
-  useUpdateEffect(() => {
+  useEffect(() => {
 
     if (ranges) {
 
@@ -80,7 +80,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
 
   }, [ranges])
 
-  useUpdateEffect(() => {
+  useEffect(() => {
 
     if (!ranges && rangesList) {
       const temV = toRangs()
@@ -99,7 +99,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         ];
       }
       if (onChange) {
-        onChange(rChangedValue, [vformat, vformat]);
+        onChange(rChangedValue, [rChangedValue[0], rChangedValue[1]]);
       }
     },
     [onChange, vformat],
