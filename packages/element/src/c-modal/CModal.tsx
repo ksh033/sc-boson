@@ -185,8 +185,9 @@ const CModalDialog = (props: CModalDialogProps) => {
 export default function CModal(config: any) {
   const div = document.createElement('div');
   div.className = 'c-custom-modal';
+  document.body.style.cssText = 'overflow:hidden;+overflow:none;_overflow:none;padding:0 17px 0 0;';
   document.body.appendChild(div);
-  let currentConfig = { ...config, close, onToggleFullscreen, visible: true };
+  let currentConfig = { ...config, close, onToggleFullscreen, visible: true, getContainer: div };
 
   function close(...args: any[]) {
     currentConfig = {
@@ -220,6 +221,7 @@ export default function CModal(config: any) {
   }
 
   function destroy(...args: any[]) {
+    document.body.style.cssText = ' ';
     const unmountResult = ReactDOM.unmountComponentAtNode(div);
     if (unmountResult && div.parentNode) {
       div.parentNode.removeChild(div);
