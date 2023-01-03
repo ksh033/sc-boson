@@ -31,7 +31,7 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
 
   const randomVal = useRef<string>(genNonDuplicateID());
 
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
   let input: any;
 
   function getInput(root: any) {
@@ -58,7 +58,9 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
     }
   }
 
-  const AntModal = window.document.querySelectorAll(`.ant-modal .sc-search-bar-item-${randomVal.current}`);
+  const AntModal = window.document.querySelectorAll(
+    `.c-custom-modal .sc-search-bar-item-${randomVal.current}`,
+  );
   if (AntModal.length > 0) {
     gets(AntModal[0]);
     if (input == null) {
@@ -156,7 +158,6 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
   if (hasFormItem) {
     if (createCmp) {
       return (
-
         <FormItem
           label={!lightFilter ? label : ''}
           name={fieldName}
@@ -166,11 +167,9 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
         >
           {createCmp}
         </FormItem>
-
       );
     }
     return (
-
       <FormItem
         label={!lightFilter ? label : ''}
         name={fieldName}
@@ -180,7 +179,6 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
       >
         {rchildren}
       </FormItem>
-
     );
   }
   return createCmp;

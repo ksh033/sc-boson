@@ -184,6 +184,7 @@ const CModalDialog = (props: CModalDialogProps) => {
 };
 export default function CModal(config: any) {
   const div = document.createElement('div');
+  div.className = 'c-custom-modal';
   document.body.appendChild(div);
   let currentConfig = { ...config, close, onToggleFullscreen, visible: true };
 
