@@ -40,7 +40,8 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
 
   const [vranges, setVRanges] = useState<any>()
   let vals: any[] = [];
-  if (value) {
+  debugger;
+  if (value && value.length) {
     const sdate = interopDefault(moment)(value[0]).isValid()
       ? interopDefault(moment)(value[0])
       : null;
