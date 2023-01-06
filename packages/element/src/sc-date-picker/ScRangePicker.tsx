@@ -34,7 +34,7 @@ type ScDatePickerProps<T> = RangePickerProps<T> & {
   vformat?: string
 }
 const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
-  const { format = 'YYYY-MM-DD', vformat = 'YYYY-MM-DD', rangesList, ranges, value, onChange, ...resProps } = props;
+  const { format = 'YYYY-MM-DD', vformat, rangesList, ranges, value, onChange, ...resProps } = props;
 
   // let emptyItem={text:rangesTitle||'当天',value:"",type:'e'}
 
@@ -92,17 +92,18 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     (changedValue: any): void => {
       // Should provide an event to pass value to Form.
       let rChangedValue = changedValue;
+      const temformat = vformat || format
       if (vformat && rChangedValue) {
         rChangedValue = [
-          rChangedValue[0] ? interopDefault(moment)(rChangedValue[0]).format(vformat) : '',
-          rChangedValue[1] ? interopDefault(moment)(rChangedValue[1]).format(vformat) : '',
+          rChangedValue[0] ? interopDefault(moment)(rChangedValue[0]).format(temformat) : '',
+          rChangedValue[1] ? interopDefault(moment)(rChangedValue[1]).format(temformat) : '',
         ];
       }
       if (onChange) {
         onChange(rChangedValue, [rChangedValue[0], rChangedValue[1]]);
       }
     },
-    [onChange, vformat],
+    [format, onChange, vformat],
   );
 
   const handleChange = useCallback(
