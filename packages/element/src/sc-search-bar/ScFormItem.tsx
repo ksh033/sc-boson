@@ -71,7 +71,6 @@ const ScFormItem: React.FC<ScFormItemProps> = (props) => {
   useKeyPress(
     'enter',
     () => {
-      console.log(12);
       onSubmit?.();
     },
     {

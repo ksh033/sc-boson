@@ -405,7 +405,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     if (pagination && Object.prototype.toString.call(pagination) === '[object Object]') {
       setPagination(pagination);
     }
-  }, [pagination]);
+  }, [JSON.stringify(pagination)]);
 
   useUpdateEffect(() => {
     if (innerPagination.current && innerPagination.pageSize) {
@@ -620,11 +620,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
     if (pagination === false) {
       paginationProps = false;
-    } else if (Object.prototype.toString.call(pagination) === '[object Object]') {
-      paginationProps = {
-        ...paginationProps,
-        ...pagination,
-      };
     } else {
       paginationProps = {
         ...paginationProps,

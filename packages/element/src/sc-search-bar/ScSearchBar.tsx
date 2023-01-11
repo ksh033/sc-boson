@@ -215,9 +215,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
   const handleFormReset = async () => {
     let flag = true;
-    console.log(12);
     if (preHandle) {
-      console.log(12);
       flag = await preHandle(resProps.initialValues);
     }
     if (flag) {
@@ -411,10 +409,9 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     if (expandForm) {
       items = items.concat(queryList);
     } else {
-      items = items.concat(queryList.filter((item) => !item.hiddenExpend));
+      items = items.concat(queryList.filter((item) => item.hiddenExpend !== true));
     }
-    const advances = queryList.filter((item) => item.hiddenExpend);
-
+    const advances = queryList.filter((item) => !!item.hiddenExpend);
     const buttons = (
       <span className={`${prefixCls}-buttons`}>
         <Button type="primary" onClick={onFinish} ref={submitRef} className="sc-searchbar-submit">
@@ -423,13 +420,11 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
         <Button style={{ marginLeft: 8 }} onClick={handleFormReset}>
           重置
         </Button>
-        {advances && advances.length > 0 ? (
+        {advances && advances.length > 0 && (
           <a style={{ marginLeft: 8 }} onClick={toggleForm}>
-            {expandForm === true ? '收起' : '展开'}{' '}
+            {expandForm === true ? '收起筛选' : '高级筛选'}
             {expandForm === true ? <UpOutlined /> : <DownOutlined />}
           </a>
-        ) : (
-          ''
         )}
       </span>
     );
@@ -439,15 +434,18 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
 
     const cols: any[] = [];
     items.forEach((item: SearchFormItemProp, index: number) => {
+      // const hidden: boolean =
+      //   (item as React.ReactElement<{ hidden: boolean }>)?.props?.hidden ||
+      //   item.hidden ||
+      //   // 如果收起了
+      //   (expandForm &&
+      //     // 如果 超过显示长度 且 总长度超过了 24
+      //     // index >= showLength - 1 &&
+      //     !!index &&
+      //     totalSpan >= 24);
+
       const hidden: boolean =
-        (item as React.ReactElement<{ hidden: boolean }>)?.props?.hidden ||
-        item.hidden ||
-        // 如果收起了
-        (expandForm &&
-          // 如果 超过显示长度 且 总长度超过了 24
-          // index >= showLength - 1 &&
-          !!index &&
-          totalSpan >= 24);
+        (item as React.ReactElement<{ hidden: boolean }>)?.props?.hidden || item.hidden || false;
       if (hidden) {
         return;
       }

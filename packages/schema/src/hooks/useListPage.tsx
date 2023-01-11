@@ -338,11 +338,9 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       searchForm.current.setFieldsValue(locSearchParams);
     }
     if (pageType === 'listpage') {
-
-
-      const cons = document.getElementsByClassName("sc-page-container");
+      const cons = document.getElementsByClassName('sc-page-container');
       if (cons.length > 0) {
-        pageCon.current = cons[0]
+        pageCon.current = cons[0];
         // pageCon.current.addEventListener('click', () => {
 
         //   console.log('click')
@@ -355,12 +353,10 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   });
   useUnmount(() => {
     if (pageType === 'listpage') {
-
       if (pageCon.current) {
         pageCon.current.removeEventListener('keydown', searchEvent);
       }
       //document.body.removeEventListener('keydown', searchEvent)
-
     }
   });
   useUpdateEffect(() => {
