@@ -400,17 +400,17 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
   };
 
   const RenderForm = () => {
-    let items: any[] = [];
+    const items: any[] = queryList;
     // let total: number = 0;
 
     // totalSpan 统计控件占的位置，计算 offset 保证查询按钮在最后一列
     let totalSpan = 0;
     let itemLength = 0;
-    if (expandForm) {
-      items = items.concat(queryList);
-    } else {
-      items = items.concat(queryList.filter((item) => item.hiddenExpend !== true));
-    }
+    // if (expandForm) {
+    //   items = items.concat(queryList);
+    // } else {
+    //   items = items.concat(queryList.filter((item) => item.hiddenExpend !== true));
+    // }
     const advances = queryList.filter((item) => !!item.hiddenExpend);
     const buttons = (
       <span className={`${prefixCls}-buttons`}>
@@ -460,18 +460,22 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
       // 每一列的key, 一般是存在的
       const itemKey = item.name ? `${item.name}` : item.id || index;
 
-      if (24 - (currentSpan % 24) < colSpan) {
-        // 如果当前行空余位置放不下，那么折行
-        totalSpan += 24 - (currentSpan % 24);
-        currentSpan += 24 - (currentSpan % 24);
-      }
-
-      const colProps = item.colProps || { span: colSpan };
-
-      if (typeof colProps.span === 'number') {
-        currentSpan += Number(colProps.span);
+      const colProps: any = item.colProps || { span: colSpan };
+      if (!expandForm && item.hiddenExpend === true) {
+        colProps.className = classnames(item.colProps?.className, {
+          'sc-searchbar-item-hiden': true,
+        });
       } else {
-        currentSpan += colSpan;
+        if (typeof colProps.span === 'number') {
+          currentSpan += Number(colProps.span);
+        } else {
+          currentSpan += colSpan;
+        }
+        if (24 - (currentSpan % 24) < colSpan) {
+          // 如果当前行空余位置放不下，那么折行
+          totalSpan += 24 - (currentSpan % 24);
+          currentSpan += 24 - (currentSpan % 24);
+        }
       }
 
       if (lightFilter) {
@@ -494,10 +498,10 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
         );
       }
     });
-    const offset = useMemo(() => {
-      const offsetSpan = (currentSpan % 24) + spanSize.span;
-      return 24 - offsetSpan;
-    }, [currentSpan, spanSize.span]);
+
+    const offsetSpan = (currentSpan % 24) + spanSize.span;
+    const offset = 24 - offsetSpan;
+    console.log(offset);
 
     const buttonsRow =
       lightFilter || !showSubmitBtn ? null : (
