@@ -51,7 +51,6 @@ const CDrawerDialog = (props: CDrawerDialogProps) => {
     onClose,
     // iconType = 'question-circle',
   } = props;
-  console.log('props', props);
   // 支持传入{ icon: null }来隐藏`Modal.confirm`默认的Icon
   // const icon = props.icon === undefined ? iconType : props.icon;
   const okType = props.okType || 'primary';
@@ -140,7 +139,6 @@ const CDrawerDialog = (props: CDrawerDialogProps) => {
       className={classString}
       onClose={(e) => {
         onClose?.(e);
-        console.log('onClose');
         close({ triggerCancel: true });
       }}
       open={visible}

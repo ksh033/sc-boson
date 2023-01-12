@@ -569,7 +569,6 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           return {
             onBlur: () => {
               if (Boolean(clickEdit) === false && props.editable?.type === 'multiple') {
-                console.log('onBlur');
                 closeSave();
               }
             },
@@ -777,7 +776,6 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   ]);
 
   const batchButtonDom = useCreation(() => {
-    console.log(propsPagination);
     return recordCreatorProps === false &&
       propsPagination != null &&
       propsPagination !== false &&
