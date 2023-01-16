@@ -187,7 +187,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   // });
   useDeepCompareEffectDebounce(() => {
     valueRef.current = value;
-  }, [value]);
+  }, [JSON.stringify(value)]);
 
   // ============================ RowKey ============================
   const getRowKey = React.useMemo<any>(() => {
