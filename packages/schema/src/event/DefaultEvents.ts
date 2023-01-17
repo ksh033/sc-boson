@@ -159,7 +159,7 @@ function remove(props: ButtonTypeProps, event?: any) {
           }
         }
       },
-      onCancel() {},
+      onCancel() { },
     });
   }
 }
@@ -184,10 +184,10 @@ function confirm(props: ButtonTypeProps, event?: any) {
             if (callBack) {
               callBack(data, params);
             }
-          } catch (ex) {}
+          } catch (ex) { }
         }
       },
-      onCancel() {},
+      onCancel() { },
     });
   }
 }
@@ -325,6 +325,19 @@ function formUpdate(props: ButtonTypeProps) {
     }
   }
 }
+/**
+ * 导出
+ */
+function dataExport(props: ButtonTypeProps) {
+  const { options, callBack } = props;
+  if (options) {
+    const { params = {}, service } = options;
+    const data = service?.(params);
+    if (callBack) {
+      callBack(data, params);
+    }
+  }
+}
 const defaultEvent = {
   add,
   disabled,
@@ -336,5 +349,6 @@ const defaultEvent = {
   formUpdate,
   confirm,
   link,
+  dataExport
 };
 export default defaultEvent;

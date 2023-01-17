@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
 import { useRef } from 'react';
-import type { ProColumn, FormSearchItem, ProColumnType, HButtonType } from '../interface';
+import type { ProColumn, FormSearchItem, HButtonType, ProColumnType } from '../interface';
 import type { BaseResult } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
 import { useSchemaContext } from '../context';
@@ -280,6 +280,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       onReset,
       submitRef,
       initialValues: initValue,
+      toolbar: [],
     };
   };
 
@@ -378,7 +379,6 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
         newCol.push({ ...col });
       }
     });
-
     if (getOperateColumn) {
       const opCol = getOperateColumn();
       opCol.dataIndex = OpColKey;
@@ -417,8 +417,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
 
   const getSearch = (searchConfig?: SearchConfig) => {
     const search = getSearchConfig(searchConfig);
-
-    return new SearchInfo(search);
+    return new SearchInfo(search, config);
   };
   const getPageParam = () => {
     // @ts-ignore

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -56,6 +57,7 @@ export interface ScSearchBarProps extends FormProps {
   customOptionButtons?: () => React.ReactNode[];
   addonBefore?: React.ReactNode;
   autoSubmitFiled?: boolean | string[] | ((changeVal: any, allVal: any) => boolean);
+  toolbar?: any[]
 }
 
 /** 默认的查询表单配置 */
@@ -71,13 +73,13 @@ const defaultColConfig = {
 export type SpanConfig =
   | number
   | {
-      xs: number;
-      sm: number;
-      md: number;
-      lg: number;
-      xl: number;
-      xxl: number;
-    };
+    xs: number;
+    sm: number;
+    md: number;
+    lg: number;
+    xl: number;
+    xxl: number;
+  };
 
 const CONFIG_SPAN_BREAKPOINTS = {
   xs: 513,
@@ -192,6 +194,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     showSubmitBtn = true,
     onValuesChange,
     preHandle,
+    toolbar,
     ...resProps
   } = props;
 
@@ -398,6 +401,21 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     }
     return createCmp;
   };
+  /**
+   * @description: 渲染自定义按钮
+   * @param {*} React
+   * @return {*}
+   */
+  const toolBarRender = React.useMemo(() => {
+    return toolbar?.map((item: any, index: any) => {
+      const { buttonType, text, ...resprops } = item;
+      return <Button
+        key={'btn' + index}
+        style={{ marginLeft: 8 }}
+        {...resprops}
+      >{text}</Button>
+    })
+  }, [toolbar])
 
   const RenderForm = () => {
     const items: any[] = queryList;
@@ -420,6 +438,9 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
         <Button style={{ marginLeft: 8 }} onClick={handleFormReset}>
           重置
         </Button>
+        {
+          toolbar && toolbar.length && toolBarRender
+        }
         {advances && advances.length > 0 && (
           <a style={{ marginLeft: 8 }} onClick={toggleForm}>
             {expandForm === true ? '收起筛选' : '高级筛选'}

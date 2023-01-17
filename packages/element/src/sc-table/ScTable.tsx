@@ -58,10 +58,10 @@ export type ColumnsState = {
   fixed?: 'right' | 'left' | undefined;
   order?: number;
   disable?:
-    | boolean
-    | {
-        checkbox: boolean;
-      };
+  | boolean
+  | {
+    checkbox: boolean;
+  };
 };
 
 export type ColumnsStateType = {
@@ -189,9 +189,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const isGone = useRef(false);
   const { loading, run } = useRequest(
     request ||
-      new Promise((resolve) => {
-        resolve(null);
-      }),
+    new Promise((resolve) => {
+      resolve(null);
+    }),
     {
       manual: true,
     },
@@ -530,11 +530,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const cRowSelection = useMemo(() => {
     return checkbox
       ? {
-          selectedRowKeys: rowKeys,
-          onChange: handleRowSelectChange,
-          ...rowSelection,
-          getCheckboxProps,
-        }
+        selectedRowKeys: rowKeys,
+        onChange: handleRowSelectChange,
+        ...rowSelection,
+        getCheckboxProps,
+      }
       : undefined;
   }, [JSON.stringify(rowKeys), handleRowSelectChange, getCheckboxProps, rowSelection]);
 
@@ -737,12 +737,12 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       bodyStyle={
         toolbarDom
           ? {
-              paddingTop: 0,
-              paddingBottom: 0,
-            }
+            paddingTop: 0,
+            paddingBottom: 0,
+          }
           : {
-              padding: 0,
-            }
+            padding: 0,
+          }
       }
       {...cardProps}
     >

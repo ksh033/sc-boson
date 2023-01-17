@@ -72,8 +72,8 @@ export interface ButtonTypeProps extends ButtonProps {
   serverName?: string;
   // 是否可见
   visible?:
-    | ((value: any, record: any, index: number) => boolean | ButtonTypeProps | React.ReactElement)
-    | boolean;
+  | ((value: any, record: any, index: number) => boolean | ButtonTypeProps | React.ReactElement)
+  | boolean;
   //
   /**
    * 返回true 表示继续 ，false 表示中断, values: 在表单中是表单数据 在页面调整和弹出是对应的参数
@@ -270,6 +270,16 @@ type DataType =
   | 'un_stockUnit'
   | 'un_purchaseUnit'
   | 'un_distributeUnit';
+
+export type ExcelColumn = {
+  export?: boolean,
+  name?: string;
+  dataIndex?: string;
+  dataType?: 'STRING' | 'CURRENCY' | 'NUMBER';
+  pattern?: string;
+  expression?: string;
+  children?: ExcelColumn[];
+};
 export interface ProColumnType<RecordType> extends ScProColumnType<RecordType> {
   dataType?: DataType | string;
   dataIndex?: string;
@@ -279,9 +289,11 @@ export interface ProColumnType<RecordType> extends ScProColumnType<RecordType> {
   component?: string;
   inputType?: string;
   props?: any; // 组件的属性
+  exportConfig?: ExcelColumn; //表格列导出配置
+  children?: ProColumns<RecordType>;
 }
 export interface ProColumnGroupType<RecordType>
-  extends Omit<ProColumnType<RecordType>, 'dataIndex'> {
+  extends ProColumnType<RecordType> {
   children: ProColumns<RecordType>;
 }
 

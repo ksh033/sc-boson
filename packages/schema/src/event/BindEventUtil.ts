@@ -80,13 +80,13 @@ const bindEvent = (
       let callBackFun: any = null
       if (newBtn.callBack) {
         callBackFun = newBtn.callBack;
-      } 
+      }
       callBack = (values: any, newValue: any) => {
 
         if (callBackFun) {
           callBackFun(values, newValue)
         }
-        if (options.callBack){
+        if (options.callBack) {
           options.callBack(values, newValue)
         }
         if (defaultCallback) {
