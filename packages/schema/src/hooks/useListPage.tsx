@@ -148,7 +148,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     };
     sessionStorage.setItem('SEARCH_PARAMS', JSON.stringify(searchParam));
   };
-  const [state, setState] = useSetState<any>({
+  const [state, setState] = useSetState<{ params?: any, pagination?: any }>({
     params: getSearchParams(),
     pagination: getPagination(),
   });
@@ -280,7 +280,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       onReset,
       submitRef,
       initialValues: initValue,
-      toolbar: [],
+      customBtn: [],
     };
   };
 
@@ -416,7 +416,12 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   };
 
   const getSearch = (searchConfig?: SearchConfig) => {
-    const search = getSearchConfig(searchConfig);
+    let search: any = getSearchConfig(searchConfig);
+    const formParams = { current: 1, size: 10, ...state.params }
+    search = {
+      ...search,
+      params: formParams
+    }
     return new SearchInfo(search, config);
   };
   const getPageParam = () => {

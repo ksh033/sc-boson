@@ -58,6 +58,7 @@ export interface ScSearchBarProps extends FormProps {
   addonBefore?: React.ReactNode;
   autoSubmitFiled?: boolean | string[] | ((changeVal: any, allVal: any) => boolean);
   toolbar?: any[]
+  customBtn?: any[]
 }
 
 /** 默认的查询表单配置 */
@@ -194,9 +195,10 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     showSubmitBtn = true,
     onValuesChange,
     preHandle,
-    toolbar,
+    customBtn,
     ...resProps
   } = props;
+
 
   // const windowSize = useMediaQuery();
   // const windowSize = 'xl'
@@ -406,8 +408,8 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
    * @param {*} React
    * @return {*}
    */
-  const toolBarRender = React.useMemo(() => {
-    return toolbar?.map((item: any, index: any) => {
+  const customBtnRender = React.useMemo(() => {
+    return customBtn?.map((item: any, index: any) => {
       const { buttonType, text, ...resprops } = item;
       return <Button
         key={'btn' + index}
@@ -415,7 +417,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
         {...resprops}
       >{text}</Button>
     })
-  }, [toolbar])
+  }, [customBtn])
 
   const RenderForm = () => {
     const items: any[] = queryList;
@@ -439,7 +441,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
           重置
         </Button>
         {
-          toolbar && toolbar.length && toolBarRender
+          customBtn && customBtn.length > 0 && customBtnRender
         }
         {advances && advances.length > 0 && (
           <a style={{ marginLeft: 8 }} onClick={toggleForm}>

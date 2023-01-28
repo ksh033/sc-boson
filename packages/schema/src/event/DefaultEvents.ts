@@ -329,9 +329,11 @@ function formUpdate(props: ButtonTypeProps) {
  * 导出
  */
 function dataExport(props: ButtonTypeProps) {
-  const { options, callBack } = props;
+  console.log(props);
+
+  const { options, callBack, params = {} } = props;
   if (options) {
-    const { params = {}, service } = options;
+    const { service } = options;
     const data = service?.(params);
     if (callBack) {
       callBack(data, params);

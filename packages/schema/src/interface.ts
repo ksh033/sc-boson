@@ -67,7 +67,7 @@ export interface ButtonTypeProps extends ButtonProps {
   /** 弹出框属性配置 */
   options?: DialogOptions;
   closeDlg?: boolean;
-
+  params?: any;
   /** 调用远程服务方法 */
   serverName?: string;
   // 是否可见
@@ -272,13 +272,11 @@ type DataType =
   | 'un_distributeUnit';
 
 export type ExcelColumn = {
-  export?: boolean,
   name?: string;
   dataIndex?: string;
   dataType?: 'STRING' | 'CURRENCY' | 'NUMBER';
   pattern?: string;
   expression?: string;
-  children?: ExcelColumn[];
 };
 export interface ProColumnType<RecordType> extends ScProColumnType<RecordType> {
   dataType?: DataType | string;
@@ -289,7 +287,7 @@ export interface ProColumnType<RecordType> extends ScProColumnType<RecordType> {
   component?: string;
   inputType?: string;
   props?: any; // 组件的属性
-  exportConfig?: ExcelColumn; //表格列导出配置
+  exportConfig?: boolean | ExcelColumn; //表格列导出配置
   children?: ProColumns<RecordType>;
 }
 export interface ProColumnGroupType<RecordType>

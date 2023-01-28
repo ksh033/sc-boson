@@ -15,7 +15,8 @@ export interface SearchInfoProps {
   onSubmit: (_params: any) => void;
   onReset: (_params: any) => void;
   initialValues: any;
-  toolbar: HButtonType[];
+  customBtn: HButtonType[];
+  params?: any
 }
 class SearchInfo {
   searchInfo: SearchInfoProps;
@@ -23,7 +24,7 @@ class SearchInfo {
   constructor(searchInfo: SearchInfoProps, config: PageConfig) {
     this.searchInfo = searchInfo;
     this.config = config;
-    this.searchInfo.toolbar = [];
+    this.searchInfo.customBtn = [];
   }
   private findItem(filedName: string): { searchItem: any; itemIndex: number | null } | null {
     let searchItem = null;
@@ -76,15 +77,15 @@ class SearchInfo {
     extraProps?: ButtonTypeProps,
   ) {
     if (React.isValidElement(button)) {
-      this.searchInfo.toolbar?.push(button);
+      this.searchInfo.customBtn?.push(button);
       return this;
     }
     if (_.isString(button)) {
       const key: string = button;
-      this.searchInfo.toolbar?.push({ ...ToolButtons[key], ...extraProps });
+      this.searchInfo.customBtn?.push({ ...ToolButtons[key], params: this.searchInfo.params, ...extraProps });
     }
     if (_.isObject(button)) {
-      this.searchInfo.toolbar?.push({ ...button, ...extraProps });
+      this.searchInfo.customBtn?.push({ ...button, params: this.searchInfo.params, ...extraProps });
     }
     return this;
   }
@@ -127,7 +128,7 @@ class SearchInfo {
   }
 
   toConfig() {
-    this.searchInfo.toolbar = bindEvents(this.searchInfo.toolbar, this.config);
+    this.searchInfo.customBtn = bindEvents(this.searchInfo.customBtn, this.config);
     return this.searchInfo;
   }
 }
