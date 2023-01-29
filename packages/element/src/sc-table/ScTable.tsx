@@ -278,7 +278,16 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   }, [rowSelection.getCheckboxProps]);
 
   const changeRowSelect = useRefFunction((_rowKeys: string[], rrows: any[] = []) => {
-    const _rows = rrows.filter((it) => it != null);
+    let nrows = [...(action.current.rows || [])];
+    const map = new Map<string, any>();
+
+    rrows.forEach((item) => {
+      if (item != null) {
+        map.set(item[rowKey], item);
+      }
+    });
+    nrows = _rowKeys.map((key) => map.get(key));
+    const _rows = nrows.filter((it) => it != null);
     if (onSelectRow) {
       // 过滤不可选择的数据
       const crows = _rows
@@ -556,6 +565,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       }
       if (rowSelection?.type === 'checkbox') {
         const index = _rowKeys.findIndex((item) => item === key);
+        console.log(index);
+
         if (index > -1) {
           _rowKeys = _rowKeys.filter((item) => {
             return item !== key;
