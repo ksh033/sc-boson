@@ -176,7 +176,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         const otherProps: any = {}
         if (!disableSelect && !item[disabledField]) {
           otherProps.disabled = !item[disabledField]
-          text = <div title={text}>{text}<Tag color='red'>已停用</Tag></div>;
+          text = <div title={text}><Tag color='red'>已停用</Tag>{text}</div>;
         }
 
         list.push(
