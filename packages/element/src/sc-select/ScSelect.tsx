@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { SearchOutlined } from '@ant-design/icons';
 import { useDebounceFn, useUpdateEffect } from 'ahooks';
-import { Input, Select, Spin, Tooltip } from 'antd';
+import { Input, Select, Spin, Tooltip, Tag } from 'antd';
 import type { SelectProps } from 'antd/es/select';
 import * as React from 'react';
 import { setTimeout } from 'timers';
@@ -13,6 +13,8 @@ const { Option, OptGroup } = Select;
 export interface ScSelectProps extends Omit<SelectProps<any>, 'placeholder'> {
   textField?: any;
   valueField?: string;
+  disabledField?: string;
+  disableSelect?: boolean;
   groupField?: string;
   data?: any[];
   params?: any;
@@ -38,11 +40,13 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     params = null,
     tip = false,
     textField = 'text',
+    disabledField = 'enabled',
     valueField = 'value',
     autoload = false,
     onLoad,
     request,
     remoteSearch = false,
+    disableSelect = true,
     showSearch: defaultSearch = false,
     searchField = '_search',
     customRef,
@@ -169,8 +173,14 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         if (tip) {
           text = <Tooltip title={text}>{text}</Tooltip>;
         }
+        const otherProps: any = {}
+        if (!disableSelect && !item[disabledField]) {
+          otherProps.disabled = !item[disabledField]
+          text = <div title={text}>{text}<Tag color='red'>已停用</Tag></div>;
+        }
+
         list.push(
-          <Option key={level + index.toString()} value={item[valueField]} data={item}>
+          <Option key={level + index.toString()} value={item[valueField]} data={item} {...otherProps}>
             {text}
           </Option>,
         );
@@ -183,9 +193,9 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     if (Array.isArray(list)) {
       return !isRemote && input !== ''
         ? list.filter((it) => {
-            const text = getTextField(it);
-            return text.indexOf(input) != -1;
-          })
+          const text = getTextField(it);
+          return text.indexOf(input) != -1;
+        })
         : list;
     }
     return [];
@@ -196,9 +206,9 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     if (singleInput && input !== '') {
       const itIdx = Array.isArray(dataSource)
         ? dataSource.findIndex((it) => {
-            const text = getTextField(it);
-            return text.indexOf(input) != -1;
-          })
+          const text = getTextField(it);
+          return text.indexOf(input) != -1;
+        })
         : -1;
       if (itIdx === -1) {
         list.push(
