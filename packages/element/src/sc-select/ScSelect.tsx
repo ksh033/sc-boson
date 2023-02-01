@@ -176,6 +176,8 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         const otherProps: any = {}
         if (!disableSelect && !item[disabledField]) {
           otherProps.disabled = !item[disabledField]
+        }
+        if (item[disabledField] !== undefined && !item[disabledField]) {
           text = <div title={text}><Tag color='red'>已停用</Tag>{text}</div>;
         }
 
