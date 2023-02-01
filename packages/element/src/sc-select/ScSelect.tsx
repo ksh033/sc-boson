@@ -170,6 +170,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     cData.forEach((item: any, index: number) => {
       if (valueField && textField) {
         let text: any = getTextField(item);
+        const label: any = text
         if (tip) {
           text = <Tooltip title={text}>{text}</Tooltip>;
         }
@@ -182,7 +183,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         }
 
         list.push(
-          <Option key={level + index.toString()} value={item[valueField]} data={item} {...otherProps}>
+          <Option {...otherProps} key={level + index.toString()} value={item[valueField]} data={item} label={label}>
             {text}
           </Option>,
         );
@@ -386,6 +387,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
       placeholder={placeholder}
       allowClear={allowClear}
       ref={ref}
+      optionLabelProp="label"
       {...defaultSelectProps}
       {...selectProps}
     >
