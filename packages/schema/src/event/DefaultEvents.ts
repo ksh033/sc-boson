@@ -168,7 +168,7 @@ function confirm(props: ButtonTypeProps, event?: any) {
   if (event && event.stopPropagation) {
     event.stopPropagation();
   }
-  const { options, callBack } = props;
+  const { options, preHandle, callBack } = props;
   if (options) {
     const { params } = options;
     CModal.confirm({
@@ -176,16 +176,31 @@ function confirm(props: ButtonTypeProps, event?: any) {
       //   content: 'Some descriptions',
       okText: '确定',
       cancelText: '取消',
+      content: options.content,
       onOk: async () => {
         if (options.service) {
           try {
-            const data = await options.service(params);
+            let newValue = params
+            if (preHandle) {
+              newValue = await preHandle(newValue);
+              if (newValue === null || newValue === false) {
+                return Promise.reject("preHandle error")
+              }
+            }
+            const data = await options.service({ ...newValue, ...params });
 
             if (callBack) {
-              callBack(data, params);
+              callBack(data, newValue);
             }
-          } catch (ex) { }
+            return Promise.resolve()
+          } catch (ex) {
+            return Promise.reject(ex)
+          }
+
+
         }
+
+
       },
       onCancel() { },
     });
