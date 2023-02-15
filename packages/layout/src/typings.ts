@@ -44,6 +44,19 @@ export type MenuDataItem = {
   [key: string]: any;
 };
 
+
+export interface AppMenuProps {
+  /** 应用名称 */
+  name: string;
+  /** 应用编码 */
+  code: string;
+  /** 应用路径 */
+  path: string;
+  /** 应用路径 */
+  icon: string;
+
+  key: string;
+}
 export type Route = {
   routes?: Route[];
 } & MenuDataItem;

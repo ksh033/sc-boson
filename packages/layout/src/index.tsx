@@ -1,6 +1,6 @@
 import type { BasicLayoutProps } from './BasicLayout';
 import BasicLayout from './BasicLayout';
-import MasterLayout from './MasterLayout';
+//import MasterLayout from './Layout';
 import DefaultHeader from './Header';
 import type {
   TopNavHeaderProps,
@@ -26,7 +26,7 @@ import {
 } from '@ant-design/pro-layout';
 
 import { PageContainer } from '@ant-design/pro-layout';
-
+export { default as MasterLayout } from './MasterLayout'
 export { default as ScCard } from '@ant-design/pro-card';
 
 // import type { SettingDrawerProps, SettingDrawerState } from './components/SettingDrawer';
@@ -65,9 +65,8 @@ export {
   PageContainer,
   FooterToolbar,
   WaterMark,
-  MasterLayout,
+  // MasterLayout,
 };
-
 export type {
   FooterProps,
   PageContainerProps,
