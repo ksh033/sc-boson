@@ -33,10 +33,10 @@ export default {
   },
   confirm: (props: Omit<CModalDialogProps, 'content'> & { content?: React.ReactNode }) => {
     const { onOk, ...newProps } = props;
-    const newonOk = props.onOk ? debounce(props.onOk, 200) : undefined;
+
     return Modal.confirm({
       ...newProps,
-      onOk: newonOk,
+      onOk: onOk,
     });
   },
 };
