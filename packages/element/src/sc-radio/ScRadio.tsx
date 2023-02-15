@@ -6,13 +6,17 @@ import type { DataComponentProps } from '../Component';
 
 const { useLayoutEffect, useState } = React;
 
-export type ScRadioProps = RadioGroupProps & DataComponentProps;
 
+export type ScRadioProps = RadioGroupProps & DataComponentProps & {
+
+  layout?: 'horizontal' | 'vertical'
+};
 const ScRadio: React.FC<ScRadioProps> = (props) => {
   const {
     data = [],
     params = null,
     modelKey = '',
+    layout = 'horizontal',
     className = '',
     textField = 'label',
     valueField = 'value',
@@ -32,9 +36,9 @@ const ScRadio: React.FC<ScRadioProps> = (props) => {
   };
   const { run } = useRequest(
     request ||
-      new Promise((resolve) => {
-        resolve(null);
-      }),
+    new Promise((resolve) => {
+      resolve(null);
+    }),
     {
       manual: true,
     },
@@ -80,7 +84,7 @@ const ScRadio: React.FC<ScRadioProps> = (props) => {
     <Radio.Group {...redioProps}>
       {formValue(dataSource).map((it) => {
         return (
-          <Radio value={it.value} key={it.value} disabled={it.disabled}>
+          <Radio style={layout === "vertical" ? { display: 'block' } : {}} value={it.value} key={it.value} disabled={it.disabled}>
             {it.label}
           </Radio>
         );
