@@ -170,7 +170,11 @@ function confirm(props: ButtonTypeProps, event?: any) {
   }
   const { options, preHandle, callBack } = props;
   if (options) {
-    const { params } = options;
+    const { params, beforeOpen } = options;
+
+    if (beforeOpen) {
+      beforeOpen();
+    }
     CModal.confirm({
       title: options.title,
       //   content: 'Some descriptions',

@@ -51,6 +51,8 @@ export interface DialogOptions {
   preHandle?: (values: any) => any;
   callBack?: (values: any, requestData?: any) => void; // 回调函数
   okCancel?: true;
+  /** 弹框前事件 */
+  beforeOpen?: () => any;
   footer?: boolean;
 }
 
