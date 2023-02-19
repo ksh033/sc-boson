@@ -1,10 +1,9 @@
 import type { FormConfig, Field, FieldGroup } from '../interface';
-import type { RefObject } from 'react';
 import type { FormInstance } from 'antd';
 import _ from 'lodash';
 
 export interface FormInfoProps {
-  form: RefObject<FormInstance>;
+  form: React.MutableRefObject<FormInstance | undefined> | ((actionRef: FormInstance) => void);
   formConfig: FormConfig[];
   initialValues: any;
 }

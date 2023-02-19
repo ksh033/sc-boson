@@ -24,3 +24,4 @@ export { default as ScTextArea } from './sc-text-area';
 export { default as ScCaptcha } from './sc-captcha';
 export { default as ScUpload } from './sc-upload';
 export { default as ScSelectTable } from './sc-select-table';
+export { default as ScDescriptions } from './sc-descriptions';

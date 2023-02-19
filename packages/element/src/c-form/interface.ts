@@ -1,5 +1,7 @@
 import type { Rule, FormItemProps } from 'antd/es/form';
 import type { ColProps } from 'antd/es/grid/col';
+import type { Key, ReactNode } from 'react';
+import type { FormInstance, FormProps } from 'antd/es/form';
 
 export declare type FormLayout = 'horizontal' | 'inline' | 'vertical';
 
@@ -17,8 +19,30 @@ export interface FiledProp extends FormItemProps {
   wrapperCol?: ColProps;
   render?: RenderFunction;
 }
-/** 表单项配置 */
-export interface FormItemProp {
+
+export type SchemaValueEnumType = {
+  /** @name 演示的文案 */
+  text: ReactNode;
+
+  /** @name 预定的颜色 */
+  status?: string;
+  /** @name 自定义的颜色 */
+  color?: string;
+  /** @name 是否禁用 */
+  disabled?: boolean;
+};
+
+/**
+ * 支持 Map 和 Record<string,any>
+ *
+ * @name ValueEnum 的类型
+ */
+export type SchemaValueEnumMap = Map<Key, SchemaValueEnumType | ReactNode>;
+
+export type SchemaValueEnumObj = Record<string, SchemaValueEnumType | ReactNode>;
+
+export interface BaseFormItemProp {
+
   label?: string;
   name?: string | string[];
   /** 表单项 id用于复合组件 */
@@ -63,6 +87,19 @@ export interface FormItemProp {
   viewUseComponent?: boolean;
   addonBefore?: any;
   addonAfter?: any;
+  /**
+   * 只读时以表单项显示
+   */
+  readonlyFormItem?: boolean,
+
+  valueEnum?:
+  | ((row?: Record<string, any>) => SchemaValueEnumObj | SchemaValueEnumMap)
+  | SchemaValueEnumObj
+  | SchemaValueEnumMap;
+}
+/** 表单项配置 */
+// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+export interface FormItemProp extends BaseFormItemProp {
   [index: string]: any;
 }
 
@@ -103,4 +140,42 @@ export interface FormConfig {
   labelCol?: ColProps;
 
   wrapperCol?: ColProps;
+}
+
+export interface FormComponent<P> extends React.FC<P> {
+  /**
+   * 只读时是否自定义显示
+   */
+  customView?: boolean;
+}
+
+// export interface FormComponentProps {
+//   readonly?: boolean;
+//   name?: string;
+//   form?: FormInstance;
+//   initialValues?: any;
+//   formItemProps?: any;
+//   fieldProps?: any;
+// }
+export interface CFormProps extends Omit<FormProps, 'form'> {
+  /**
+   * 表单配置
+   */
+  formConfig: FormConfig[];
+  /**
+   * 是否出现锚点，多group有用
+   */
+  anchor?: boolean | any;
+  /**
+   * 表单状态
+   */
+  action: 'edit' | 'add' | 'view';
+  /**
+   * antd表单实例
+   */
+  form?: React.MutableRefObject<FormInstance | undefined> | ((actionRef: FormInstance) => void);
+  /**
+   * 只读时以表单显示,不以ViewItem显示
+   */
+  readonlyFormItem?: boolean;
 }

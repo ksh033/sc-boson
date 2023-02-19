@@ -28,11 +28,11 @@ import {
 import { PageContainer } from '@ant-design/pro-layout';
 export { default as MasterLayout } from './MasterLayout'
 export { default as ScCard } from '@ant-design/pro-card';
-
+export { StatisticCard as ScStatisticCard, Statistic as ScStatistic, CheckCard as ScCheckCard } from '@ant-design/pro-card';
 // import type { SettingDrawerProps, SettingDrawerState } from './components/SettingDrawer';
 // import SettingDrawer from './components/SettingDrawer';
 
-// import type { FooterProps } from './Footer';
+// import type { FooterProps } from './Footer';StatisticCard, Statistic, CheckCard, 
 // import DefaultFooter from './Footer';
 // import GridContent from './components/GridContent';
 // import PageContainer from './components/PageContainer';

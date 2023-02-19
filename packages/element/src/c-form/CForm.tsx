@@ -5,15 +5,16 @@
 /* eslint-disable no-nested-ternary */
 import React, { useEffect, useMemo } from 'react';
 import { Row, Form, Col, Anchor, Space } from 'antd';
-import type { FormProps } from 'antd/es/form';
 //import _ from 'lodash';
-import { isArray, isEmpty, isObject } from 'lodash';
+import { isEmpty, isObject } from 'lodash';
 import classnames from 'classnames';
 import ViewItem from './ViewItem';
 import './style/index';
-import type { FormConfig, FormItemProp } from './interface';
+import type { CFormProps, FormConfig, FormItemProp } from './interface';
+import { createFormItem } from '../_util/formUtil';
 
-const FormItem = Form.Item;
+
+
 const { Link } = Anchor;
 // const Panel = Page.PagePanel;
 
@@ -26,40 +27,9 @@ const { Link } = Anchor;
 //   );
 // }
 
-export function deepGet(object: any, path: string | any[]): any {
-  let keyPath: any[] = [];
-  if (Array.isArray(path)) keyPath = [...path];
-  else if (typeof path === 'string' || typeof path === 'number') keyPath = [path];
-  if (keyPath.length) {
-    const key = keyPath.shift();
-    if (object && object[key] !== undefined) return deepGet(object[key], keyPath);
-    return undefined;
-  }
-  return object;
-}
 
-export interface CFormProps extends FormProps {
-  formConfig: FormConfig[];
-  anchor?: boolean | any;
-  action: 'edit' | 'add' | 'view';
-  form: any;
-  readonlyFormItem?: boolean;
-}
-const WIDTH_SIZE_ENUM = {
-  // 适用于短数字，短文本或者选项
-  xs: 104,
-  s: 216,
-  // 适用于较短字段录入、如姓名、电话、ID 等。
-  sm: 216,
-  m: 328,
-  // 标准宽度，适用于大部分字段长度。
-  md: 328,
-  l: 440,
-  // 适用于较长字段录入，如长网址、标签组、文件路径等。
-  lg: 440,
-  // 适用于长文本录入，如长链接、描述、备注等，通常搭配自适应多行输入框或定高文本域使用。
-  xl: 552,
-};
+
+
 const CForm: React.FC<CFormProps> = (props) => {
   const {
     formConfig = [],
@@ -93,166 +63,8 @@ const CForm: React.FC<CFormProps> = (props) => {
     }
   }, [initialValues]);
 
-  const convertData = (name: string | string[], dataName: string, _props: any, data: any) => {
-    let itemValue;
-    if (isArray(name)) {
-      name.forEach((key) => {
-        itemValue = data ? data[key] : null;
-      });
-    } else {
-      itemValue = data ? data[name] : null;
-    }
 
-    let isDict = false;
-    // if ()
-    if (dataName && data) {
-      if (data[`${dataName}Id`] || data[`${dataName}Name`]) {
-        if (_props.textField && _props.valueField) {
-          itemValue = {
-            [_props.textField]: data[`${dataName}Name`],
-            [_props.valueField]: data[`${dataName}Id`],
-          };
-        } else {
-          itemValue = {
-            key: data[`${dataName}Id`],
-            title: data[`${dataName}Name`],
-          };
-        }
-        isDict = true;
-      }
-    }
 
-    return { itemValue, isDict };
-  };
-
-  // 创建表单项 {getFieldDecorator(name, { ...formProps })(React.createElement(component, { ...props }))}
-  const createFormItem = (item: FormItemProp) => {
-    const {
-      name,
-      component,
-      label,
-      viewUseComponent = false,
-      fieldProps,
-      dataName,
-      hidden,
-      readonly,
-    } = item;
-    let _dataName = '';
-    if (typeof dataName === 'function') {
-      _dataName = dataName(initialValues, item);
-    } else if (dataName) {
-      _dataName = dataName;
-    }
-
-    if (!item.props) {
-      item.props = {};
-    }
-
-    if (name) {
-      const value = convertData(name, _dataName, item.props, initialValues);
-      const { itemValue, isDict } = value;
-      if (isDict && !item.props.data) {
-        item.props.data = [itemValue];
-      }
-    }
-
-    /* 输入框 统一添加allowClear 属性  */
-    if (component && component.name === 'Input') {
-      item.props.allowClear = true;
-    }
-    if (action === 'view') {
-      item.props.disabled = true;
-    }
-    const itemProps = { label, ...fieldProps };
-    if (hidden) {
-      itemProps.style = {
-        display: 'none',
-      };
-    }
-    item.props.key = `form-item-component-${name}`;
-    item.props.form = waForm;
-    // eslint-disable-next-line no-nested-ternary
-    if (name && !item.props.name) {
-      item.props.name = name;
-    }
-    const viewName: any = _dataName
-      ? initialValues && initialValues[`${_dataName}Name`]
-        ? `${_dataName}Name`
-        : _dataName
-      : name;
-    let itValue = '';
-    if (viewName) {
-      itValue = deepGet(initialValues, viewName);
-    }
-    const { width } = item;
-    const newWidth = width && !WIDTH_SIZE_ENUM[width] ? width : undefined;
-
-    const className = classnames(item.props?.className, {
-      [`sc-field-${width}`]: width && WIDTH_SIZE_ENUM[width],
-    });
-
-    const isElemnet = React.isValidElement(component);
-    let widthObj = {};
-    if (newWidth) {
-      widthObj = { width: newWidth };
-    }
-    const render = item.render || itemProps.render;
-    delete itemProps.render;
-    return (
-      <>
-        {action === 'view' || readonly ? (
-          <ViewItem
-            key={`form-item-${name}`}
-            render={render}
-            readonlyFormItem={readonlyFormItem}
-            name={viewName}
-            fieldProps={itemProps}
-            value={itValue}
-            layout={layout}
-            initialValue={initialValues}
-            form={waForm}
-            {...itemProps}
-          >
-            {viewUseComponent || component.customView
-              ? !isElemnet
-                ? React.createElement(component, {
-                  ...item.props,
-                  readonly: true,
-                  initialValues,
-                  value: itValue,
-                  fieldProps,
-                  className,
-                  style: { ...item.props.style, ...widthObj },
-                })
-                : React.cloneElement(component, {
-                  ...item.props,
-                  readonly: true,
-                  initialValues,
-                  value: itValue,
-                  fieldProps,
-                  className,
-                  style: { ...item.props.style, ...widthObj },
-                })
-              : null}
-          </ViewItem>
-        ) : (
-          <FormItem key={`form-item-${name}`} name={name} {...itemProps} >
-            {!isElemnet
-              ? React.createElement(component, {
-                ...item.props,
-                className,
-                style: { ...item.props.style, ...widthObj },
-              })
-              : React.cloneElement(component, {
-                ...item.props,
-                className,
-                style: { ...item.props.style, ...widthObj },
-              })}
-          </FormItem>
-        )}
-      </>
-    );
-  };
 
   const createCol = (
     formItem: FormItemProp,
@@ -312,7 +124,26 @@ const CForm: React.FC<CFormProps> = (props) => {
         if (formItem.addonBefore) {
           addonBefore = formItem.addonBefore;
         }
-        let temFormItem = createFormItem(itemProps);
+
+        if (action === "view") {
+          if (itemProps.readonly !== false) {
+            itemProps.readonly = true
+          }
+          if (!itemProps.props) {
+            itemProps.props = { disabled: true }
+          } else if (itemProps.props.disabled !== false) {
+            itemProps.props.disabled = true
+          }
+        }
+        let temFormItem = createFormItem(itemProps, {
+
+          readonlyFormItem,
+          ViewComponent: ViewItem,
+          layout: layout,
+          initialValues,
+          form: waForm,
+
+        });
         if (addonAfter || addonBefore) {
           temFormItem = (
             <Space>
