@@ -24,6 +24,7 @@ export type SchemaValueEnumType = {
   /** @name 演示的文案 */
   text: ReactNode;
 
+  type?: "boolean" | 'number'
   /** @name 预定的颜色 */
   status?: string;
   /** @name 自定义的颜色 */

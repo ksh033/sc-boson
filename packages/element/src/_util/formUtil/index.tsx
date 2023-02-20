@@ -93,6 +93,7 @@ export const converValueEnum = (valueEnumParams: SchemaValueEnumObj
             label?: React.ReactNode;
             value?: React.Key;
             text: string;
+            type?: 'boolean' | 'number'
             /** 是否禁用 */
             disabled?: boolean;
         }
@@ -103,24 +104,44 @@ export const converValueEnum = (valueEnumParams: SchemaValueEnumObj
         const value = (valueEnum.get(key) || valueEnum.get(`${key}`)) as {
             text: string;
             disabled?: boolean;
+            type?: 'boolean' | 'number'
         };
+
 
         if (!value) {
             return;
         }
 
-        if (typeof value === 'object' && value?.text) {
-            enumArray.push({
-                text: value?.text as unknown as string,
-                value: key,
-                label: value?.text as unknown as string,
-                disabled: value.disabled,
-            });
-            return;
+        let newKey: any = key
+
+        if (value.type) {
+
+            if (value.type === "boolean") {
+                if (key === "true") {
+                    newKey = true
+                }
+                if (key === "false") {
+                    newKey = false
+                }
+            }
+            if (value.type === "number") {
+                newKey = Number(key)
+            }
+
         }
+        if (value.text)
+            if (typeof value === 'object' && value?.text) {
+                enumArray.push({
+                    text: value?.text as unknown as string,
+                    value: newKey,
+                    label: value?.text as unknown as string,
+                    disabled: value.disabled,
+                });
+                return;
+            }
         enumArray.push({
             text: value as unknown as string,
-            value: key,
+            value: newKey,
         });
     });
     return enumArray;
