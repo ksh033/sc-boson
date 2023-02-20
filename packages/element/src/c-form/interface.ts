@@ -150,14 +150,14 @@ export interface FormComponent<P> extends React.FC<P> {
   customView?: boolean;
 }
 
-// export interface FormComponentProps {
-//   readonly?: boolean;
-//   name?: string;
-//   form?: FormInstance;
-//   initialValues?: any;
-//   formItemProps?: any;
-//   fieldProps?: any;
-// }
+export interface FormComponentProps {
+  readonly?: boolean;
+  name?: string;
+  form?: FormInstance;
+  initialValues?: any;
+  formItemProps?: any;
+  fieldProps?: any;
+}
 export interface CFormProps extends Omit<FormProps, 'form'> {
   /**
    * 表单配置
