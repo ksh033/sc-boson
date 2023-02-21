@@ -50,6 +50,8 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     vals = [sdate, edate];
   }
   const [values, setValues] = useState<any>(vals);
+  const [showFormat, setShwFormat] = useState<any>(format || vformat);
+
   const [, setDateStrings] = useState<[string, string]>(['', '']);
   const toRangs = () => {
     const today = interopDefault(moment)({ format });
@@ -108,6 +110,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
 
   const handleChange = useCallback(
     (dates: any, _dateStrings: [string, string]): void => {
+
       setValues(dates);
       setDateStrings(_dateStrings);
       triggerChange(_dateStrings);
@@ -171,7 +174,22 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
       {...resProps}
       onChange={handleChange}
       value={values}
+      onKeyDown={() => {
+        console.log("onKeyDown")
+      }}
+      onOpenChange={(v) => {
+        const temformat = vformat as string || format as string
 
+        if (v) {
+          setShwFormat(temformat.replaceAll("-", ""))
+        } else {
+          setShwFormat(temformat)
+        }
+
+
+      }}
+      inputReadOnly={false}
+      format={showFormat}
       ranges={vranges}
     //  className={rangesList ? 'sc-date-picker-range-after' : ''}
     />
