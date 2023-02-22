@@ -29,6 +29,8 @@ import { PageContainer } from '@ant-design/pro-layout';
 export { default as MasterLayout } from './MasterLayout'
 export { default as ScCard } from '@ant-design/pro-card';
 export { StatisticCard as ScStatisticCard, Statistic as ScStatistic, CheckCard as ScCheckCard } from '@ant-design/pro-card';
+
+export type { ProCardTabsProps as ScCardTabsProps, ProCardProps as ScCardProps, StatisticCardProps as ScStatisticCardProps, StatisticsCardProps as ScStatisticsCardProps, CheckCardGroupProps as ScCheckCardGroupProps, CheckCardProps as ScCheckCardProps, StatisticProps as ScStatisticProps } from '@ant-design/pro-card';
 // import type { SettingDrawerProps, SettingDrawerState } from './components/SettingDrawer';
 // import SettingDrawer from './components/SettingDrawer';
 

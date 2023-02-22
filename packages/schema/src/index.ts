@@ -35,6 +35,7 @@ export {
   setFuncodes,
   FormConfig,
   FormSearchItem,
+  ProColumns,
 } from './interface';
 
 export {

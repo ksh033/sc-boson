@@ -271,7 +271,8 @@ type DataType =
   | 'un_cargoUnit'
   | 'un_stockUnit'
   | 'un_purchaseUnit'
-  | 'un_distributeUnit';
+  | 'un_distributeUnit'
+  | 'number';
 
 export type ExcelColumn = {
   name?: string;

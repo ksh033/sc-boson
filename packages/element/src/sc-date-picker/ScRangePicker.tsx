@@ -95,12 +95,12 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
       // Should provide an event to pass value to Form.
       let rChangedValue = changedValue;
       const temformat = vformat || format
-      if (vformat && rChangedValue) {
-        rChangedValue = [
-          rChangedValue[0] ? interopDefault(moment)(rChangedValue[0]).format(temformat) : '',
-          rChangedValue[1] ? interopDefault(moment)(rChangedValue[1]).format(temformat) : '',
-        ];
-      }
+      //if (vformat && rChangedValue) {
+      rChangedValue = [
+        rChangedValue[0] ? interopDefault(moment)(rChangedValue[0]).format(temformat) : '',
+        rChangedValue[1] ? interopDefault(moment)(rChangedValue[1]).format(temformat) : '',
+      ];
+      // }
       if (onChange) {
         onChange(rChangedValue, [rChangedValue[0], rChangedValue[1]]);
       }
@@ -174,9 +174,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
       {...resProps}
       onChange={handleChange}
       value={values}
-      onKeyDown={() => {
-        console.log("onKeyDown")
-      }}
+
       onOpenChange={(v) => {
         const temformat = vformat as string || format as string
 
