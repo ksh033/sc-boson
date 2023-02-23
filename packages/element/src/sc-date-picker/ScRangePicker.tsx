@@ -91,14 +91,14 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
 
   }, [rangesList])
   const triggerChange = useCallback(
-    (changedValue: any): void => {
+    (changedValue: any, dates: [moment.Moment, moment.Moment]): void => {
       // Should provide an event to pass value to Form.
       let rChangedValue = changedValue;
       const temformat = vformat || format
       //if (vformat && rChangedValue) {
       rChangedValue = [
-        rChangedValue[0] ? interopDefault(moment)(rChangedValue[0]).format(temformat) : '',
-        rChangedValue[1] ? interopDefault(moment)(rChangedValue[1]).format(temformat) : '',
+        dates[0] ? dates[0].format(temformat as string) : '',
+        dates[1] ? dates[1].format(temformat as string) : '',
       ];
       // }
       if (onChange) {
@@ -113,7 +113,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
 
       setValues(dates);
       setDateStrings(_dateStrings);
-      triggerChange(_dateStrings);
+      triggerChange(_dateStrings, dates);
     },
     [triggerChange],
   );
