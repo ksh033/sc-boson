@@ -3,7 +3,7 @@ import type { FormInstance } from 'antd';
 import _ from 'lodash';
 
 export interface FormInfoProps {
-  form: React.MutableRefObject<FormInstance | undefined> | ((actionRef: FormInstance) => void);
+  form: React.MutableRefObject<FormInstance | undefined>
   formConfig: FormConfig[];
   initialValues: any;
 }
