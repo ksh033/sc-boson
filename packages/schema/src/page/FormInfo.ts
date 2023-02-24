@@ -1,6 +1,7 @@
 import type { FormConfig, Field, FieldGroup } from '../interface';
 import type { FormInstance } from 'antd';
 import _ from 'lodash';
+type GroupInfo = Omit<FormConfig, 'items'>
 
 export interface FormInfoProps {
   form: React.MutableRefObject<FormInstance | undefined>
@@ -84,6 +85,7 @@ class FormInfo {
       return fieldset === formConfig.fieldset;
     });
   }
+
   /**
    * 添加表单项
    *
@@ -155,6 +157,26 @@ class FormInfo {
     }
     return this;
   }
+
+  /**
+   * @param filedSet 兼容group
+   * @returns
+   */
+  changeGroup(filedSet: string, item: GroupInfo | ((goupInfo: GroupInfo) => GroupInfo)) {
+    if (filedSet) {
+      const fieldSetIndex = this.findFieldSet(filedSet);
+      const gorupItem = this.formInfo.formConfig[fieldSetIndex]
+      let newFormItem = {};
+      if (_.isFunction(item)) {
+        newFormItem = { ...item(gorupItem) };
+      } else {
+        newFormItem = { ...item };
+      }
+      _.merge(gorupItem, newFormItem)
+    }
+    return this;
+  }
+
 
   toConfig() {
     return this.formInfo;
