@@ -96,10 +96,13 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
       let rChangedValue = changedValue;
       const temformat = vformat || format
       //if (vformat && rChangedValue) {
-      rChangedValue = [
-        dates[0] ? dates[0].format(temformat as string) : '',
-        dates[1] ? dates[1].format(temformat as string) : '',
-      ];
+      if (dates) {
+        rChangedValue = [
+          dates[0] ? dates[0].format(temformat as string) : '',
+          dates[1] ? dates[1].format(temformat as string) : '',
+        ];
+      }
+
       // }
       if (onChange) {
         onChange(rChangedValue, [rChangedValue[0], rChangedValue[1]]);
