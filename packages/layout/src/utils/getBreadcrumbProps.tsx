@@ -12,13 +12,14 @@ export type BreadcrumbProps = {
   breadcrumbList?: { title: string; href: string }[];
   home?: string;
   location?:
-    | H.Location
-    | {
-        pathname?: string;
-      };
+  | H.Location
+  | {
+    pathname?: string;
+  };
   menu?: ProSettings['menu'];
   breadcrumbMap?: Map<string, MenuDataItem>;
   formatMessage?: (message: MessageDescriptor) => string;
+  menuMap?: Record<string, MenuDataItem>;
   breadcrumbRender?: WithFalse<
     (routers: AntdBreadcrumbProps['routes']) => AntdBreadcrumbProps['routes']
   >;
@@ -61,11 +62,13 @@ export const getBreadcrumbFromProps = (
 ): {
   location: BreadcrumbProps['location'];
   breadcrumbMap: BreadcrumbProps['breadcrumbMap'];
+  menuMap?: BreadcrumbProps['menuMap']
 } => {
-  const { location, breadcrumbMap } = props;
+  const { location, breadcrumbMap, menuMap } = props;
   return {
     location,
     breadcrumbMap,
+    menuMap
   };
 };
 
@@ -73,10 +76,12 @@ const conversionFromLocation = (
   routerLocation: BreadcrumbProps['location'],
   breadcrumbMap: Map<string, MenuDataItem>,
   props: BreadcrumbProps,
+  menuMap?: Record<string, MenuDataItem>,
 ): AntdBreadcrumbProps['routes'] => {
   // Convertor the url to an array
   const pathSnippets = urlToList(routerLocation?.pathname);
   // Loop data mosaic routing
+
   const extraBreadcrumbItems: AntdBreadcrumbProps['routes'] = pathSnippets
     .map((url) => {
       // For application that has configured router base
@@ -84,17 +89,47 @@ const conversionFromLocation = (
       const { routerBase = '/' } = isBrowser() ? window : {};
       const realPath = routerBase === '/' ? url : `${routerBase}${url}`;
       const currentBreadcrumb = getBreadcrumb(breadcrumbMap, url);
+
       const name = renderItemLocal(currentBreadcrumb, props);
       const { hideInBreadcrumb } = currentBreadcrumb;
       return name && !hideInBreadcrumb
         ? {
-            path: realPath,
-            breadcrumbName: name,
-            component: currentBreadcrumb.component,
-          }
+          path: realPath,
+          breadcrumbName: name,
+          key: currentBreadcrumb.key,
+          parentKeys: currentBreadcrumb.parentKeys,
+          component: currentBreadcrumb.component,
+        }
         : { path: '', breadcrumbName: '' };
     })
     .filter((item) => item && item.path);
+
+  //本地路由目录结构与后端返回菜单不一致时，面包屑以后台菜单为主
+  if (extraBreadcrumbItems.length > 0 && menuMap) {
+    const lastItem: any = extraBreadcrumbItems[extraBreadcrumbItems.length - 1]
+    // if (menuMap[lastItem.key]){
+
+    // }
+    const keys = [...lastItem.parentKeys, lastItem.key]
+
+    const menuBreadcrumbItems: AntdBreadcrumbProps['routes'] = keys.map((tkey: any) => {
+      const menuItemData = menuMap[tkey]
+      const com = menuItemData.path ? breadcrumbMap.get(menuItemData.path) : null
+      return {
+        path: menuItemData.path as string,
+        breadcrumbName: menuItemData.name as string,
+        // key: breadcrumbMap[Symbol].key,
+        // parentKeys: currentBreadcrumb.parentKeys,
+        component: com,
+      }
+    })
+    if (menuBreadcrumbItems && menuBreadcrumbItems.length > extraBreadcrumbItems.length) {
+      return menuBreadcrumbItems;
+    }
+
+  }
+
+
 
   return extraBreadcrumbItems;
 };
@@ -106,12 +141,12 @@ export type BreadcrumbListReturn = Pick<
 
 /** 将参数转化为面包屑 Convert parameters into breadcrumbs */
 export const genBreadcrumbProps = (props: BreadcrumbProps): AntdBreadcrumbProps['routes'] => {
-  const { location, breadcrumbMap } = getBreadcrumbFromProps(props);
+  const { location, breadcrumbMap, menuMap } = getBreadcrumbFromProps(props);
 
   // 根据 location 生成 面包屑
   // Generate breadcrumbs based on location
   if (location && location.pathname && breadcrumbMap) {
-    return conversionFromLocation(location, breadcrumbMap, props);
+    return conversionFromLocation(location, breadcrumbMap, props, menuMap,);
   }
   return [];
 };
@@ -129,6 +164,8 @@ export const getBreadcrumbProps = (props: BreadcrumbProps): BreadcrumbListReturn
   if ((routes && routes.length < 2) || breadcrumbRender === false) {
     routes = undefined;
   }
+
+
   return {
     routes,
     itemRender,

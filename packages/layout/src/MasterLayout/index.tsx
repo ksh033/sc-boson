@@ -320,9 +320,10 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props: MasterLayoutProps) => {
     breadcrumb?: Record<string, MenuDataItem>;
     breadcrumbMap?: Map<string, MenuDataItem>;
     menuData?: MenuDataItem[];
+    menuMap?: Record<string, MenuDataItem>;
   }>(() => getMenuData(route?.routes || [], menu, formatMessage, menuDataRender));
 
-  const { breadcrumb = {}, breadcrumbMap, menuData = [] } = menuInfoData;
+  const { breadcrumb = {}, breadcrumbMap, menuData = [], menuMap } = menuInfoData;
 
   const matchMenus = useMemo(
     () => getMatchMenu(location.pathname || '/', menuData, true, true),
@@ -408,6 +409,7 @@ const MaterLayout: React.FC<MasterLayoutProps> = (props: MasterLayoutProps) => {
     ...defaultProps,
     breadcrumbRender: props.breadcrumbRender,
     breadcrumbMap,
+    menuMap: menuMap
   });
 
   const [appSelectedKey, setAppSelectedKey] = useState(null);
@@ -579,5 +581,5 @@ MaterLayout.defaultProps = {
   location: isBrowser() ? window.location : undefined,
 };
 
-export {getMatchMenu,getMenuData,getBreadcrumbProps,getPageTitleInfo,RouteContext}
+export { getMatchMenu, getMenuData, getBreadcrumbProps, getPageTitleInfo, RouteContext }
 export default MaterLayout;
