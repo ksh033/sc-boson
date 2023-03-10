@@ -43,10 +43,8 @@ export default {
       pageProps,
       ...restPops,
     };
-
     return CModal(config);
   },
-<<<<<<< HEAD
   confirm: (props: ModalFuncProps) => {
     return confirm(withConfirm(props));
   },
@@ -56,15 +54,6 @@ export default {
 
   success: function successFn(props: ModalFuncProps) {
     return confirm(withSuccess(props));
-=======
-  confirm: (props: Omit<CModalDialogProps, 'content'> & { content?: React.ReactNode }) => {
-    const { onOk, ...newProps } = props;
-    const newonOk = props.onOk ? debounce(props.onOk, 200) : undefined;
-    return Modal.confirm({
-      ...newProps,
-      onOk: newonOk,
-    });
->>>>>>> cba80124b975cbe7735beba86409f9e92f3f738a
   },
   warn: function (props: ModalFuncProps) {
     return confirm(withWarn(props));
