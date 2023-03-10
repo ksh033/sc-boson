@@ -31,7 +31,7 @@ const CModalDialog = (props: CModalDialogProps) => {
   const {
     onCancel,
     onOk,
-    close = () => {},
+    close = () => { },
     fullscreen,
     showFullscreen,
     zIndex,
@@ -77,7 +77,7 @@ const CModalDialog = (props: CModalDialogProps) => {
     <ActionButton
       key="ActionButton-cancel"
       actionFn={onCancel}
-      closeModal={close}
+      close={close}
       autoFocus={autoFocusButton === 'cancel'}
       buttonProps={cancelButtonProps}
     >
@@ -91,7 +91,7 @@ const CModalDialog = (props: CModalDialogProps) => {
       key="button-ok"
       type={okType}
       actionFn={onOk}
-      closeModal={close}
+      close={close}
       autoFocus={autoFocusButton === 'ok'}
       buttonProps={okButtonProps}
     >
@@ -106,7 +106,7 @@ const CModalDialog = (props: CModalDialogProps) => {
           // eslint-disable-next-line react/no-array-index-key
           key={`ActionButton-${index}`}
           actionFn={onClick}
-          closeModal={close}
+          close={close}
           buttonProps={buttonProps}
         >
           {text}

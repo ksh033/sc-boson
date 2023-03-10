@@ -1,8 +1,15 @@
 import React from 'react';
 import CModal from './CModal';
 import type { CModalDialogProps } from './CModal';
-import { Modal } from 'antd';
-import debounce from 'lodash/debounce';
+import type { ModalFuncProps } from 'antd';
+import confirm, {
+  withConfirm,
+  withError,
+  withInfo,
+  withSuccess,
+  withWarn,
+} from './confirm';
+
 export { CModalDialogProps };
 export default {
   show: (props: CModalDialogProps) => {
@@ -31,12 +38,21 @@ export default {
 
     return CModal(config);
   },
-  confirm: (props: Omit<CModalDialogProps, 'content'> & { content?: React.ReactNode }) => {
-    const { onOk, ...newProps } = props;
-
-    return Modal.confirm({
-      ...newProps,
-      onOk: onOk,
-    });
+  confirm: (props: ModalFuncProps) => {
+    return confirm(withConfirm(props));
   },
+  info: function infoFn(props: ModalFuncProps) {
+    return confirm(withInfo(props));
+  },
+
+  success: function successFn(props: ModalFuncProps) {
+    return confirm(withSuccess(props));
+  },
+  warn: function (props: ModalFuncProps) {
+    return confirm(withWarn(props));
+  },
+  error: function errorFn(props: ModalFuncProps) {
+    return confirm(withError(props));
+  },
+
 };
