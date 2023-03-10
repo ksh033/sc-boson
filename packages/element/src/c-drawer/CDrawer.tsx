@@ -33,7 +33,7 @@ export type CDrawerDialogProps = DrawerProps & {
 
 const CDrawerDialog = (props: CDrawerDialogProps) => {
   const {
-    close = () => {},
+    close = () => { },
     zIndex,
     visible,
     keyboard,
@@ -75,7 +75,7 @@ const CDrawerDialog = (props: CDrawerDialogProps) => {
     <ActionButton
       key="ActionButton-cancel"
       actionFn={onCancel}
-      closeModal={close}
+      close={close}
       autoFocus={autoFocusButton === 'cancel'}
       buttonProps={cancelButtonProps}
     >
@@ -89,7 +89,7 @@ const CDrawerDialog = (props: CDrawerDialogProps) => {
       key="button-ok"
       type={okType}
       actionFn={onOk}
-      closeModal={close}
+      close={close}
       autoFocus={autoFocusButton === 'ok'}
       buttonProps={okButtonProps}
     >
@@ -104,7 +104,7 @@ const CDrawerDialog = (props: CDrawerDialogProps) => {
           // eslint-disable-next-line react/no-array-index-key
           key={`ActionButton-${index}`}
           actionFn={onClick}
-          closeModal={close}
+          close={close}
           buttonProps={buttonProps}
         >
           {text}
