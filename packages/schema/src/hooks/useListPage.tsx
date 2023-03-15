@@ -14,7 +14,7 @@ import SearchInfo from '../page/SearchInfo';
 import _ from 'lodash';
 import schema from '../pageConfigUitls';
 import { omitUndefinedAndEmptyArr } from '../index';
-import type { ActionType } from 'packages/element/src/sc-table/typing';
+//import type { ActionType } from '@scboson/sc-element/es/sc-table/typing';
 
 
 export { PageConfig, PageType };
@@ -86,7 +86,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   // 查询表单
   const searchForm = useRef<any>();
   // 查询表格保存表单
-  const saveRef = useRef<ActionType>();
+  const saveRef = useRef<any>();
 
   const filterRef = useRef<any>({});
   const ordersRef = useRef<any>([]);

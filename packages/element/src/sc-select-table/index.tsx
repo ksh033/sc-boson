@@ -5,9 +5,9 @@ import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useMemo, useState } from 'react';
 import ScSelect from '../sc-select';
+import type { ScTableProps } from '../sc-table';
 import ScTable from '../sc-table';
 import type { ScSelectProps } from '../sc-select';
-import type { ScTableProps } from '../sc-table/ScTable';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import type { CheckboxProps } from 'antd/es/checkbox';
 import { useRefFunction } from '../_util/useRefFunction';
@@ -27,8 +27,8 @@ export type ScSelectTableProps = ScSelectProps & {
   dropdownRenderProps: ScTableProps<any>;
   /** @name 初始化的参数，可以操作 table */
   actionRef?:
-    | React.MutableRefObject<SelectTableActionType | undefined>
-    | ((actionRef: SelectTableActionType) => void);
+  | React.MutableRefObject<SelectTableActionType | undefined>
+  | ((actionRef: SelectTableActionType) => void);
   getCheckboxProps?: (record: any) => Partial<Omit<CheckboxProps, 'checked' | 'defaultChecked'>>;
 };
 
@@ -58,9 +58,9 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
 
   const newReq = useRequest(
     request ||
-      new Promise((resolve) => {
-        resolve(null);
-      }),
+    new Promise((resolve) => {
+      resolve(null);
+    }),
     {
       manual: true,
     },
@@ -349,14 +349,14 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
           type === 'radio'
             ? undefined
             : {
-                type: type,
-                selectedRowKeys: action.current.rowKeys,
-                // renderCell: () => {
-                //   return null;
-                // },
-                getCheckboxProps,
-                ...dropdownRenderProps.rowSelection,
-              }
+              type: type,
+              selectedRowKeys: action.current.rowKeys,
+              // renderCell: () => {
+              //   return null;
+              // },
+              getCheckboxProps,
+              ...dropdownRenderProps.rowSelection,
+            }
         }
       />
     );
