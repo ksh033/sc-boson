@@ -8,8 +8,7 @@ import React from 'react';
 import LabelIconTip from '../_util/LabelIconTip';
 import omitUndefinedAndEmptyArr from '../_util/omitUndefinedAndEmptyArr';
 import type { useContainer } from './container';
-import type { ColumnsState } from './ScTable';
-import type { ActionType } from './typing';
+import type { ActionType, ColumnsState } from './typing';
 
 export const { isValidElement } = React;
 
@@ -65,9 +64,9 @@ export const genCopyable = (dom: React.ReactNode, item: any, text: string) => {
         copyable={
           item.copyable && text
             ? {
-                text,
-                tooltips: ['', ''],
-              }
+              text,
+              tooltips: ['', ''],
+            }
             : undefined
         }
         ellipsis={item.ellipsis && text ? { tooltip: text } : false}
@@ -181,9 +180,9 @@ export const getColumnSearchProps = (
     onFilter = counter.whetherRemote
       ? undefined
       : (value: string, record: any) =>
-          record[dataIndex]
-            ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
-            : '';
+        record[dataIndex]
+          ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+          : '';
   }
 
   if (columnProps.filters) {
@@ -311,8 +310,8 @@ export function genColumnList<T>(props: {
           sorterProps = {
             sorter: multipleSort
               ? {
-                  multiple: columnsIndex + 1,
-                }
+                multiple: columnsIndex + 1,
+              }
               : true,
             sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
           };
@@ -320,17 +319,7 @@ export function genColumnList<T>(props: {
           sorterProps = {
             sorter: multipleSort
               ? {
-                  compare: (a: any, b: any) => {
-                    if (isNumber(a[dataIndex])) {
-                      return Number(a[dataIndex]) - Number(b[dataIndex]);
-                    }
-                    const as: string = String(a[dataIndex]);
-                    const bs: string = String(b[dataIndex]);
-                    return as.localeCompare(bs, 'zh-CN');
-                  },
-                  multiple: columnsIndex + 1,
-                }
-              : (a: any, b: any) => {
+                compare: (a: any, b: any) => {
                   if (isNumber(a[dataIndex])) {
                     return Number(a[dataIndex]) - Number(b[dataIndex]);
                   }
@@ -338,6 +327,16 @@ export function genColumnList<T>(props: {
                   const bs: string = String(b[dataIndex]);
                   return as.localeCompare(bs, 'zh-CN');
                 },
+                multiple: columnsIndex + 1,
+              }
+              : (a: any, b: any) => {
+                if (isNumber(a[dataIndex])) {
+                  return Number(a[dataIndex]) - Number(b[dataIndex]);
+                }
+                const as: string = String(a[dataIndex]);
+                const bs: string = String(b[dataIndex]);
+                return as.localeCompare(bs, 'zh-CN');
+              },
             sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
           };
         }
@@ -360,14 +359,14 @@ export function genColumnList<T>(props: {
         width: columnProps.width || (columnProps.fixed ? 200 : undefined),
         children: columnProps.children
           ? genColumnList({
-              ...props,
-              columns: columnProps?.children,
-            })
+            ...props,
+            columns: columnProps?.children,
+          })
           : undefined,
       };
       return omitUndefinedAndEmptyArr(tempColumns);
     })
     .filter((item) => !item.hideInTable) as unknown as (TableColumnType<T> & {
-    index?: number;
-  })[];
+      index?: number;
+    })[];
 }

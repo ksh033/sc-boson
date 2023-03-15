@@ -1,22 +1,19 @@
+/*
+ * @Description: 
+ * @Version: 1.0
+ * @Autor: yangyuhang
+ * @Date: 2022-11-02 15:36:44
+ * @LastEditors: yangyuhang
+ * @LastEditTime: 2023-03-15 10:22:00
+ */
 import React from 'react';
 import { Dropdown, Menu, Space, Tabs } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
+import type { ListToolBarHeaderMenuProps } from '../../typing';
 
-export type ListToolBarMenuItem = {
-  key: React.Key;
-  label: React.ReactNode;
-  disabled?: boolean;
-};
 
-export type ListToolBarHeaderMenuProps = {
-  type?: 'inline' | 'dropdown' | 'tab';
-  activeKey?: React.Key;
-  items?: ListToolBarMenuItem[];
-  onChange?: (activeKey?: React.Key) => void;
-  prefixCls?: string;
-};
 
 const HeaderMenu: React.FC<ListToolBarHeaderMenuProps> = (props) => {
   const { items = [], type = 'inline', prefixCls, activeKey: propActiveKey } = props;

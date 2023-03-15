@@ -2,7 +2,7 @@
 import ScTable from './ScTable';
 import Operation from './Operation';
 
-export { ScTableProps, ColumnsType, ScProColumn, ScProColumnType } from './ScTable';
+export { ScTableProps, ColumnsType, ScProColumn, ScProColumnType } from './typing';
 
 export { OperationProps } from './Operation';
 

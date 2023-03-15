@@ -1,63 +1,11 @@
 import React, { useContext } from 'react';
-import type { TooltipProps, TabPaneProps } from 'antd';
 import { Tooltip, Space, Input, ConfigProvider, Tabs } from 'antd';
 import { useIntl } from '@ant-design/pro-provider';
 import classNames from 'classnames';
-import type { SearchProps } from 'antd/es/input';
 import { LabelIconTip } from '@ant-design/pro-utils';
-import type { ListToolBarHeaderMenuProps } from './HeaderMenu';
 import HeaderMenu from './HeaderMenu';
-
-export type ListToolBarSetting = {
-  icon: React.ReactNode;
-  tooltip?: string;
-  key?: string;
-  onClick?: (key?: string) => void;
-};
-
-/** Antd 默认直接导出了 rc 组件中的 Tab.Pane 组件。 */
-type TabPane = TabPaneProps & {
-  key?: string;
-};
-
-export type ListToolBarTabs = {
-  activeKey?: string;
-  onChange?: (activeKey: string) => void;
-  items?: TabPane[];
-};
-
-export type ListToolBarMenu = ListToolBarHeaderMenuProps;
-
-type SearchPropType = SearchProps | React.ReactNode | boolean;
-type SettingPropType = React.ReactNode | ListToolBarSetting;
-
-export type ListToolBarProps = {
-  prefixCls?: string;
-  className?: string;
-  style?: React.CSSProperties;
-  /** 标题 */
-  title?: React.ReactNode;
-  /** 副标题 */
-  subTitle?: React.ReactNode;
-  /** 标题提示 */
-  tooltip?: string | TooltipProps;
-  /** 搜索输入栏相关配置 */
-  search?: SearchPropType;
-  /** 搜索回调 */
-  onSearch?: (keyWords: string) => void;
-  /** 工具栏右侧操作区 */
-  actions?: React.ReactNode[];
-  /** 工作栏右侧设置区 */
-  settings?: SettingPropType[];
-  /** 是否多行展示 */
-  multipleLine?: boolean;
-  /** 过滤区，通常配合 LightFilter 使用 */
-  filter?: React.ReactNode;
-  /** 标签页配置，仅当 `multipleLine` 为 true 时有效 */
-  tabs?: ListToolBarTabs;
-  /** 菜单配置 */
-  menu?: ListToolBarMenu;
-};
+import type { ListToolBarProps, ListToolBarSetting, SearchPropType, SettingPropType } from '../../typing';
+import type { SearchProps } from 'antd/lib/input/Search';
 
 /**
  * 获取配置区域 DOM Item

@@ -2,17 +2,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
 import { useRequest, useSafeState, useSetState, useUpdateEffect } from 'ahooks';
-import type { CardProps } from 'antd';
+
+
+import type { TablePaginationConfig } from 'antd';
 import { Card, Divider, Table, Tooltip } from 'antd';
-import type { ColumnType } from 'antd/es/table';
-import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
-import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
+
 import * as React from 'react';
 import useDeepCompareEffect from '../_util/useDeepCompareEffect';
 import type { DropDataType } from './components/DraggableBodyRow/common';
 import { moveRowData } from './components/DraggableBodyRow/common';
-import type { ListToolBarProps } from './components/ListToolBar';
-import type { OptionConfig, ToolBarProps } from './components/ToolBar';
+
 import Toolbar from './components/ToolBar';
 import Container from './container';
 import { genColumnKey, genColumnList, tableColumnSort } from './utils';
@@ -23,121 +22,15 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import DraggableBodyRow from './components/DraggableBodyRow';
 import DraggableBodyCell from './components/DraggableBodyRow/DraggableBodyCell';
 import { useRefFunction } from '../_util/useRefFunction';
+import type { ActionType, ScTableProps, SorterItem } from './typing';
+import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
 const { useEffect, useRef, useMemo } = React;
-export type { ColumnsType } from 'antd/es/table/Table';
 
-export interface CustomSearchComponentProps {
-  value?: any;
-  onChange?: (e: any) => void;
-}
-export const OpColKey = '_OperateKey';
-export declare type CustomSearchComponent =
-  | React.ReactNode
-  | ((props: CustomSearchComponentProps) => React.ReactNode);
-export interface ScProColumnType<RecordType> extends ColumnType<RecordType> {
-  canSearch?: boolean;
-  customSearchComponent?: CustomSearchComponent;
-  /** @deprecated 你可以使用 tooltip，这个更改是为了与 antd 统一 */
-  tip?: string;
-  /** @deprecated 是否隐藏 */
-  hidden?: boolean;
-}
-
-export interface ScProColumnGroupType<RecordType>
-  extends Omit<ScProColumnType<RecordType>, 'dataIndex'> {
-  children: ScProColumn<RecordType>;
-}
-
-export declare type ScProColumn<RecordType = unknown> = (
-  | ScProColumnGroupType<RecordType>
-  | ScProColumnType<RecordType>
-)[];
-
-export type ColumnsState = {
-  show?: boolean;
-  fixed?: 'right' | 'left' | undefined;
-  order?: number;
-  disable?:
-  | boolean
-  | {
-    checkbox: boolean;
-  };
-};
-
-export type ColumnsStateType = {
-  defaultValue?: Record<string, ColumnsState>;
-  value?: Record<string, ColumnsState>;
-  onChange?: (map: Record<string, ColumnsState>) => void;
-};
-
-export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
-  /** 当选中时触发 */
-  onSelectRow?: (selectedRowKeys: string[], selectedRows: any[]) => void;
-  /** 列表数据 */
-  data?: { rows: any[]; total: number; current: number; size: number };
-  /** 请求数据的远程方法 */
-  request?: (params: any) => Promise<any>;
-  /** 数据加载完成后触发,会多次触发 */
-  onLoad?: (data: any) => any;
-  /** 请求参数限制 */
-  preLoadHandle?: (params: any) => boolean;
-  /** 点击刷新数据 */
-  refresh?: () => void;
-  /** 请求的参数 */
-  params?: any;
-  /** 表格容器的 class 名 */
-  prefixCls?: string;
-  /** 样式 */
-  className?: string;
-  /** 每页显示多少数据 */
-  pageSize?: number;
-  /** 是否自动加载 配合request使用 */
-  autoload?: boolean;
-  /** 是否显示多选框 */
-  checkbox?: boolean;
-  /** 数据中哪个值作为选中的key */
-  rowKey?: string;
-  /** 复选时选中的key */
-  selectedRowKeys?: string[];
-  /** 复选时选中的对象 */
-  selectedRows?: any[];
-  /** 分页数据 */
-  pagination?: false | TablePaginationConfig;
-  /** React.MutableRefObject<any> | ((saveRef: any) => void) 获取组件对外暴露的参数 */
-  saveRef?: any;
-  /** 列选中 */
-  rowSelected?: boolean;
-  /** @name 渲染操作栏 */
-  toolBarRender?: ToolBarProps<T>['toolBarRender'] | false;
-  /** @name 左上角的 title */
-  headerTitle?: React.ReactNode;
-  /** @name 操作栏配置 */
-  options?: OptionConfig | false;
-  /** @name 标题旁边的 tooltip */
-  tooltip?: string;
-  /** @name ListToolBar 的属性 */
-  toolbar?: ListToolBarProps;
-  /** @name 查询表单和 Table 的卡片 border 配置 */
-  cardBordered?: boolean;
-  /** @name table 外面卡片的设置 */
-  cardProps?: CardProps;
-  /** @name table 列属性 */
-  columns?: ScProColumn<T>;
-  /** 受控的列状态，可以操作显示隐藏 */
-  columnsState?: ColumnsStateType;
-  /** 树的张开字段 */
-  treeDataIndex?: string;
-  /** 拖拽事件 */
-  onDrop?: (dargNode: any) => Promise<any> | boolean | void;
-  /** 是否开起拖拽 */
-  dragSort?: boolean | string;
-  /** 是否时复合排序 */
-  multipleSort?: boolean;
-}
 
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const {
     data,
+
     columns: propsColumns = [],
     rowKey = 'key',
     prefixCls = 'sc-table',
@@ -167,24 +60,40 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     treeDataIndex,
     refresh,
     onDrop,
-    columnsState,
+    //columnsState,
     components: componentsProps,
     ...restPros
   } = props;
 
   const { selectedRows, params = null, pageSize = 10, autoload = false } = restPros;
+  const counter = Container.useContainer();
+  const createOrderParams = (sorterMap: SorterItem) => {
+    return Object.keys(sorterMap).map((item: any) => {
+      if (sorterMap[item]) {
+        return { column: item, asc: sorterMap[item] === 'ascend' }
+      }
+      return null
 
-  const newParams = useMemo(() => {
+    }).filter((item) => Boolean(item))
+
+  }
+  const remoteParams = useMemo(() => {
     const nparams = JSON.parse(JSON.stringify(params));
     if (nparams && nparams.size && nparams.current) {
       delete nparams.size;
       delete nparams.current;
     }
 
-    return nparams;
-  }, [JSON.stringify(params)]);
+    if (counter.sortOrderMap) {
+      nparams.orders = createOrderParams(counter.sortOrderMap)
 
-  const counter = Container.useContainer();
+    }
+
+    return nparams;
+  }, [JSON.stringify(params), JSON.stringify(counter.sortOrderMap)]);
+
+
+  const newParams = Object.assign({}, remoteParams);
 
   const isGone = useRef(false);
   const { loading, run } = useRequest(
@@ -347,7 +256,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   });
 
   const updateAction = () => {
-    const userAction = {
+    const userAction: ActionType = {
       pagination: innerPagination,
       data: dataSource,
       selectedRowKeys: action.current.rowKeys || rowKeys,
@@ -357,6 +266,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       },
       setFiltersArg: counter.setFiltersArg,
       setSortOrderMap: counter.setSortOrderMap,
+      getSortOrders: () => {
+        return createOrderParams(counter.sortOrderMap)
+
+      },
+      defaultSorterMap: counter.defaultSorterMap,
       columnsMap: counter.columnsMap,
       getColumnsMap: () => {
         return counter.columnsMap;
@@ -387,13 +301,22 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   /** 绑定 action ref */
   React.useImperativeHandle(saveRef, updateAction);
 
+
+
   useEffect(() => {
+    if (!Array.isArray(newParams.orders)) {
+      if (counter.defaultSorterMap && JSON.stringify(counter.defaultSorterMap) !== '{}') {
+        newParams.orders = createOrderParams(counter.defaultSorterMap)
+      }
+    }
+
     if (data) {
       getDataKeys(data.rows || []);
     }
     if (autoload) {
       loadData();
     }
+
     return () => {
       isGone.current = true;
     };
@@ -408,7 +331,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     } else {
       loadData();
     }
-  }, [JSON.stringify(newParams)]);
+  }, [JSON.stringify(remoteParams)]);
+
+
+
 
   useEffect(() => {
     if (pagination && Object.prototype.toString.call(pagination) === '[object Object]') {
@@ -463,7 +389,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
           pageSize: _pagination.pageSize,
         });
       }
-
       counter.setFiltersArg(_filtersArg);
       const ordersMap = {};
       if (Array.isArray(_sorter)) {
@@ -475,6 +400,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         const { field, order } = _sorter;
         ordersMap[field] = order;
       }
+      // console.log('setSortOrderMap');
+
       counter.setSortOrderMap(ordersMap);
 
       if (onChange) {

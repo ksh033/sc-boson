@@ -12,7 +12,8 @@ import type { FixedType } from 'rc-table/es/interface';
 import type { PropsWithChildren } from 'react';
 import React, { useContext, useEffect, useRef } from 'react';
 import Container from '../../container';
-import { ColumnsState, OpColKey } from '../../ScTable';
+import type { ColumnsState } from '../../typing';
+import { OpColKey } from '../../typing';
 import { genColumnKey } from '../../utils';
 // import type { ProColumns } from '../../typing';
 // import type { TableColumnType } from 'antd';
@@ -128,7 +129,7 @@ const CheckboxList: React.FC<{
 
   const checkedKeys: string[] = [];
 
-  const treeData = list.map(({ key, dataIndex, ...rest }) => {
+  const treeData = list.map(({ key, ...rest }) => {
     const columnKey = genColumnKey(key, rest.index);
     const config = columnsMap[columnKey || 'null'] || { show: true };
     if (config.show !== false) {

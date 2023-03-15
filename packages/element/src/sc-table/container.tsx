@@ -4,19 +4,15 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { createContainer } from 'unstated-next';
 import type { DensitySize } from './components/ToolBar/DensityIcon';
 import type { ScTableProps } from './index';
-import type { ColumnsState } from './ScTable';
-import type { ActionType } from './typing';
+import type { ActionType, ColumnsState, ScProColumnType, SorterItem } from './typing';
 import { genColumnKey } from './utils';
 
-export type UseContainerProps = {
+export type UseContainerProps = Pick<ScTableProps<any>, 'columns' | 'params' | 'request' | 'columnsState' | 'defaultSort'> & {
   columnsStateMap?: Record<string, ColumnsState>;
   onColumnsStateChange?: (map: Record<string, ColumnsState>) => void;
   size?: DensitySize;
   onSizeChange?: (size: DensitySize) => void;
-  params?: any;
-  request?: (params: any) => Promise<any>; // 请求数据的远程方法
-  columns?: any[];
-  columnsState?: ScTableProps<any>['columnsState'];
+
 };
 
 export type SearchKeywordState = {
@@ -36,7 +32,8 @@ function useContainer(props: UseContainerProps = {}) {
 
   const defaultColumnKeyMap = useMemo(() => {
     const columnKeyMap = {};
-    props.columns?.forEach(({ key, dataIndex, fixed, disable }, index) => {
+
+    props.columns?.forEach(({ key, dataIndex, fixed, disable }: ScProColumnType<any>, index) => {
       const columnKey = genColumnKey(key ?? (dataIndex as React.Key), index);
       if (columnKey) {
         if (props.columnsState?.defaultValue) {
@@ -59,6 +56,15 @@ function useContainer(props: UseContainerProps = {}) {
     return columnKeyMap;
   }, [props.columns, props.columnsState?.defaultValue, defaultColumnsStateMap]);
 
+  const innerSorterMap: SorterItem = useMemo(() => {
+    let sorterMap = {}
+    props.columns?.forEach((item: ScProColumnType<any>) => {
+      if (item.sorter && item.defaultSortOrder) {
+        sorterMap = { [item.dataIndex as string]: item.defaultSortOrder }
+      }
+    })
+    return sorterMap
+  }, [props.columns])
   // 共享状态比较难，就放到这里了
   const [keyWords, setKeyWords] = useState<string | undefined>('');
   // 用于排序的数组
@@ -87,7 +93,8 @@ function useContainer(props: UseContainerProps = {}) {
 
   const [filtersArg, setFiltersArg] = useMergedState<Record<string, FilterValue | null>>({});
 
-  const [sortOrderMap, setSortOrderMap] = useMergedState<Record<string, string>>({});
+  const [sortOrderMap, setSortOrderMap] = useMergedState<SorterItem>(props.defaultSort || innerSorterMap);
+
   return {
     action: actionRef,
     setAction: (newAction?: ActionType) => {
@@ -109,6 +116,7 @@ function useContainer(props: UseContainerProps = {}) {
     sortOrderMap,
     setSortOrderMap,
     whetherRemote,
+    defaultSorterMap: innerSorterMap
   };
 }
 

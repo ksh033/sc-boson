@@ -14,6 +14,8 @@ import SearchInfo from '../page/SearchInfo';
 import _ from 'lodash';
 import schema from '../pageConfigUitls';
 import { omitUndefinedAndEmptyArr } from '../index';
+import type { ActionType } from 'packages/element/src/sc-table/typing';
+
 
 export { PageConfig, PageType };
 export interface SearchConfig {
@@ -84,10 +86,10 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   // 查询表单
   const searchForm = useRef<any>();
   // 查询表格保存表单
-  const saveRef = useRef<any>();
+  const saveRef = useRef<ActionType>();
 
   const filterRef = useRef<any>({});
-  const ordersRef = useRef<any>({});
+  const ordersRef = useRef<any>([]);
   const submitRef = useRef<any>({});
   const pageCon = useRef<any>();
   const searchInitParams = useRef<any>();
@@ -155,9 +157,8 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
 
   const onSubmitSearchForm = (_params: any) => {
     const newParams = omitUndefinedAndEmptyArr(_params);
-    newParams.orders = ordersRef.current;
+    newParams.orders = saveRef.current?.getSortOrders()
     newParams._filters = filterRef.current;
-
     if (JSON.stringify(newParams) !== JSON.stringify(state.params)) {
       setState({
         params: newParams,
@@ -176,10 +177,14 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
 
   const onReset = (_params: any) => {
     filterRef.current = {};
-    ordersRef.current = [];
+    // ordersRef.current = [];
     saveRef.current?.setFiltersArg({});
-    saveRef.current?.setSortOrderMap({});
-    onSubmitSearchForm(_params);
+    if (saveRef.current?.defaultSorterMap) {
+      saveRef.current?.setSortOrderMap(saveRef.current?.defaultSorterMap);
+    } else {
+      saveRef.current?.setSortOrderMap({});
+    }
+    onSubmitSearchForm({ ...state.params, ..._params });
   };
 
   const pageChange = (_pagination: any, _filtersArg: any, _sorter: any) => {
@@ -213,13 +218,21 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
         ];
       }
     }
-    if (JSON.stringify(orders) !== JSON.stringify(ordersRef.current)) {
-      ordersRef.current = orders;
-      onSubmitSearchForm({
-        ...state.params,
-        orders,
-      });
-    }
+    // setSearchParams({
+    //   ...state.params,
+    //   orders,
+    // }, _pagination);
+    // onSubmitSearchForm({
+    //       ...state.params,
+    //       orders,
+    //     });
+    // if (JSON.stringify(orders) !== JSON.stringify(ordersRef.current)) {
+    //   ordersRef.current = orders;
+    //   onSubmitSearchForm({
+    //     ...state.params,
+    //     orders,
+    //   });
+    // }
     if (JSON.stringify(filters) !== JSON.stringify(filterRef.current)) {
       filterRef.current = filters;
       onSubmitSearchForm({
@@ -228,6 +241,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       });
     }
     setState({
+      params: { ...state.params, orders },
       pagination: {
         current: _pagination.current,
         pageSize: _pagination.pageSize,
@@ -302,18 +316,21 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   };
 
   const initSorter = (vals: any) => {
+    let newOrderMap = undefined;
     if (vals && Array.isArray(vals.orders) && vals.orders.length > 0) {
+      newOrderMap = {};
       const { orders } = vals;
-      const newOrderMap = {};
+
       orders.forEach((obj: any) => {
         newOrderMap[obj.column] = obj.asc ? 'ascend' : 'descend';
       });
-      ordersRef.current = vals.orders;
-      saveRef.current?.setSortOrderMap(newOrderMap);
+      //  ordersRef.current = vals.orders;
+      // saveRef.current?.setSortOrderMap(newOrderMap);
     } else {
-      ordersRef.current = [];
-      saveRef.current?.setSortOrderMap({});
+      //ordersRef.current = [];
+      // saveRef.current?.setSortOrderMap({});
     }
+    return newOrderMap
   };
 
   const searchEvent = (event: any) => {
@@ -332,8 +349,10 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   };
   useMount(() => {
     const locSearchParams = getSearchParams();
-    initSorter(locSearchParams);
-    initFiltersArg(locSearchParams);
+    if (locSearchParams && JSON.stringify(locSearchParams) !== '{}') {
+      /// initSorter(locSearchParams);
+      initFiltersArg(locSearchParams);
+    }
 
     if (searchForm.current && searchForm.current.setFieldsValue) {
       searchForm.current.setFieldsValue(locSearchParams);
@@ -410,8 +429,9 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   };
 
   const getTable = (tableConfig?: TableConfig) => {
-    const tableInfo = getTableConfig(tableConfig);
-
+    const tableInfo: any = getTableConfig(tableConfig);
+    const locSearchParams = getSearchParams();
+    tableInfo.defaultSort = initSorter(locSearchParams)
     return new TableInfo(tableInfo, config, schemaContext.tableOpColCmp, reload);
   };
 
