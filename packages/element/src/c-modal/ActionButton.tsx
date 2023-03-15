@@ -100,6 +100,7 @@ const ActionButton: React.FC<ActionButtonProps> = props => {
       returnValueOfOnOk = actionFn();
       if (!returnValueOfOnOk) {
         onInternalClose();
+        clickedRef.current = false;
         return;
       }
     }
