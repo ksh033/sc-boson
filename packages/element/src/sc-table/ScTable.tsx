@@ -85,7 +85,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
 
     if (counter.sortOrderMap) {
-      nparams.orders = createOrderParams(counter.sortOrderMap)
+      if (nparams) {
+        nparams.orders = createOrderParams(counter.sortOrderMap)
+
+      }
 
     }
 
