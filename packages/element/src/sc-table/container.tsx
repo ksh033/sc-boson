@@ -1,23 +1,37 @@
 import type { FilterValue } from 'antd/es/table/interface';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
+
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createContainer } from 'unstated-next';
 import type { DensitySize } from './components/ToolBar/DensityIcon';
 import type { ScTableProps } from './index';
-import type { ActionType, ColumnsState, ScProColumnType, SorterItem } from './typing';
+import type {
+  ActionType,
+  ColumnsState,
+  ScProColumn,
+  ScProColumnType,
+  SorterItem,
+  SortValue,
+} from './typing';
 import { genColumnKey } from './utils';
 
-export type UseContainerProps = Pick<ScTableProps<any>, 'columns' | 'params' | 'request' | 'columnsState' | 'defaultSort'> & {
+export type UseContainerProps = Pick<
+  ScTableProps<any>,
+  'columns' | 'params' | 'request' | 'columnsState' | 'defaultSort'
+> & {
   columnsStateMap?: Record<string, ColumnsState>;
   onColumnsStateChange?: (map: Record<string, ColumnsState>) => void;
   size?: DensitySize;
   onSizeChange?: (size: DensitySize) => void;
-
 };
 
 export type SearchKeywordState = {
   dataIndex: string;
   order: any;
+};
+
+export type SortValueList = SortValue & {
+  dataIndex: string;
 };
 
 function useContainer(props: UseContainerProps = {}) {
@@ -55,16 +69,63 @@ function useContainer(props: UseContainerProps = {}) {
     });
     return columnKeyMap;
   }, [props.columns, props.columnsState?.defaultValue, defaultColumnsStateMap]);
-
-  const innerSorterMap: SorterItem = useMemo(() => {
-    let sorterMap = {}
-    props.columns?.forEach((item: ScProColumnType<any>) => {
-      if (item.sorter && item.defaultSortOrder) {
-        sorterMap = { [item.dataIndex as string]: item.defaultSortOrder }
+  // 计算默认排序
+  const countDefaultSort = (_columns: ScProColumn<any>) => {
+    const strSortList: Partial<SortValueList>[] = [];
+    const objSortList: Partial<SortValueList>[] = [];
+    if (Array.isArray(_columns)) {
+      _columns?.forEach((item: ScProColumnType<any>, index) => {
+        const columnKey = genColumnKey(item.key ?? (item.dataIndex as React.Key), index);
+        if (item.sorter && item.defaultSortOrder != null) {
+          if (typeof item.defaultSortOrder === 'string') {
+            strSortList.push({
+              value: item.defaultSortOrder,
+              dataIndex: columnKey,
+            });
+          } else {
+            objSortList.push({
+              dataIndex: columnKey,
+              ...item.defaultSortOrder,
+            });
+          }
+        }
+      });
+    }
+    // 寻找最大权重
+    let maxWi = 1;
+    if (objSortList.length > 0) {
+      objSortList.sort((a, b) => {
+        return Number(a.sort || 0) - Number(b.sort || 0);
+      });
+      maxWi = Number(objSortList[objSortList.length - 1].sort);
+    }
+    maxWi = maxWi + 1;
+    const sorterMap: SorterItem = {};
+    [...objSortList, ...strSortList].forEach((it, index) => {
+      if (it.dataIndex) {
+        let sort = it.sort;
+        if (sort == null) {
+          sort = maxWi;
+          maxWi++;
+        }
+        sorterMap[it.dataIndex || ''] = {
+          value: it.value || 'ascend',
+          sort: sort,
+          showNum: index + 1,
+        };
       }
-    })
-    return sorterMap
-  }, [props.columns])
+    });
+
+    return sorterMap;
+  };
+  // 默认排序
+  const innerDefaultSorterMap: SorterItem = useMemo(() => {
+    if (props.columns) {
+      return countDefaultSort(props.columns);
+    }
+    return {};
+  }, [props.columns]);
+
   // 共享状态比较难，就放到这里了
   const [keyWords, setKeyWords] = useState<string | undefined>('');
   // 用于排序的数组
@@ -93,7 +154,9 @@ function useContainer(props: UseContainerProps = {}) {
 
   const [filtersArg, setFiltersArg] = useMergedState<Record<string, FilterValue | null>>({});
 
-  const [sortOrderMap, setSortOrderMap] = useMergedState<SorterItem>(props.defaultSort || innerSorterMap);
+  const [sortOrderMap, setSortOrderMap] = useMergedState<SorterItem>(
+    props.defaultSort || innerDefaultSorterMap,
+  );
 
   return {
     action: actionRef,
@@ -116,7 +179,7 @@ function useContainer(props: UseContainerProps = {}) {
     sortOrderMap,
     setSortOrderMap,
     whetherRemote,
-    defaultSorterMap: innerSorterMap
+    defaultSorterMap: innerDefaultSorterMap,
   };
 }
 

@@ -2,20 +2,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-underscore-dangle */
 import { useRequest, useSafeState, useSetState, useUpdateEffect } from 'ahooks';
-
-
 import type { TablePaginationConfig } from 'antd';
 import { Card, Divider, Table, Tooltip } from 'antd';
-
 import * as React from 'react';
 import useDeepCompareEffect from '../_util/useDeepCompareEffect';
 import type { DropDataType } from './components/DraggableBodyRow/common';
 import { moveRowData } from './components/DraggableBodyRow/common';
-
 import Toolbar from './components/ToolBar';
+import type { SortValueList } from './container';
 import Container from './container';
 import { genColumnKey, genColumnList, tableColumnSort } from './utils';
-
 import isArray from 'lodash/isArray';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -26,11 +22,9 @@ import type { ActionType, ScTableProps, SorterItem } from './typing';
 import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
 const { useEffect, useRef, useMemo } = React;
 
-
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const {
     data,
-
     columns: propsColumns = [],
     rowKey = 'key',
     prefixCls = 'sc-table',
@@ -54,7 +48,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     cardBordered = false,
     onChange,
     dragSort = false,
-    multipleSort = false,
+    multipleSort = true,
     dataSource: newdataSource,
     onRow,
     treeDataIndex,
@@ -67,16 +61,24 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
   const { selectedRows, params = null, pageSize = 10, autoload = false } = restPros;
   const counter = Container.useContainer();
+
+  /** 创建排序的参数 */
   const createOrderParams = (sorterMap: SorterItem) => {
-    return Object.keys(sorterMap).map((item: any) => {
-      if (sorterMap[item]) {
-        return { column: item, asc: sorterMap[item] === 'ascend' }
-      }
-      return null
+    const list: SortValueList[] = [];
+    Object.keys(sorterMap).forEach((item: string) => {
+      list.push({
+        dataIndex: item,
+        ...sorterMap[item],
+      });
+    });
 
-    }).filter((item) => Boolean(item))
+    list.sort((a, b) => a.sort - b.sort);
 
-  }
+    return list.map((item: SortValueList) => {
+      return { column: item.dataIndex, asc: item.value === 'ascend' };
+    });
+  };
+  /** 覆盖远程请求参数 */
   const remoteParams = useMemo(() => {
     const nparams = JSON.parse(JSON.stringify(params));
     if (nparams && nparams.size && nparams.current) {
@@ -86,24 +88,21 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
     if (counter.sortOrderMap) {
       if (nparams) {
-        nparams.orders = createOrderParams(counter.sortOrderMap)
-
+        nparams.orders = createOrderParams(counter.sortOrderMap);
       }
-
     }
 
     return nparams;
   }, [JSON.stringify(params), JSON.stringify(counter.sortOrderMap)]);
-
 
   const newParams = Object.assign({}, remoteParams);
 
   const isGone = useRef(false);
   const { loading, run } = useRequest(
     request ||
-    new Promise((resolve) => {
-      resolve(null);
-    }),
+      new Promise((resolve) => {
+        resolve(null);
+      }),
     {
       manual: true,
     },
@@ -123,13 +122,14 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     rowKeys: rowKeys || [],
     rows: rows || [],
   });
-
+  /** 表格每一行数据的key的集合 */
   const dataKeys = useRef<Set<any>>(new Set([]));
-
+  /** 获取表格key的集合 */
   const getDataKeys = useRefFunction((_data: any[]) => {
     const dataKey = _data.map((item) => item[rowKey]);
     dataKeys.current = new Set(dataKey);
   });
+  /** 表格拖拽重新计算表格数据 */
   const moveRow = (dropData: DropDataType) => {
     const moveResult = moveRowData(dataSource, dropData, rowKey);
     if (onDrop) {
@@ -149,6 +149,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       setDataSource(moveResult.dataSource);
     }
   };
+  /** 远程请求 */
   const loadData = async () => {
     if (counter.whetherRemote) {
       const { _filters, ...restParams } = newParams;
@@ -179,7 +180,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       }
     }
   };
-
+  /** 选择框的默认属性配置 */
   const getCheckboxProps = useMemo(() => {
     if (rowSelection.getCheckboxProps) {
       return rowSelection.getCheckboxProps;
@@ -189,6 +190,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     });
   }, [rowSelection.getCheckboxProps]);
 
+  /** 远程请求选中项发生变化时数据处理 */
   const changeRowSelect = useRefFunction((_rowKeys: string[], rrows: any[] = []) => {
     let nrows = [...(action.current.rows || [])];
     const map = new Map<string, any>();
@@ -227,7 +229,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     setRowKeys(_rowKeys);
     setRows(_rows);
   });
-
+  /** 选中项发生变化时的回调 */
   const handleRowSelectChange = useRefFunction((_rowKeys: string[], _rows: any[] = []) => {
     if (rowSelection?.type === 'radio') {
       changeRowSelect(_rowKeys, _rows);
@@ -257,7 +259,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       changeRowSelect(crowKeys, crows);
     }
   });
-
+  /** SaveRef数据 */
   const updateAction = () => {
     const userAction: ActionType = {
       pagination: innerPagination,
@@ -270,8 +272,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       setFiltersArg: counter.setFiltersArg,
       setSortOrderMap: counter.setSortOrderMap,
       getSortOrders: () => {
-        return createOrderParams(counter.sortOrderMap)
-
+        return createOrderParams(counter.sortOrderMap);
       },
       defaultSorterMap: counter.defaultSorterMap,
       columnsMap: counter.columnsMap,
@@ -304,12 +305,10 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   /** 绑定 action ref */
   React.useImperativeHandle(saveRef, updateAction);
 
-
-
   useEffect(() => {
     if (!Array.isArray(newParams.orders)) {
       if (counter.defaultSorterMap && JSON.stringify(counter.defaultSorterMap) !== '{}') {
-        newParams.orders = createOrderParams(counter.defaultSorterMap)
+        newParams.orders = createOrderParams(counter.defaultSorterMap);
       }
     }
 
@@ -324,7 +323,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       isGone.current = true;
     };
   }, []);
-
+  /** 监听远程请求数据变化 */
   useUpdateEffect(() => {
     if (innerPagination && Number(innerPagination.current || 0) > 1) {
       setPagination({
@@ -335,28 +334,25 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       loadData();
     }
   }, [JSON.stringify(remoteParams)]);
-
-
-
-
+  /** 监听外部传入的分页数据变化 */
   useEffect(() => {
     if (pagination && Object.prototype.toString.call(pagination) === '[object Object]') {
       setPagination(pagination);
     }
   }, [JSON.stringify(pagination)]);
-
+  /** 监听内部分页数据变化 */
   useUpdateEffect(() => {
     if (innerPagination.current && innerPagination.pageSize) {
       loadData();
     }
   }, [innerPagination.current, innerPagination.pageSize]);
-
+  /** 监听外部表格数据变化 */
   useUpdateEffect(() => {
     if (data) {
       setDataSource(data);
     }
   }, [data]);
-
+  /** 监听内部表格数据变化 */
   useUpdateEffect(() => {
     if (newdataSource && updateSource === false) {
       setDataSource(newdataSource);
@@ -379,6 +375,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     }
   }, [selectedRowKeys]);
 
+  /** 表格排序监听 */
   const handleTableChange = useRefFunction(
     (
       _pagination: TablePaginationConfig,
@@ -386,29 +383,80 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       _sorter: any,
       extra: TableCurrentDataSource<any>,
     ) => {
+      console.log('_sorter_sorter', _sorter);
       if (_pagination && _pagination.current && _pagination.pageSize) {
         setPagination({
           current: _pagination.current,
           pageSize: _pagination.pageSize,
         });
       }
-      counter.setFiltersArg(_filtersArg);
-      const ordersMap = {};
+
+      const ordersMap: SorterItem = {};
+      let innerSorter = _sorter;
+
       if (Array.isArray(_sorter)) {
+        innerSorter = [];
+        const sortOrderMap = counter.sortOrderMap;
+        // 为了给_sorter排序用
+        const newSorterMap = {};
+        // 旧的排序
+        const oldSortList: Partial<SortValueList>[] = [];
+        // 新增加的排序
+        const newSortList: Partial<SortValueList>[] = [];
+        // 新的全部排序
         _sorter.forEach((it) => {
-          ordersMap[it.field] = it.order;
+          newSorterMap[it.field] = it;
+          if (sortOrderMap[it.field]) {
+            oldSortList.push({
+              ...sortOrderMap[it.field],
+              value: it.order,
+              dataIndex: it.field,
+            });
+          } else {
+            newSortList.push({
+              value: it.order,
+              dataIndex: it.field,
+            });
+          }
         });
+        // 获取权重
+        let maxWi = 1;
+        if (oldSortList.length > 0) {
+          oldSortList.sort((a, b) => {
+            return Number(a.sort || 0) - Number(b.sort || 0);
+          });
+          maxWi = Number(oldSortList[oldSortList.length - 1].sort);
+        }
+        maxWi = maxWi + 1;
+
+        // 格式化新的排序
+        [...oldSortList, ...newSortList].forEach((it, index) => {
+          if (it.dataIndex) {
+            innerSorter.push(newSorterMap[it.dataIndex]);
+            let sort = it.sort;
+            if (sort == null) {
+              sort = maxWi;
+              maxWi++;
+            }
+            ordersMap[it.dataIndex || ''] = {
+              value: it.value || 'ascend',
+              sort: sort,
+              showNum: index + 1,
+            };
+          }
+        });
+
+        // 格式化排序
       }
       if (Object.prototype.toString.call(_sorter) === '[object Object]' && _sorter !== null) {
         const { field, order } = _sorter;
         ordersMap[field] = order;
       }
-      // console.log('setSortOrderMap');
-
+      counter.setFiltersArg(_filtersArg);
       counter.setSortOrderMap(ordersMap);
 
       if (onChange) {
-        onChange(_pagination, _filtersArg, _sorter, extra);
+        onChange(_pagination, _filtersArg, innerSorter, extra);
       }
     },
   );
@@ -452,6 +500,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       counter.setSortKeyColumns(columnKeys);
     }
   }, [tableColumn]);
+
   const columns = useMemo(() => {
     const filterCols = tableColumn.filter((item) => {
       // 删掉不应该显示的
@@ -466,17 +515,19 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     return filterCols;
   }, [counter.columnsMap, tableColumn, dragSort]);
 
+  /** 表格行是否可选择 */
   const cRowSelection = useMemo(() => {
     return checkbox
       ? {
-        selectedRowKeys: rowKeys,
-        onChange: handleRowSelectChange,
-        ...rowSelection,
-        getCheckboxProps,
-      }
+          selectedRowKeys: rowKeys,
+          onChange: handleRowSelectChange,
+          ...rowSelection,
+          getCheckboxProps,
+        }
       : undefined;
   }, [JSON.stringify(rowKeys), handleRowSelectChange, getCheckboxProps, rowSelection]);
 
+  /** 点击行选中处理 */
   const handleRowSelect = useRefFunction((record: any) => {
     let checkConfig: any = { disabled: false };
     if (typeof getCheckboxProps === 'function') {
@@ -521,6 +572,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   //     rowParentIndex: parentIndex
   //   };
   // };
+  /** 表格参数 */
   const tableProp: any = () => {
     let _row = [];
     let total = 0;
@@ -678,12 +730,12 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       bodyStyle={
         toolbarDom
           ? {
-            paddingTop: 0,
-            paddingBottom: 0,
-          }
+              paddingTop: 0,
+              paddingBottom: 0,
+            }
           : {
-            padding: 0,
-          }
+              padding: 0,
+            }
       }
       {...cardProps}
     >

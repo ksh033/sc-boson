@@ -1,15 +1,15 @@
 ﻿/*
- * @Description: 
+ * @Description:
  * @Version: 1.0
  * @Autor: yangyuhang
  * @Date: 2022-07-26 11:26:08
  * @LastEditors: yangyuhang
  * @LastEditTime: 2023-03-15 17:28:19
  */
-import type { SortOrder, FilterValue, TableCurrentDataSource } from "antd/es/table/interface";
+import type { SortOrder } from 'antd/es/table/interface';
 import type { TooltipProps, TabPaneProps } from 'antd';
 import type { CardProps } from 'antd';
-import type { } from 'antd/es/table/interface';
+import type {} from 'antd/es/table/interface';
 import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
 import type { SearchProps } from 'antd/es/input';
 export type { ColumnsType } from 'antd/es/table/Table';
@@ -31,7 +31,13 @@ export declare type ProCoreActionType<T = {}> = {
   pageInfo?: PageInfo;
 } & T;
 
-export type SorterItem = Record<string, SortOrder>
+export type SortValue = {
+  value: SortOrder;
+  sort: number;
+  showNum: number;
+};
+
+export type SorterItem = Record<string, SortValue>;
 export type ActionType = ProCoreActionType & {
   fullScreen?: () => void;
   pagination?: TablePaginationConfig;
@@ -47,9 +53,8 @@ export type ActionType = ProCoreActionType & {
   getSortOrders: () => ({
     column: any;
     asc: boolean;
-  } | null)[]
-}
-
+  } | null)[];
+};
 
 export interface CustomSearchComponentProps {
   value?: any;
@@ -59,7 +64,8 @@ export const OpColKey = '_OperateKey';
 export declare type CustomSearchComponent =
   | React.ReactNode
   | ((props: CustomSearchComponentProps) => React.ReactNode);
-export interface ScProColumnType<RecordType> extends ColumnType<RecordType> {
+export type ScProColumnType<RecordType> = Omit<ColumnType<RecordType>, 'defaultSortOrder'> & {
+  defaultSortOrder?: SortOrder | SortValue;
   canSearch?: boolean;
   customSearchComponent?: CustomSearchComponent;
   /** @deprecated 你可以使用 tooltip，这个更改是为了与 antd 统一 */
@@ -67,11 +73,11 @@ export interface ScProColumnType<RecordType> extends ColumnType<RecordType> {
   /** @deprecated 是否隐藏 */
   hidden?: boolean;
   disable?:
-  | boolean
-  | {
-    checkbox: boolean;
-  };
-}
+    | boolean
+    | {
+        checkbox: boolean;
+      };
+};
 
 export interface ScProColumnGroupType<RecordType>
   extends Omit<ScProColumnType<RecordType>, 'dataIndex'> {
@@ -88,10 +94,10 @@ export type ColumnsState = {
   fixed?: 'right' | 'left' | undefined;
   order?: number;
   disable?:
-  | boolean
-  | {
-    checkbox: boolean;
-  };
+    | boolean
+    | {
+        checkbox: boolean;
+      };
 };
 
 export type ColumnsStateType = {
@@ -105,11 +111,11 @@ export type OptionConfig = {
   fullScreen?: OptionsType;
   reload?: OptionsType;
   setting?:
-  | boolean
-  | {
-    draggable?: boolean;
-    checkable?: boolean;
-  };
+    | boolean
+    | {
+        draggable?: boolean;
+        checkable?: boolean;
+      };
   search?: (SearchProps & { name?: string }) | boolean;
 };
 
@@ -140,7 +146,7 @@ export type ToolBarProps<T = unknown> = {
 };
 export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   /** 当选中时触发 */
-  key?: string,
+  key?: string;
   onSelectRow?: (selectedRowKeys: string[], selectedRows: any[]) => void;
   /** 列表数据 */
   data?: { rows: any[]; total: number; current: number; size: number };
@@ -202,10 +208,8 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   dragSort?: boolean | string;
   /** 是否时复合排序 */
   multipleSort?: boolean;
-  /**
-   * 排序字段
-   */
-  defaultSort?: SorterItem
+  /** 排序字段 */
+  defaultSort?: SorterItem;
 }
 
 export type ListToolBarSetting = {

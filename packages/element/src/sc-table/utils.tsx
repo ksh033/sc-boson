@@ -1,26 +1,35 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { SearchOutlined } from '@ant-design/icons';
 import type { TableColumnType } from 'antd';
-import { Button, Input, Space, Typography } from 'antd';
+import { Button, Input, Space, Typography, Badge } from 'antd';
+import type { SortOrder } from 'antd/es/table/interface';
 import { cloneElement } from 'antd/es/_util/reactNode';
 import get from 'rc-util/es/utils/get';
 import React from 'react';
 import LabelIconTip from '../_util/LabelIconTip';
 import omitUndefinedAndEmptyArr from '../_util/omitUndefinedAndEmptyArr';
 import type { useContainer } from './container';
-import type { ActionType, ColumnsState } from './typing';
+import type { ActionType, ColumnsState, SorterItem, SortValue } from './typing';
 
 export const { isValidElement } = React;
 
-export const renderColumnsTitle = (item: any) => {
+export const renderColumnsTitle = (item: any, sortItem: SortValue | false) => {
   const { title } = item;
+  let newTitle = title;
+  let subTitle: React.ReactNode | null = null;
+
   if (title && typeof title === 'function') {
-    return title(item, 'table', <LabelIconTip label={title} tooltip={item.tooltip || item.tip} />);
+    newTitle = title(item);
+  }
+  if (sortItem) {
+    subTitle = (
+      <Badge count={sortItem.showNum} style={{ backgroundColor: '#1890ff' }} size="small" />
+    );
   }
   // if (React.isValidElement(title)) {
   //   return title;
   // }
-  return <LabelIconTip label={title} tooltip={item.tooltip || item.tip} />;
+  return <LabelIconTip label={newTitle} tooltip={item.tooltip || item.tip} subTitle={subTitle} />;
 };
 
 /**
@@ -64,9 +73,9 @@ export const genCopyable = (dom: React.ReactNode, item: any, text: string) => {
         copyable={
           item.copyable && text
             ? {
-              text,
-              tooltips: ['', ''],
-            }
+                text,
+                tooltips: ['', ''],
+              }
             : undefined
         }
         ellipsis={item.ellipsis && text ? { tooltip: text } : false}
@@ -180,9 +189,9 @@ export const getColumnSearchProps = (
     onFilter = counter.whetherRemote
       ? undefined
       : (value: string, record: any) =>
-        record[dataIndex]
-          ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
-          : '';
+          record[dataIndex]
+            ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+            : '';
   }
 
   if (columnProps.filters) {
@@ -304,14 +313,20 @@ export function genColumnList<T>(props: {
         extraProps = getColumnSearchProps(dataIndex, columnProps, counter);
       }
       let sorterProps = {};
-      const sortOrder = counter.sortOrderMap[dataIndex] ? counter.sortOrderMap[dataIndex] : false;
+      const sortOrderItem = counter.sortOrderMap[dataIndex]
+        ? counter.sortOrderMap[dataIndex]
+        : false;
+      let sortOrder: SortOrder = null;
+      if (sortOrderItem) {
+        sortOrder = sortOrderItem.value;
+      }
       if (columnProps.sorter && typeof columnProps.sorter === 'boolean') {
         if (counter.whetherRemote) {
           sorterProps = {
             sorter: multipleSort
               ? {
-                multiple: columnsIndex + 1,
-              }
+                  multiple: columnsIndex + 1,
+                }
               : true,
             sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
           };
@@ -319,7 +334,17 @@ export function genColumnList<T>(props: {
           sorterProps = {
             sorter: multipleSort
               ? {
-                compare: (a: any, b: any) => {
+                  compare: (a: any, b: any) => {
+                    if (isNumber(a[dataIndex])) {
+                      return Number(a[dataIndex]) - Number(b[dataIndex]);
+                    }
+                    const as: string = String(a[dataIndex]);
+                    const bs: string = String(b[dataIndex]);
+                    return as.localeCompare(bs, 'zh-CN');
+                  },
+                  multiple: columnsIndex + 1,
+                }
+              : (a: any, b: any) => {
                   if (isNumber(a[dataIndex])) {
                     return Number(a[dataIndex]) - Number(b[dataIndex]);
                   }
@@ -327,16 +352,6 @@ export function genColumnList<T>(props: {
                   const bs: string = String(b[dataIndex]);
                   return as.localeCompare(bs, 'zh-CN');
                 },
-                multiple: columnsIndex + 1,
-              }
-              : (a: any, b: any) => {
-                if (isNumber(a[dataIndex])) {
-                  return Number(a[dataIndex]) - Number(b[dataIndex]);
-                }
-                const as: string = String(a[dataIndex]);
-                const bs: string = String(b[dataIndex]);
-                return as.localeCompare(bs, 'zh-CN');
-              },
             sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
           };
         }
@@ -353,20 +368,20 @@ export function genColumnList<T>(props: {
         ...extraProps,
         ...columnProps,
         ...sorterProps,
-        title: renderColumnsTitle(columnProps),
+        title: renderColumnsTitle(columnProps, sortOrderItem),
         filters,
         fixed: config.fixed,
         width: columnProps.width || (columnProps.fixed ? 200 : undefined),
         children: columnProps.children
           ? genColumnList({
-            ...props,
-            columns: columnProps?.children,
-          })
+              ...props,
+              columns: columnProps?.children,
+            })
           : undefined,
       };
       return omitUndefinedAndEmptyArr(tempColumns);
     })
     .filter((item) => !item.hideInTable) as unknown as (TableColumnType<T> & {
-      index?: number;
-    })[];
+    index?: number;
+  })[];
 }

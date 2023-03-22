@@ -16,7 +16,6 @@ import schema from '../pageConfigUitls';
 import { omitUndefinedAndEmptyArr } from '../index';
 //import type { ActionType } from '@scboson/sc-element/es/sc-table/typing';
 
-
 export { PageConfig, PageType };
 export interface SearchConfig {
   tableKey?: string;
@@ -89,7 +88,6 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const saveRef = useRef<any>();
 
   const filterRef = useRef<any>({});
-  const ordersRef = useRef<any>([]);
   const submitRef = useRef<any>({});
   const pageCon = useRef<any>();
   const searchInitParams = useRef<any>();
@@ -150,14 +148,14 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     };
     sessionStorage.setItem('SEARCH_PARAMS', JSON.stringify(searchParam));
   };
-  const [state, setState] = useSetState<{ params?: any, pagination?: any }>({
+  const [state, setState] = useSetState<{ params?: any; pagination?: any }>({
     params: getSearchParams(),
     pagination: getPagination(),
   });
 
   const onSubmitSearchForm = (_params: any) => {
     const newParams = omitUndefinedAndEmptyArr(_params);
-    newParams.orders = saveRef.current?.getSortOrders()
+    newParams.orders = saveRef.current?.getSortOrders();
     newParams._filters = filterRef.current;
     if (JSON.stringify(newParams) !== JSON.stringify(state.params)) {
       setState({
@@ -321,8 +319,12 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       newOrderMap = {};
       const { orders } = vals;
 
-      orders.forEach((obj: any) => {
-        newOrderMap[obj.column] = obj.asc ? 'ascend' : 'descend';
+      orders.forEach((obj: any, index: number) => {
+        newOrderMap[obj.column] = {
+          value: obj.asc ? 'ascend' : 'descend',
+          showNum: index + 1,
+          sort: index + 1,
+        };
       });
       //  ordersRef.current = vals.orders;
       // saveRef.current?.setSortOrderMap(newOrderMap);
@@ -330,7 +332,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       //ordersRef.current = [];
       // saveRef.current?.setSortOrderMap({});
     }
-    return newOrderMap
+    return newOrderMap;
   };
 
   const searchEvent = (event: any) => {
@@ -431,17 +433,17 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const getTable = (tableConfig?: TableConfig) => {
     const tableInfo: any = getTableConfig(tableConfig);
     const locSearchParams = getSearchParams();
-    tableInfo.defaultSort = initSorter(locSearchParams)
+    tableInfo.defaultSort = initSorter(locSearchParams);
     return new TableInfo(tableInfo, config, schemaContext.tableOpColCmp, reload);
   };
 
   const getSearch = (searchConfig?: SearchConfig) => {
     let search: any = getSearchConfig(searchConfig);
-    const formParams = { current: 1, size: 10, ...state.params }
+    const formParams = { current: 1, size: 10, ...state.params };
     search = {
       ...search,
-      params: formParams
-    }
+      params: formParams,
+    };
     return new SearchInfo(search, config);
   };
   const getPageParam = () => {
