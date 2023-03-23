@@ -324,7 +324,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
         newOrderMap[obj.column] = {
           value: obj.asc ? 'ascend' : 'descend',
           showNum: index + 1,
-          sort: index + 1,
+          multiple: index + 1,
         };
       });
       //  ordersRef.current = vals.orders;
