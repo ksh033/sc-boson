@@ -20,6 +20,7 @@ import DraggableBodyCell from './components/DraggableBodyRow/DraggableBodyCell';
 import { useRefFunction } from '../_util/useRefFunction';
 import type { ActionType, ScTableProps, SorterItem } from './typing';
 import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
+import { changeCountSort } from './countSort';
 const { useEffect, useRef, useMemo } = React;
 
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
@@ -72,7 +73,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       });
     });
 
-    list.sort((a, b) => a.sort - b.sort);
+    list.sort((a, b) => a.multiple - b.multiple);
 
     return list.map((item: SortValueList) => {
       return { column: item.dataIndex, asc: item.value === 'ascend' };
@@ -390,73 +391,15 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
           pageSize: _pagination.pageSize,
         });
       }
+      // 计算排序
+      const obj = changeCountSort(_sorter, counter.sortOrderMap);
 
-      const ordersMap: SorterItem = {};
-      let innerSorter = _sorter;
-
-      if (Array.isArray(_sorter)) {
-        innerSorter = [];
-        const sortOrderMap = counter.sortOrderMap;
-        // 为了给_sorter排序用
-        const newSorterMap = {};
-        // 旧的排序
-        const oldSortList: Partial<SortValueList>[] = [];
-        // 新增加的排序
-        const newSortList: Partial<SortValueList>[] = [];
-        // 新的全部排序
-        _sorter.forEach((it) => {
-          newSorterMap[it.field] = it;
-          if (sortOrderMap[it.field]) {
-            oldSortList.push({
-              ...sortOrderMap[it.field],
-              value: it.order,
-              dataIndex: it.field,
-            });
-          } else {
-            newSortList.push({
-              value: it.order,
-              dataIndex: it.field,
-            });
-          }
-        });
-        // 获取权重
-        let maxWi = 1;
-        if (oldSortList.length > 0) {
-          oldSortList.sort((a, b) => {
-            return Number(a.sort || 0) - Number(b.sort || 0);
-          });
-          maxWi = Number(oldSortList[oldSortList.length - 1].sort);
-        }
-        maxWi = maxWi + 1;
-
-        // 格式化新的排序
-        [...oldSortList, ...newSortList].forEach((it, index) => {
-          if (it.dataIndex) {
-            innerSorter.push(newSorterMap[it.dataIndex]);
-            let sort = it.sort;
-            if (sort == null) {
-              sort = maxWi;
-              maxWi++;
-            }
-            ordersMap[it.dataIndex || ''] = {
-              value: it.value || 'ascend',
-              sort: sort,
-              showNum: index + 1,
-            };
-          }
-        });
-
-        // 格式化排序
-      }
-      if (Object.prototype.toString.call(_sorter) === '[object Object]' && _sorter !== null) {
-        const { field, order } = _sorter;
-        ordersMap[field] = order;
-      }
       counter.setFiltersArg(_filtersArg);
-      counter.setSortOrderMap(ordersMap);
+      console.log('ordersMap', obj.ordersMap);
+      counter.setSortOrderMap(obj.ordersMap);
 
       if (onChange) {
-        onChange(_pagination, _filtersArg, innerSorter, extra);
+        onChange(_pagination, _filtersArg, obj.innerSorter, extra);
       }
     },
   );
@@ -491,6 +434,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
     return cols;
   }, [propsColumns, counter, dataSource, multipleSort]);
+
+  console.log('tableColumn', tableColumn);
   /** Table Column 变化的时候更新一下，这个参数将会用于渲染 */
 
   useDeepCompareEffect(() => {
@@ -546,7 +491,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       }
       if (rowSelection?.type === 'checkbox') {
         const index = _rowKeys.findIndex((item) => item === key);
-        console.log(index);
 
         if (index > -1) {
           _rowKeys = _rowKeys.filter((item) => {

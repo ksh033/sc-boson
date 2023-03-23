@@ -178,6 +178,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     // ordersRef.current = [];
     saveRef.current?.setFiltersArg({});
     if (saveRef.current?.defaultSorterMap) {
+      console.log('saveRef.current?.defaultSorterMap', saveRef.current?.defaultSorterMap);
       saveRef.current?.setSortOrderMap(saveRef.current?.defaultSorterMap);
     } else {
       saveRef.current?.setSortOrderMap({});

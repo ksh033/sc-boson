@@ -69,53 +69,58 @@ function useContainer(props: UseContainerProps = {}) {
     });
     return columnKeyMap;
   }, [props.columns, props.columnsState?.defaultValue, defaultColumnsStateMap]);
-  // 计算默认排序
-  const countDefaultSort = (_columns: ScProColumn<any>) => {
-    const strSortList: Partial<SortValueList>[] = [];
-    const objSortList: Partial<SortValueList>[] = [];
+  /** 递归取排序 */
+  const formatSortList = (_columns: ScProColumn<any>, sortList: Partial<SortValueList>[]) => {
     if (Array.isArray(_columns)) {
-      _columns?.forEach((item: ScProColumnType<any>, index) => {
+      _columns?.forEach((item: any, index) => {
         const columnKey = genColumnKey(item.key ?? (item.dataIndex as React.Key), index);
-        if (item.sorter && item.defaultSortOrder != null) {
-          if (typeof item.defaultSortOrder === 'string') {
-            strSortList.push({
-              value: item.defaultSortOrder,
+        if (typeof item.sorter === 'object' && item.sorter != null) {
+          if (item.sorter.value) {
+            sortList.push({
               dataIndex: columnKey,
-            });
-          } else {
-            objSortList.push({
-              dataIndex: columnKey,
-              ...item.defaultSortOrder,
+              multiple: item.sorter.multiple,
+              value: item.sorter.value,
             });
           }
         }
+        if (Array.isArray(item.children) && item.children.length > 0) {
+          formatSortList(item.children, sortList);
+        }
       });
     }
+    return sortList;
+  };
+
+  // 计算默认排序
+  const countDefaultSort = (_columns: ScProColumn<any>) => {
+    let sortList: Partial<SortValueList>[] = [];
+    sortList = formatSortList(_columns, sortList);
     // 寻找最大权重
     let maxWi = 1;
-    if (objSortList.length > 0) {
-      objSortList.sort((a, b) => {
-        return Number(a.sort || 0) - Number(b.sort || 0);
+    const hasMultipleList = sortList.filter((it) => it.multiple != null);
+    if (hasMultipleList.length > 0) {
+      hasMultipleList.sort((a, b) => {
+        return Number(a.multiple || 0) - Number(b.multiple || 0);
       });
-      maxWi = Number(objSortList[objSortList.length - 1].sort);
+      maxWi = Number(hasMultipleList[hasMultipleList.length - 1].multiple);
     }
     maxWi = maxWi + 1;
     const sorterMap: SorterItem = {};
-    [...objSortList, ...strSortList].forEach((it, index) => {
+    sortList.forEach((it, index) => {
       if (it.dataIndex) {
-        let sort = it.sort;
-        if (sort == null) {
-          sort = maxWi;
+        let multiple = it.multiple;
+        if (multiple == null) {
+          multiple = maxWi;
           maxWi++;
         }
         sorterMap[it.dataIndex || ''] = {
           value: it.value || 'ascend',
-          sort: sort,
+          multiple: multiple,
           showNum: index + 1,
         };
       }
     });
-
+    console.log('innerDefaultSorterMap', sorterMap);
     return sorterMap;
   };
   // 默认排序

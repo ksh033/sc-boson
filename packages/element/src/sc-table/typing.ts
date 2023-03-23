@@ -6,7 +6,7 @@
  * @LastEditors: yangyuhang
  * @LastEditTime: 2023-03-15 17:28:19
  */
-import type { SortOrder } from 'antd/es/table/interface';
+import type { CompareFn, SortOrder } from 'antd/es/table/interface';
 import type { TooltipProps, TabPaneProps } from 'antd';
 import type { CardProps } from 'antd';
 import type {} from 'antd/es/table/interface';
@@ -19,6 +19,7 @@ export type PageInfo = {
   total: number;
   current: number;
 };
+// eslint-disable-next-line @typescript-eslint/ban-types
 export declare type ProCoreActionType<T = {}> = {
   /** @name 刷新 */
   reload: (resetPageIndex?: boolean) => void;
@@ -33,7 +34,7 @@ export declare type ProCoreActionType<T = {}> = {
 
 export type SortValue = {
   value: SortOrder;
-  sort: number;
+  multiple: number;
   showNum: number;
 };
 
@@ -64,8 +65,20 @@ export const OpColKey = '_OperateKey';
 export declare type CustomSearchComponent =
   | React.ReactNode
   | ((props: CustomSearchComponentProps) => React.ReactNode);
-export type ScProColumnType<RecordType> = Omit<ColumnType<RecordType>, 'defaultSortOrder'> & {
-  defaultSortOrder?: SortOrder | SortValue;
+export type ScProColumnType<RecordType> = Omit<
+  ColumnType<RecordType>,
+  'defaultSortOrder' | 'sorter'
+> & {
+  // defaultSortOrder?: SortOrder | SortValue;
+  sorter?:
+    | boolean
+    | CompareFn<RecordType>
+    | {
+        compare?: CompareFn<RecordType>;
+        /** Config multiple sorter order priority */
+        multiple?: number;
+        value?: SortOrder;
+      };
   canSearch?: boolean;
   customSearchComponent?: CustomSearchComponent;
   /** @deprecated 你可以使用 tooltip，这个更改是为了与 antd 统一 */

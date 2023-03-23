@@ -316,25 +316,40 @@ export function genColumnList<T>(props: {
       const sortOrderItem = counter.sortOrderMap[dataIndex]
         ? counter.sortOrderMap[dataIndex]
         : false;
-      let sortOrder: SortOrder = null;
+      let sortOrder: SortOrder | false = false;
+      let multiple = columnsIndex + 1;
       if (sortOrderItem) {
         sortOrder = sortOrderItem.value;
+        multiple = sortOrderItem.multiple;
       }
-      if (columnProps.sorter && typeof columnProps.sorter === 'boolean') {
-        if (counter.whetherRemote) {
-          sorterProps = {
-            sorter: multipleSort
-              ? {
-                  multiple: columnsIndex + 1,
-                }
-              : true,
-            sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
-          };
-        } else {
-          sorterProps = {
-            sorter: multipleSort
-              ? {
-                  compare: (a: any, b: any) => {
+      if (columnProps.dataIndex != null && columnProps.children == null) {
+        if (columnProps.sorter && typeof columnProps.sorter !== 'function') {
+          if (counter.whetherRemote) {
+            sorterProps = {
+              defaultSortOrder: sortOrder,
+              sorter: multipleSort
+                ? {
+                    multiple: multiple,
+                  }
+                : true,
+              // sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
+            };
+          } else {
+            sorterProps = {
+              defaultSortOrder: sortOrder,
+              sorter: multipleSort
+                ? {
+                    compare: (a: any, b: any) => {
+                      if (isNumber(a[dataIndex])) {
+                        return Number(a[dataIndex]) - Number(b[dataIndex]);
+                      }
+                      const as: string = String(a[dataIndex]);
+                      const bs: string = String(b[dataIndex]);
+                      return as.localeCompare(bs, 'zh-CN');
+                    },
+                    multiple: multiple,
+                  }
+                : (a: any, b: any) => {
                     if (isNumber(a[dataIndex])) {
                       return Number(a[dataIndex]) - Number(b[dataIndex]);
                     }
@@ -342,24 +357,16 @@ export function genColumnList<T>(props: {
                     const bs: string = String(b[dataIndex]);
                     return as.localeCompare(bs, 'zh-CN');
                   },
-                  multiple: columnsIndex + 1,
-                }
-              : (a: any, b: any) => {
-                  if (isNumber(a[dataIndex])) {
-                    return Number(a[dataIndex]) - Number(b[dataIndex]);
-                  }
-                  const as: string = String(a[dataIndex]);
-                  const bs: string = String(b[dataIndex]);
-                  return as.localeCompare(bs, 'zh-CN');
-                },
-            sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
+              // sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
+            };
+          }
+        } else {
+          sorterProps = {
+            defaultSortOrder: sortOrder,
+            ...columnProps.sorter,
+            // sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
           };
         }
-      } else {
-        sorterProps = {
-          ...columnProps.sorter,
-          sortOrder: columnProps.sortOrder ? columnProps.sortOrder : sortOrder,
-        };
       }
 
       const tempColumns: any = {
@@ -379,6 +386,7 @@ export function genColumnList<T>(props: {
             })
           : undefined,
       };
+
       return omitUndefinedAndEmptyArr(tempColumns);
     })
     .filter((item) => !item.hideInTable) as unknown as (TableColumnType<T> & {
