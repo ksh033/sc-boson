@@ -105,7 +105,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
 
       // }
       if (onChange) {
-        onChange(rChangedValue, [rChangedValue[0], rChangedValue[1]]);
+        onChange(dates, [rChangedValue[0], rChangedValue[1]]);
       }
     },
     [format, onChange, vformat],
@@ -186,7 +186,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         } else {
           setShwFormat(temformat)
         }
-
+        resProps.onOpenChange?.(v)
 
       }}
       inputReadOnly={false}
