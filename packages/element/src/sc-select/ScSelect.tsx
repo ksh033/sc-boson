@@ -170,20 +170,31 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     cData.forEach((item: any, index: number) => {
       if (valueField && textField) {
         let text: any = getTextField(item);
-        const label: any = text
+        const label: any = text;
         if (tip) {
           text = <Tooltip title={text}>{text}</Tooltip>;
         }
-        const otherProps: any = {}
+        const otherProps: any = {};
         if (!disableSelect && !item[disabledField]) {
-          otherProps.disabled = !item[disabledField]
+          otherProps.disabled = !item[disabledField];
         }
         if (item[disabledField] !== undefined && !item[disabledField]) {
-          text = <div title={text}><Tag color='red'>{item.title}</Tag>{text}</div>;
+          text = (
+            <div title={text}>
+              <Tag color="red">{item.title}</Tag>
+              {text}
+            </div>
+          );
         }
 
         list.push(
-          <Option {...otherProps} key={level + index.toString()} value={item[valueField]} data={item} label={label}>
+          <Option
+            {...otherProps}
+            key={level + index.toString()}
+            value={item[valueField]}
+            data={item}
+            label={label}
+          >
             {text}
           </Option>,
         );
@@ -196,9 +207,9 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     if (Array.isArray(list)) {
       return !isRemote && input !== ''
         ? list.filter((it) => {
-          const text = getTextField(it);
-          return text.indexOf(input) != -1;
-        })
+            const text = getTextField(it);
+            return text.indexOf(input) != -1;
+          })
         : list;
     }
     return [];
@@ -209,9 +220,9 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     if (singleInput && input !== '') {
       const itIdx = Array.isArray(dataSource)
         ? dataSource.findIndex((it) => {
-          const text = getTextField(it);
-          return text.indexOf(input) != -1;
-        })
+            const text = getTextField(it);
+            return text.indexOf(input) != -1;
+          })
         : -1;
       if (itIdx === -1) {
         list.push(
@@ -375,11 +386,21 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
       searchValue: input,
     };
   }
+  /** 数据格式化处理 */
+  const formatValue = (item: any) => {
+    if (props.labelInValue === true && item != null) {
+      return {
+        label: item[textField] || item.label,
+        value: item[valueField] || item.value,
+      };
+    }
+    return item;
+  };
 
   return (
     <Select
       //   用于解决后端返回value为null时，组件不展示输入提示文字问题
-      value={selectProps.value === null ? undefined : selectProps.value}
+      value={selectProps.value === null ? undefined : formatValue(selectProps.value)}
       onDropdownVisibleChange={handleDropdownVisibleChange}
       loading={loading}
       onChange={handleChange}
