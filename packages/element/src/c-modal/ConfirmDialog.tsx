@@ -8,7 +8,6 @@ import warning from 'antd/es/_util/warning';
 import type { ModalFuncProps } from 'antd';
 import { Modal as Dialog } from 'antd';
 
-
 interface ConfirmDialogProps extends ModalFuncProps {
   afterClose?: () => void;
   close: (...args: any[]) => void;
@@ -103,6 +102,7 @@ const ConfirmDialog = (props: ConfirmDialogProps) => {
         )}
         onCancel={() => close?.({ triggerCancel: true })}
         open={open || visible}
+        visible={open || visible}
         title=""
         footer=""
         transitionName={getTransitionName(rootPrefixCls, 'zoom', props.transitionName)}
