@@ -120,7 +120,6 @@ function useContainer(props: UseContainerProps = {}) {
         };
       }
     });
-    console.log('innerDefaultSorterMap', sorterMap);
     return sorterMap;
   };
   // 默认排序

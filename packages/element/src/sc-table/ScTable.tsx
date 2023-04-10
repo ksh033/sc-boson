@@ -434,8 +434,6 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
     return cols;
   }, [propsColumns, counter, dataSource, multipleSort]);
-
-  console.log('tableColumn', tableColumn);
   /** Table Column 变化的时候更新一下，这个参数将会用于渲染 */
 
   useDeepCompareEffect(() => {

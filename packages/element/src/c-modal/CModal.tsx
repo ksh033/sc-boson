@@ -31,7 +31,7 @@ const CModalDialog = (props: CModalDialogProps) => {
   const {
     onCancel,
     onOk,
-    close = () => { },
+    close = () => {},
     fullscreen,
     showFullscreen,
     zIndex,
@@ -130,6 +130,7 @@ const CModalDialog = (props: CModalDialogProps) => {
     if (React.isValidElement(props.content)) {
       dlgContent = React.cloneElement<any>(props.content, dlgCprops);
     } else {
+      //@ts-ignore
       dlgContent = React.createElement<any>(props.content, dlgCprops);
     }
   }

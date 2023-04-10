@@ -20,11 +20,24 @@ import moment from 'moment';
 
 export { PageConfig, Action };
 interface initProps {
-  callback?: (res: any) => any; // 回调函数
-  name?: string; // 服务名, 默认名称为 queryById
-  key?: string; // 默认为id
-  params?: any; // 服务的参数，默认参数为 { id: record }
-  defaultValues?: any; // 默认初始化值
+  /** 请求详情后的回调函数 */
+  callback?: (res: any) => any;
+  /** 服务名, 默认名称为 queryById */
+  name?: string;
+  /** 默认为id */
+  key?: string;
+  /** 服务的参数，默认参数为 { id: record } */
+  params?: any;
+  /** 表单初始化的值 */
+  defaultValues?: any;
+  /**
+   * 默认格式化
+   *
+   * @default false
+   */
+  defaultForamted?: boolean;
+  /** 约定默认格式化的字段集合 */
+  defaultRuleFormatKeys?: string[];
 }
 type ActionType = 'add' | 'edit' | 'view';
 export interface UseEditPageProp<S> extends UseListPageProp<S> {
@@ -65,6 +78,48 @@ export interface UseEditPageProp<S> extends UseListPageProp<S> {
 const defaultConfig: PageConfig = {
   pageType: 'page',
 };
+
+const endsWith = (val: string, str: string) => {
+  if (typeof String.prototype.endsWith === 'function') {
+    return val.endsWith(str);
+  } else {
+    const reg = new RegExp(str + '$');
+    return reg.test(val);
+  }
+};
+
+/**
+ * 默认规则对下拉选择组件进行格式化
+ *
+ * @param obj 对象
+ * @param keys 对象内的字段
+ */
+export function defaultRuleFormat(obj: any, keys?: string[]) {
+  if (obj == null || typeof obj !== 'object') {
+    return obj;
+  }
+  const innerSet = new Set<string>(keys || []);
+  if (innerSet.size === 0) {
+    Object.keys(obj).forEach((key) => {
+      if (endsWith(key, 'Id')) {
+        const prefixKey = key.substring(0, key.length - 2);
+        if (obj[`${prefixKey}Name`]) {
+          innerSet.add(prefixKey);
+        }
+      }
+    });
+  }
+  Array.from(innerSet).forEach((prefixKey) => {
+    const itemValue: any = {};
+    itemValue[`${prefixKey}Id`] = obj[`${prefixKey}Id`];
+    itemValue.value = obj[`${prefixKey}Id`];
+    itemValue[`${prefixKey}Name`] = obj[`${prefixKey}Name`];
+    itemValue.label = obj[`${prefixKey}Name`];
+
+    obj[prefixKey] = itemValue;
+  });
+  return obj;
+}
 
 export default function useEditPage(
   pageConfig: PageConfig = { pageType: 'page' },
@@ -119,7 +174,7 @@ export default function useEditPage(
       if (match && match.params && match.params.editpage) {
         return match.params.editpage;
       } else {
-        return record && record['action'];
+        return record && record.action;
       }
     }
     return '';
@@ -136,7 +191,8 @@ export default function useEditPage(
     }
     return '';
   };
-  const toDefaultValueChuange = (values: any) => {
+  /** 表单详情时对枚举字段进行翻译 */
+  const toDefaultValueChange = (values: any) => {
     const action = getAction();
     if (Array.isArray(config.formConfig)) {
       config.formConfig.forEach((item) => {
@@ -165,7 +221,15 @@ export default function useEditPage(
   };
 
   const toInitialValues = (initConfig: initProps) => {
-    const { callback, name = 'queryById', params, defaultValues, key } = initConfig;
+    const {
+      callback,
+      name = 'queryById',
+      params,
+      defaultValues,
+      key,
+      defaultForamted = false,
+      defaultRuleFormatKeys,
+    } = initConfig;
 
     if (getAction() !== Action.ADD) {
       if (config.service && config.service[name]) {
@@ -176,32 +240,35 @@ export default function useEditPage(
         setLoading(true);
 
         config.service[name](_params).then((res: any) => {
+          if (Object.prototype.toString.call(res) === '[object Object]' && defaultForamted) {
+            res = defaultRuleFormat(res, defaultRuleFormatKeys);
+          }
           if (callback) {
             const ret = callback(res);
             if (ret) {
               if (ret.then) {
                 // 判断是Promise方法
                 ret.then((result: any) => {
-                  setInitialValues(toDefaultValueChuange(result));
+                  setInitialValues(toDefaultValueChange(result));
                   setLoading(false);
                 });
               } else {
-                setInitialValues(toDefaultValueChuange(ret));
+                setInitialValues(toDefaultValueChange(ret));
                 setLoading(false);
               }
             } else {
               setLoading(false);
             }
           } else {
-            setInitialValues(toDefaultValueChuange(res));
+            setInitialValues(toDefaultValueChange(res));
             setLoading(false);
           }
         });
       } else {
-        setInitialValues(toDefaultValueChuange(defaultValues));
+        setInitialValues(toDefaultValueChange(defaultValues));
       }
     } else {
-      setInitialValues(toDefaultValueChuange(defaultValues));
+      setInitialValues(toDefaultValueChange(defaultValues));
     }
   };
 
