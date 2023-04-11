@@ -23,8 +23,8 @@ export interface ScTreeSelectProps extends TreeSelectProps<TreeNodeProps> {
   keyField?: string;
   valueField?: string;
   searchField?: string;
-  params: any;
-  autoload: boolean;
+  params?: any;
+  autoload?: boolean;
   nodeTransform?: (node: any) => any;
   loadDataPramsFormat?: (data: any) => any;
   searchInputPlaceholder?: string;
@@ -339,17 +339,22 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
       searchValue: input,
     };
   }
+  let requestProps = {};
+  if (request) {
+    requestProps = {
+      loadData: onLoadData,
+    };
+  }
 
   const treeProps = {
     ...defaultSelectProps,
+    ...requestProps,
     treeData,
-    loadData: onLoadData,
     style: { width: '100%' },
     loading: loading,
     allowClear: allowClear,
     ...restProps,
   };
-
   return <TreeSelect {...treeProps} onDropdownVisibleChange={handleDropdownVisibleChange} />;
 };
 
