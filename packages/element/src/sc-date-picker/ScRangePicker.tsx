@@ -3,7 +3,7 @@ import moment from 'moment';
 import { DatePicker } from 'antd';
 import { useDebounceFn, useUpdateEffect } from 'ahooks';
 import interopDefault from '../_util/interopDefault';
-import type { RangePickerProps } from 'antd/es/date-picker/generatePicker';
+import type { RangePickerDateProps } from 'antd/es/date-picker/generatePicker';
 import type { BasicTarget, TargetValue } from '../_util/domTarget';
 import { getTargetElement } from '../_util/domTarget';
 const { useState, useCallback, useEffect } = React;
@@ -26,7 +26,7 @@ type RangesItem = {
   type: 'w' | 'M' | 'd' | 'y' | 'h' | 'm' | 's';
   value: number;
 };
-type ScDatePickerProps<T> = RangePickerProps<T> & {
+type ScDatePickerProps<T> = RangePickerDateProps<T> & {
   rangesList?: RangesItem[];
   vformat?: string;
 };
@@ -34,6 +34,10 @@ type ScDatePickerProps<T> = RangePickerProps<T> & {
 export type Target = BasicTarget<HTMLElement | Element | Window | Document>;
 
 type RangeValue = [moment.Moment | null, moment.Moment | null] | null;
+
+function utcMethod(date: moment.Moment) {
+  return moment(date);
+}
 
 const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
   const {
@@ -47,15 +51,14 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
   } = props;
 
   // let emptyItem={text:rangesTitle||'当天',value:"",type:'e'}
-  console.log('value', value);
   const [vranges, setVRanges] = useState<any>();
   let vals: any[] = [];
   if (value && value.length) {
     const sdate = interopDefault(moment)(value[0]).isValid()
-      ? interopDefault(moment)(value[0].utcOffset(480))
+      ? utcMethod(interopDefault(moment)(value[0]))
       : null;
     const edate = interopDefault(moment)(value[1]).isValid()
-      ? interopDefault(moment)(value[1].utcOffset(480))
+      ? utcMethod(interopDefault(moment)(value[1]))
       : null;
     vals = [sdate, edate];
   }
@@ -105,15 +108,14 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
 
   const triggerChange = useCallback(
     (changedValue: any, dates: [moment.Moment, moment.Moment]): void => {
-      console.log('dates', dates);
       // Should provide an event to pass value to Form.
       let rChangedValue = changedValue;
       const temformat = vformat || format;
       //if (vformat && rChangedValue) {
       if (dates) {
         rChangedValue = [
-          dates[0] ? dates[0].format(temformat as string) : '',
-          dates[1] ? dates[1].format(temformat as string) : '',
+          dates[0] ? utcMethod(dates[0]).format(temformat as string) : '',
+          dates[1] ? utcMethod(dates[1]).format(temformat as string) : '',
         ];
       }
 
@@ -201,7 +203,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     }
   }
   const eventName = 'input';
-
+  /** 注册监听事件 */
   const registeredEvent = (target: Element, startListener: EventListenerOrEventListenerObject) => {
     // @ts-ignore
     const targetElement = getTargetElement(target, window);
@@ -213,7 +215,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     return targetElement;
   };
   /** 获取输入数字获取日期 */
-  const getInputDate = (str: string | null) => {
+  const getInputDate = (str: string | null, time = '12:00:00') => {
     if (typeof str !== 'string') return null;
     // 判断是否是数字
     if (parseFloat(str).toString() == 'NaN') return null;
@@ -222,8 +224,6 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     const currentYear = todayRef.current.year();
     let currentMonth: string = (todayRef.current.month() + 1).toString();
     currentMonth = Number(currentMonth) > 10 ? currentMonth : '0' + currentMonth;
-    console.log('currentYear', currentYear);
-    console.log('currentMonth', currentMonth);
     if (strLength === 2) {
       const date = moment(currentYear + currentMonth + str, inputfornat);
       if (date.isValid()) {
@@ -241,23 +241,25 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
       if (resProps.disabledDate && resProps.disabledDate(moment(newStr))) {
         newStr = null;
       } else {
-        newStr = newStr + ' 12:00:00';
+        newStr = newStr + ' ' + time;
       }
     }
-
-    return newStr;
+    console.log('newStr', newStr);
+    return newStr ? moment(newStr, 'YYYYMMDD HH:mm:ss') : null;
   };
 
   const startListener = useDebounceFn(
     (event: Event) => {
       if (open.current) {
         const target: HTMLInputElement = event.target as HTMLInputElement;
-        const startDate: string | null = getInputDate(target.value);
+        const time =
+          typeof props.showTime === 'object' && props.showTime?.defaultValue
+            ? moment(props.showTime?.defaultValue[0]).format('HH:mm:ss')
+            : undefined;
+        const startDate: moment.Moment | null = getInputDate(target.value, time);
         if (startDate) {
           const dates: RangeValue =
-            openDateRef.current != null
-              ? [moment(startDate, format as string), openDateRef.current[1]]
-              : [moment(startDate, format as string), null];
+            openDateRef.current != null ? [startDate, openDateRef.current[1]] : [startDate, null];
           openDateRef.current = dates;
           setOpenDates(dates);
         }
@@ -270,12 +272,14 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     (event: Event) => {
       if (open.current) {
         const target: HTMLInputElement = event.target as HTMLInputElement;
-        const endDate: string | null = getInputDate(target.value);
+        const time =
+          typeof props.showTime === 'object' && props.showTime?.defaultValue
+            ? moment(props.showTime?.defaultValue[1]).format('HH:mm:ss')
+            : undefined;
+        const endDate: moment.Moment | null = getInputDate(target.value, time);
         if (endDate) {
           const dates: RangeValue =
-            openDateRef.current != null
-              ? [openDateRef.current[0], moment(endDate, format as string)]
-              : [null, moment(endDate, format as string)];
+            openDateRef.current != null ? [openDateRef.current[0], endDate] : [null, endDate];
           openDateRef.current = dates;
           setOpenDates(dates);
         }
@@ -327,13 +331,12 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
               openDateRef.current[0] != null &&
               openDateRef.current[1] != null
             ) {
-              const startDate = openDateRef.current[0].utc().utcOffset(480);
-              const endDate = openDateRef.current[1].utc().utcOffset(480);
+              const startDate = utcMethod(openDateRef.current[0]);
+              const endDate = utcMethod(openDateRef.current[1]);
               const dataStr: [string, string] = [
                 startDate.format(format as string),
                 endDate.format(format as string),
               ];
-              console.log('dataStr', dataStr);
               onChange?.([startDate, endDate], dataStr);
             }
             openDateRef.current = null;
