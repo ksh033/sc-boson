@@ -86,11 +86,7 @@ const Operation: React.FC<OperationProps> = (props) => {
     return children;
   }, [buttons, max]);
 
-  return (
-    <div className={'sc-table-operation'} >
-      {renderChild()}
-    </div>
-  );
+  return <div className={'sc-table-operation'}>{renderChild()}</div>;
 };
 
 export default React.memo(Operation);

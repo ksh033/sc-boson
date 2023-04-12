@@ -1,5 +1,5 @@
 /*
- * @Description: 
+ * @Description:
  * @Version: 1.0
  * @Autor: yangyuhang
  * @Date: 2022-11-02 15:36:44
@@ -11,9 +11,8 @@ import { Dropdown, Menu, Space, Tabs } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
+import type { MenuInfo } from 'rc-menu/es/interface';
 import type { ListToolBarHeaderMenuProps } from '../../typing';
-
-
 
 const HeaderMenu: React.FC<ListToolBarHeaderMenuProps> = (props) => {
   const { items = [], type = 'inline', prefixCls, activeKey: propActiveKey } = props;
@@ -65,17 +64,17 @@ const HeaderMenu: React.FC<ListToolBarHeaderMenuProps> = (props) => {
     );
   }
 
+  const onMenuClick = (item: MenuInfo) => {
+    setActiveKey(item.key);
+  };
+
   return (
     <div className={classNames(`${prefixCls}-menu`, `${prefixCls}-dropdownmenu`)}>
       <Dropdown
         trigger={['click']}
+        menu={{ items, onClick: onMenuClick, selectedKeys: [activeItem.key as string] }}
         overlay={
-          <Menu
-            selectedKeys={[activeItem.key as string]}
-            onClick={(item) => {
-              setActiveKey(item.key);
-            }}
-          >
+          <Menu selectedKeys={[activeItem.key as string]} onClick={onMenuClick}>
             {items.map((item) => (
               <Menu.Item key={item.key} disabled={item.disabled}>
                 {item.label}

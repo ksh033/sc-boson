@@ -1,5 +1,4 @@
 declare module 'classnames';
-
 declare module 'dom-closest';
 
 declare module '*.json' {
@@ -20,3 +19,4 @@ declare module 'rc-table';
 declare module 'shallowequal';
 declare module 'react-lifecycles-compat';
 declare module 'rc-menu';
+declare var window: Window & typeof globalThis;
