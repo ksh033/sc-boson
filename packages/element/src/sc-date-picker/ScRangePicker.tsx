@@ -224,17 +224,29 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     const currentYear = todayRef.current.year();
     let currentMonth: string = (todayRef.current.month() + 1).toString();
     currentMonth = Number(currentMonth) > 10 ? currentMonth : '0' + currentMonth;
-    if (strLength === 2) {
-      const date = moment(currentYear + currentMonth + str, inputfornat);
-      if (date.isValid()) {
-        newStr = currentYear + currentMonth + str;
-      }
-    }
-    if (strLength === 4) {
-      const date = moment(currentYear + str, inputfornat);
-      if (date.isValid()) {
-        newStr = currentYear + str;
-      }
+    const map = {
+      2: () => {
+        const date = moment(currentYear + currentMonth + str, inputfornat);
+        if (date.isValid()) {
+          newStr = currentYear + currentMonth + str;
+        }
+      },
+      4: () => {
+        const dateTime = moment(currentYear + str, inputfornat);
+        if (dateTime.isValid()) {
+          newStr = currentYear + str;
+        }
+      },
+      6: () => {
+        const prefiex = currentYear.toString().substring(0, 2);
+        const dateTime = moment(prefiex + str, inputfornat);
+        if (dateTime.isValid()) {
+          newStr = prefiex + str;
+        }
+      },
+    };
+    if (strLength === 2 || strLength === 4 || strLength === 6) {
+      map[strLength]();
     }
     if (newStr) {
       // 判断是否为不可选日期
@@ -244,7 +256,6 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         newStr = newStr + ' ' + time;
       }
     }
-    console.log('newStr', newStr);
     return newStr ? moment(newStr, 'YYYYMMDD HH:mm:ss') : null;
   };
 
@@ -265,7 +276,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         }
       }
     },
-    { wait: 300 },
+    { wait: 700 },
   );
 
   const endListener = useDebounceFn(
@@ -285,7 +296,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         }
       }
     },
-    { wait: 300 },
+    { wait: 700 },
   );
 
   /** 监听日期输入 */

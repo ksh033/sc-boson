@@ -136,17 +136,30 @@ const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Moment>) => {
     const currentYear = todayRef.current.year();
     let currentMonth: string = (todayRef.current.month() + 1).toString();
     currentMonth = Number(currentMonth) > 10 ? currentMonth : '0' + currentMonth;
-    if (strLength === 2) {
-      const dateTime = moment(currentYear + currentMonth + str, inputfornat);
-      if (dateTime.isValid()) {
-        newStr = currentYear + currentMonth + str;
-      }
-    }
-    if (strLength === 4) {
-      const dateTime = moment(currentYear + str, inputfornat);
-      if (dateTime.isValid()) {
-        newStr = currentYear + str;
-      }
+
+    const map = {
+      2: () => {
+        const dateTime = moment(currentYear + currentMonth + str, inputfornat);
+        if (dateTime.isValid()) {
+          newStr = currentYear + currentMonth + str;
+        }
+      },
+      4: () => {
+        const dateTime = moment(currentYear + str, inputfornat);
+        if (dateTime.isValid()) {
+          newStr = currentYear + str;
+        }
+      },
+      6: () => {
+        const prefiex = currentYear.toString().substring(0, 2);
+        const dateTime = moment(prefiex + str, inputfornat);
+        if (dateTime.isValid()) {
+          newStr = prefiex + str;
+        }
+      },
+    };
+    if (strLength === 2 || strLength === 4 || strLength === 6) {
+      map[strLength]();
     }
     if (newStr) {
       // 判断是否为不可选日期
@@ -156,7 +169,6 @@ const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Moment>) => {
         newStr = newStr + ' ' + time;
       }
     }
-    console.log('newStr', newStr);
     return newStr ? moment(newStr, 'YYYYMMDD HH:mm:ss') : null;
   };
   /** 监听事件 */
@@ -177,7 +189,7 @@ const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Moment>) => {
         }
       }
     },
-    { wait: 300 },
+    { wait: 700 },
   );
 
   /** 监听日期输入 */
