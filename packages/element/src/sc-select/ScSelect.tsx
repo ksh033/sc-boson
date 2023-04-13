@@ -179,12 +179,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
           otherProps.disabled = !item[disabledField];
         }
         if (item[disabledField] !== undefined && !item[disabledField]) {
-          text = (
-            <div title={text}>
-              <Tag color="red">{item.title}</Tag>
-              {text}
-            </div>
-          );
+          text = <div title={text}><Tag color='red'>{item.title || '已停用'}</Tag>{text}</div>;
         }
 
         list.push(
@@ -207,9 +202,9 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     if (Array.isArray(list)) {
       return !isRemote && input !== ''
         ? list.filter((it) => {
-            const text = getTextField(it);
-            return text.indexOf(input) != -1;
-          })
+          const text = getTextField(it);
+          return text.indexOf(input) != -1;
+        })
         : list;
     }
     return [];
@@ -220,9 +215,9 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     if (singleInput && input !== '') {
       const itIdx = Array.isArray(dataSource)
         ? dataSource.findIndex((it) => {
-            const text = getTextField(it);
-            return text.indexOf(input) != -1;
-          })
+          const text = getTextField(it);
+          return text.indexOf(input) != -1;
+        })
         : -1;
       if (itIdx === -1) {
         list.push(
