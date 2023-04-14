@@ -246,7 +246,7 @@ const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Moment>) => {
           openDateRef.current = null;
           setState({
             showFormat: temformat,
-            openDate: null,
+            openDate: date,
             open: v,
           });
           newProps.onOpenChange?.(v);

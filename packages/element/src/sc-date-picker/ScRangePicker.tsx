@@ -270,7 +270,9 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         const startDate: moment.Moment | null = getInputDate(target.value, time);
         if (startDate) {
           const dates: RangeValue =
-            openDateRef.current != null ? [startDate, openDateRef.current[1]] : [startDate, null];
+            openDateRef.current != null
+              ? [startDate, openDateRef.current[1]]
+              : [startDate, values[1]];
           openDateRef.current = dates;
           setOpenDates(dates);
         }
@@ -290,7 +292,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         const endDate: moment.Moment | null = getInputDate(target.value, time);
         if (endDate) {
           const dates: RangeValue =
-            openDateRef.current != null ? [openDateRef.current[0], endDate] : [null, endDate];
+            openDateRef.current != null ? [openDateRef.current[0], endDate] : [values[0], endDate];
           openDateRef.current = dates;
           setOpenDates(dates);
         }
@@ -322,39 +324,37 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     };
   }, [ref.current]);
 
+  const onOpenChange = (v: boolean) => {
+    const temformat = (vformat as string) || (format as string);
+    open.current = v;
+    if (v) {
+      setShwFormat(temformat.replaceAll('-', ''));
+      setOpenDates(values);
+      openDateRef.current = null;
+    } else {
+      setShwFormat(temformat);
+      if (openDateRef.current && openDateRef.current[0] != null && openDateRef.current[1] != null) {
+        const startDate = utcMethod(openDateRef.current[0]);
+        const endDate = utcMethod(openDateRef.current[1]);
+        const dataStr: [string, string] = [
+          startDate.format(format as string),
+          endDate.format(format as string),
+        ];
+        onChange?.([startDate, endDate], dataStr);
+      }
+      openDateRef.current = null;
+      setOpenDates(null);
+    }
+    resProps.onOpenChange?.(v);
+  };
+
   return (
     <div ref={ref}>
       <RangePicker
         {...resProps}
         onChange={handleChange}
         value={openDates || values}
-        onOpenChange={(v) => {
-          const temformat = (vformat as string) || (format as string);
-          open.current = v;
-          if (v) {
-            setShwFormat(temformat.replaceAll('-', ''));
-            setOpenDates([null, null]);
-            openDateRef.current = null;
-          } else {
-            setShwFormat(temformat);
-            if (
-              openDateRef.current &&
-              openDateRef.current[0] != null &&
-              openDateRef.current[1] != null
-            ) {
-              const startDate = utcMethod(openDateRef.current[0]);
-              const endDate = utcMethod(openDateRef.current[1]);
-              const dataStr: [string, string] = [
-                startDate.format(format as string),
-                endDate.format(format as string),
-              ];
-              onChange?.([startDate, endDate], dataStr);
-            }
-            openDateRef.current = null;
-            setOpenDates(null);
-          }
-          resProps.onOpenChange?.(v);
-        }}
+        onOpenChange={onOpenChange}
         inputReadOnly={false}
         format={showFormat}
         ranges={vranges}
