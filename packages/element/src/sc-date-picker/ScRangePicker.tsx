@@ -4,6 +4,7 @@ import { DatePicker } from 'antd';
 import { useDebounceFn, useUpdateEffect } from 'ahooks';
 import interopDefault from '../_util/interopDefault';
 import type { RangePickerDateProps } from 'antd/es/date-picker/generatePicker';
+import type { RangeInfo } from 'rc-picker/lib/RangePicker';
 import type { BasicTarget, TargetValue } from '../_util/domTarget';
 import { getTargetElement } from '../_util/domTarget';
 const { useState, useCallback, useEffect } = React;
@@ -270,9 +271,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         const startDate: moment.Moment | null = getInputDate(target.value, time);
         if (startDate) {
           const dates: RangeValue =
-            openDateRef.current != null
-              ? [startDate, openDateRef.current[1]]
-              : [startDate, values[1]];
+            openDateRef.current != null ? [startDate, openDateRef.current[1]] : [startDate, null];
           openDateRef.current = dates;
           setOpenDates(dates);
         }
@@ -356,6 +355,16 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         value={openDates || values}
         onOpenChange={onOpenChange}
         inputReadOnly={false}
+        onCalendarChange={(val: RangeValue, formatString: [string, string], info: RangeInfo) => {
+          console.log('val', val, info);
+          if (info.range === 'start' && val != null) {
+            setOpenDates([val[0], null]);
+          } else {
+            setOpenDates(val);
+          }
+
+          resProps.onCalendarChange?.(val, formatString, info);
+        }}
         format={showFormat}
         ranges={vranges}
         //  className={rangesList ? 'sc-date-picker-range-after' : ''}
