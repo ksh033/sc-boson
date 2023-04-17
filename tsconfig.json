@@ -3,7 +3,7 @@
     "baseUrl": "./",
     "target": "esnext",
     "moduleResolution": "node",
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "strict": true,
@@ -12,7 +12,10 @@
     "suppressImplicitAnyIndexErrors": true,
     "declaration": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
+
     "paths": {
+      "@@/*": [".dumi/tmp/*"],
       "@scboson/sc-element": ["./packages/element/src/index.tsx"],
       "@scboson/sc-layout": ["./packages/layout/src/index.tsx"],
       "@scboson/sc-h5sdk": ["./packages/h5skd/src/index.tsx"],
@@ -33,5 +36,4 @@
     "./tests/no-duplicated.ts",
     "packages/element/BindEventUtil.ts"
   ],
-  "plugins": [{ "transform": "typescript-transform-paths", "afterDeclarations": true }]
 }

@@ -34,12 +34,13 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.0.0",
-    "@ant-design/pro-card": "^1.13.2",
-    "@ant-design/pro-layout": "^6.15.2",
-    "@ant-design/pro-provider": "^1.4.8",
-    "@ant-design/pro-utils": "^1.14.2",
-    "@umijs/route-utils": "^1.0.37",
-    "@umijs/use-params": "^1.0.2",
+    "@ant-design/pro-card": "^2.3.2",
+    "@ant-design/pro-layout": "^7.10.3",
+    "@ant-design/pro-provider": "^2.7.0",
+    "@ant-design/pro-utils": "^2.7.2",
+    "@umijs/route-utils": "^4.0.0",
+    "@umijs/use-params": "^1.0.9",
+    "@babel/runtime": "^7.18.0",
     "classnames": "^2.2.6",
     "omit.js": "^2.0.2",
     "path-to-regexp": "2.4.0",
@@ -51,9 +52,9 @@
   },
   "peerDependencies": {
     "ahooks": ">=2.9.6",
-    "antd": "^4.x",
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
+    "antd": ">=4.23.0",
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0"
   },
   "devDependencies": {
     "@umijs/plugin-antd": "^0.9.0",

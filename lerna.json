@@ -1,14 +1,13 @@
 {
   "version": "independent",
-  "npmClient": "yarn",
+  "npmClient": "pnpm",
   "useWorkspaces": true,
   "changelog": {
     
     "cacheDir": ".changelog"
 
   },
-
-  "workspaces": ["packages/*"],
+  "packages": ["packages/*"],
   "ignoreChanges": [
     "**/*.md",
     "**/*.test.ts",
