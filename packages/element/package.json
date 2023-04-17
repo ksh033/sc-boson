@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-element",
-  "version": "1.0.4-beta.165",
+  "version": "2.0.0-alpha",
   "description": "基于ReactJS+Antd",
   "keywords": [
     "ant",
@@ -31,6 +31,10 @@
     "lib",
     "es"
   ],
+  "scripts": {
+    "build:dev": "father dev",
+    "build": "father build"
+  },
   "license": "MIT",
   "dependencies": {
     "@ant-design/icons": "^5.0.0",

@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-layout",
-  "version": "1.0.1-beta.33",
+  "version": "2.0.0-alpha",
   "description": "@scboson/sc-layout",
   "keywords": [
     "antd"
@@ -31,6 +31,10 @@
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "build:dev": "father dev",
+    "build": "father build"
   },
   "dependencies": {
     "@ant-design/icons": "^4.0.0",

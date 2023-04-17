@@ -5,8 +5,10 @@
   ],
   "scripts": {
     "bootstrap": "node ./scripts/bootstrap.js",
-    "build": "father-build ",
-    "build:dev": "father-build --watch",
+    "build": "pnpm --filter \"@scboson\/**\" build",
+    "build:dev": "pnpm --filter \"@scboson\/**\" build:dev",
+    
+
     "changelog": "pro-changelog",
     "check-deps": "node ./scripts/checkDeps.js",
     "createRelease": "node ./scripts/createRelease.js",
@@ -142,5 +144,5 @@
 
   },
   "name": "sc-boson",
-   "packageManager": "pnpm@8.0.2"
+   "packageManager": "pnpm@8.2.0"
 }
