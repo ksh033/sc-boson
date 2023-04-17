@@ -65,9 +65,9 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
   }
   const [values, setValues] = useState<any>(vals);
   const [showFormat, setShwFormat] = useState<any>(format || vformat);
-
   const [, setDateStrings] = useState<[string, string]>(['', '']);
   const [openDates, setOpenDates] = useState<RangeValue>(null);
+  const [openPlaceholder, setOpenPlaceholder] = useState<[string, string] | null>(null);
   const openDateRef = React.useRef<RangeValue>(null);
   const todayRef = React.useRef<moment.Moment>(interopDefault(moment)({ format }));
   const inputfornat = ((vformat as string) || (format as string)).replaceAll('-', '');
@@ -328,7 +328,15 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     open.current = v;
     if (v) {
       setShwFormat(temformat.replaceAll('-', ''));
-      setOpenDates(values);
+      // 如果配置了不可选日期则清空原始值
+      if (resProps.disabledDate) {
+        setOpenDates([null, null]);
+        if (values && values[0] && values[1]) {
+          setOpenPlaceholder([values[0].format(temformat), values[1].format(temformat)]);
+        }
+      } else {
+        setOpenDates(values);
+      }
       openDateRef.current = null;
     } else {
       setShwFormat(temformat);
@@ -347,23 +355,47 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     resProps.onOpenChange?.(v);
   };
 
+  const newVal = React.useMemo(() => {
+    if (values && values[0] == null && values[1] == null) {
+      return values;
+    }
+    return openDates || values;
+  }, [JSON.stringify(openDates), JSON.stringify(values)]);
+
   return (
     <div ref={ref}>
       <RangePicker
         {...resProps}
         onChange={handleChange}
-        value={openDates || values}
+        value={newVal}
         onOpenChange={onOpenChange}
         inputReadOnly={false}
-        onCalendarChange={(val: RangeValue, formatString: [string, string], info: RangeInfo) => {
-          console.log('val', val, info);
-          if (info.range === 'start' && val != null) {
-            setOpenDates([val[0], null]);
+        placeholder={openPlaceholder || resProps.placeholder}
+        onCalendarChange={(_val: RangeValue, formatString: [string, string], info: RangeInfo) => {
+          // console.log('onCalendarChange', _val, formatString, info);
+          if (info.range === 'start' && _val != null) {
+            setOpenDates([_val[0], null]);
+            // const endPlaceholder = resProps.placeholder
+            //   ? typeof resProps.placeholder === 'string'
+            //     ? resProps.placeholder
+            //     : resProps.placeholder[1] || '结束时间'
+            //   : '结束时间';
+            // setOpenPlaceholder([formatString[0], endPlaceholder]);
+            resProps.onCalendarChange?.([_val[0], null], [formatString[0], ''], info);
+          } else if (info.range === 'end' && _val != null) {
+            setOpenDates([null, _val[1]]);
+            // const startPlaceholder = resProps.placeholder
+            //   ? typeof resProps.placeholder === 'string'
+            //     ? resProps.placeholder
+            //     : resProps.placeholder[0] || '开始时间'
+            //   : '开始时间';
+            // setOpenPlaceholder([startPlaceholder, formatString[1]]);
+            resProps.onCalendarChange?.([null, _val[1]], ['', formatString[1]], info);
           } else {
-            setOpenDates(val);
+            setOpenDates(null);
+            setOpenPlaceholder(null);
+            resProps.onCalendarChange?.(_val, formatString, info);
           }
-
-          resProps.onCalendarChange?.(val, formatString, info);
         }}
         format={showFormat}
         ranges={vranges}
