@@ -13,11 +13,11 @@ const UnifiedSetComponent = (props: { pageProps: any }) => {
   const isElement = React.isValidElement(component);
   component = !isElement
     ? React.createElement(component, {
-        ...cprops,
-      })
+      ...cprops,
+    })
     : React.cloneElement(component, {
-        ...cprops,
-      });
+      ...cprops,
+    });
 
   if (totalSetRender) {
     component = totalSetRender(component, props);
@@ -51,7 +51,7 @@ const handleClick = (
 
   CModal.show({
     title: '统一设置',
-    width: '600px',
+    width: '700px',
     content: UnifiedSetComponent,
     pageProps: {
       component: rColumn.component,
