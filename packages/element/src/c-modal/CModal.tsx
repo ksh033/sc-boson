@@ -31,7 +31,7 @@ const CModalDialog = (props: CModalDialogProps) => {
   const {
     onCancel,
     onOk,
-    close = () => {},
+    close = () => { },
     fullscreen,
     showFullscreen,
     zIndex,
@@ -199,6 +199,7 @@ export default function CModal(config: any) {
       },
     };
     if (IS_REACT_16) {
+      document.body.style.cssText = ' ';
       render(currentConfig);
     } else {
       destroy(...args);
