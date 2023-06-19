@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { Tooltip, Space, Input, ConfigProvider, Tabs } from 'antd';
-import { useIntl } from '@ant-design/pro-provider';
 import classNames from 'classnames';
 import { LabelIconTip } from '@ant-design/pro-utils';
 import HeaderMenu from './HeaderMenu';
@@ -56,7 +55,7 @@ const ListToolBar: React.FC<ListToolBarProps> = ({
   tabs = {},
   menu,
 }) => {
-  const intl = useIntl();
+  //const intl = useIntl();
 
   /**
    * 获取搜索栏 DOM
@@ -73,7 +72,7 @@ const ListToolBar: React.FC<ListToolBarProps> = ({
     return (
       <Input.Search
         style={{ width: 200 }}
-        placeholder={intl.getMessage('tableForm.inputPlaceholder', '请输入')}
+        placeholder={'请输入'}
         onSearch={onSearch}
         {...(searchObject as SearchProps)}
       />

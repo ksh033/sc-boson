@@ -1,7 +1,6 @@
 /* eslint-disable no-empty-pattern */
 import { ReloadOutlined, SettingOutlined } from '@ant-design/icons';
-import type { IntlType } from '@ant-design/pro-provider';
-import { useIntl } from '@ant-design/pro-provider';
+
 import { Tooltip } from 'antd';
 import React, { useEffect, useMemo } from 'react';
 import Container from '../../container';
@@ -14,7 +13,7 @@ import FullScreenIcon from './FullscreenIcon';
 
 
 function getButtonText({ }: OptionConfig & {
-  intl: IntlType;
+
 }) {
   return {
     reload: {
@@ -45,7 +44,7 @@ function getButtonText({ }: OptionConfig & {
 function renderDefaultOption<T>(
   options: OptionConfig,
   defaultOptions: OptionConfig & {
-    intl: IntlType;
+
   },
   columns: ScProColumnType<T>[],
 ) {
@@ -105,7 +104,7 @@ function ToolBar<T>({
 }: ToolBarProps<T>) {
   const counter = Container.useContainer();
 
-  const intl = useIntl();
+  //const intl = useIntl();
   const optionDom = useMemo(() => {
     const defaultOptions = {
       reload: () => action?.current?.reload(),
@@ -127,11 +126,11 @@ function ToolBar<T>({
       options,
       {
         ...defaultOptions,
-        intl,
+        //intl,
       },
       columns.filter((it) => it.dataIndex !== OpColKey),
     );
-  }, [action, columns, intl, propsOptions]);
+  }, [action, columns, propsOptions]);
   // 操作列表
   const actions = toolBarRender
     ? toolBarRender(action?.current, { selectedRowKeys, selectedRows })

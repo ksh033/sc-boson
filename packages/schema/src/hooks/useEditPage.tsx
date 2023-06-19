@@ -4,21 +4,24 @@
 import React from 'react';
 import { useRef, useState } from 'react';
 // @ts-ignore
-import { history } from 'umi';
+//import { history } from 'umi';
 import type { FormFilterProp, DialogOptions, HButtonType, ButtonTypeProps } from '../interface';
 import { PageConfig, PageType, ToolButtons, Action } from '../interface';
 import schema from '../pageConfigUitls';
 import type { UseListPageProp } from './useListPage';
 import ListPage from './useListPage';
 import FormInfo from '../page/FormInfo';
-import { Schema } from '../context';
+import { Schema, useSchemaContext } from '../context';
 import { isObject, isString } from 'lodash';
 import { useSetState } from 'ahooks';
-import moment from 'moment';
+import { useOutletContext } from '@umijs/renderer-react'
+import queryString from 'query-string';
+const { parse } = queryString
+import dayjs from "dayjs"
 
 // import ButtonTool from '../page/OpColButton';
 
-export { PageConfig, Action };
+export type { PageConfig, Action };
 interface initProps {
   /** 请求详情后的回调函数 */
   callback?: (res: any) => any;
@@ -130,17 +133,21 @@ export default function useEditPage(
   const Page = ListPage(config, props);
   // const _editPageButtons: any[] = [];
   // const toolbar = new ButtonTool();
-
+  const schemaContext = useSchemaContext();
+  const layoutContext = useOutletContext<any>();
+  const { location, params } = layoutContext
   // const { service } = config;
-  const { pageProps = {}, match, location } = props;
+  const { pageProps = {}, match } = props;
   let record: any = '';
   if (config.pageType === PageType.modal) {
     record = pageProps.params;
-  } else if (location && location.query) {
-    record = location.query;
+  } else if (location && location.search) {
+    record = parse(location.search);
   }
-  const [pageData, setPageData] = useSetState<any>();
-  const pageEntryTimeRef = useRef<string>(moment().format('YYYY-MM-DD HH:mm:ss'));
+  const [pageData, setPageData] = useSetState<any>({});
+  const history = schemaContext.umi.history;
+
+  const pageEntryTimeRef = useRef<string>(dayjs().format('YYYY-MM-DD HH:mm:ss'));
 
   const setData = (data: any) => {
     setPageData(data);
@@ -171,10 +178,10 @@ export default function useEditPage(
       return pageProps.action;
     }
     if (config.pageType === PageType.page) {
-      if (match && match.params && match.params.editpage) {
-        return match.params.editpage;
+      if (params && params.editpage) {
+        return params.editpage;
       } else {
-        return record && record.action;
+        return record && record['action'];
       }
     }
     return '';
@@ -185,8 +192,8 @@ export default function useEditPage(
       return pageProps.params;
     }
     if (config.pageType === PageType.page) {
-      if (location && location.query) {
-        return location.query;
+      if (location && location.search) {
+        return parse(location.search);
       }
     }
     return '';

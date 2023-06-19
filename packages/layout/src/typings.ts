@@ -1,8 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type * as H from 'history';
 
-import type { RouteComponentProps as BasicRouteProps, match } from 'react-router-dom';
 
+export interface match<Params extends { [K in keyof Params]?: string } = Record<string, any>> {
+  params: Params;
+  isExact: boolean;
+  path: string;
+  url: string;
+}
 import type React from 'react';
 
 export type LinkProps = {
@@ -62,10 +67,10 @@ export type Route = {
 } & MenuDataItem;
 export type WithFalse<T> = T | false;
 
-export type RouterTypes<T> = Omit<BasicRouteProps<any>, 'location'> & {
+export type RouterTypes = {
   computedMatch?: match<any>;
   route?: Route;
-  location: BasicRouteProps['location'] | { pathname?: string };
+  location: { pathname?: string };
 };
 
 export type MessageDescriptor = {

@@ -1,6 +1,5 @@
-import isEqual from 'fast-deep-equal/es6/index';
-import memoizeOne from 'memoize-one';
-import { pathToRegexp } from '@qixian.cs/path-to-regexp';
+import { isEqual } from "lodash";
+import pathToRegexp from 'path-to-regexp';
 import sha265 from './sha265';
 
 import type { MenuDataItem, Route, MessageDescriptor } from '../typings';
@@ -92,15 +91,15 @@ const bigfishCompatibleConversions = (route: MenuDataItem, props: FormatterProps
   // 拼接 childrenRoutes, 处理存在 indexRoute 时的逻辑
   const childrenRoutes =
     indexRoute &&
-    // 如果只有 redirect,不用处理的
-    Object.keys(indexRoute).join(',') !== 'redirect'
+      // 如果只有 redirect,不用处理的
+      Object.keys(indexRoute).join(',') !== 'redirect'
       ? [
-          {
-            path,
-            menu,
-            ...indexRoute,
-          },
-        ].concat(children || [])
+        {
+          path,
+          menu,
+          ...indexRoute,
+        },
+      ].concat(children || [])
       : children;
 
   // 拼接返回的 menu 数据
@@ -249,7 +248,7 @@ function formatter(
     .flat(1);
 }
 
-const memoizeOneFormatter = memoizeOne(formatter, isEqual);
+//const memoizeOneFormatter = memoizeOne(formatter, isEqual);
 
 /** 删除 hideInMenu 和 item.name 不存在的 */
 const defaultFilterMenuData = (menuData: MenuDataItem[] = []): MenuDataItem[] =>
@@ -314,7 +313,7 @@ const getBreadcrumbNameMap = (menuData: MenuDataItem[]): RoutesMap<MenuDataItem>
   return routerMap;
 };
 
-const memoizeOneGetBreadcrumbNameMap = memoizeOne(getBreadcrumbNameMap, isEqual);
+//const memoizeOneGetBreadcrumbNameMap = memoizeOne(getBreadcrumbNameMap, isEqual);
 
 const clearChildren = (menuData: MenuDataItem[] = []): MenuDataItem[] => {
   return menuData
@@ -347,7 +346,7 @@ const transformRoute = (
   breadcrumb: Map<string, MenuDataItem>;
   menuData: MenuDataItem[];
 } => {
-  const originalMenuData = memoizeOneFormatter({
+  const originalMenuData = formatter({
     data: routes,
     formatMessage,
     locale,
@@ -356,7 +355,7 @@ const transformRoute = (
     ? clearChildren(originalMenuData)
     : defaultFilterMenuData(originalMenuData);
   // Map type used for internal logic
-  const breadcrumb = memoizeOneGetBreadcrumbNameMap(originalMenuData);
+  const breadcrumb = getBreadcrumbNameMap(originalMenuData);
 
   return { breadcrumb, menuData };
 };

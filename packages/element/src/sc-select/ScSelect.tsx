@@ -6,7 +6,6 @@ import { useDebounceFn, useUpdateEffect } from 'ahooks';
 import { Input, Select, Spin, Tooltip, Tag } from 'antd';
 import type { SelectProps } from 'antd/es/select';
 import * as React from 'react';
-import { setTimeout } from 'timers';
 
 const { useMemo, useLayoutEffect, useState, useRef } = React;
 const { Option, OptGroup } = Select;

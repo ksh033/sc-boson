@@ -9,7 +9,7 @@ import type { SortEnd } from 'react-sortable-hoc';
 import { arrayMove, SortableContainer, SortableElement } from 'react-sortable-hoc';
 import type { Props, SortableItemParams, SortableListParams } from './types';
 
-export { UploadFile } from 'antd/es/upload/interface';
+export type { UploadFile } from 'antd/es/upload/interface';
 
 const preView = (file: string, isModal: boolean) => {
   if (file !== '') {
@@ -123,7 +123,7 @@ const PicturesGrid: React.FC<Props> = memo(
           props={props}
           onChange={onChange}
           onRemove={onRemove}
-          // onPreview={onPreview}
+        // onPreview={onPreview}
         />
         <Modal
           visible={!!previewImage}

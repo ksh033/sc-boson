@@ -1,4 +1,4 @@
 import ScRadio from './ScRadio';
 
-export { ScRadioProps } from './ScRadio';
+export type { ScRadioProps } from './ScRadio';
 export default ScRadio;

@@ -1,4 +1,4 @@
 import ScCheckBox from './ScCheckBox';
 
-export { ScCheckProps } from './ScCheckBox';
+export type { ScCheckProps } from './ScCheckBox';
 export default ScCheckBox;

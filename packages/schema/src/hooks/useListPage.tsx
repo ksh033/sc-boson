@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 import { useRef } from 'react';
 import type { ProColumn, FormSearchItem, HButtonType, ProColumnType } from '../interface';
-import type { BaseResult } from '../event/BindEventUtil';
+import type { Result as BaseResult } from '../event/BindEventUtil';
 import { bindEvent, bindEvents, formatUseReq } from '../event/BindEventUtil';
 import { useSchemaContext } from '../context';
 import { PageType, PageConfig } from '../interface';
@@ -14,9 +14,10 @@ import SearchInfo from '../page/SearchInfo';
 import _ from 'lodash';
 import schema from '../pageConfigUitls';
 import { omitUndefinedAndEmptyArr } from '../index';
+import { useOutletContext } from '@umijs/renderer-react';
 //import type { ActionType } from '@scboson/sc-element/es/sc-table/typing';
 
-export { PageConfig, PageType };
+export type { PageConfig, PageType };
 export interface SearchConfig {
   tableKey?: string;
 
@@ -81,12 +82,13 @@ export { setLocalSearchParams };
 
 export default function ListPage<S>(config: PageConfig, props: any): UseListPageProp<S> {
   const { service, pageType = 'listpage' } = config;
-  const { location } = props || {};
+  //const { location } = props || {};
   // 查询表单
   const searchForm = useRef<any>();
   // 查询表格保存表单
   const saveRef = useRef<any>();
-
+  const layoutContext = useOutletContext<any>();
+  const { location } = layoutContext
   const filterRef = useRef<any>({});
   const submitRef = useRef<any>({});
   const pageCon = useRef<any>();
@@ -104,7 +106,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     return searchParam[key];
   };
 
-  const [pageData, setPageData] = useSetState<any>();
+  const [pageData, setPageData] = useSetState<any>({});
 
   const getValue = (obj: any) =>
     Object.keys(obj)

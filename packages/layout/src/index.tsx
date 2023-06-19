@@ -1,7 +1,4 @@
-import type { BasicLayoutProps } from './BasicLayout';
-import BasicLayout from './BasicLayout';
 //import MasterLayout from './Layout';
-import DefaultHeader from './Header';
 import type {
   TopNavHeaderProps,
   FooterProps,
@@ -26,6 +23,7 @@ import {
 } from '@ant-design/pro-layout';
 
 import { PageContainer } from '@ant-design/pro-layout';
+import MasterLayout from './MasterLayout';
 export { default as MasterLayout } from './MasterLayout'
 export { default as ScCard } from '@ant-design/pro-card';
 export { StatisticCard as ScStatisticCard, Statistic as ScStatistic, CheckCard as ScCheckCard } from '@ant-design/pro-card';
@@ -53,11 +51,9 @@ export type { MenuDataItem } from './typings';
 const PageHeaderWrapper = PageContainer;
 
 export {
-  BasicLayout,
   RouteContext,
   PageLoading,
   GridContent,
-  DefaultHeader,
   TopNavHeader,
   DefaultFooter,
   SettingDrawer,
@@ -73,7 +69,6 @@ export type {
   FooterProps,
   PageContainerProps,
   TopNavHeaderProps,
-  BasicLayoutProps,
   RouteContextType,
   HeaderProps,
   SettingDrawerProps,
@@ -81,4 +76,4 @@ export type {
   ProSettings,
 };
 
-export default BasicLayout;
+export default MasterLayout;

@@ -1,4 +1,3 @@
-import { useIntl } from '@ant-design/pro-provider';
 import React from 'react';
 import { ColumnHeightOutlined } from '@ant-design/icons';
 import { Menu, Dropdown, Tooltip } from 'antd';
@@ -9,20 +8,20 @@ export type DensitySize = 'middle' | 'small' | 'large' | undefined;
 
 const DensityIcon = () => {
   const counter = Container.useContainer();
-  const intl = useIntl();
+
 
   const items = [
     {
       key: 'large',
-      label: intl.getMessage('tableToolBar.densityLarger', '默认'),
+      label: '默认',
     },
     {
       key: 'middle',
-      label: intl.getMessage('tableToolBar.densityMiddle', '中等'),
+      label: '中等',
     },
     {
       key: 'small',
-      label: intl.getMessage('tableToolBar.densitySmall', '紧凑'),
+      label: '紧凑',
     },
   ];
   const onMenuClick = ({ key }: MenuInfo) => {
@@ -47,16 +46,16 @@ const DensityIcon = () => {
             width: 80,
           }}
         >
-          <Menu.Item key="large">{intl.getMessage('tableToolBar.densityLarger', '默认')}</Menu.Item>
+          <Menu.Item key="large"> 默认</Menu.Item>
           <Menu.Item key="middle">
-            {intl.getMessage('tableToolBar.densityMiddle', '中等')}
+            中等
           </Menu.Item>
-          <Menu.Item key="small">{intl.getMessage('tableToolBar.densitySmall', '紧凑')}</Menu.Item>
+          <Menu.Item key="small">紧凑</Menu.Item>
         </Menu>
       }
       trigger={['click']}
     >
-      <Tooltip title={intl.getMessage('tableToolBar.density', '表格密度')}>
+      <Tooltip title={"表格密度"}>
         <ColumnHeightOutlined />
       </Tooltip>
     </Dropdown>

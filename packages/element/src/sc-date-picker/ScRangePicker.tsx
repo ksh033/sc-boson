@@ -1,5 +1,5 @@
 import * as React from 'react';
-import moment from 'moment';
+import dayjs, { Dayjs } from 'dayjs';
 import { DatePicker } from 'antd';
 import { useDebounceFn, useUpdateEffect } from 'ahooks';
 import interopDefault from '../_util/interopDefault';
@@ -27,17 +27,17 @@ type RangesItem = {
   type: 'w' | 'M' | 'd' | 'y' | 'h' | 'm' | 's';
   value: number;
 };
-type ScDatePickerProps<T> = RangePickerDateProps<T> & {
+export type ScDatePickerProps<T> = RangePickerDateProps<T> & {
   rangesList?: RangesItem[];
   vformat?: string;
 };
 
 export type Target = BasicTarget<HTMLElement | Element | Window | Document>;
 
-type RangeValue = [moment.Moment | null, moment.Moment | null] | null;
+type RangeValue = [Dayjs | null, Dayjs | null] | null;
 
-function utcMethod(date: moment.Moment) {
-  return moment(date);
+function utcMethod(date: Dayjs) {
+  return dayjs(date);
 }
 
 const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
@@ -55,11 +55,11 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
   const [vranges, setVRanges] = useState<any>();
   let vals: any[] = [];
   if (value && value.length) {
-    const sdate = interopDefault(moment)(value[0]).isValid()
-      ? utcMethod(interopDefault(moment)(value[0]))
+    const sdate = interopDefault(dayjs)(value[0]).isValid()
+      ? utcMethod(interopDefault(dayjs)(value[0]))
       : null;
-    const edate = interopDefault(moment)(value[1]).isValid()
-      ? utcMethod(interopDefault(moment)(value[1]))
+    const edate = interopDefault(dayjs)(value[1]).isValid()
+      ? utcMethod(interopDefault(dayjs)(value[1]))
       : null;
     vals = [sdate, edate];
   }
@@ -69,7 +69,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
   const [, setDateStrings] = useState<[string, string]>(['', '']);
   const [openDates, setOpenDates] = useState<RangeValue>(null);
   const openDateRef = React.useRef<RangeValue>(null);
-  const todayRef = React.useRef<moment.Moment>(interopDefault(moment)({ format }));
+  const todayRef = React.useRef<Dayjs>(interopDefault(dayjs)({ format }));
   const inputfornat = ((vformat as string) || (format as string)).replaceAll('-', '');
 
   // 包装的ref 是为了获取该div低下的input 框
@@ -78,12 +78,12 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
   const open = React.useRef<boolean>(false);
 
   const toRangs = () => {
-    const today = interopDefault(moment)({ format });
+    const today = interopDefault(dayjs)({ format });
 
     const tRanges = {};
 
     rangesList?.forEach((item) => {
-      const afterDay = interopDefault(moment)({ format }).add(item.value, item.type);
+      const afterDay = interopDefault(dayjs)({ format }).add(item.value, item.type);
       tRanges[item.text] = [today, afterDay];
     });
 
@@ -108,7 +108,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
   }, [rangesList]);
 
   const triggerChange = useCallback(
-    (changedValue: any, dates: [moment.Moment, moment.Moment]): void => {
+    (changedValue: any, dates: [Dayjs, Dayjs]): void => {
       // Should provide an event to pass value to Form.
       let rChangedValue = changedValue;
       const temformat = vformat || format;
@@ -145,14 +145,14 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
   //     let rvals = [];
   //     let strs: [string, string] = ['', ''];
   //     if (selectedItem.value) {
-  //       const today = interopDefault(moment)({ format });
-  //       const afterDay = interopDefault(moment)({ format }).add(selectedItem.value, type);
+  //       const today = interopDefault(dayjs)({ format });
+  //       const afterDay = interopDefault(dayjs)({ format }).add(selectedItem.value, type);
   //       rvals = [today, afterDay];
   //       strs = [today.format(format), afterDay.format(format)];
   //       setValues(rvals);
   //       setDateStrings(strs);
   //     } else {
-  //       const today = interopDefault(moment)({ format });
+  //       const today = interopDefault(dayjs)({ format });
   //       strs = [today.format(format), today.format(format)];
   //       rvals = [today, today];
   //     }
@@ -227,20 +227,20 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     currentMonth = Number(currentMonth) > 10 ? currentMonth : '0' + currentMonth;
     const map = {
       2: () => {
-        const date = moment(currentYear + currentMonth + str, inputfornat);
+        const date = dayjs(currentYear + currentMonth + str, inputfornat);
         if (date.isValid()) {
           newStr = currentYear + currentMonth + str;
         }
       },
       4: () => {
-        const dateTime = moment(currentYear + str, inputfornat);
+        const dateTime = dayjs(currentYear + str, inputfornat);
         if (dateTime.isValid()) {
           newStr = currentYear + str;
         }
       },
       6: () => {
         const prefiex = currentYear.toString().substring(0, 2);
-        const dateTime = moment(prefiex + str, inputfornat);
+        const dateTime = dayjs(prefiex + str, inputfornat);
         if (dateTime.isValid()) {
           newStr = prefiex + str;
         }
@@ -251,13 +251,13 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     }
     if (newStr) {
       // 判断是否为不可选日期
-      if (resProps.disabledDate && resProps.disabledDate(moment(newStr))) {
+      if (resProps.disabledDate && resProps.disabledDate(dayjs(newStr))) {
         newStr = null;
       } else {
         newStr = newStr + ' ' + time;
       }
     }
-    return newStr ? moment(newStr, 'YYYYMMDD HH:mm:ss') : null;
+    return newStr ? dayjs(newStr, 'YYYYMMDD HH:mm:ss') : null;
   };
 
   const startListener = useDebounceFn(
@@ -266,9 +266,9 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         const target: HTMLInputElement = event.target as HTMLInputElement;
         const time =
           typeof props.showTime === 'object' && props.showTime?.defaultValue
-            ? moment(props.showTime?.defaultValue[0]).format('HH:mm:ss')
+            ? dayjs(props.showTime?.defaultValue[0]).format('HH:mm:ss')
             : undefined;
-        const startDate: moment.Moment | null = getInputDate(target.value, time);
+        const startDate: Dayjs | null = getInputDate(target.value, time);
         if (startDate) {
           const dates: RangeValue =
             openDateRef.current != null ? [startDate, openDateRef.current[1]] : [startDate, null];
@@ -286,9 +286,9 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         const target: HTMLInputElement = event.target as HTMLInputElement;
         const time =
           typeof props.showTime === 'object' && props.showTime?.defaultValue
-            ? moment(props.showTime?.defaultValue[1]).format('HH:mm:ss')
+            ? dayjs(props.showTime?.defaultValue[1]).format('HH:mm:ss')
             : undefined;
-        const endDate: moment.Moment | null = getInputDate(target.value, time);
+        const endDate: Dayjs | null = getInputDate(target.value, time);
         if (endDate) {
           const dates: RangeValue =
             openDateRef.current != null ? [openDateRef.current[0], endDate] : [values[0], endDate];
@@ -367,7 +367,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         }}
         format={showFormat}
         ranges={vranges}
-        //  className={rangesList ? 'sc-date-picker-range-after' : ''}
+      //  className={rangesList ? 'sc-date-picker-range-after' : ''}
       />
     </div>
   );

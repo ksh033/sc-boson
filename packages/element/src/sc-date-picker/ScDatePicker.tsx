@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DatePicker } from 'antd';
-import moment from 'moment';
-import type { Moment } from 'moment';
+import dayjs from 'dayjs';
+import type { Dayjs } from 'dayjs';
 import interopDefault from '../_util/interopDefault';
 import { useDebounceFn, useSetState, useUpdateEffect } from 'ahooks';
 
@@ -23,12 +23,12 @@ export type ScDatePickerProps<DateType> = PickerProps<DateType> & {
 type ScDatePickerState = {
   showFormat?: string;
   /** 打开选择框时的显示的时间 */
-  openDate?: Moment | null;
+  openDate?: Dayjs | null;
   /** 时间选择框是否显示 */
   open?: boolean;
 };
 
-const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Moment>) => {
+const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Dayjs>) => {
   const {
     value,
     format = 'YYYY-MM-DD',
@@ -48,21 +48,21 @@ const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Moment>) => {
         typeof showTime === 'object' && showTime !== null
           ? showTime
           : typeof showTime === 'boolean' && showTime
-          ? {
+            ? {
               hideDisabledOptions: true,
-              defaultValue: interopDefault(moment)('00:00:00', 'HH:mm:ss'),
+              defaultValue: interopDefault(dayjs)('00:00:00', 'HH:mm:ss'),
             }
-          : false,
+            : false,
     };
   }, [restProps, showTime]);
 
-  let disData: ((date: moment.Moment) => boolean) | undefined = disabledDate;
+  let disData: ((date: dayjs.Dayjs) => boolean) | undefined = disabledDate;
 
   if (!disabledDate) {
     if (todayAfter || todayBefor) {
       disData = (current) => {
-        if (todayBefor) return current && current > interopDefault(moment)(new Date());
-        if (todayAfter) return current && current < interopDefault(moment)(new Date());
+        if (todayBefor) return current && current > interopDefault(dayjs)(new Date());
+        if (todayAfter) return current && current < interopDefault(dayjs)(new Date());
         return true;
       };
     }
@@ -70,11 +70,11 @@ const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Moment>) => {
 
   let val: any = '';
   if (value) {
-    val = interopDefault(moment)(value).isValid() ? interopDefault(moment)(value) : null;
+    val = interopDefault(dayjs)(value).isValid() ? interopDefault(dayjs)(value) : null;
   }
 
-  const [date, setDate] = useState<Moment>(val);
-  const [, setDateString] = useState(interopDefault(moment)(''));
+  const [date, setDate] = useState<Dayjs>(val);
+  const [, setDateString] = useState(interopDefault(dayjs)(''));
 
   const [state, setState] = useSetState<ScDatePickerState>({
     showFormat: (format || vformat) as string,
@@ -86,16 +86,16 @@ const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Moment>) => {
   const ref = React.useRef<HTMLDivElement | null>(null);
   // 选择弹窗提示
   const open = React.useRef<boolean>(false);
-  const todayRef = React.useRef<moment.Moment>(interopDefault(moment)({ format }));
+  const todayRef = React.useRef<dayjs.Dayjs>(interopDefault(dayjs)({ format }));
   const inputfornat = ((vformat as string) || (format as string)).replaceAll('-', '');
-  const openDateRef = React.useRef<moment.Moment | null>(null);
+  const openDateRef = React.useRef<dayjs.Dayjs | null>(null);
 
   const triggerChange = useCallback(
     (changedValue: any) => {
       const rValue: string = changedValue;
-      let temV: Moment | null = null;
+      let temV: Dayjs | null = null;
       if ((vformat || format) && rValue) {
-        temV = interopDefault(moment)(rValue).format(vformat || format);
+        temV = interopDefault(dayjs)(rValue).format(vformat || format);
       }
       if (onChange) {
         onChange(temV, rValue);
@@ -139,20 +139,20 @@ const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Moment>) => {
 
     const map = {
       2: () => {
-        const dateTime = moment(currentYear + currentMonth + str, inputfornat);
+        const dateTime = dayjs(currentYear + currentMonth + str, inputfornat);
         if (dateTime.isValid()) {
           newStr = currentYear + currentMonth + str;
         }
       },
       4: () => {
-        const dateTime = moment(currentYear + str, inputfornat);
+        const dateTime = dayjs(currentYear + str, inputfornat);
         if (dateTime.isValid()) {
           newStr = currentYear + str;
         }
       },
       6: () => {
         const prefiex = currentYear.toString().substring(0, 2);
-        const dateTime = moment(prefiex + str, inputfornat);
+        const dateTime = dayjs(prefiex + str, inputfornat);
         if (dateTime.isValid()) {
           newStr = prefiex + str;
         }
@@ -163,13 +163,13 @@ const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Moment>) => {
     }
     if (newStr) {
       // 判断是否为不可选日期
-      if (disData && disData(moment(newStr))) {
+      if (disData && disData(dayjs(newStr))) {
         newStr = null;
       } else {
         newStr = newStr + ' ' + time;
       }
     }
-    return newStr ? moment(newStr, 'YYYYMMDD HH:mm:ss') : null;
+    return newStr ? dayjs(newStr, 'YYYYMMDD HH:mm:ss') : null;
   };
   /** 监听事件 */
   const eventistener = useDebounceFn(
@@ -178,9 +178,9 @@ const ScDatePicker: React.FC<any> = (props: ScDatePickerProps<Moment>) => {
         const target: HTMLInputElement = event.target as HTMLInputElement;
         const time =
           typeof newProps.showTime === 'object' && newProps.showTime?.defaultValue
-            ? moment(newProps.showTime?.defaultValue).format('HH:mm:ss')
+            ? dayjs(newProps.showTime?.defaultValue).format('HH:mm:ss')
             : undefined;
-        const dates: Moment | null = getInputDate(target.value, time);
+        const dates: Dayjs | null = getInputDate(target.value, time);
         if (dates) {
           openDateRef.current = dates;
           setState({

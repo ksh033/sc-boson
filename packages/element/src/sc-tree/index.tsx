@@ -1,4 +1,4 @@
 import ScTree from './ScTree';
 
-export { ScTreeProps, ActionRenderFunction, ActionType } from './typing';
+export type { ScTreeProps, ActionRenderFunction, ActionType } from './typing';
 export default ScTree;

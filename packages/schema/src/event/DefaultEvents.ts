@@ -1,10 +1,16 @@
 // @ts-ignore
 import { CModal } from '@scboson/sc-element';
 import type { ButtonTypeProps } from '../interface';
-// @ts-ignore
-import { history } from 'umi';
+// @ts-ignore umi4.0 允许组件包引入 umi 会造成webpack上下文问题
+// import { history } from 'umi';
 import { omitUndefinedAndEmptyArr } from '../index';
+let history: any;
+function setHistory(h: any) {
+  if (!history && h) {
+    history = h
+  }
 
+}
 const defaultOptions = {
   showFull: false,
   okCancel: false,
@@ -368,6 +374,6 @@ const defaultEvent = {
   formUpdate,
   confirm,
   link,
-  dataExport
+  dataExport, setHistory
 };
 export default defaultEvent;

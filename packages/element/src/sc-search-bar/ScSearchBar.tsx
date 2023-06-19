@@ -2,11 +2,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import { boolean } from '@umijs/deps/compiled/yargs';
 import { useDebounceFn } from 'ahooks';
 import { Button, Card, Col, Form, Row } from 'antd';
 import type { FormProps } from 'antd/es/form';
-import { default as classNames, default as classnames } from 'classnames';
+import classnames from 'classnames';
 import RcResizeObserver from 'rc-resize-observer';
 import type { MutableRefObject } from 'react';
 import * as React from 'react';

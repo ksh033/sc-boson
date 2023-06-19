@@ -2,9 +2,9 @@
 import ScTable from './ScTable';
 import Operation from './Operation';
 
-export { ScTableProps, ColumnsType, ScProColumn, ScProColumnType } from './typing';
+export type { ScTableProps, ColumnsType, ScProColumn, ScProColumnType } from './typing';
 
-export { OperationProps } from './Operation';
+export type { OperationProps } from './Operation';
 
 type ScTable = typeof ScTable;
 interface Table extends ScTable {

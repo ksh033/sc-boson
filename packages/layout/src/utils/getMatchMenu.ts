@@ -1,4 +1,4 @@
-import { pathToRegexp } from '@qixian.cs/path-to-regexp';
+import pathToRegexp from 'path-to-regexp';
 
 export interface Route extends MenuDataItem {
   routes?: Route[];

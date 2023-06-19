@@ -5,7 +5,7 @@
 // import { defaultComponent } from './defaultComponent';
 // import type { ProColumns } from './typing';
 // import { spellNamePath } from './utils';
-// // import { getTargetElement } from 'ahooks/es/utils/dom';
+// // import { getTargetElement } from 'ahooks/es/utils/domTarget';
 // // import { useThrottleFn } from 'ahooks';
 // import { useDeepCompareEffectDebounce } from '../_util/useDeepCompareEffect';
 // import { useRefFunction } from '../_util/useRefFunction';

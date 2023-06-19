@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form } from 'antd';
 import type { ButtonProps } from 'antd/es/button/index';
-import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
+import type { TablePaginationConfig, TableProps } from 'antd';
 import React, { useImperativeHandle, useRef } from 'react';
 import type { ActionType, ProTableProps } from './typing';
 import {
@@ -26,7 +26,7 @@ import useEditableArray from './useEditableArray';
 import { useForm } from 'antd/es/form/Form';
 import isEqual from 'lodash/isEqual';
 import omitUndefinedAndEmptyArr from '../_util/omitUndefinedAndEmptyArr';
-import { getTargetElement } from 'ahooks/es/utils/dom';
+import { getTargetElement } from 'ahooks/es/utils/domTarget';
 // import { useWhyDidYouUpdate } from 'ahooks';
 import EditableCell from './components/EditableCell';
 import BatchButton from './components/BatchButton';
@@ -62,9 +62,9 @@ function getTargetNode(child: any, parent: any) {
 export type BatchOptionsType =
   | false
   | {
-      allClear: boolean;
-      batchSelect: boolean;
-    };
+    allClear: boolean;
+    batchSelect: boolean;
+  };
 
 const defaultBatchOptions = { allClear: true, batchSelect: true };
 export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
@@ -80,11 +80,11 @@ export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
   containsDeletedData?: boolean;
   /** @name 新建按钮的设置 */
   recordCreatorProps?:
-    | (RecordCreatorProps<T> &
-        ButtonProps & {
-          creatorButtonText?: React.ReactNode;
-        })
-    | false;
+  | (RecordCreatorProps<T> &
+    ButtonProps & {
+      creatorButtonText?: React.ReactNode;
+    })
+  | false;
   /** 最大行数 */
   maxLength?: number;
   /** Table 的值发生改变，为了适应 Form 调整了顺序 */
@@ -722,7 +722,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     newRecordType = 'dataSource',
     ...restButtonProps
   } = recordCreatorProps || {
-    onClick: () => {},
+    onClick: () => { },
   };
   // 新增一行
   const createClick = useRefFunction((e: any) => {

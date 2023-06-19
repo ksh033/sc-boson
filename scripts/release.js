@@ -1,11 +1,14 @@
-const { utils } = require('umi');
+const { yParser, chalk } = require('@umijs/utils');
 const { join } = require('path');
 const exec = require('./utils/exec');
+const execa = require('execa');
 const inquirer = require('inquirer');
 const getPackages = require('./utils/getPackages');
 const isNextVersion = require('./utils/isNextVersion');
 
-const { yParser, execa, chalk } = utils;
+
+
+
 const cwd = process.cwd();
 const args = yParser(process.argv);
 const lernaCli = require.resolve('lerna/cli');
@@ -132,8 +135,8 @@ async function release() {
   // ]);
 
   //process.env.NPM_CONFIG_OTP = otp;
-
-  pkgs.forEach((pkg, index) => {
+  for await (const pkg of pkgs) {
+    console.log('发布中' + pkg);
     const pkgPath = join(cwd, 'packages', pkg!=="client-plugin"?pkg.replace('sc-', ''):'clientplugin');
     const { name, version } = require(join(pkgPath, 'package.json'));
     const isNext = isNextVersion(version);
@@ -141,20 +144,52 @@ async function release() {
     if (args.publishOnly) {
       isPackageExist = packageExists({ name, version });
       if (isPackageExist) {
-        console.log(`package ${name}@${version} is already exists on npm, skip.`);
+        console.log(
+          `package ${name}@${version} is already exists on npm, skip.`,
+        );
       }
     }
+
     if (!args.publishOnly || !isPackageExist) {
-      console.log(
-        `[${index + 1}/${pkgs.length}] Publish package ${name} ${isNext ? 'with next tag' : ''}`,
-      );
-      const cliArgs = isNext ? ['publish', '--tag', 'beta'] : ['publish'];
-     const { stdout } = execa.sync('npm', cliArgs, {
-       cwd: pkgPath,
-     });
-     console.log(stdout);
+      console.log(` Publish package ${name} ${isNext ? 'with next tag' : ''}`);
+      // 默认设置为 tag 检查通过之后在设置为 latest
+      let cliArgs = isNext
+        ? ['publish',"--no-git-checks" ,'--tag', 'alpha']
+        : ['publish',"--no-git-checks", '--tag', 'alpha'];
+
+      if (args.tag) {
+        cliArgs = ['publish',"--no-git-checks", '--tag', args.tag];
+      }
+      await execa('pnpm', cliArgs, {
+        cwd: pkgPath,
+      });
     }
-  });
+
+  }
+  // pkgs.forEach((pkg, index) => {
+  //   const pkgPath = join(cwd, 'packages', pkg!=="client-plugin"?pkg.replace('sc-', ''):'clientplugin');
+  //   const { name, version } = require(join(pkgPath, 'package.json'));
+  //   const isNext = isNextVersion(version);
+  //   let isPackageExist = null;
+  //   if (args.publishOnly) {
+  //     isPackageExist = packageExists({ name, version });
+  //     if (isPackageExist) {
+  //       console.log(`package ${name}@${version} is already exists on npm, skip.`);
+  //     }
+  //   }
+  //   if (!args.publishOnly || !isPackageExist) {
+  //     console.log(
+  //       `[${index + 1}/${pkgs.length}] Publish package ${name} ${isNext ? 'with next tag' : ''}`,
+  //     );
+  //     const cliArgs = isNext ? ['publish', '--tag', 'alpha'] : ['publish', '--tag', 'alpha'];
+  //    const { stdout } = execa.sync('npm', cliArgs, {
+  //      cwd: pkgPath,
+  //    });
+  //    console.log(stdout);
+  //   }
+  // });
+  console.log('发布成功！');
+  //await exec('npm', ['run', 'prettier']);
   logStep('done');
 }
 

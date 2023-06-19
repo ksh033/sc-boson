@@ -1,14 +1,13 @@
 {
   "name": "@scboson/sc-utils",
-  "version": "2.0.0-alpha",
+  "version": "2.1.0-alpha",
   "description": "utils",
   "keywords": [
     "utils"
   ],
   "main": "./lib/index.js",
   "publishConfig": {
-    "access": "public",
-    "registry": "http://172.18.164.103:4873/"
+    "access": "public"
   },
   "license": "MIT",
   "files": [
@@ -17,8 +16,8 @@
     "src"
   ],
   "scripts": {
-    "build:dev": "father dev",
-    "build": "father build"
+    "build": "father doctor && father build",
+    "build:dev": "father doctor && father dev"
   },
   "dependencies": {
     "crypto-js": "^3.1.9-1",

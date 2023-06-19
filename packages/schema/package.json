@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-schema",
-  "version": "2.0.0-alpha",
+  "version": "2.1.0-alpha",
   "description": "sc-schema",
   "keywords": [
     "schema"
@@ -25,14 +25,17 @@
     "react": ">=16.9.0"
   },  
   "scripts": {
-    "build:dev": "father dev",
-    "build": "father build"
+    "build": "father doctor && father build",
+    "build:dev": "father doctor && father dev"
   },
   "dependencies": {
     "@scboson/sc-element": "workspace:*",
     "ahooks": "^3.7.6",
+    "@umijs/renderer-react": "^4.0.65",
+    "query-string":"^8.1.0",
     "lodash": "^4.17.21",
-    "umi": "^4.0.64"
+    "umi": "^4.0.64",
+    "dayjs":"^1.11.7"
 
   }
 }

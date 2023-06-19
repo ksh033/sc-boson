@@ -1,8 +1,7 @@
-/* eslint-disable func-names */
-/* eslint-disable react-hooks/rules-of-hooks */
+
 import type { ButtonTypeProps, PageConfig } from '../interface';
 import { useRequest } from 'ahooks';
-import { BaseResult } from '@ahooksjs/use-request/es/types';
+import { Result } from 'ahooks/lib/useRequest/src/types';
 import defaultEvents from './DefaultEvents';
 import type { HButtonType } from '../interface';
 import React from 'react';
@@ -17,12 +16,12 @@ function formatUseReq<R = any, P extends any[] = any>(
   serviveName: string,
   service?: any,
   isTable?: boolean,
-): BaseResult<R, P> | null {
+): Result<R, P> | null {
   if (service && service[serviveName]) {
     if (isTable) {
       return service[serviveName];
     }
-    return useRequest(service[serviveName], { manual: true, throwOnError: true });
+    return useRequest(service[serviveName], { manual: true });
   }
   return null;
 }
@@ -173,4 +172,5 @@ const operationButtonsBindEvent = (
   return newBtn;
 };
 
-export { BaseResult, bindEvent, bindEvents, formatUseReq, operationButtonsBindEvent };
+export { bindEvent, bindEvents, formatUseReq, operationButtonsBindEvent };
+export type { Result }
