@@ -49,20 +49,20 @@ const defaultComponent = (comprops: defaultComponentProps) => {
     } else {
       component = !isElement
         ? React.createElement(columnProps.component, {
-            ...customProps,
-            autoFocus,
-            'data-row': record,
-          })
+          ...customProps,
+          autoFocus,
+          'data-row': record,
+        })
         : React.cloneElement(columnProps.component, {
-            ...customProps,
-            autoFocus,
-            'data-row': record,
-          });
+          ...customProps,
+          autoFocus,
+          'data-row': record,
+        });
     }
   }
 
   return (
-    <Form.Item name={name} {...formItemProps} initialValue={initVal} noStyle preserve={false}>
+    <Form.Item name={name} {...formItemProps} initialValue={initVal} noStyle preserve={false} isListField={false}>
       {component}
     </Form.Item>
   );
