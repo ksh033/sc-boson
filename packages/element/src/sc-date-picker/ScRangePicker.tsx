@@ -287,7 +287,12 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     if (v) {
       setShwFormat(temformat.replaceAll('-', ''));
       // 如果配置了不可选日期则清空原始值
-      setOpenDates([null, null]);
+      if (props.disabled) {
+        setOpenDates([props.disabled[0] ? values[0] : null, props.disabled[1] ? values[1] : null]);
+      } else {
+        setOpenDates([null, null]);
+      }
+
       if (values && values[0] && values[1]) {
         setOpenPlaceholder([values[0].format(temformat), values[1].format(temformat)]);
       }
@@ -338,7 +343,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         }}
         format={showFormat}
         ranges={vranges}
-        //  className={rangesList ? 'sc-date-picker-range-after' : ''}
+      //  className={rangesList ? 'sc-date-picker-range-after' : ''}
       />
     </div>
   );
