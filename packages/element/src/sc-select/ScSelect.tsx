@@ -70,6 +70,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   const [dataSource, setDataSource] = useState(data || []);
 
   const [input, setInput] = useState('');
+  const inputValRef = useRef<string>('');
   const [inputKey, setInputKey] = useState(-1);
   const selectProps: any = { params, ...restProps };
   const [loading, setLoading] = useState(false);
@@ -117,6 +118,11 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
           // 存储第一次查询的记录，当查询数据为空的时候赋值用
           if (Array.isArray(autoloadData.current) && autoloadData.current?.length === 0) {
             autoloadData.current = rdata || [];
+          }
+          // 搜索框为空时默认回填第一次查询记录
+          if (inputValRef.current === '' && autoloadData.current?.length > 0) {
+            setDataSource(autoloadData.current || []);
+            return
           }
           setDataSource(rdata || []);
         }
@@ -276,10 +282,13 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
       }
     } else {
       if (request) {
+        console.log(autoloadData);
+
         setDataSource(autoloadData.current || []);
       }
     }
     setInput(value);
+    inputValRef.current = value
     setInputKey(inputKey - 1);
     onSearch && onSearch(value);
   };
@@ -314,6 +323,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         // 如果传入的参数有搜索的参数进行赋值显示
         if (params && params[searchField] != null) {
           setInput(params[searchField] || '');
+          inputValRef.current = params[searchField] || ''
         }
         inputRef.current.focus({
           preventScroll: true,
@@ -340,10 +350,16 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   const handleChange = (value: any, option: any) => {
     if (!singleInput) {
       setInput('');
+      inputValRef.current = ''
     }
     onChange && onChange(value, option);
   };
 
+  const prevent = (e: any) => {
+    if (e.keyCode === 8) {
+      e.stopPropagation();
+    }
+  }
   let defaultSelectProps: any = {
     dropdownRender: (menu: any) => {
       return (
@@ -352,6 +368,8 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
             <>
               <div style={{ padding: '4px' }}>
                 <Input
+                  onKeyDown={prevent}
+                  onKeyUp={prevent}
                   placeholder={searchInputPlaceholder || placeholder || '请输入'}
                   prefix={
                     <SearchOutlined
