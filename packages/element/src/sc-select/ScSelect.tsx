@@ -348,10 +348,10 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   };
 
   const handleChange = (value: any, option: any) => {
-    if (!singleInput) {
-      setInput('');
-      inputValRef.current = ''
-    }
+    // if (!singleInput) {
+    //   setInput('');
+    //   inputValRef.current = ''
+    // }
     onChange && onChange(value, option);
   };
 
