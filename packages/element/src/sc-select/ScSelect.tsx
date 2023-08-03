@@ -62,6 +62,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     searchInputPlaceholder = '请输入查询',
     defaultActiveFirstOption = true,
     allowClear = false,
+    onClear,
     ...restProps
   } = props;
   const isGone = useRef(false);
@@ -409,7 +410,12 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     }
     return item;
   };
-
+  const onHandleClear = () => {
+    setInput('');
+    inputValRef.current = ''
+    setDataSource(autoloadData.current)
+    onClear && onClear()
+  }
   return (
     <Select
       //   用于解决后端返回value为null时，组件不展示输入提示文字问题
@@ -417,6 +423,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
       onDropdownVisibleChange={handleDropdownVisibleChange}
       loading={loading}
       onChange={handleChange}
+      onClear={onHandleClear}
       defaultActiveFirstOption={defaultActiveFirstOption}
       placeholder={placeholder}
       allowClear={allowClear}
