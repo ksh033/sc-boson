@@ -412,8 +412,12 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   };
   const onHandleClear = () => {
     setInput('');
-    inputValRef.current = ''
-    setDataSource(autoloadData.current)
+    inputValRef.current = '';
+    if (autoload && remoteSearch && request) {
+      setDataSource(autoloadData.current)
+    } else {
+      setDataSource(data)
+    }
     onClear && onClear()
   }
   return (
