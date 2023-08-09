@@ -21,8 +21,7 @@
     "src"
   ],
   "peerDependencies": {
-    "antd": ">=4.23.0",
-    "react": ">=16.9.0"
+    "umi": "4.x"
   },
   "scripts": {
     "build": "father doctor && father build",
@@ -31,7 +30,7 @@
   "dependencies": {
     "@scboson/sc-element": "workspace:*",
     "@umijs/renderer-react": "^4.0.65",
-    "ahooks": "^3.7.6",
+    "ahooks": "^3.7.7",
     "dayjs": "^1.11.7",
     "lodash": "^4.17.21",
     "query-string": "^8.1.0",
