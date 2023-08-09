@@ -5,8 +5,8 @@
   ],
   "scripts": {
     "bootstrap": "node ./scripts/bootstrap.js",
-    "build": "pnpm --filter=@scboson/sc-element build",
-    "build:dev": "pnpm  --filter=@scboson/sc-layout -r --no-sort build:dev",
+    "build": "pnpm --filter=@scboson/sc-element build:dev",
+    "build:dev": "pnpm  --filter=@scboson/sc-layout build:dev",
 
     "changelog": "pro-changelog",
     "check-deps": "node ./scripts/checkDeps.js",
@@ -41,6 +41,7 @@
     "typescript": "~4.7.4"
   },
   "devDependencies": {
+    "use-media-antd-query":"^1.1.0",
     "@ant-design/antd-theme-variable": "^1.0.0",
     "@ant-design/cssinjs": "^1.7.1",
     "@ant-design/icons": "^5.0.1",
@@ -70,8 +71,8 @@
     "@types/memoize-one": "^5.1.2",
     "@types/mockjs": "^1.0.7",
     "@types/node": "^14.18.42",
-    "@types/react": "^18.0.33",
-    "@types/react-dom": "^18.0.11",
+    "@types/react": "^18.2.12",
+    "@types/react-dom": "^18.2.5",
     "@types/react-helmet": "^6.1.6",
     "@types/react-intl": "^3.0.0",
     "@types/react-responsive": "^8.0.5",
@@ -85,7 +86,7 @@
     "@umijs/test": "^3.5.39",
     "@umijs/test-utils": "^3.5.39",
     "@umijs/utils": "^4.0.64",
-    "antd": "^5.4.0",
+    "antd": "5.6.1",
     "antd-style": "beta",
     "babel-loader": "^9.1.2",
     "babel-types": "^6.26.0",
@@ -141,7 +142,9 @@
     "umi-request": "^1.4.0",
     "use-merge-value": "^1.2.0",
     "ahooks": "^3.7.6",
-    "async-validator":"^4.2.5"
+    "async-validator":"^4.2.5",
+    "react-customscroll":"^5.1.0",
+    "react-custom-scroll":"^5.0.0"
 
   },
   "name": "sc-boson",

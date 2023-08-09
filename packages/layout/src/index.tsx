@@ -21,11 +21,13 @@ import {
   FooterToolbar,
   WaterMark,
 } from '@ant-design/pro-layout';
-
+import { ErrorBoundary } from '@ant-design/pro-utils';
 import { PageContainer } from '@ant-design/pro-layout';
-import MasterLayout from './MasterLayout';
-export { default as MasterLayout } from './MasterLayout'
+import {MasterLayout} from './MasterLayout';
+export {MasterLayout}
 export { default as ScCard } from '@ant-design/pro-card';
+export {LayoutContext} from './context/LayoutContext'
+export type {LayoutContextType} from './context/LayoutContext'
 export { StatisticCard as ScStatisticCard, Statistic as ScStatistic, CheckCard as ScCheckCard } from '@ant-design/pro-card';
 
 export type { ProCardTabsProps as ScCardTabsProps, ProCardProps as ScCardProps, StatisticCardProps as ScStatisticCardProps, StatisticsCardProps as ScStatisticsCardProps, CheckCardGroupProps as ScCheckCardGroupProps, CheckCardProps as ScCheckCardProps, StatisticProps as ScStatisticProps } from '@ant-design/pro-card';
@@ -58,6 +60,7 @@ export {
   DefaultFooter,
   SettingDrawer,
   getPageTitle,
+  ErrorBoundary,
   PageHeaderWrapper,
   getMenuData,
   PageContainer,

@@ -2,16 +2,19 @@
 import React, { useRef } from 'react';
 import { Input, Spin, TreeSelect } from 'antd';
 import type { TreeSelectProps } from 'antd/es/tree-select/index';
-import type { TreeNodeProps } from 'rc-tree-select/es/TreeNode';
+
+import type { TreeNode } from 'antd/es/tree-select/index';
+
+import {emptyRequest} from '../_util/emptyFn'
 import { useDebounceFn, useRequest, useUpdateEffect } from 'ahooks';
 import { SearchOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 
 const { useState, useEffect, useCallback } = React;
 
-export interface ScTreeSelectProps extends TreeSelectProps<TreeNodeProps> {
-  request?: (params: any) => Promise<void>;
-  searchRequest?: (params?: any) => Promise<void>;
+export interface ScTreeSelectProps extends TreeSelectProps<typeof TreeNode> {
+  request?: (params: any) => Promise<any>;
+  searchRequest?: (params?: any) => Promise<any>;
   onLoad?: (dataSource: any) => void;
   searchLoad?: (dataSource: any) => void;
   data: any[];
@@ -45,11 +48,11 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
     root = null,
     autoload = false,
     nodeTransform = null,
-    request,
+    request=emptyRequest,
     onLoad,
     loadDataPramsFormat,
     showSearch = false,
-    searchRequest,
+    searchRequest=emptyRequest,
     searchLoad,
     onSearch,
     allowClear = false,
@@ -64,21 +67,16 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef<any>();
 
-  const useSearchRequest = useRequest(
-    searchRequest ||
-      new Promise((resolve) => {
-        resolve(null);
-      }),
+  const useSearchRequest = useRequest<any,any>(
+    searchRequest,
     {
       manual: true,
     },
   );
 
+
   const customRequest = useRequest(
-    request ||
-      new Promise((resolve) => {
-        resolve(null);
-      }),
+    request ,
     {
       manual: true,
     },
@@ -173,7 +171,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
     let payload = _params || null;
     payload = params ? { ...params, ..._params } : payload;
 
-    let rdata = await useSearchRequest.run(payload);
+    let rdata = await useSearchRequest.runAsync(payload);
     if (isGone.current) return;
     if (onLoad) {
       rdata = onLoad(rdata);
@@ -340,7 +338,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
     };
   }
   let requestProps = {};
-  if (request) {
+  if (request!==emptyRequest) {
     requestProps = {
       loadData: onLoadData,
     };

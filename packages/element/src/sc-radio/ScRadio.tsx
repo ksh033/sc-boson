@@ -3,7 +3,7 @@ import { useRequest, useUpdateEffect } from 'ahooks';
 import { Radio } from 'antd';
 import type { RadioGroupProps } from 'antd/es/radio';
 import type { DataComponentProps } from '../Component';
-
+import {emptyRequest} from '../_util/emptyFn'
 const { useLayoutEffect, useState } = React;
 
 
@@ -20,7 +20,7 @@ const ScRadio: React.FC<ScRadioProps> = (props) => {
     className = '',
     textField = 'label',
     valueField = 'value',
-    request,
+    request=emptyRequest,
     autoload,
     onLoad,
     ...restProps
@@ -34,18 +34,15 @@ const ScRadio: React.FC<ScRadioProps> = (props) => {
     autoload,
     ...restProps,
   };
-  const { run } = useRequest(
-    request ||
-    new Promise((resolve) => {
-      resolve(null);
-    }),
+  const { runAsync } = useRequest<any,any>(
+    request,
     {
       manual: true,
     },
   );
 
   const loadData = () => {
-    run(params).then((res: any) => {
+    runAsync(params).then((res: any) => {
       let newList = res;
       if (onLoad) {
         newList = onLoad(newList);

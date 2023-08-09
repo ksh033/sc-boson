@@ -57,6 +57,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     groupField = 'group',
     onDropdownVisibleChange,
     preHandle,
+    value,
     placeholder = '请选择',
     searchInputPlaceholder = '请输入查询',
     defaultActiveFirstOption = true,
@@ -383,18 +384,28 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   /** 数据格式化处理 */
   const formatValue = (item: any) => {
     if (props.labelInValue === true && item != null) {
+      if (typeof item==="string"){
+        return  {
+          label: item,
+          key:item,
+          value: item
+        }
+      }
       return {
         label: item[textField] || item.label,
         value: item[valueField] || item.value,
       };
     }
+   
+
     return item;
   };
-
+  
+  let newVal=value === null ? undefined : formatValue(value)
   return (
     <Select
       //   用于解决后端返回value为null时，组件不展示输入提示文字问题
-      value={selectProps.value === null ? undefined : formatValue(selectProps.value)}
+      value={newVal}
       onDropdownVisibleChange={handleDropdownVisibleChange}
       loading={loading}
       onChange={handleChange}

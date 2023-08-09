@@ -23,12 +23,18 @@ export type HeaderViewProps = GlobalHeaderProps & {
   collapsed?: boolean;
   logo?: React.ReactNode;
   headerRender?: WithFalse<
-    (props: HeaderViewProps, defaultDom: React.ReactNode) => React.ReactNode
-  >;
-  headerTitleRender?: WithFalse<
-    (logo: React.ReactNode, title: React.ReactNode, props: HeaderViewProps) => React.ReactNode
-  >;
-  headerContentRender?: WithFalse<(props: HeaderViewProps) => React.ReactNode>;
+  (props: HeaderViewProps, defaultDom: React.ReactNode) => React.ReactNode
+>;
+headerTitleRender?: WithFalse<
+(
+  logo: React.ReactNode,
+  title: React.ReactNode,
+  props: HeaderViewProps,
+) => React.ReactNode
+>;
+headerContentRender?: WithFalse<
+(props: HeaderViewProps, defaultDom: React.ReactNode) => React.ReactNode
+>;
   siderWidth?: number;
   hasSiderMenu?: boolean;
   appsMenu?: AppMenuProps[];

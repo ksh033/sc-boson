@@ -3,7 +3,7 @@ import type { ProSettings } from '@ant-design/pro-layout';
 
 const defaultSettings: ProSettings = {
   navTheme: 'realDark',
-  layout: 'side',
+  layout:"mix",
   contentWidth: 'Fluid',
   fixedHeader: false,
   fixSiderbar: false,

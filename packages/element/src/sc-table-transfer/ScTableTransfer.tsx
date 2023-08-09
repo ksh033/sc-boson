@@ -79,7 +79,7 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
     lefteSearch,
     filterOption,
     onChange,
-    targetDataSource,
+    targetDataSource=[],
     searchField = 'label',
     prefixCls = 'sc-table-transfer',
     ...restProps
@@ -175,11 +175,13 @@ const ScTableTransfer: React.FC<ScTableTransferfProps<any>> = (props) => {
   };
 
   const handleFilter = (direction: TransferDirection, e: React.ChangeEvent<HTMLInputElement>) => {
-    setState({ [`${direction}FilterValue`]: e.target.value });
+    
+ 
+    setState({...state, [`${direction}FilterValue`]: e.target.value });
   };
 
   const handleClear = useCallback((direction: TransferDirection) => {
-    setState({ [`${direction}FilterValue`]: '' });
+    setState({...state, [`${direction}FilterValue`]: '' });
   }, []);
   const handleLeftClear = () => handleClear('left');
   const handleRightClear = () => handleClear('right');

@@ -69,6 +69,7 @@ export default class ViewItem extends PureComponent<ViewItemPros> {
     const toValue = (v: any) => {
       if (valueEnum) {
         const key = v + ""
+        //@ts-ignore
         const item = valueEnum[key]
         if (item) {
           return item.text

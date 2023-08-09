@@ -18,6 +18,7 @@ import { MyContext } from './context-manager';
 import Quicks from './Quicks';
 import ScFormItem from './ScFormItem';
 import SearchButtons from './SearchButton';
+
 import './style';
 
 const FormItem = Form.Item;
@@ -81,7 +82,7 @@ export type SpanConfig =
     xxl: number;
   };
 
-const CONFIG_SPAN_BREAKPOINTS = {
+const CONFIG_SPAN_BREAKPOINTS:any = {
   xs: 513,
   sm: 513,
   md: 785,
@@ -89,7 +90,7 @@ const CONFIG_SPAN_BREAKPOINTS = {
   xl: 1057,
   xxl: Infinity,
 };
-export const WIDTH_SIZE_ENUM = {
+export const WIDTH_SIZE_ENUM:any = {
   // 适用于短数字，短文本或者选项
   xs: 104,
   s: 216,
@@ -105,7 +106,7 @@ export const WIDTH_SIZE_ENUM = {
   xl: 552,
 };
 /** 配置表单列变化的容器宽度断点 */
-const BREAKPOINTS = {
+const BREAKPOINTS:any = {
   vertical: [
     // [breakpoint, cols, layout]
     [513, 1, 'vertical'],
@@ -141,7 +142,7 @@ const getOffset = (length: number, span: number = 8) => {
 const getSpanConfig = (
   layout: FormProps['layout'],
   width: number,
-  span?: SpanConfig,
+  span?: SpanConfig |any,
 ): { span: number; layout: FormProps['layout'] } => {
   if (width === 16) {
     return {
@@ -155,7 +156,9 @@ const getSpanConfig = (
       layout,
     };
   }
+  //@ts-nocheck
   const spanConfig = span
+    //@ts-nocheck
     ? Object.keys(span).map((key) => [CONFIG_SPAN_BREAKPOINTS[key], 24 / span[key], 'horizontal'])
     : BREAKPOINTS[layout || 'default'];
 
@@ -228,7 +231,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     }
   };
 
-  const { run } = useDebounceFn(
+  const { run } = useDebounceFn<any>(
     async () => {
       const fieldsValue = await wrapForm.validateFields();
       const values = { ...fieldsValue };
@@ -535,7 +538,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
           }}
           key="option"
         >
-          <Form.Item label=" " colon={false} className={classNames(`${prefixCls}-actions`)}>
+          <Form.Item label=" " colon={false} className={classnames(`${prefixCls}-actions`)}>
             {buttons}
           </Form.Item>
         </Col>

@@ -16,8 +16,9 @@
   "contributors": [
     "ant"
   ],
-  "sideEffects": [
-    "*.less"
+    "sideEffects": [
+    "es/**/style/*",
+    "lib/**/style/*"
   ],
   "publishConfig": {
     "access": "public"
@@ -59,7 +60,7 @@
     "react-sortable-hoc": "^2.0.0",
     "unstated-next": "^1.1.0",
     "async-validator":"^4.2.5",
-    "@ant-design/pro-utils":"^2.7.2",
+    "@ant-design/pro-utils": "2.11.8",
     "use-media-antd-query": "^1.0.1",
     "dayjs":"^1.11.7"
   },
@@ -74,6 +75,8 @@
     "react": ">=17.0.0",
     "react-dom": ">=17.0.0"
   },
+
+
   "peerDependenciesMeta": {
     "@types/lodash.merge": {
       "optional": true

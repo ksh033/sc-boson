@@ -10,9 +10,9 @@ import type { CompareFn, SortOrder } from 'antd/es/table/interface';
 import type { TooltipProps, TabPaneProps } from 'antd';
 import type { CardProps } from 'antd';
 import type {} from 'antd/es/table/interface';
-import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
+import type { TablePaginationConfig, TableProps } from 'antd/es/table/InternalTable';
 import type { SearchProps } from 'antd/es/input';
-export type { ColumnsType } from 'antd/es/table/Table';
+export type { ColumnsType } from 'antd/es/table/InternalTable';
 import type { ColumnType } from 'antd/es/table';
 export type PageInfo = {
   pageSize: number;
@@ -171,6 +171,7 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   preLoadHandle?: (params: any) => boolean;
   /** 点击刷新数据 */
   refresh?: () => void;
+  autoHeight:boolean;
   /** 请求的参数 */
   params?: any;
   /** 表格容器的 class 名 */

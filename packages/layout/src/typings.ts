@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type * as H from 'history';
 
-
 export interface match<Params extends { [K in keyof Params]?: string } = Record<string, any>> {
   params: Params;
   isExact: boolean;
@@ -58,7 +57,7 @@ export interface AppMenuProps {
   /** 应用路径 */
   path: string;
   /** 应用路径 */
-  icon: string;
+  icon: any;
 
   key: string;
 }

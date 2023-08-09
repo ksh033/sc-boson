@@ -21,6 +21,8 @@ import { useRefFunction } from '../_util/useRefFunction';
 import type { ActionType, ScTableProps, SorterItem } from './typing';
 import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
 import { changeCountSort } from './countSort';
+import {emptyRequest} from '../_util/emptyFn'
+import { useState } from 'react';
 const { useEffect, useRef, useMemo } = React;
 
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
@@ -43,11 +45,14 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     toolBarRender,
     options = false,
     headerTitle,
+    style={},
+    scroll,
     tooltip,
     toolbar,
     cardProps,
     cardBordered = false,
     onChange,
+    autoHeight=true,
     dragSort = false,
     multipleSort = true,
     dataSource: newdataSource,
@@ -63,6 +68,13 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const { selectedRows, params = null, pageSize = 10, autoload = false } = restPros;
   const counter = Container.useContainer();
 
+  const tableDomRef  =useRef<HTMLDivElement>(null);
+
+  const [autoHeightConfig,setAutoHeightConfig]=useState<{
+    init:boolean,
+    height?:number,
+    scrollY?:number
+  }>({init:false})
   /** 创建排序的参数 */
   const createOrderParams = (sorterMap: SorterItem) => {
     const list: SortValueList[] = [];
@@ -99,12 +111,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const newParams = Object.assign({}, remoteParams);
 
   const isGone = useRef(false);
-  const { loading, run } = useRequest(
-    request ||
-      new Promise((resolve) => {
-        resolve(null);
-      }),
+  const { loading, runAsync } = useRequest<any,any>(
+    request || emptyRequest
+      ,
     {
+
       manual: true,
     },
   );
@@ -165,7 +176,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         flag = await preLoadHandle?.(payload);
       }
       if (flag) {
-        let _data = await run(payload);
+        let _data = await runAsync(payload);
         if (isGone.current) return;
         if (_data) {
           if (onLoad) {
@@ -303,6 +314,28 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     saveRef.current = updateAction();
   }
 
+
+  const autoTableHeight=(paginationHeight:number)=>{
+
+        const bodyHeight=document.body.clientHeight;
+    if (!autoHeightConfig.init){
+      //alue.pageContainer.current
+      const thead= tableDomRef.current?.getElementsByClassName('ant-table-thead')[0];
+     // const pagination= tableDomRef.current?.getElementsByClassName('ant-pagination')[0];
+      const react=thead?.getBoundingClientRect();
+      if (react?.bottom){
+
+        const height=bodyHeight-react?.bottom;
+        const scrollY=height-(paginationHeight)
+        setAutoHeightConfig({init:true,height,scrollY:scrollY})
+       
+
+       
+      }
+  
+   }
+    
+  }
   /** 绑定 action ref */
   React.useImperativeHandle(saveRef, updateAction);
 
@@ -320,10 +353,22 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       loadData();
     }
 
+    if (autoHeight===true){
+
+      let pagination=24
+      if (props.pagination===false){
+        pagination=0;
+      }
+      autoTableHeight(pagination)
+
+    }
+
     return () => {
       isGone.current = true;
     };
   }, []);
+
+
   /** 监听远程请求数据变化 */
   useUpdateEffect(() => {
     if (innerPagination && Number(innerPagination.current || 0) > 1) {
@@ -587,6 +632,21 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         },
       };
     }
+
+    const newStyle:any={...style};
+    const newScroll={...scroll}
+
+    if (autoHeight){
+      if (!newStyle.height){
+        newStyle.height=autoHeightConfig.height
+
+      }
+      if (!newStyle.y){
+        newScroll.y=autoHeightConfig.scrollY
+
+      }
+    }
+
     return {
       onRow: (record: any, index: number) => {
         let result: any = onRow && onRow(record, index);
@@ -619,6 +679,8 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
         return onRowProps;
       },
 
+      style:newStyle,
+      scroll:newScroll,
       loading,
       rowKey: key,
       rowSelection: cRowSelection,
@@ -687,7 +749,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
     </Card>
   );
   return (
-    <div className={prefixCls + className}>
+    <div className={prefixCls + className} ref={tableDomRef}>
       <DndProvider backend={HTML5Backend}>{tableAreaDom}</DndProvider>
     </div>
   );

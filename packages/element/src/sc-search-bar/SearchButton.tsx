@@ -17,7 +17,7 @@ const Buttons: React.FC<any> = () => {
       <Button type="primary" htmlType="submit">
         查询
       </Button>
-      <Button style={{ marginLeft: 8 }} onClick={handleFormReset}>
+      <Button style={{ marginLeft: 8 }} onClick={handleFormReset as any}>
         重置
       </Button>
       <a style={{ marginLeft: 8 }} onClick={toggleForm}>
