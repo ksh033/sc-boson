@@ -13,8 +13,10 @@ const lernaCli = require.resolve('lerna/cli');
     [
       [lernaCli],
       'version',
-      '--yes',
       '--exact',
+      '--yes',
+      '--no-git-tag-version',
+      '--sign-git-tag'
     
     ],
 
