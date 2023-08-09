@@ -21,7 +21,7 @@
     "size:build": "cross-env PRO_COMPONENTS_CI='CI' webpack",
     "start": "dumi dev",
     "sync:tnpm": "node -e 'require(\"./scripts/syncTNPM\")()'",
-    "test": "umi-test",
+    "test": "node ./scripts/test.js",
     "test:coverage": "umi-test --coverage",
     "test:update": "umi-test --updateSnapshot",
     "tsc": "tsc --noEmit",
