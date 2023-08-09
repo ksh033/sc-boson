@@ -11,12 +11,18 @@ const lernaCli = require.resolve('lerna/cli');
  exec(
     'node',
     [
+ 
       [lernaCli],
       'version',
-      '--exact',
       '--yes',
-      '--no-git-tag-version',
-      '--sign-git-tag'
+      '--exact',
+      // '--no-commit-hooks',
+      // '--no-git-tag-version',
+      '--no-push',
+      '--message',
+      '🎨 chore(release): Publish',
+      '--conventional-commits',
+    
     
     ],
 
