@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0-alpha.1](https://192.168.10.60/compare/@scboson/sc-element@2.1.0-alpha.0...@scboson/sc-element@2.1.0-alpha.1) (2023-08-09)
+
+**Note:** Version bump only for package @scboson/sc-element
+
 # [2.1.0-alpha.0](https://192.168.10.60/compare/@scboson/sc-element@1.0.4-beta.165...@scboson/sc-element@2.1.0-alpha.0) (2023-08-09)
 
 **Note:** Version bump only for package @scboson/sc-element

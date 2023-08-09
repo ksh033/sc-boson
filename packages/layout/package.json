@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-layout",
-  "version": "2.1.0-alpha.0",
+  "version": "2.1.0-alpha.1",
   "description": "@scboson/sc-layout",
   "keywords": [
     "antd"
@@ -60,12 +60,12 @@
     "typescript": "^5.0.4"
   },
   "peerDependencies": {
-    "antd": ">=4.23.0 || >=5.6.0",
-    "@ant-design/pro-card":">=2.5.1",
-    "@ant-design/pro-layout":">=7.15.2",
-    "@ant-design/pro-provider":">=2.10.5",
-    "ahooks":">=2.10.5",
+    "@ant-design/pro-card": ">=2.5.1",
+    "@ant-design/pro-layout": ">=7.15.2",
+    "@ant-design/pro-provider": ">=2.10.5",
     "@ant-design/pro-utils": ">=2.12.1",
+    "ahooks": ">=2.10.5",
+    "antd": ">=4.23.0 || >=5.6.0",
     "react": ">=17.0.0",
     "react-dom": ">=17.0.0"
   },
