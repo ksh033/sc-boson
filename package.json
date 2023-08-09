@@ -5,7 +5,7 @@
   ],
   "scripts": {
     "bootstrap": "node ./scripts/bootstrap.js",
-    "build": "pnpm --filter=@scboson/sc-element build:dev",
+    "build": "pnpm --filter=\"@scboson/**\" build",
     "build:dev": "pnpm  --filter=@scboson/sc-layout build:dev",
 
     "changelog": "pro-changelog",
@@ -15,7 +15,7 @@
     "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx  --fix --format=pretty ./packages && npm run lint:prettier",
     "lint:prettier": "npm run prettier &&  git diff && prettier --version && prettier --check \"packages/**/**.{js,jsx,tsx,ts,less,md,json}\" --end-of-line auto",
     "prettier": "prettier --write \"**/**.{js,jsx,tsx,ts,less,md,json}\"",
-    "release": "node ./scripts/release.js  --conventional-prerelease --publishOnly --skipBuild",
+    "release": "node ./scripts/release.js  --conventional-prerelease",
     "site": "dumi build",
     "size": "npm run build && size-limit",
     "size:build": "cross-env PRO_COMPONENTS_CI='CI' webpack",

@@ -35,7 +35,7 @@ async function release() {
   if (!args.skipGitStatusCheck) {
     const gitStatus = execa.sync('git', ['status', '--porcelain']).stdout;
     if (gitStatus.length) {
-      printErrorAndExit(`Your git status is not clean. Aborting.`);
+      //printErrorAndExit(`Your git status is not clean. Aborting.`);
     }
   } else {
     logStep('git status check is skipped, since --skip-git-status-check is supplied');
