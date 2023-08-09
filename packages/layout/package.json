@@ -1,6 +1,6 @@
 {
   "name": "@scboson/sc-layout",
-  "version": "2.1.0-alpha",
+  "version": "2.1.0-alpha.0",
   "description": "@scboson/sc-layout",
   "keywords": [
     "antd"
@@ -29,32 +29,29 @@
     "> 1%",
     "ie >= 11"
   ],
-
   "scripts": {
     "build": "father doctor && father build",
     "build:dev": "father doctor && father dev"
-    
   },
   "dependencies": {
-    "react-customscroll":"^5.1.0",
-   
-    "react-portal-tooltip":"^2.4.7",
-    "ahooks":"^3.7.7",
-    "@ant-design/cssinjs":"^1.10.1",
+    "@ant-design/cssinjs": "^1.10.1",
     "@ant-design/icons": "^5.0.0",
-    "@ant-design/pro-card":"^2.5.1",
+    "@ant-design/pro-card": "^2.5.1",
     "@ant-design/pro-layout": "^7.15.2",
     "@ant-design/pro-provider": "^2.10.5",
     "@ant-design/pro-utils": "^2.12.1",
     "@babel/runtime": "^7.18.0",
     "@umijs/route-utils": "^4.0.0",
     "@umijs/use-params": "^1.0.9",
+    "ahooks": "^3.7.7",
     "classnames": "^2.3.2",
     "lodash.merge": "^4.6.2",
     "omit.js": "^2.0.2",
     "path-to-regexp": "2.4.0",
     "rc-resize-observer": "^1.1.0",
     "rc-util": "^5.0.6",
+    "react-customscroll": "^5.1.0",
+    "react-portal-tooltip": "^2.4.7",
     "swr": "^2.0.0",
     "use-json-comparison": "^1.0.3",
     "use-media-antd-query": "^1.1.0",

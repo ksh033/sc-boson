@@ -1,6 +1,6 @@
 {
   "name": "@scboson/client-plugin",
-  "version": "2.1.0-alpha",
+  "version": "2.1.0-alpha.0",
   "description": "博思客户端",
   "main": "./es/index.js",
   "module": "./es/index.js",
@@ -23,7 +23,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@babel/runtime":"^7.21.0",
+    "@babel/runtime": "^7.21.0",
     "@types/jquery": "^3.3.29",
     "clean-webpack-plugin": "^2.0.1",
     "copy-webpack-plugin": "^5.0.1",
