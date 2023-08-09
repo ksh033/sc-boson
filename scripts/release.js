@@ -154,11 +154,11 @@ async function release() {
       console.log(` Publish package ${name} ${isNext ? 'with next tag' : ''}`);
       // 默认设置为 tag 检查通过之后在设置为 latest
       let cliArgs = isNext
-        ? ['publish',"--no-git-checks" ,'--tag', 'alpha']
-        : ['publish',"--no-git-checks", '--tag', 'alpha'];
+        ? ['publish' ,'--tag', 'alpha']
+        : ['publish', '--tag', 'alpha'];
 
       if (args.tag) {
-        cliArgs = ['publish',"--no-git-checks", '--tag', args.tag];
+        cliArgs = ['publish', '--tag', args.tag];
       }
       await execa('pnpm', cliArgs, {
         cwd: pkgPath,
