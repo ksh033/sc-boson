@@ -47,7 +47,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     request,
     remoteSearch = false,
     disableSelect = true,
-    showSearch: defaultSearch = false,
+    showSearch: defaultSearch = true,
     searchField = '_search',
     customRef,
     group = false,
@@ -96,7 +96,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
     return request != null;
   }, []);
 
-  const showSearch = isRemote ? true : defaultSearch;
+  const showSearch = isRemote && defaultSearch ? true : defaultSearch;
 
   const loadData = async (searchParam?: any) => {
     if (!request) {
@@ -283,8 +283,6 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
       }
     } else {
       if (request) {
-        console.log(autoloadData);
-
         setDataSource(autoloadData.current || []);
       }
     }
