@@ -15,8 +15,9 @@ import { Schema, useSchemaContext } from '../context';
 import { isObject, isString } from 'lodash';
 import { useSetState } from 'ahooks';
 import { useOutletContext } from '@umijs/renderer-react'
-import queryString from 'query-string';
-const { parse } = queryString
+import {parse} from 'query-string';
+import defaultEvents from '../event/DefaultEvents'
+
 import dayjs from "dayjs"
 
 // import ButtonTool from '../page/OpColButton';
@@ -134,11 +135,13 @@ export default function useEditPage(
   // const _editPageButtons: any[] = [];
   // const toolbar = new ButtonTool();
   const schemaContext = useSchemaContext();
-  const layoutContext = useOutletContext<any>();
+  const layoutContext = useOutletContext<any>()||{};
+ 
+  
   const { location, params } = layoutContext
   // const { service } = config;
   const { pageProps = {}, match } = props;
-  let record: any = '';
+  let record: any = {};
   if (config.pageType === PageType.modal) {
     record = pageProps.params;
   } else if (location && location.search) {
@@ -146,7 +149,7 @@ export default function useEditPage(
   }
   const [pageData, setPageData] = useSetState<any>({});
   const history = schemaContext.umi.history;
-
+  defaultEvents.setHistory(history)
   const pageEntryTimeRef = useRef<string>(dayjs().format('YYYY-MM-DD HH:mm:ss'));
 
   const setData = (data: any) => {
@@ -242,6 +245,7 @@ export default function useEditPage(
       if (config.service && config.service[name]) {
         let _params = params;
         if (isObject(record)) {
+            //@ts-ignore
           _params = key ? { [key]: record[key] } : record;
         }
         setLoading(true);
@@ -305,6 +309,7 @@ export default function useEditPage(
       }
       if (isString(item)) {
         const key: string = item;
+        //@ts-ignore
         button = { ...ToolButtons[key], options: defaultOptions };
       }
 

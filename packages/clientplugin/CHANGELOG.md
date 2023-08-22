@@ -3,6 +3,78 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0-alpha.12](http://bsgit28:57949/smart-city-ui/sc-boson/compare/@scboson/client-plugin@2.1.1-alpha.0...@scboson/client-plugin@2.1.0-alpha.12) (2023-08-15)
+
+**Note:** Version bump only for package @scboson/client-plugin
+
+
+
+
+
+# [2.1.0-alpha.11](http://bsgit28:57949/smart-city-ui/sc-boson/compare/@scboson/client-plugin@2.1.1-alpha.0...@scboson/client-plugin@2.1.0-alpha.11) (2023-08-09)
+
+**Note:** Version bump only for package @scboson/client-plugin
+
+
+
+
+
+# [2.1.0-alpha.10](http://bsgit28:57949/smart-city-ui/sc-boson/compare/@scboson/client-plugin@2.1.1-alpha.0...@scboson/client-plugin@2.1.0-alpha.10) (2023-08-09)
+
+**Note:** Version bump only for package @scboson/client-plugin
+
+
+
+
+
+# [2.1.0-alpha.9](http://bsgit28:57949/smart-city-ui/sc-boson/compare/@scboson/client-plugin@2.1.1-alpha.0...@scboson/client-plugin@2.1.0-alpha.9) (2023-08-09)
+
+**Note:** Version bump only for package @scboson/client-plugin
+
+
+
+
+
+# [2.1.0-alpha.8](http://bsgit28:57949/smart-city-ui/sc-boson/compare/@scboson/client-plugin@2.1.1-alpha.0...@scboson/client-plugin@2.1.0-alpha.8) (2023-08-09)
+
+**Note:** Version bump only for package @scboson/client-plugin
+
+
+
+
+
+# [2.1.0-alpha.7](http://bsgit28:57949/smart-city-ui/sc-boson/compare/@scboson/client-plugin@2.1.1-alpha.0...@scboson/client-plugin@2.1.0-alpha.7) (2023-08-09)
+
+**Note:** Version bump only for package @scboson/client-plugin
+
+
+
+
+
+# [2.1.0-alpha.6](http://bsgit28:57949/smart-city-ui/sc-boson/compare/@scboson/client-plugin@2.1.1-alpha.0...@scboson/client-plugin@2.1.0-alpha.6) (2023-08-09)
+
+**Note:** Version bump only for package @scboson/client-plugin
+
+
+
+
+
+# [2.1.0-alpha.5](http://bsgit28:57949/smart-city-ui/sc-boson/compare/@scboson/client-plugin@2.1.1-alpha.0...@scboson/client-plugin@2.1.0-alpha.5) (2023-08-09)
+
+**Note:** Version bump only for package @scboson/client-plugin
+
+
+
+
+
+# [2.1.0-alpha.4](http://bsgit28:57949/smart-city-ui/sc-boson/compare/@scboson/client-plugin@2.1.1-alpha.0...@scboson/client-plugin@2.1.0-alpha.4) (2023-08-09)
+
+**Note:** Version bump only for package @scboson/client-plugin
+
+
+
+
+
 # [2.1.0-alpha.3](http://bsgit28:57949/smart-city-ui/sc-boson/compare/@scboson/client-plugin@2.1.1-alpha.0...@scboson/client-plugin@2.1.0-alpha.3) (2023-08-09)
 
 **Note:** Version bump only for package @scboson/client-plugin

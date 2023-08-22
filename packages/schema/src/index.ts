@@ -29,15 +29,17 @@ export const omitUndefinedAndEmptyArr = (obj: any): any => {
 
 export type {
   PageConfig,
-  ToolButtons,
+
   ButtonTypeProps,
-  PageType,
+
   FormConfig,
   FormSearchItem,
   ProColumns,
 } from './interface';
 export {
-  setFuncodes
+  setFuncodes,
+  ToolButtons,
+  PageType
 } from './interface';
 export {
   SchemaContext,

@@ -231,9 +231,10 @@ export const ToolButtons: ToolButtonsProps = {
   },
 };
 export const setFuncodes = (toolButtons: any) => {
-  Object.keys(toolButtons).forEach((key: string) => {
-    if (ToolButtons[key]) {
-      ToolButtons[key].funcode = toolButtons[key].funcode;
+  Object.keys(toolButtons).forEach((key) => {
+    const newKey=key as  keyof typeof ToolButtons 
+    if (ToolButtons[newKey]) {
+      ToolButtons[newKey].funcode = toolButtons[key].funcode;
     }
   });
 };

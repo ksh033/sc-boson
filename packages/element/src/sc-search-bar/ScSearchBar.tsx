@@ -21,6 +21,7 @@ import SearchButtons from './SearchButton';
 
 import './style';
 
+
 const FormItem = Form.Item;
 
 export type SearchFormItemProp = FormItemProp & {
@@ -198,6 +199,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
     onValuesChange,
     preHandle,
     customBtn,
+    className,
     ...resProps
   } = props;
 
@@ -545,7 +547,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
       );
 
     return (
-      <Card bordered={false}>
+      <Card bordered={false} className='sc-searchbar-card'>
         <Row gutter={lightFilter ? 12 : 24} justify="start" key="resize-observer-row">
           {cols}
           {customOptionButtons ? customOptionButtons() : buttonsRow}
@@ -565,7 +567,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
             }
           }}
         >
-          <div className={`${prefixCls}`}>{children}</div>
+          <div className={`${prefixCls} ${className}`}>{children}</div>
         </RcResizeObserver>
       </MyContext.Provider>
     );
@@ -580,7 +582,7 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
           }
         }}
       >
-        <div>
+    
           <Form
             form={wrapForm}
             layout="horizontal"
@@ -588,9 +590,9 @@ const SearchBar: React.FC<ScSearchBarProps> = (props) => {
             {...resProps}
           >
             {addonBefore}
-            <div className={`${prefixCls}`}>{RenderForm()}</div>
+            <div className={`${prefixCls} ${className}`}>{RenderForm()}</div>
           </Form>
-        </div>
+  
       </RcResizeObserver>
     </MyContext.Provider>
   );

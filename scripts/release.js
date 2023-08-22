@@ -56,7 +56,7 @@ async function release() {
 
   let updated = null;
 
-  if (!args.publishOnly) {
+ // if (!args.publishOnly) {
     // Get updated packages
     logStep('check updated packages');
     const updatedStdout = execa.sync(lernaCli, ['changed']).stdout;
@@ -105,9 +105,10 @@ async function release() {
         'version',
         '--yes',
         '--exact',
+        '--force-publish',
         // '--no-commit-hooks',
-        // '--no-git-tag-version',
-        // '--no-push',
+        '--no-git-tag-version',
+        '--no-push',
         '--message',
         '🎨 chore(release): Publish',
         '--conventional-commits',
@@ -118,7 +119,9 @@ async function release() {
         shell: false,
       },
     );
-  }
+  //}
+
+
 
   // Publish
   // Umi must be the latest.
@@ -154,8 +157,8 @@ async function release() {
       console.log(` Publish package ${name} ${isNext ? 'with next tag' : ''}`);
       // 默认设置为 tag 检查通过之后在设置为 latest
       let cliArgs = isNext
-        ? ['publish' ,'--tag', 'alpha']
-        : ['publish', '--tag', 'alpha'];
+        ? ['publish','--no-git-checks','--tag', 'alpha']
+        : ['publish', '--no-git-checks','--tag', 'alpha'];
 
       if (args.tag) {
         cliArgs = ['publish', '--tag', args.tag];

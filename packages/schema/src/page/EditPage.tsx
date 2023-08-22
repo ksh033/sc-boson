@@ -53,7 +53,7 @@ export function EditPage<P extends object & { scope: UseEditPageProp<any> }, TRe
     const Provider = umi.ModelProvider || React.Fragment;
     return (
       <Provider>
-        <EditPageContext.Provider value={scope}>{newCmp}</EditPageContext.Provider>
+        <EditPageContext.Provider value={scope}><div className='sc-edit-page'>{newCmp}</div></EditPageContext.Provider>
       </Provider>
     );
   };

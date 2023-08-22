@@ -1,10 +1,9 @@
 import React from 'react';
 import type { UseEditPageProp } from '../hooks/useEditPage';
 import type { UseListPageProp } from '../hooks/useListPage';
-import type { History } from 'history-with-query';
 
 export interface UmiProp {
-  history?: History;
+  history?: any;
   ModelProvider?: any;
 }
 export const umi: UmiProp = {

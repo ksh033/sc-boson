@@ -171,7 +171,7 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   preLoadHandle?: (params: any) => boolean;
   /** 点击刷新数据 */
   refresh?: () => void;
-  autoHeight:boolean;
+  autoHeight?:boolean;
   /** 请求的参数 */
   params?: any;
   /** 表格容器的 class 名 */

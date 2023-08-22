@@ -7,7 +7,6 @@ import warning from 'antd/es/_util/warning';
 //import type { ModalFuncProps } from './Modal';
 import type { ModalFuncProps } from 'antd';
 import { Modal as Dialog } from 'antd';
-
 interface ConfirmDialogProps extends ModalFuncProps {
   afterClose?: () => void;
   close: (...args: any[]) => void;
@@ -100,6 +99,7 @@ const ConfirmDialog = (props: ConfirmDialogProps) => {
           { [`${contentPrefixCls}-centered`]: !!props.centered },
           wrapClassName,
         )}
+      
         onCancel={() => close?.({ triggerCancel: true })}
         open={open || visible}
         visible={open || visible}
@@ -123,6 +123,7 @@ const ConfirmDialog = (props: ConfirmDialogProps) => {
         modalRender={modalRender}
         focusTriggerAfterClose={focusTriggerAfterClose}
       >
+  
         <div className={`${contentPrefixCls}-body-wrapper`}>
           <div className={`${contentPrefixCls}-body`}>
             {icon}
@@ -145,6 +146,7 @@ const ConfirmDialog = (props: ConfirmDialogProps) => {
             </ActionButton>
           </div>
         </div>
+      
       </Dialog>
     </ConfigProvider>
   );

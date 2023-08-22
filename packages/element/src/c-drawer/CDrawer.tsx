@@ -128,6 +128,7 @@ const CDrawerDialog = (props: CDrawerDialogProps) => {
     if (React.isValidElement(props.content)) {
       dlgContent = React.cloneElement<any>(props.content, dlgCprops);
     } else {
+      //@ts-ignore
       dlgContent = React.createElement<any>(props.content, dlgCprops);
     }
   }

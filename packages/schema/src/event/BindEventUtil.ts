@@ -2,10 +2,11 @@
 import type { ButtonTypeProps, PageConfig } from '../interface';
 import { useRequest } from 'ahooks';
 import { Result } from 'ahooks/lib/useRequest/src/types';
-import defaultEvents from './DefaultEvents';
+import events from './DefaultEvents';
 import type { HButtonType } from '../interface';
 import React from 'react';
 
+let defaultEvents:any=events
 // interface useFormatEventProps {
 //   bindEvent: <T extends ButtonTypeProps>(button: T) => T;
 //   bindEvents: <T extends ButtonTypeProps>(buttons: T[]) => T[];

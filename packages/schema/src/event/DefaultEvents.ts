@@ -1,10 +1,13 @@
 // @ts-ignore
 import { CModal } from '@scboson/sc-element';
 import type { ButtonTypeProps } from '../interface';
+
+import {stringify} from 'query-string'
 // @ts-ignore umi4.0 允许组件包引入 umi 会造成webpack上下文问题
-// import { history } from 'umi';
+
 import { omitUndefinedAndEmptyArr } from '../index';
-let history: any;
+
+let history:any
 function setHistory(h: any) {
   if (!history && h) {
     history = h
@@ -38,7 +41,7 @@ function add(props: ButtonTypeProps, event?: any) {
     if (url) {
       history.push({
         pathname: url,
-        query: options.pageProps,
+        search: stringify(options.pageProps),
       });
     } else if (showFull) {
       CModal.showFull(newOptions);
@@ -76,7 +79,7 @@ function link(props: ButtonTypeProps, event?: any) {
     if (url) {
       history.push({
         pathname: url,
-        query: options.params,
+        search: options.params,
       });
     }
   }
@@ -106,7 +109,7 @@ function edit(props: ButtonTypeProps, event?: any) {
     if (url) {
       history.push({
         pathname: url,
-        query: options.pageProps,
+        search: options.pageProps,
       });
     } else if (showFull) {
       CModal.showFull(newOptions);
@@ -134,7 +137,7 @@ function view(props: ButtonTypeProps, event?: any) {
     if (url) {
       history.push({
         pathname: url,
-        query: options.pageProps,
+        search: options.pageProps,
       });
     } else if (showFull) {
       CModal.showFull(newOptions);

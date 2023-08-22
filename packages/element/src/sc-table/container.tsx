@@ -45,7 +45,7 @@ function useContainer(props: UseContainerProps = {}) {
   }, []);
 
   const defaultColumnKeyMap = useMemo(() => {
-    const columnKeyMap = {};
+    const columnKeyMap:any = {};
 
     props.columns?.forEach(({ key, dataIndex, fixed, disable }: ScProColumnType<any>, index) => {
       const columnKey = genColumnKey(key ?? (dataIndex as React.Key), index);

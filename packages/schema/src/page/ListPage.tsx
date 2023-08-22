@@ -51,7 +51,7 @@ export function ListPage<P extends object & { scope: UseListPageProp<any> }, TRe
       props = { ...props, ref };
     }
     const newCmp = React.createElement(baseComponent, props);
-    return <ListPageContext.Provider value={scope}>{newCmp}</ListPageContext.Provider>;
+    return <ListPageContext.Provider value={scope}><div className='sc-list-page'>{newCmp}</div></ListPageContext.Provider>;
   };
   let memoComponent;
   if (realOptions.forwardRef) {
@@ -63,10 +63,8 @@ export function ListPage<P extends object & { scope: UseListPageProp<any> }, TRe
   } else {
     memoComponent = memo(wrappedComponent);
   }
-
   copyStaticProperties(baseComponent, memoComponent);
   memoComponent.displayName = baseComponentName;
-
   return memoComponent;
 }
 
