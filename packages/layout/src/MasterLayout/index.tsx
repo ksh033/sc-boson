@@ -64,7 +64,7 @@ import { AppMenuProps } from "../typings";
 export type AppProps = Omit<AppMenuProps, 'component'>;
 import type { ProLayoutProps as LayoutProps } from '@ant-design/pro-layout'
 import { LayoutContext } from "../context/LayoutContext";
-import { useSize} from 'ahooks'
+import { useSize } from 'ahooks'
 let layoutIndex = 0;
 const findAppCode = (pathname: string, appMenu?: AppMenuProps[]) => {
   const keys = pathname.replace('//', '/').split('/');
@@ -275,7 +275,7 @@ const BaseProLayout = React.forwardRef((props: ProLayoutProps, ref) => {
   //const appMenuData=getAppMenus(apps)
   const siderWidth = useMemo(() => {
     if (propsSiderWidth) return propsSiderWidth;
-    if (props.layout === 'mix') return 215;
+    if (props.layout === 'mix') return 228;
     return 256;
   }, [props.layout, propsSiderWidth]);
 
@@ -568,7 +568,7 @@ const BaseProLayout = React.forwardRef((props: ProLayoutProps, ref) => {
    * 使用number是因为多标签页的时候有多个 PageContainer，只有有任意一个就应该展示这个className
    */
   const [hasPageContainer, setHasPageContainer] = useState(1);
-  const usePageCon=useRef<any>();
+  const usePageCon = useRef<any>();
 
   //const size=useSize(usePageCon)
   // pageHeight=size?.height;
@@ -605,8 +605,8 @@ const BaseProLayout = React.forwardRef((props: ProLayoutProps, ref) => {
   //   }else{
   //     return () => {};
   //   }
-   
-   
+
+
 
 
   // },[pageHeight])
@@ -646,9 +646,9 @@ const BaseProLayout = React.forwardRef((props: ProLayoutProps, ref) => {
       matchMenus,
       matchMenuKeys,
       currentMenu,
-      pageContainer:usePageCon
-     // pageContainerHeight,
-     // setPageContainerHeight
+      pageContainer: usePageCon
+      // pageContainerHeight,
+      // setPageContainerHeight
     };
   }, [breadcrumbProps]);
   const { token } = useContext(ProProvider);
@@ -735,8 +735,8 @@ const BaseProLayout = React.forwardRef((props: ProLayoutProps, ref) => {
               {headerDom}
               <LayoutContext.Provider value={
                 {
-                 
-                pageContainer:usePageCon
+
+                  pageContainer: usePageCon
                 }
               } >
                 <WrapContent
@@ -746,13 +746,13 @@ const BaseProLayout = React.forwardRef((props: ProLayoutProps, ref) => {
                   hasHeader={!!headerDom}
                   prefixCls={proLayoutClassName}
                   style={contentStyle}
-                
+
                 >
-                  
+
 
                   {loading ? <PageLoading /> : children}
 
-                 
+
                 </WrapContent>
               </LayoutContext.Provider>
               {footerDom}
@@ -802,7 +802,7 @@ const MasterLayout: ForwardRefExoticComponent<PropsWithoutRef<ProLayoutProps> & 
         }
       >
         <ProConfigProvider
-          autoClearCache
+
 
           {...darkProps}
           token={{
