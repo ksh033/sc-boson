@@ -32,7 +32,7 @@ const CModalDialog = (props: CModalDialogProps) => {
   const {
     onCancel,
     onOk,
-    close = () => {},
+    close = () => { },
     fullscreen,
     showFullscreen,
     zIndex,

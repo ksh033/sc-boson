@@ -17,7 +17,7 @@ export function deepGet(object: any, path: string | any[]): any {
     }
     return object;
 }
-export const WIDTH_SIZE_ENUM = {
+export const WIDTH_SIZE_ENUM:any = {
     // 适用于短数字，短文本或者选项
     xs: 104,
     s: 216,

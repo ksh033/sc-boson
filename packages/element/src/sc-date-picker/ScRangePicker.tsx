@@ -65,11 +65,14 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
   }
   const [values, setValues] = useState<any>(vals);
   const [showFormat, setShwFormat] = useState<any>(format || vformat);
-
   const [, setDateStrings] = useState<[string, string]>(['', '']);
   const [openDates, setOpenDates] = useState<RangeValue>(null);
   const openDateRef = React.useRef<RangeValue>(null);
   const todayRef = React.useRef<Dayjs>(interopDefault(dayjs)({ format }));
+  const [openPlaceholder, setOpenPlaceholder] = useState<[string, string] | null>(null);
+  /** 打开输入选择的值 */
+  const openInputDateRef = React.useRef<RangeValue>(null);
+
   const inputfornat = ((vformat as string) || (format as string)).replaceAll('-', '');
 
   // 包装的ref 是为了获取该div低下的input 框
@@ -80,7 +83,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
   const toRangs = () => {
     const today = interopDefault(dayjs)({ format });
 
-    const tRanges = {};
+    const tRanges:any = {};
 
     rangesList?.forEach((item) => {
       const afterDay = interopDefault(dayjs)({ format }).add(item.value, item.type);
@@ -127,9 +130,11 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     },
     [format, onChange, vformat],
   );
-
+  //
   const handleChange = useCallback(
     (dates: any, _dateStrings: [string, string]): void => {
+      //console.log('handleChange', dates);
+      /** 选择时间过程中value值不回填 */
       setValues(dates);
       setDateStrings(_dateStrings);
       triggerChange(_dateStrings, dates);
@@ -137,56 +142,6 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     [triggerChange],
   );
 
-  // const onSelect = useCallback(
-  //   (selectIndex: any): void => {
-  //     // eslint-disable-next-line radix
-  //     const selectedItem = rangesList[parseInt(selectIndex)];
-  //     const { type } = selectedItem;
-  //     let rvals = [];
-  //     let strs: [string, string] = ['', ''];
-  //     if (selectedItem.value) {
-  //       const today = interopDefault(dayjs)({ format });
-  //       const afterDay = interopDefault(dayjs)({ format }).add(selectedItem.value, type);
-  //       rvals = [today, afterDay];
-  //       strs = [today.format(format), afterDay.format(format)];
-  //       setValues(rvals);
-  //       setDateStrings(strs);
-  //     } else {
-  //       const today = interopDefault(dayjs)({ format });
-  //       strs = [today.format(format), today.format(format)];
-  //       rvals = [today, today];
-  //     }
-  //     setValues(rvals);
-  //     setDateStrings(strs);
-  //     handleChange(rvals, strs);
-  //   },
-  //   [rangesList, handleChange, format],
-  // );
-
-  // const renderRight = (rangesAfter: any[]) => {
-  //   const cRangesAfter = rangesAfter || [];
-  //   let i = -1;
-  //   const operations = cRangesAfter.map((range: any) => {
-  //     const { text, type } = range;
-  //     const temValue = `${type}_${range.value}`;
-  //     i += 1;
-  //     return (
-  //       <Option key={temValue} value={i}>
-  //         {text}
-  //       </Option>
-  //     );
-  //   });
-  //   return (
-  //     <Select defaultValue={0} onSelect={onSelect} {...rangesListProps}>
-  //       {operations}
-  //     </Select>
-  //   );
-  // };
-
-  //let operations: any = null;
-  // if (rangesList && rangesList.length > 0) {
-  //   operations = renderRight(rangesList);
-  // }
   /** 获取input 属性 */
   function getInput(root: any, list: Element[]) {
     if (root.children.length > 0) {
@@ -271,8 +226,10 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         const startDate: Dayjs | null = getInputDate(target.value, time);
         if (startDate) {
           const dates: RangeValue =
-            openDateRef.current != null ? [startDate, openDateRef.current[1]] : [startDate, null];
-          openDateRef.current = dates;
+            openInputDateRef.current != null
+              ? [startDate, openInputDateRef.current[1]]
+              : [startDate, null];
+          openInputDateRef.current = dates;
           setOpenDates(dates);
         }
       }
@@ -291,8 +248,10 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         const endDate: Dayjs | null = getInputDate(target.value, time);
         if (endDate) {
           const dates: RangeValue =
-            openDateRef.current != null ? [openDateRef.current[0], endDate] : [values[0], endDate];
-          openDateRef.current = dates;
+            openInputDateRef.current != null
+              ? [openInputDateRef.current[0], endDate]
+              : [values[0], endDate];
+          openInputDateRef.current = dates;
           setOpenDates(dates);
         }
       }
@@ -328,20 +287,34 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
     open.current = v;
     if (v) {
       setShwFormat(temformat.replaceAll('-', ''));
-      setOpenDates(values);
-      openDateRef.current = null;
+      const {disabled}=props
+      // 如果配置了不可选日期则清空原始值
+      if (props.disabled) {
+        setOpenDates([(props.disabled as [boolean,boolean])[0] ? values[0] : null,(props.disabled as [boolean,boolean])[1] ? values[1] : null]);
+      } else {
+        setOpenDates([null, null]);
+      }
+
+      if (values && values[0] && values[1]) {
+        setOpenPlaceholder([values[0].format(temformat), values[1].format(temformat)]);
+      }
+      openInputDateRef.current = null;
     } else {
       setShwFormat(temformat);
-      if (openDateRef.current && openDateRef.current[0] != null && openDateRef.current[1] != null) {
-        const startDate = utcMethod(openDateRef.current[0]);
-        const endDate = utcMethod(openDateRef.current[1]);
+      if (
+        openInputDateRef.current &&
+        openInputDateRef.current[0] != null &&
+        openInputDateRef.current[1] != null
+      ) {
+        const startDate = utcMethod(openInputDateRef.current[0]);
+        const endDate = utcMethod(openInputDateRef.current[1]);
         const dataStr: [string, string] = [
           startDate.format(format as string),
           endDate.format(format as string),
         ];
         onChange?.([startDate, endDate], dataStr);
       }
-      openDateRef.current = null;
+      openInputDateRef.current = null;
       setOpenDates(null);
     }
     resProps.onOpenChange?.(v);
@@ -355,15 +328,20 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
         value={openDates || values}
         onOpenChange={onOpenChange}
         inputReadOnly={false}
-        onCalendarChange={(val: RangeValue, formatString: [string, string], info: RangeInfo) => {
-          console.log('val', val, info);
-          if (info.range === 'start' && val != null) {
-            setOpenDates([val[0], null]);
+        placeholder={openPlaceholder || resProps.placeholder}
+        onCalendarChange={(_val: RangeValue, formatString: [string, string], info: RangeInfo) => {
+          //console.log('onCalendarChange', _val, formatString, info);
+          if (info.range === 'start' && _val != null) {
+            setOpenDates([_val[0], null]);
+            resProps.onCalendarChange?.([_val[0], null], [formatString[0], ''], info);
+          } else if (info.range === 'end' && _val != null) {
+            setOpenDates([null, _val[1]]);
+            resProps.onCalendarChange?.([null, _val[1]], ['', formatString[1]], info);
           } else {
-            setOpenDates(val);
+            setOpenDates(null);
+            setOpenPlaceholder(null);
+            resProps.onCalendarChange?.(_val, formatString, info);
           }
-
-          resProps.onCalendarChange?.(val, formatString, info);
         }}
         format={showFormat}
         ranges={vranges}
