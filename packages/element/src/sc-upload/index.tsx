@@ -1,8 +1,7 @@
-import { FileOutlined, LoadingOutlined } from '@ant-design/icons';
-import { Modal, Spin, Upload } from 'antd';
+import { DeleteOutlined, EyeOutlined, FileOutlined, LoadingOutlined } from '@ant-design/icons';
+import { Button, Modal, Progress, Spin, Upload } from 'antd';
 import type { UploadChangeParam } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
-import UploadList from 'antd/es/upload/UploadList';
 import type { CSSProperties } from 'react';
 import React, { memo, useState } from 'react';
 import type { SortEnd } from 'react-sortable-hoc';
@@ -10,6 +9,13 @@ import { arrayMove, SortableContainer, SortableElement } from 'react-sortable-ho
 import type { Props, SortableItemParams, SortableListParams } from './types';
 
 export { UploadFile } from 'antd/es/upload/interface';
+
+interface DragableUploadListItemProps {
+  originNode: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
+  file: UploadFile;
+  fileList: UploadFile[];
+  params: SortableListParams;
+}
 
 const preView = (file: string, isModal: boolean) => {
   if (file !== '') {
@@ -34,26 +40,98 @@ const preView = (file: string, isModal: boolean) => {
 };
 
 const SortableItem = SortableElement<SortableItemParams>((params: SortableItemParams) => {
-  // todo 自定义显示
+  // // todo 自定义显示
   const iconRender = (file: UploadFile<any>) => {
     if (file.status === 'uploading') {
-      return <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />;
+      console.log('uploadfile', file);
+      return (
+        <Progress
+          percent={file.percent}
+          size="small"
+          showInfo={false}
+          strokeColor={{
+            from: '#108ee9',
+            to: '#87d068',
+          }}
+        />
+      );
     }
     return preView(file.url || '', false);
   };
 
+  // return (
+  //   <UploadList
+  //     locale={{ previewFile: '预览图片', removeFile: '删除图片' }}
+  //     showDownloadIcon={false}
+  //     listType={params.props.listType}
+  //     onPreview={params.onPreview}
+  //     iconRender={iconRender}
+  //     onRemove={params.onRemove}
+  //     items={[params.item]}
+  //   />
+  // );
+
+  if (params.props.listType !== 'picture-card') {
+    return <div>{params.originNode}</div>;
+  } else {
+    return (
+      <div className="upload-list-item">
+        <div className="upload-list-item-info">
+          <span className="upload-list-item-span">
+            <a
+              className="upload-list-item-thumbnail"
+              href={params.file.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {iconRender(params.file)}
+            </a>
+          </span>
+          <span className="upload-list-item-actions">
+            <a
+              href={params.file.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="预览图片"
+              style={{ padding: 4 }}
+            >
+              <EyeOutlined style={{ color: 'hsla(0,0%,100%,.85)', fontSize: 16 }} />
+            </a>
+            <Button
+              type="link"
+              style={{ padding: 4, margin: 0 }}
+              onClick={() => {
+                params.onRemove?.(params.file);
+              }}
+            >
+              <DeleteOutlined size={16} style={{ color: 'hsla(0,0%,100%,.85)', fontSize: 16 }} />
+            </Button>
+          </span>
+        </div>
+      </div>
+    );
+  }
+});
+
+const DragableUploadListItem = ({
+  originNode,
+  file,
+  fileList,
+  params,
+}: DragableUploadListItemProps) => {
+  const index = fileList.indexOf(file);
+
   return (
-    <UploadList
-      locale={{ previewFile: '预览图片', removeFile: '删除图片' }}
-      showDownloadIcon={false}
-      listType={params.props.listType}
+    <SortableItem
+      originNode={originNode}
+      file={file}
+      props={params.props}
+      index={index}
       onPreview={params.onPreview}
-      iconRender={iconRender}
       onRemove={params.onRemove}
-      items={[params.item]}
     />
   );
-});
+};
 
 const listStyle: CSSProperties = {
   display: 'flex',
@@ -62,11 +140,32 @@ const listStyle: CSSProperties = {
   alignItems: 'center',
 };
 const SortableList = SortableContainer<SortableListParams>((params: SortableListParams) => {
-  const listType = params.props.listType || 'picture-card';
-  console.log('params.items', params.items);
+  // todo 自定义显示
+  const iconRender = (file: UploadFile<any>) => {
+    if (file.status === 'uploading') {
+      return <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />;
+    }
+    return preView(file.url || '', false);
+  };
   return (
     <div style={listStyle} className="sc-sort-list">
-      {params.items.map((item, index) => (
+      <Upload
+        locale={{ previewFile: '预览图片', removeFile: '删除图片' }}
+        listType={params.props.listType || 'picture-card'}
+        onPreview={params.onPreview}
+        iconRender={iconRender}
+        onRemove={params.onRemove}
+        fileList={params.items}
+        itemRender={(originNode, file, currFileList) => (
+          <DragableUploadListItem
+            originNode={originNode}
+            file={file}
+            fileList={currFileList}
+            params={params}
+          />
+        )}
+      />
+      {/* {params.items.map((item, index) => (
         <div
           className={[listType === 'picture' ? 'upload-list-inline' : ''].join(' ')}
           key={`${item.uid}`}
@@ -78,9 +177,9 @@ const SortableList = SortableContainer<SortableListParams>((params: SortableList
             props={params.props}
             onPreview={params.onPreview}
             onRemove={params.onRemove}
-          />{' '}
+          />
         </div>
-      ))}
+      ))} */}
       <Upload {...params.props} showUploadList={false} onChange={params.onChange}>
         {params.props.children}
       </Upload>
@@ -97,6 +196,7 @@ const PicturesGrid: React.FC<Props> = memo(
     };
 
     const onChange = ({ fileList: newFileList }: UploadChangeParam) => {
+      console.log('newFileList', newFileList);
       onFileChange({ fileList: newFileList });
     };
 
@@ -115,7 +215,7 @@ const PicturesGrid: React.FC<Props> = memo(
       <>
         <SortableList
           // 当移动 1 之后再触发排序事件，默认是0，会导致无法触发图片的预览和删除事件
-          distance={1}
+          distance={0.5}
           items={fileList}
           onSortEnd={onSortEnd}
           axis="xy"
