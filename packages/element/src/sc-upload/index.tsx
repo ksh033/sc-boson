@@ -3,12 +3,11 @@ import { Button, Modal, Progress, Spin, Upload } from 'antd';
 import type { UploadChangeParam } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import type { CSSProperties } from 'react';
-import React, { memo, useState } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import type { SortEnd } from 'react-sortable-hoc';
 import { arrayMove, SortableContainer, SortableElement } from 'react-sortable-hoc';
 import type { Props, SortableItemParams, SortableListParams } from './types';
-
-export { UploadFile } from 'antd/es/upload/interface';
+export type { UploadFile } from 'antd/es/upload/interface';
 
 interface DragableUploadListItemProps {
   originNode: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
@@ -120,7 +119,7 @@ const DragableUploadListItem = ({
   params,
 }: DragableUploadListItemProps) => {
   const index = fileList.indexOf(file);
-
+  console.log('index', index);
   return (
     <SortableItem
       originNode={originNode}
@@ -147,39 +146,46 @@ const SortableList = SortableContainer<SortableListParams>((params: SortableList
     }
     return preView(file.url || '', false);
   };
+  const listType = useMemo(() => {
+    return params.props.listType || 'picture-card';
+  }, [params.props.listType]);
+
   return (
-    <div style={listStyle} className="sc-sort-list">
-      <Upload
-        locale={{ previewFile: '预览图片', removeFile: '删除图片' }}
-        listType={params.props.listType || 'picture-card'}
-        onPreview={params.onPreview}
-        iconRender={iconRender}
-        onRemove={params.onRemove}
-        fileList={params.items}
-        itemRender={(originNode, file, currFileList) => (
-          <DragableUploadListItem
-            originNode={originNode}
-            file={file}
-            fileList={currFileList}
-            params={params}
-          />
-        )}
-      />
-      {/* {params.items.map((item, index) => (
-        <div
-          className={[listType === 'picture' ? 'upload-list-inline' : ''].join(' ')}
-          key={`${item.uid}`}
-        >
-          <SortableItem
-            key={`sort-${item.uid}`}
-            index={index}
-            item={item}
-            props={params.props}
-            onPreview={params.onPreview}
-            onRemove={params.onRemove}
-          />
+    <div className="sc-sort-list" style={listStyle}>
+      {listType === 'picture-card' ? (
+        <div style={listStyle}>
+          {params.items.map((item, index) => (
+            <SortableItem
+              // eslint-disable-next-line react/no-array-index-key
+              key={`key-${index}`}
+              originNode={<img src={item.url} />}
+              file={item}
+              props={params.props}
+              index={index}
+              onPreview={params.onPreview}
+              onRemove={params.onRemove}
+            />
+          ))}
         </div>
-      ))} */}
+      ) : (
+        <Upload
+          locale={{ previewFile: '预览图片', removeFile: '删除图片' }}
+          listType={listType}
+          onPreview={params.onPreview}
+          iconRender={iconRender}
+          onRemove={params.onRemove}
+          fileList={params.items}
+          itemRender={(originNode, file, currFileList) => (
+            <DragableUploadListItem
+              originNode={originNode}
+              file={file}
+              fileList={currFileList}
+              params={params}
+            />
+          )}
+        />
+      )}
+
       <Upload {...params.props} showUploadList={false} onChange={params.onChange}>
         {params.props.children}
       </Upload>
@@ -215,7 +221,7 @@ const PicturesGrid: React.FC<Props> = memo(
       <>
         <SortableList
           // 当移动 1 之后再触发排序事件，默认是0，会导致无法触发图片的预览和删除事件
-          distance={0.5}
+          distance={1}
           items={fileList}
           onSortEnd={onSortEnd}
           axis="xy"
@@ -223,6 +229,7 @@ const PicturesGrid: React.FC<Props> = memo(
           props={props}
           onChange={onChange}
           onRemove={onRemove}
+          disableAutoscroll={true}
           // onPreview={onPreview}
         />
         <Modal
