@@ -21,6 +21,7 @@ import { useRefFunction } from '../_util/useRefFunction';
 import type { ActionType, ScTableProps, SorterItem } from './typing';
 import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
 import { changeCountSort } from './countSort';
+
 const { useEffect, useRef, useMemo } = React;
 
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
@@ -101,9 +102,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const isGone = useRef(false);
   const { loading, run } = useRequest(
     request ||
-      new Promise((resolve) => {
-        resolve(null);
-      }),
+    new Promise((resolve) => {
+      resolve(null);
+    }),
     {
       manual: true,
     },
@@ -462,11 +463,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const cRowSelection = useMemo(() => {
     return checkbox
       ? {
-          selectedRowKeys: rowKeys,
-          onChange: handleRowSelectChange,
-          ...rowSelection,
-          getCheckboxProps,
-        }
+        selectedRowKeys: rowKeys,
+        onChange: handleRowSelectChange,
+        ...rowSelection,
+        getCheckboxProps,
+      }
       : undefined;
   }, [JSON.stringify(rowKeys), handleRowSelectChange, getCheckboxProps, rowSelection]);
 
@@ -672,12 +673,12 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       bodyStyle={
         toolbarDom
           ? {
-              paddingTop: 0,
-              paddingBottom: 0,
-            }
+            paddingTop: 0,
+            paddingBottom: 0,
+          }
           : {
-              padding: 0,
-            }
+            padding: 0,
+          }
       }
       {...cardProps}
     >
