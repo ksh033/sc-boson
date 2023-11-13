@@ -109,6 +109,7 @@ const OptionsName = 'options';
 
 const TdCell = (props: any) => {
   // 去除不必要的函数处理
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { onMouseEnter, onContextMenu, onDoubleClick, onMouseOut, ...restProps } = props;
   return <td {...restProps} />;
 };
@@ -361,14 +362,14 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
 
   const save = async (key: React.Key) => {
     try {
-      const row = (await innerForm.validateFields()) as any;
+      const row = ((await innerForm.validateFields()) as any) || {};
       const newData = [...value];
       const index = newData.findIndex((item) => key === item[rowKey]);
       if (index > -1) {
         const item = newData[index];
         newData.splice(index, 1, {
           ...item,
-          ...(row[key] || {}),
+          ...(row[`${key}`] || {}),
         });
         setValue(newData);
       } else {

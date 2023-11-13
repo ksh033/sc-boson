@@ -26,7 +26,7 @@ type ColumnSettingProps<T = any> = {
 const ToolTipIcon: React.FC<
   PropsWithChildren<{
     title: string;
-    columnKey: string | number;
+    columnKey: React.Key;
     show: boolean;
     fixed?: FixedType;
   }>
@@ -41,10 +41,10 @@ const ToolTipIcon: React.FC<
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
-          const config = columnsMap[columnKey] || {};
+          const config = columnsMap[`${columnKey}`] || {};
           const columnKeyMap = {
             ...columnsMap,
-            [columnKey]: { ...config, fixed } as ColumnsState,
+            [`${columnKey}`]: { ...config, fixed } as ColumnsState,
           };
           setColumnsMap(columnKeyMap);
         }}
@@ -56,7 +56,7 @@ const ToolTipIcon: React.FC<
 };
 
 const CheckboxListItem: React.FC<{
-  columnKey: string | number;
+  columnKey: React.Key;
   className?: string;
   title?: React.ReactNode;
   fixed?: FixedType;
@@ -158,7 +158,7 @@ const CheckboxList: React.FC<{
       blockNode
       onCheck={(_, e) => {
         const columnKey = e.node.key;
-        const tempConfig = columnsMap[columnKey] || {};
+        const tempConfig = columnsMap[`${columnKey}`] || {};
         const newSetting = { ...tempConfig };
         if (e.checked) {
           newSetting.show = true;
@@ -167,11 +167,11 @@ const CheckboxList: React.FC<{
         }
         const columnKeyMap = {
           ...columnsMap,
-          [columnKey]: newSetting as ColumnsState,
+          [`${columnKey}`]: newSetting as ColumnsState,
         };
         // 如果没有值了，直接干掉他
         if (Object.keys(newSetting).length === 0) {
-          delete columnKeyMap[columnKey];
+          delete columnKeyMap[`${columnKey}`];
         }
         setColumnsMap(columnKeyMap);
       }}

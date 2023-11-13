@@ -27,11 +27,11 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     saveRef,
     render,
     root,
-    actionRender,
     async = false,
     defaultExpandAll = false,
     defaultExpandParent = false,
     loadDataPramsFormat,
+    actionRender,
     onMouseEnter,
     onMouseLeave,
     onDataChange,
@@ -78,7 +78,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     postState: formatTreeData,
   });
 
-  const [showKey, setShowKey] = useState<string | number>('');
+  const [showKey, setShowKey] = useState<React.Key>('');
 
   /**
    * 打平这个数组
@@ -109,6 +109,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
     [setTreeData, treeData],
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const allAction: DefaultAction<DataNode> = {
     add: async (key: any, _rowData: DataNode, isRoot?: boolean) => {
       let oldTreeData: any = treeData;
@@ -150,8 +151,8 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
 
       let extendRender: React.ReactNode[] = [];
       let alwaysShow = false;
-      if (props.actionRender) {
-        action = props.actionRender(rowData, allAction);
+      if (actionRender) {
+        action = actionRender(rowData, allAction);
         const extendAction = action?.extendAction ? action?.extendAction() : [];
         if (Array.isArray(extendAction)) {
           extendRender = extendAction;
@@ -181,7 +182,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
         </Space>
       );
     },
-    [allAction, props.actionRender, showKey],
+    [allAction, actionRender, showKey],
   );
 
   const [value, setValue] = useState<any>();
@@ -252,6 +253,7 @@ const ScTree: React.FC<ScTreeProps> = (props) => {
       loadData({});
     }
   }, [JSON.stringify(params)]);
+
   useEffect(() => {
     if (root && autoload) {
       loadData(params, true);

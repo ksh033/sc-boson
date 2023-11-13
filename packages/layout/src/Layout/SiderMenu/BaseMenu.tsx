@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import Icon, { createFromIconfontCN } from '@ant-design/icons';
 import { isImg, isUrl, useMountMergeState } from '@ant-design/pro-utils';
 import type { MenuProps, MenuTheme } from 'antd';
@@ -12,7 +13,6 @@ import { getOpenKeysFromMenuData } from '../../utils/utils';
 import MenuCounter from '@ant-design/pro-layout/es/components/SiderMenu/Counter';
 import './index.less';
 import type { PrivateSiderMenuProps } from './SiderMenu';
-import { useHover } from 'ahooks';
 
 // todo
 export type MenuMode = 'vertical' | 'vertical-left' | 'vertical-right' | 'horizontal' | 'inline';
@@ -37,11 +37,14 @@ export type BaseMenuProps = {
   formatMessage?: (message: MessageDescriptor) => string;
 
   /**
-   * @name 处理父级菜单的 props，可以复写菜单的点击功能，一般用于埋点
-   * @see 子级的菜单要使用 menuItemRender 来处理
+   * @example
+   *   使用 a 标签跳转到特殊的地址 subMenuItemRender={(item, defaultDom) => { return <a onClick={()=> history.push(item.path) }>{defaultDom}</a> }}
    *
-   * @example 使用 a 标签跳转到特殊的地址 subMenuItemRender={(item, defaultDom) => { return <a onClick={()=> history.push(item.path) }>{defaultDom}</a> }}
-   * @example 增加埋点 subMenuItemRender={(item, defaultDom) => { return <a onClick={()=> log.click(item.name) }>{defaultDom}</a> }}
+   * @example
+   *   增加埋点 subMenuItemRender={(item, defaultDom) => { return <a onClick={()=> log.click(item.name) }>{defaultDom}</a> }}
+   *
+   * @see 子级的菜单要使用 menuItemRender 来处理
+   * @name 处理父级菜单的 props，可以复写菜单的点击功能，一般用于埋点
    */
   subMenuItemRender?: WithFalse<
     (
@@ -54,11 +57,14 @@ export type BaseMenuProps = {
   >;
 
   /**
-   * @name 处理菜单的 props，可以复写菜单的点击功能，一般结合 Router 框架使用
-   * @see 非子级的菜单要使用 subMenuItemRender 来处理
+   * @example
+   *   使用 a 标签 menuItemRender={(item, defaultDom) => { return <a onClick={()=> history.push(item.path) }>{defaultDom}</a> }}
    *
-   * @example 使用 a 标签 menuItemRender={(item, defaultDom) => { return <a onClick={()=> history.push(item.path) }>{defaultDom}</a> }}
-   * @example 使用 Link 标签 menuItemRender={(item, defaultDom) => { return <Link to={item.path}>{defaultDom}</Link> }}
+   * @example
+   *   使用 Link 标签 menuItemRender={(item, defaultDom) => { return <Link to={item.path}>{defaultDom}</Link> }}
+   *
+   * @see 非子级的菜单要使用 subMenuItemRender 来处理
+   * @name 处理菜单的 props，可以复写菜单的点击功能，一般结合 Router 框架使用
    */
   menuItemRender?: WithFalse<
     (
@@ -72,9 +78,10 @@ export type BaseMenuProps = {
   >;
 
   /**
-   * @name 处理 menuData 的方法，与 menuDataRender 不同，postMenuData处理完成后会直接渲染，不再进行国际化和拼接处理
+   * @example
+   *   增加菜单图标 postMenuData={(menuData) => { return menuData.map(item => { return { ...item, icon: <Icon type={item.icon} /> } }) }}
    *
-   * @example 增加菜单图标 postMenuData={(menuData) => { return menuData.map(item => { return { ...item, icon: <Icon type={item.icon} /> } }) }}
+   * @name 处理 menuData 的方法，与 menuDataRender 不同，postMenuData处理完成后会直接渲染，不再进行国际化和拼接处理
    */
   postMenuData?: (menusData?: MenuDataItem[]) => MenuDataItem[];
 } & Partial<RouterTypes<Route>> &
@@ -85,22 +92,21 @@ let IconFont = createFromIconfontCN({
   scriptUrl: defaultSettings.iconfontUrl,
 });
 
+// const MenuItem = (props: any) => {
+//   const { children, onHover, prefixCls, menuData } = props
+//   const ref = useRef(null);
+//   useHover(ref, {
+//     onEnter: () => {
+//       console.log("onEnter")
+//       onHover && onHover(true, menuData)
 
-const MenuItem = (props: any) => {
-  const { children, onHover, prefixCls, menuData } = props
-  const ref = useRef(null);
-  useHover(ref, {
-    onEnter: () => {
-      console.log("onEnter")
-      onHover && onHover(true, menuData)
-
-    }, onLeave: () => {
-      console.log("onLeave")
-      onHover && onHover(false, menuData)
-    }
-  });
-  return <span className={`${prefixCls}-menu-item-title-content-link`} ref={ref}>{children}</span>;
-};
+//     }, onLeave: () => {
+//       console.log("onLeave")
+//       onHover && onHover(false, menuData)
+//     }
+//   });
+//   return <span className={`${prefixCls}-menu-item-title-content-link`} ref={ref}>{children}</span>;
+// };
 // Allow menu.js config icon as string or ReactNode
 //   icon: 'setting',
 //   icon: 'icon-geren' #For Iconfont ,
@@ -132,11 +138,21 @@ class MenuUtil {
 
   props: BaseMenuProps;
   activeKey?: string;
-  getNavMenuItems = (menusData: MenuDataItem[] = [], isChildren: boolean, onHover?: (over: boolean, menusData: MenuDataItem) => void): ItemType[] =>
-    menusData.map((item) => this.getSubMenuOrItem(item, isChildren, onHover)).filter((item) => item);
+  getNavMenuItems = (
+    menusData: MenuDataItem[] = [],
+    isChildren: boolean,
+    onHover?: (over: boolean, menusData: MenuDataItem) => void,
+  ): ItemType[] =>
+    menusData
+      .map((item) => this.getSubMenuOrItem(item, isChildren, onHover))
+      .filter((item) => item);
 
   /** Get SubMenu or Item */
-  getSubMenuOrItem = (item: MenuDataItem, isChildren: boolean, onHover?: (over: boolean, menusData: MenuDataItem) => void): ItemType => {
+  getSubMenuOrItem = (
+    item: MenuDataItem,
+    isChildren: boolean,
+    onHover?: (over: boolean, menusData: MenuDataItem) => void,
+  ): ItemType => {
     const children = item?.children || item?.routes;
     if (Array.isArray(children) && children.length > 0) {
       const name = this.getIntlName(item);
@@ -166,20 +182,18 @@ class MenuUtil {
         key: item.key || item.path,
       } as ItemType;
     }
-    const { prefixCls } = this.props;
     return {
-      label: this.getMenuItemPath(item, isChildren),//onHover ? <MenuItem onHover={onHover} menuData={item} prefixCls={prefixCls}>{this.getMenuItemPath(item, isChildren)}</MenuItem> : this.getMenuItemPath(item, isChildren),
+      label: this.getMenuItemPath(item, isChildren), //onHover ? <MenuItem onHover={onHover} menuData={item} prefixCls={prefixCls}>{this.getMenuItemPath(item, isChildren)}</MenuItem> : this.getMenuItemPath(item, isChildren),
       title: this.getIntlName(item),
       onMouseEnter: () => {
-
-        this.activeKey = item.key
-        console.log("onMouseEnter")
-        onHover && onHover(true, item)
+        this.activeKey = item.key;
+        console.log('onMouseEnter');
+        onHover && onHover(true, item);
       },
       onMouseLeave: () => {
-        console.log("onMouseLeave")
-        this.activeKey = ''
-        onHover && onHover(false, item)
+        console.log('onMouseLeave');
+        this.activeKey = '';
+        onHover && onHover(false, item);
       },
       key: item.key! || item.path!,
       disabled: item.disabled,
@@ -266,7 +280,7 @@ class MenuUtil {
  * @param BaseMenuProps
  */
 const getOpenKeysProps = (
-  openKeys: React.ReactText[] | false,
+  openKeys: React.Key[] | false,
   { layout, collapsed }: BaseMenuProps,
 ): {
   openKeys?: undefined | string[];
@@ -324,10 +338,10 @@ const BaseMenu: React.FC<BaseMenuProps & PrivateSiderMenuProps> = (props) => {
     value: propsSelectedKeys,
     onChange: onSelect
       ? (keys) => {
-        if (onSelect && keys) {
-          onSelect(keys as any);
+          if (onSelect && keys) {
+            onSelect(keys as any);
+          }
         }
-      }
       : undefined,
   });
 
@@ -390,8 +404,8 @@ const BaseMenu: React.FC<BaseMenuProps & PrivateSiderMenuProps> = (props) => {
           mode?.includes('inline')
             ? { padding: 24 }
             : {
-              marginTop: 16,
-            }
+                marginTop: 16,
+              }
         }
       >
         <Skeleton

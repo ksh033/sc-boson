@@ -2,7 +2,6 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { Button, message, Popconfirm } from 'antd';
 import type { FormInstance } from 'antd/es/form/index';
 import useLazyKVMap from 'antd/es/table/hooks/useLazyKVMap';
-import type { GetRowKey } from 'antd/es/table/interface';
 import set from 'rc-util/es/utils/set';
 import React, { useMemo, useRef } from 'react';
 import { useDeepCompareEffectDebounce } from '../_util/useDeepCompareEffect';
@@ -21,7 +20,11 @@ export function genNonDuplicateID() {
 
 export type RowEditableType = 'single' | 'multiple';
 
-export type RecordKey = React.Key | React.Key[];
+export type RowKey = string | number;
+
+export type RecordKey = RowKey | RowKey[];
+
+export type GetRowKey<RecordType> = (record: RecordType, index?: number) => RowKey;
 
 export const toNumber = (recordKey: string) => {
   if (recordKey.startsWith('0')) {
@@ -30,7 +33,7 @@ export const toNumber = (recordKey: string) => {
   return Number.isNaN(recordKey as unknown as number) ? recordKey : Number(recordKey);
 };
 
-export const recordKeyToString = (rowKey: RecordKey): React.Key => {
+export const recordKeyToString = (rowKey: RecordKey): RowKey => {
   if (Array.isArray(rowKey)) return rowKey.join(',');
   return rowKey;
 };
@@ -112,7 +115,7 @@ export type ActionRenderConfig<T, LineConfig = NewLineConfig<T>> = {
   onCancel: RowEditableConfig<T>['onCancel'];
   onDelete?: RowEditableConfig<T>['onDelete'];
   deletePopconfirmMessage: RowEditableConfig<T>['deletePopconfirmMessage'];
-  setEditableRowKeys: (value: React.Key[]) => void;
+  setEditableRowKeys: (value: RowKey[]) => void;
   newLineConfig?: LineConfig;
   needDeletePopcon: boolean; //删除时是否询问
   isNeCell: boolean;
@@ -120,7 +123,7 @@ export type ActionRenderConfig<T, LineConfig = NewLineConfig<T>> = {
 
 function removeRowByKey<RecordType>(params: {
   data: RecordType[];
-  oldKeyMap: Map<React.Key, any>;
+  oldKeyMap: Map<RowKey, any>;
   childrenColumnName: string;
   containsDeletedData: boolean;
   getRowKey: GetRowKey<RecordType>;
@@ -199,7 +202,7 @@ function removeRowByKey<RecordType>(params: {
 function editableRowByKey<RecordType>(
   params: {
     data: RecordType[];
-    oldKeyMap: Map<React.Key, any>;
+    oldKeyMap: Map<RowKey, any>;
     childrenColumnName: string;
     containsDeletedData: boolean;
     getRowKey: GetRowKey<RecordType>;
@@ -210,7 +213,7 @@ function editableRowByKey<RecordType>(
 ) {
   const { getRowKey, row, data, childrenColumnName, oldKeyMap, containsDeletedData } = params;
   const key = recordKeyToString(params.key);
-  const kvMap = new Map<string, RecordType & { parentKey?: React.Key; editableAction?: string }>();
+  const kvMap = new Map<string, RecordType & { parentKey?: RowKey; editableAction?: string }>();
 
   /**
    * 打平这个数组
@@ -434,7 +437,7 @@ type UseEditableArrayProps<RecordType> = RowEditableConfig<RecordType> & {
   rowKey: string;
   getRowKey: GetRowKey<RecordType>;
   dataSource: RecordType[];
-  oldKeyMap: Map<React.Key, any>;
+  oldKeyMap: Map<RowKey, any>;
   valueRef: React.MutableRefObject<RecordType[]>;
   onValuesChange?: (
     record: RecordType,
@@ -480,7 +483,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
   // 如果是全部编辑则走全部编辑策略
   useDeepCompareEffectDebounce(() => {
     if (Boolean(props.clickEdit) === false && editableType === 'multiple') {
-      let allEditKeys: React.Key[] = [];
+      let allEditKeys: RowKey[] = [];
       if (Array.isArray(props.dataSource)) {
         allEditKeys = props.dataSource.map((item: RecordType) => {
           return props.getRowKey(item);
@@ -527,7 +530,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
    *
    * @param recordKey
    */
-  const startEditable = useRefFunction((recordKey: React.Key) => {
+  const startEditable = useRefFunction((recordKey: RowKey) => {
     // 如果是单行的话，不允许多行编辑
     if (editableKeysSet.size > 0 && editableType === 'single') {
       message.warn(props.onlyOneLineEditorAlertMessage || '只能同时编辑一行');

@@ -214,7 +214,7 @@ class MenuUtil {
  * @param BaseMenuProps
  */
 const getOpenKeysProps = (
-  openKeys: React.ReactText[] | false,
+  openKeys: React.Key[] | false,
   { layout, collapsed }: BaseMenuProps,
 ): {
   openKeys?: undefined | string[];
@@ -323,12 +323,7 @@ const BaseMenu: React.FC<BaseMenuProps & PrivateSiderMenuProps> = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const openKeysProps = useMemo(
     () => getOpenKeysProps(openKeys, props),
-    [
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      openKeys && openKeys.join(','),
-      props.layout,
-      props.collapsed,
-    ],
+    [openKeys, props],
   );
 
   const [menuUtils] = useState(() => new MenuUtil(props));
