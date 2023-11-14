@@ -17,7 +17,7 @@
   ],
   "main": "lib/index.js",
   "module": "es/index.js",
-  "types": "es/index.d.ts",
+  "types": "lib/index.d.ts",
   "files": [
     "lib",
     "es",
@@ -57,7 +57,6 @@
     "typescript": "^5.0.4"
   },
   "peerDependencies": {
-
     "antd": ">=4.23.0 || >=5.6.0",
     "react": ">=17.0.0",
     "react-dom": ">=17.0.0"

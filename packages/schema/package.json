@@ -5,9 +5,9 @@
   "keywords": [
     "schema"
   ],
-  "main": "./es/index.js",
-  "module": "./es/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
@@ -33,7 +33,6 @@
   "dependencies": {
     "@babel/runtime": "^7.18.0",
     "@scboson/sc-element": "workspace:*",
-    
     "ahooks": "^3.7.7",
     "dayjs": "^1.11.7",
     "lodash": "^4.17.21",

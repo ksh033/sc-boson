@@ -27,9 +27,9 @@
     "type": "git",
     "url": "https://192.168.10.60/sc-dva-antd-pro.git"
   },
-  "main": "./es/index.js",
-  "module": "./es/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "dist",
     "lib",

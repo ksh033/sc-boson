@@ -7,7 +7,7 @@
   ],
   "main": "lib/index.js",
   "module": "es/index.js",
-  "typings": "./dist/index.ts.d",
+  "types": "lib/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
