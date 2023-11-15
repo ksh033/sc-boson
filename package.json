@@ -6,9 +6,7 @@
   "scripts": {
     "bootstrap": "node ./scripts/bootstrap.js",
     "build": "pnpm --filter=\"@scboson/**\" build",
-    "build:dev": "pnpm  --filter=@scboson/sc-schema --filter=@scboson/sc-layout --filter=@scboson/sc-element  build:dev",
-    "build2:dev": "pnpm  --filter=@scboson/sc-schema build:dev",
-    "build3:dev": "pnpm  --filter=@scboson/sc-element build:dev",
+    "build:dev": "pnpm --parallel  --filter=\"@scboson/**\"  build:dev",
     "changelog": "pro-changelog",
     "check-deps": "node ./scripts/checkDeps.js",
     "createRelease": "node ./scripts/createRelease.js",
