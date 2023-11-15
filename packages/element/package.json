@@ -37,7 +37,7 @@
   ],
   "scripts": {
     "build": "father doctor && father build",
-    "build:dev": "father doctor && father dev"
+    "build:dev": "father dev"
   },
   "license": "MIT",
   "dependencies": {
