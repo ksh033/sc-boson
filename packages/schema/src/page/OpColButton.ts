@@ -16,7 +16,8 @@ export default class OperationColumn {
     if (React.isValidElement(button)) {
       this.buttons.push(button);
     } else if (_.isString(button)) {
-      const key: string = button;
+      const key = button;
+
       this.buttons.push({ ...ToolButtons[key], ...extraProps });
     } else if (_.isObject(button)) {
       this.buttons.push({ ...button, ...extraProps });

@@ -292,20 +292,17 @@ export interface ProColumnType<RecordType> extends ScProColumnType<RecordType> {
   inputType?: string;
   props?: any; // 组件的属性
   exportConfig?: boolean | ExcelColumn; //表格列导出配置
-  children?: ScProColumnType<RecordType>;
+ // children?: ScProColumnType<RecordType>;
 }
-export interface ProColumnGroupType<RecordType> extends ProColumnType<RecordType> {
-  children: ScProColumnType<RecordType>;
+export interface ProColumnGroupType<RecordType> extends  Omit<ProColumnType<RecordType>, 'dataIndex'> {
+  children: ProColumns<RecordType>;
 }
 
 export declare type ProColumn<RecordType = any> =
   | ProColumnGroupType<RecordType>
   | ProColumnType<RecordType>;
 
-export declare type ProColumns<RecordType = unknown> = (
-  | ProColumnGroupType<RecordType>
-  | ProColumnType<RecordType>
-)[];
+export declare type ProColumns<RecordType = unknown> = ProColumn<RecordType>[];
 
 // export interface NodeType ='queryConfig' | 'formConfig' | 'tableConfig'
 
@@ -398,3 +395,53 @@ export interface PageConfig {
 export interface ColItem {
   editable?: boolean;
 }
+
+
+
+const pageConfig: PageConfig = {
+  queryConfig: [
+    {
+      label: '时间范围',
+      component: 'BsRangePicker',
+      name: 'time',
+      fieldProps: {
+        required: true,
+      },
+      props: {
+        rulesRequire: true,
+        startTimeFiled: 'beginDate',
+        endTimeFiled: 'endDate',
+        showTime: false,
+        presetType: 'preset1'
+      },
+    },
+    {
+      label: '变动类型',
+      name: 'changeFlowType',
+      component: 'DictSelect',
+      formItemProps: {},
+      props: {
+        allowClear: true,
+        placeholder: '请选择变动类型',
+        dictType: 'eaccountChangeFlowType'
+      },
+    },
+    {
+      label: '会员',
+      name: 'keyword',
+      component: 'Input',
+      props: {
+        placeholder: '请输入会员',
+      },
+    },
+  ],
+  tableConfig: [
+ 
+    {
+      title: '变动金额',
+      children:[]
+     
+    },
+   
+  ],
+};

@@ -81,8 +81,8 @@ class SearchInfo {
       return this;
     }
     if (_.isString(button)) {
-      const key: string = button;
-      this.searchInfo.customBtn?.push({ ...ToolButtons[key], params: this.searchInfo.params, ...extraProps });
+      const key = button;
+      this.searchInfo.customBtn?.push({ ...ToolButtons[key] , params: this.searchInfo.params, ...extraProps });
     }
     if (_.isObject(button)) {
       this.searchInfo.customBtn?.push({ ...button, params: this.searchInfo.params, ...extraProps });
