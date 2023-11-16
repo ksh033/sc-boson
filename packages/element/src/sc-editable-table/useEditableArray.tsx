@@ -530,7 +530,7 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
   const startEditable = useRefFunction((recordKey: React.Key) => {
     // 如果是单行的话，不允许多行编辑
     if (editableKeysSet.size > 0 && editableType === 'single') {
-      message.warn(props.onlyOneLineEditorAlertMessage || '只能同时编辑一行');
+      message.warning(props.onlyOneLineEditorAlertMessage || '只能同时编辑一行');
       return false;
     }
     editableKeysSet.add(recordKey);
@@ -608,15 +608,15 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
   const addEditRecord = useRefFunction((row: RecordType, options?: AddLineOptions) => {
     // 暂时不支持多行新增
     if (newLineRecordRef.current) {
-      message.warn(props.onlyAddOneLineAlertMessage || '只能新增一行');
+      message.warning(props.onlyAddOneLineAlertMessage || '只能新增一行');
       return false;
     }
     // 如果是单行的话，不允许多行编辑
     if (editableKeysSet.size > 0 && editableType === 'single') {
-      message.warn(props.onlyOneLineEditorAlertMessage || '只能同时编辑一行');
+      message.warning(props.onlyOneLineEditorAlertMessage || '只能同时编辑一行');
       return false;
     }
-    let tRow = row;
+    let tRow: any = row;
     if (props.containsDeletedData) {
       tRow = {
         ...row,

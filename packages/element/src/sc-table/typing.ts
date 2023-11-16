@@ -171,7 +171,7 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   preLoadHandle?: (params: any) => boolean;
   /** 点击刷新数据 */
   refresh?: () => void;
-  autoHeight?:boolean;
+  autoHeight?: boolean;
   /** 请求的参数 */
   params?: any;
   /** 表格容器的 class 名 */
@@ -190,8 +190,6 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   selectedRowKeys?: string[];
   /** 复选时选中的对象 */
   selectedRows?: any[];
-  /** 分页数据 */
-  pagination?: false | TablePaginationConfig;
   /** React.MutableRefObject<any> | ((saveRef: any) => void) 获取组件对外暴露的参数 */
   saveRef?: any;
   /** 列选中 */

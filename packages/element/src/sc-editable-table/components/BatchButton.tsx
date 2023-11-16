@@ -61,7 +61,7 @@ const BatchButton: React.FC<BatchButtonProps> = (props) => {
     if (selectedRowKeys.length > 0) {
       onDeleteByKeys(selectedRowKeys);
     } else {
-      message.warn('请先选择');
+      message.warning('请先选择');
     }
   });
 

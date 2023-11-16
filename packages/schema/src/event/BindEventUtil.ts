@@ -1,4 +1,3 @@
-
 import type { ButtonTypeProps, PageConfig } from '../interface';
 import { useRequest } from 'ahooks';
 import { Result } from 'ahooks/lib/useRequest/src/types';
@@ -6,7 +5,7 @@ import events from './DefaultEvents';
 import type { HButtonType } from '../interface';
 import React from 'react';
 
-let defaultEvents:any=events
+let defaultEvents: any = events;
 // interface useFormatEventProps {
 //   bindEvent: <T extends ButtonTypeProps>(button: T) => T;
 //   bindEvents: <T extends ButtonTypeProps>(buttons: T[]) => T[];
@@ -45,7 +44,7 @@ const bindEvent = (
     if (remote) {
       newBtn.loading = remote?.loading;
       options = {
-        service: remote.run || remote,
+        service: remote.runAsync || remote.run || remote,
       };
     }
     if (newBtn.options) {
@@ -69,30 +68,28 @@ const bindEvent = (
     }
     if (!newBtn.onClick && defaultEvents[newBtn.buttonType]) {
       const itemEvent = defaultEvents[newBtn.buttonType];
-      let callBack: ((values: any, newValue: any) => void) | null = (null);
+      let callBack: ((values: any, newValue: any) => void) | null = null;
       let preHandle: ((values: any) => boolean) | null = null;
       // 默认的回调方法
       // if (defaultCallback) {
       // callBack = defaultCallback;
       // }
 
-
-      let callBackFun: any = null
+      let callBackFun: any = null;
       if (newBtn.callBack) {
         callBackFun = newBtn.callBack;
       }
       callBack = (values: any, newValue: any) => {
-
         if (callBackFun) {
-          callBackFun(values, newValue)
+          callBackFun(values, newValue);
         }
         if (options.callBack) {
-          options.callBack(values, newValue)
+          options.callBack(values, newValue);
         }
         if (defaultCallback) {
-          defaultCallback(values)
+          defaultCallback(values);
         }
-      }
+      };
       if (newBtn.preHandle) {
         preHandle = newBtn.preHandle;
       } else if (options.preHandle) {
@@ -174,4 +171,4 @@ const operationButtonsBindEvent = (
 };
 
 export { bindEvent, bindEvents, formatUseReq, operationButtonsBindEvent };
-export type { Result }
+export type { Result };

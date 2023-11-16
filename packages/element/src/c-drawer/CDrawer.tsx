@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import type { ButtonProps, DrawerProps } from 'antd';
+import { createRoot } from 'react-dom/client';
 import { Drawer } from 'antd';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
@@ -33,7 +34,7 @@ export type CDrawerDialogProps = DrawerProps & {
 
 const CDrawerDialog = (props: CDrawerDialogProps) => {
   const {
-    close = () => { },
+    close = () => {},
     zIndex,
     visible,
     keyboard,
@@ -232,7 +233,8 @@ export default function CDrawer(config: any) {
   }
 
   function render(props: any) {
-    ReactDOM.render(<CDrawerDialog {...props} />, div);
+    const root = createRoot(div);
+    root.render(<CDrawerDialog {...props} />);
   }
 
   render(currentConfig);

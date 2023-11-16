@@ -75,7 +75,8 @@ export function fill<RecordType>(
   map.forEach((value) => {
     if (value.map_row_parentKey && value.map_row_key) {
       const { map_row_parentKey, map_row_key, ...rest } = value;
-      if (kvArrayMap.has(map_row_key)) {
+      if (kvArrayMap.has(map_row_key) && childrenColumnName) {
+        // @ts-ignore
         rest[childrenColumnName] = kvArrayMap.get(map_row_key);
       }
       kvArrayMap.set(map_row_parentKey, [

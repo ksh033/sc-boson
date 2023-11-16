@@ -9,7 +9,7 @@ export function changeCountSort(_sorter: any, _sortOrderMap: SorterItem) {
     innerSorter = [];
     const sortOrderMap = _sortOrderMap || {};
     // 为了给_sorter排序用
-    const newSorterMap = {};
+    const newSorterMap: Record<string, any> = {};
     // 旧的排序
     const oldSortList: Partial<SortValueList>[] = [];
     // 新增加的排序

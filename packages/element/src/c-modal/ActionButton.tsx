@@ -4,7 +4,6 @@ import useState from 'rc-util/lib/hooks/useState';
 import type { ButtonProps } from 'antd';
 import { Button } from 'antd';
 import type { LegacyButtonType } from 'antd/es/button/button';
-import { convertLegacyProps } from 'antd/es/button/button';
 
 export interface ActionButtonProps {
   type?: LegacyButtonType;
@@ -19,11 +18,22 @@ export interface ActionButtonProps {
   children?: React.ReactNode;
 }
 
+export function convertLegacyProps(type?: LegacyButtonType) {
+  if (type === 'danger') {
+    return {
+      danger: true,
+    };
+  }
+  return {
+    type,
+  };
+}
+
 function isThenable(thing?: PromiseLike<any>): boolean {
   return !!(thing && !!thing.then);
 }
 
-const ActionButton: React.FC<ActionButtonProps> = props => {
+const ActionButton: React.FC<ActionButtonProps> = (props) => {
   const clickedRef = React.useRef<boolean>(false);
   const ref = React.useRef<any>();
   const [loading, setLoading] = useState<ButtonProps['loading']>(false);
@@ -57,8 +67,7 @@ const ActionButton: React.FC<ActionButtonProps> = props => {
         const timeoutId = setTimeout(() => {
           clickedRef.current = false;
           clearTimeout(timeoutId);
-        }, 500)
-
+        }, 500);
       },
       (e: Error) => {
         // Emit error when catch promise reject
@@ -69,12 +78,12 @@ const ActionButton: React.FC<ActionButtonProps> = props => {
         const timeoutId = setTimeout(() => {
           clickedRef.current = false;
           clearTimeout(timeoutId);
-        }, 500)
+        }, 500);
       },
     );
   };
 
-  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onClick = () => {
     const { actionFn } = props;
     if (clickedRef.current) {
       return;
@@ -86,10 +95,10 @@ const ActionButton: React.FC<ActionButtonProps> = props => {
     }
     let returnValueOfOnOk;
     if (props.emitEvent) {
-      returnValueOfOnOk = actionFn(e);
+      returnValueOfOnOk = actionFn();
       if (props.quitOnNullishReturnValue && !isThenable(returnValueOfOnOk)) {
         clickedRef.current = false;
-        onInternalClose(e);
+        onInternalClose();
         return;
       }
     } else if (actionFn.length) {

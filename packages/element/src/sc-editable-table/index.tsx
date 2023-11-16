@@ -62,9 +62,9 @@ function getTargetNode(child: any, parent: any) {
 export type BatchOptionsType =
   | false
   | {
-    allClear: boolean;
-    batchSelect: boolean;
-  };
+      allClear: boolean;
+      batchSelect: boolean;
+    };
 
 const defaultBatchOptions = { allClear: true, batchSelect: true };
 export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
@@ -80,11 +80,11 @@ export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
   containsDeletedData?: boolean;
   /** @name 新建按钮的设置 */
   recordCreatorProps?:
-  | (RecordCreatorProps<T> &
-    ButtonProps & {
-      creatorButtonText?: React.ReactNode;
-    })
-  | false;
+    | (RecordCreatorProps<T> &
+        ButtonProps & {
+          creatorButtonText?: React.ReactNode;
+        })
+    | false;
   /** 最大行数 */
   maxLength?: number;
   /** Table 的值发生改变，为了适应 Form 调整了顺序 */
@@ -147,7 +147,10 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   const isNeCell = clickEdit === true && props.editable?.type === 'multiple';
 
   // 状态集合
-  const [pagination, setPagination] = useSetState({ current: 1, pageSize: 50 });
+  const [pagination, setPagination] = useSetState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 50,
+  });
   const [checkbox, setCheckbox] = useSafeState(false);
   // const [value, setValue] = useState<any[]>([]);
 
@@ -647,7 +650,9 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
       fixed: true,
       render: (text: any, rowData: T, index: number) => {
         if (propsPagination) {
-          return (pagination.current - 1) * pagination.pageSize + index + 1;
+          return (
+            (Number(pagination.current || 1) - 1) * Number(pagination.pageSize || 10) + index + 1
+          );
         }
         return index + 1;
       },
@@ -676,7 +681,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
 
   useDeepCompareEffectDebounce(() => {
     if (divRef.current == null) return;
-    targetElement = getTargetElement(divRef.current, window)!;
+    targetElement = getTargetElement(divRef.current)!;
     if (!targetElement.addEventListener || !isNeCell) {
       return;
     }
@@ -722,7 +727,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     newRecordType = 'dataSource',
     ...restButtonProps
   } = recordCreatorProps || {
-    onClick: () => { },
+    onClick: () => {},
   };
   // 新增一行
   const createClick = useRefFunction((e: any) => {

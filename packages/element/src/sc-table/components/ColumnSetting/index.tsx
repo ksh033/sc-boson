@@ -292,7 +292,7 @@ function ColumnSetting<T>(props: ColumnSettingProps<T>) {
    * @param show
    */
   const setAllSelectAction = (show: boolean = true) => {
-    const columnKeyMap = {};
+    const columnKeyMap: Record<string, any> = {};
     localColumns.forEach(({ key, fixed, index }) => {
       const columnKey = genColumnKey(key, index);
       if (columnKey) {

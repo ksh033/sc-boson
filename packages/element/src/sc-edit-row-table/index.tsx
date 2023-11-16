@@ -4,7 +4,7 @@ import type { ReactNode, PropsWithChildren } from 'react';
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import { Table, Input, Popconfirm, Form, ConfigProvider, InputNumber } from 'antd';
 import { useUpdateEffect } from 'ahooks';
-import type { TableProps } from 'antd/es/table/Table';
+import type { TableProps } from 'antd/es/table/index';
 
 const EditableContext = React.createContext<any>(null);
 
