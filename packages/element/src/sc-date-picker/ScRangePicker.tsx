@@ -323,7 +323,7 @@ const ScRangePicker: React.FC = (props: ScDatePickerProps<any>) => {
       <RangePicker
         {...resProps}
         onChange={handleChange}
-        value={openDates || values}
+        value={(resProps.disabledDate? openDates:false) || values}
         onOpenChange={onOpenChange}
         inputReadOnly={false}
         placeholder={openPlaceholder || resProps.placeholder}
