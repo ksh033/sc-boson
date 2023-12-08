@@ -61,9 +61,9 @@ const ScCheck: React.FC<ScCheckProps> = (props) => {
       dataSource.forEach((item: any) => {
         if (valueField && textField) {
           if (typeof textField === 'string') {
-            list.push({ value: item[valueField], label: item[textField] });
+            list.push({ value: item[valueField], label: item[textField] ,disabled:item["disabled"]});
           } else {
-            list.push({ value: item[valueField], label: textField(item) });
+            list.push({ value: item[valueField], label: textField(item) ,disabled:item["disabled"]});
           }
         }
       });
