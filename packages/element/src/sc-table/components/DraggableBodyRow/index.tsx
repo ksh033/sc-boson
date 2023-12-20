@@ -88,7 +88,11 @@ const DraggableBodyRow = (props: DraggableBodyRowType & { children: any }) => {
     [moveRow],
   );
 
-  drop(drag(ref));
+  //控制是否允许行拖动
+  if (record.darg!==false){
+    drop(drag(ref));
+  }
+ 
   // 拖拽行的位置显示透明
   const opacity = isDragging ? 0.5 : 1;
 
