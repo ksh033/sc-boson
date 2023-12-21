@@ -3,7 +3,7 @@ import { Button, message, Popconfirm } from 'antd';
 import type { FormInstance } from 'antd/es/form/index';
 import useLazyKVMap from 'antd/es/table/hooks/useLazyKVMap';
 import set from 'rc-util/es/utils/set';
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useDeepCompareEffectDebounce } from '../_util/useDeepCompareEffect';
 import { useRefFunction } from '../_util/useRefFunction';
 import { fill, dig } from './utils';
@@ -480,8 +480,8 @@ function useEditableArray<RecordType>(props: UseEditableArrayProps<RecordType>) 
         }
       : undefined,
   });
-  // 如果是全部编辑则走全部编辑策略
-  useDeepCompareEffectDebounce(() => {
+  // 如果是全部编辑则走全部编辑策略useEffect替换useDeepCompareEffectDebounce解决闪现问题
+  useEffect(() => {
     if (Boolean(props.clickEdit) === false && editableType === 'multiple') {
       let allEditKeys: RowKey[] = [];
       if (Array.isArray(props.dataSource)) {

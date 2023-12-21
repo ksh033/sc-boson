@@ -52,9 +52,7 @@ function getType(obj: any) {
 export const convertData = (name: string | string[], dataName: string, _props: any, data: any) => {
     let itemValue;
     if (isArray(name)) {
-        name.forEach((key) => {
-            itemValue = data ? data[key] : null;
-        });
+        itemValue=deepGet(data,name)
     } else {
         itemValue = data ? data[name] : null;
     }
