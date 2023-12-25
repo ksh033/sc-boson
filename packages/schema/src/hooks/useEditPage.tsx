@@ -233,10 +233,11 @@ export default function useEditPage(
 
     if (getAction() !== Action.ADD) {
       if (config.service && config.service[name]) {
-        let _params = params;
-        if (isObject(record)) {
+        let _params = {};
+        if (isObject(record) && Object.keys(record).length > 0) {
           _params = key ? { [key]: record[key] } : record;
         }
+        _params = { ...params, ..._params }
         setLoading(true);
 
         config.service[name](_params).then((res: any) => {
