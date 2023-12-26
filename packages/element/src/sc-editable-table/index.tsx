@@ -170,7 +170,6 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   }, [props.value]);
 
   const setValue = (list: any[]) => {
-    console.log('setValue');
     props.onChange?.(list);
   };
 
@@ -850,7 +849,8 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
         dragSort,
         onDrop: ((dargNode: any, newData: any[], oldData: any[]) => {
 
-          onDrop && onDrop(dargNode, newData, oldData) && editableUtils.onValuesChange(newData, newData);
+          onDrop && onDrop(dargNode, newData, oldData)
+          setValue(newData)
 
         }
 
