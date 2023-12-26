@@ -847,7 +847,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     if (dragSort === true) {
       props = {
         dragSort,
-        onDrop: ((dargNode: any, newData: any[], oldData: any[]) => {
+        onDrop: (dargNode: any, newData: any[], oldData: any[]) => {
 
           onDrop && onDrop(dargNode, newData, oldData)
           setValue(newData)
