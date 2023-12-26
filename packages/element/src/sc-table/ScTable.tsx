@@ -134,11 +134,11 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   /** 表格拖拽重新计算表格数据 */
   const moveRow = (dropData: DropDataType) => {
 
-    if (dropData.dragId===dropData.dropId)
-     return;
+    if (dropData.dragId === dropData.dropId)
+      return;
     const moveResult = moveRowData(dataSource, dropData, rowKey);
     if (onDrop) {
-      const retVal = onDrop(moveResult.dargNode);
+      const retVal = onDrop(moveResult.dargNode, moveResult.dataSource, dataSource);
       if (retVal !== undefined) {
         if (typeof retVal === 'boolean') {
           if (retVal === true) {

@@ -9,7 +9,7 @@
 import type { CompareFn, SortOrder } from 'antd/es/table/interface';
 import type { TooltipProps, TabPaneProps } from 'antd';
 import type { CardProps } from 'antd';
-import type {} from 'antd/es/table/interface';
+import type { } from 'antd/es/table/interface';
 import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
 import type { SearchProps } from 'antd/es/input';
 export type { ColumnsType } from 'antd/es/table/Table';
@@ -71,14 +71,14 @@ export type ScProColumnType<RecordType> = Omit<
 > & {
   // defaultSortOrder?: SortOrder | SortValue;
   sorter?:
-    | boolean
-    | CompareFn<RecordType>
-    | {
-        compare?: CompareFn<RecordType>;
-        /** Config multiple sorter order priority */
-        multiple?: number;
-        value?: SortOrder;
-      };
+  | boolean
+  | CompareFn<RecordType>
+  | {
+    compare?: CompareFn<RecordType>;
+    /** Config multiple sorter order priority */
+    multiple?: number;
+    value?: SortOrder;
+  };
   canSearch?: boolean;
   customSearchComponent?: CustomSearchComponent;
   /** @deprecated 你可以使用 tooltip，这个更改是为了与 antd 统一 */
@@ -86,10 +86,10 @@ export type ScProColumnType<RecordType> = Omit<
   /** @deprecated 是否隐藏 */
   hidden?: boolean;
   disable?:
-    | boolean
-    | {
-        checkbox: boolean;
-      };
+  | boolean
+  | {
+    checkbox: boolean;
+  };
 };
 
 export interface ScProColumnGroupType<RecordType>
@@ -107,10 +107,10 @@ export type ColumnsState = {
   fixed?: 'right' | 'left' | undefined;
   order?: number;
   disable?:
-    | boolean
-    | {
-        checkbox: boolean;
-      };
+  | boolean
+  | {
+    checkbox: boolean;
+  };
 };
 
 export type ColumnsStateType = {
@@ -124,11 +124,11 @@ export type OptionConfig = {
   fullScreen?: OptionsType;
   reload?: OptionsType;
   setting?:
-    | boolean
-    | {
-        draggable?: boolean;
-        checkable?: boolean;
-      };
+  | boolean
+  | {
+    draggable?: boolean;
+    checkable?: boolean;
+  };
   search?: (SearchProps & { name?: string }) | boolean;
 };
 
@@ -216,7 +216,7 @@ export interface ScTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   /** 树的张开字段 */
   treeDataIndex?: string;
   /** 拖拽事件 */
-  onDrop?: (dargNode: any) => Promise<any> | boolean | void;
+  onDrop?: (dargNode: any, newData: any[], oldData: any[]) => Promise<any> | boolean | void;
   /** 是否开起拖拽 */
   dragSort?: boolean | string;
   /** 是否时复合排序 */
