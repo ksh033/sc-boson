@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { Ref, RefObject, useMemo, useRef } from 'react';
 import { createContainer } from 'unstated-next';
 import type { ProColumns } from './typing';
 import type { DataIndex } from 'rc-table/es/interface';
@@ -42,6 +42,8 @@ function useContainer(props: EditableProTableContext = {}) {
   const fouceDataIndexRef = useRef<string>('');
   // 初始处于编辑态的信息
   const initStartRef = useRef<CurretEditType>(null);
+
+  const tableContainerRef = useRef<any>(null);
   // 选择的值
   const selectedRef = useRef<{
     selectedRowKeys: string[];
@@ -217,6 +219,7 @@ function useContainer(props: EditableProTableContext = {}) {
     selectedRef,
     groupRecordKeyMap,
     editItemMap,
+    tableContainerRef
   };
 }
 

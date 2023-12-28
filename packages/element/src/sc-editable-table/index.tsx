@@ -679,6 +679,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
 
   useDeepCompareEffectDebounce(() => {
     if (divRef.current == null) return;
+    container.tableContainerRef.current = divRef.current
     targetElement = getTargetElement(divRef.current, window)!;
     if (!targetElement.addEventListener || !isNeCell) {
       return;
@@ -862,7 +863,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   }, [dragSort, onDrop])
 
   return (
-    <div id={tableId.current} className="sc-editable-table" ref={divRef}>
+    <div id={tableId.current} className="sc-editable-table" ref={divRef} >
       <Form
         component={false}
         form={innerForm}

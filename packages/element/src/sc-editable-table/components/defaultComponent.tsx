@@ -1,8 +1,9 @@
 import type { FormInstance } from 'antd';
 import { Form, Input } from 'antd';
-import React from 'react';
+import React, { RefObject, useContext } from 'react';
 import type { ProColumns } from '../typing';
-
+import { InlineErrorFormItem } from './InlineErrorFormItem'
+import Container from '../container';
 type defaultComponentProps = {
   columnProps: ProColumns<any>;
   name: any;
@@ -10,13 +11,15 @@ type defaultComponentProps = {
   autoFocus: boolean;
   text: any;
   form: FormInstance<any>;
+  popupContainerRef?: RefObject<any>
 };
 
 const defaultComponent = (comprops: defaultComponentProps) => {
-  const { columnProps, name, text, record, autoFocus, form } = comprops;
+  const { columnProps, name, text, record, autoFocus, form, popupContainerRef } = comprops;
   const formItemProps = {
     ...columnProps?.formItemProps,
   };
+  const container = Container.useContainer();
 
   const initVal = text != null ? text : formItemProps?.initialValue;
   const props = columnProps.props || {};
@@ -62,9 +65,17 @@ const defaultComponent = (comprops: defaultComponentProps) => {
   }
 
   return (
-    <Form.Item name={name} {...formItemProps} initialValue={initVal} noStyle preserve={false} isListField={false}>
+    // <Form.Item name={name} {...formItemProps} initialValue={initVal} noStyle preserve={false} isListField={false}>
+    //   {component}
+    // </Form.Item>
+    <InlineErrorFormItem name={name}   {...formItemProps} popoverProps={{
+      getPopupContainer: () => {
+
+        return container.tableContainerRef.current || document.body
+      },
+    }} errorType="popover" initialValue={initVal} preserve={false} isListField={false}>
       {component}
-    </Form.Item>
+    </InlineErrorFormItem>
   );
 
   // return (
