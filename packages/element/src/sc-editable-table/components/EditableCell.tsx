@@ -1,5 +1,5 @@
 import { Form, Space } from 'antd';
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import { defaultComponent } from './defaultComponent';
 import type { ProColumns } from '../typing';
 import type { UseEditableUtilType } from '../useEditableArray';
@@ -40,7 +40,7 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
 
   const mode =
     isEditable &&
-    !isEditableCell(text, record, index, columnProps?.editable, columnProps?.dataIndex)
+      !isEditableCell(text, record, index, columnProps?.editable, columnProps?.dataIndex)
       ? 'edit'
       : 'read';
   if (mode === 'edit') {
@@ -63,10 +63,10 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
       text,
       record,
       autoFocus: false,
-      form,
+      form
     });
   }
-  return <div>{renderDom}</div>;
+  return <div >{renderDom}</div>;
 };
 
 export default memo(EditableCell);

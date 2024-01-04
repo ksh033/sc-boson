@@ -182,7 +182,7 @@
 
 import { useSafeState } from 'ahooks';
 import { Form, Space } from 'antd';
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
 import Container from '../container';
 import { defaultComponent } from './defaultComponent';
 import type { ProColumns } from '../typing';
@@ -222,6 +222,8 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
   const container = Container.useContainer();
   const [editing, setEditing] = useSafeState(false);
   const text = record[container.getDataIndex(dataIndex || '')];
+
+  const divRef = useRef<any>();
   const name = useMemo(() => {
     return spellNamePath(recordKey || index, dataIndex || index);
   }, [dataIndex, index, recordKey]);
@@ -346,7 +348,7 @@ const EditableCell: React.FC<EditableCellProps<any>> = (props) => {
         text,
         record,
         autoFocus,
-        form,
+        form
       })}
     </div>
   ) : (

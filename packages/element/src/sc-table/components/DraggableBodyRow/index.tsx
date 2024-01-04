@@ -32,7 +32,7 @@ const DraggableBodyRow = (props: DraggableBodyRowType & { children: any }) => {
   const [{ handlerId, isOver, dropClassName }, drop] = useDrop(
     {
       accept: ItemTypes,
-      hover: (dargObj, monitor) => {},
+      hover: (dargObj, monitor) => { },
       collect: (monitor: DropTargetMonitor<any, any>) => {
         const {
           // id: dragId,
@@ -88,7 +88,11 @@ const DraggableBodyRow = (props: DraggableBodyRowType & { children: any }) => {
     [moveRow],
   );
 
-  drop(drag(ref));
+  //控制是否允许行拖动
+  if (record.drag !== false) {
+    drop(drag(ref));
+  }
+
   // 拖拽行的位置显示透明
   const opacity = isDragging ? 0.5 : 1;
 

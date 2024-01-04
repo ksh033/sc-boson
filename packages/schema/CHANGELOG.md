@@ -3,7 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<<<<<<< HEAD
 # [2.1.0-alpha.3](http://bsgit28:57949/smart-city-ui/sc-boson/compare/@scboson/sc-schema@2.1.0...@scboson/sc-schema@2.1.0-alpha.3) (2023-08-15)
+=======
+## [1.0.3-beta.118](http://58.22.61.222:57949/smart-city-ui/sc-boson.git/compare/@scboson/sc-schema@1.0.3-beta.117...@scboson/sc-schema@1.0.3-beta.118) (2023-12-28)
+
+**Note:** Version bump only for package @scboson/sc-schema
+
+
+
+
+
+## [1.0.3-beta.117](http://58.22.61.222:57949/smart-city-ui/sc-boson.git/compare/@scboson/sc-schema@1.0.3-beta.116...@scboson/sc-schema@1.0.3-beta.117) (2023-12-26)
+
+**Note:** Version bump only for package @scboson/sc-schema
+
+
+
+
+
+## [1.0.3-beta.116](http://58.22.61.222:57949/smart-city-ui/sc-boson.git/compare/@scboson/sc-schema@1.0.3-beta.115...@scboson/sc-schema@1.0.3-beta.116) (2023-12-25)
+
+**Note:** Version bump only for package @scboson/sc-schema
+
+
+
+
+
+## [1.0.3-beta.115](http://58.22.61.222:18001/smart-city-ui/sc-boson.git/compare/@scboson/sc-schema@1.0.3-beta.114...@scboson/sc-schema@1.0.3-beta.115) (2023-04-11)
+>>>>>>> origin/su-dev
 
 **Note:** Version bump only for package @scboson/sc-schema
 

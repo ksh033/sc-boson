@@ -1,8 +1,8 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form } from 'antd';
 import type { ButtonProps } from 'antd/es/button/index';
-import type { TablePaginationConfig, TableProps } from 'antd';
-import React, { useImperativeHandle, useRef } from 'react';
+import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
+import React, { useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import type { ActionType, ProTableProps } from './typing';
 import {
   useClickAway,
@@ -62,9 +62,9 @@ function getTargetNode(child: any, parent: any) {
 export type BatchOptionsType =
   | false
   | {
-      allClear: boolean;
-      batchSelect: boolean;
-    };
+    allClear: boolean;
+    batchSelect: boolean;
+  };
 
 const defaultBatchOptions = { allClear: true, batchSelect: true };
 export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
@@ -80,11 +80,11 @@ export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
   containsDeletedData?: boolean;
   /** @name 新建按钮的设置 */
   recordCreatorProps?:
-    | (RecordCreatorProps<T> &
-        ButtonProps & {
-          creatorButtonText?: React.ReactNode;
-        })
-    | false;
+  | (RecordCreatorProps<T> &
+    ButtonProps & {
+      creatorButtonText?: React.ReactNode;
+    })
+  | false;
   /** 最大行数 */
   maxLength?: number;
   /** Table 的值发生改变，为了适应 Form 调整了顺序 */
@@ -93,7 +93,8 @@ export type EditableProTableProps<T> = Omit<ProTableProps<T>, 'rowKey'> & {
   showIndex?: boolean; // 是否显示序号
   readonly?: boolean; // 是否只读
   needDeletePopcon?: boolean; //删除时是否询问
-  dragSort?: boolean | string;
+  dragSort?: boolean
+  onDrop?: (dargNode: any, newData: any[], oldData: any[]) => Promise<any> | boolean | void;
   onClickEditActive?: (recordKey: any) => void;
   batchOptions?: BatchOptionsType;
 };
@@ -109,6 +110,7 @@ const OptionsName = 'options';
 
 const TdCell = (props: any) => {
   // 去除不必要的函数处理
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { onMouseEnter, onContextMenu, onDoubleClick, onMouseOut, ...restProps } = props;
   return <td {...restProps} />;
 };
@@ -130,6 +132,8 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     scroll,
     onClickEditActive,
     onRow,
+    dragSort,
+    onDrop,
     batchOptions = defaultBatchOptions,
     onSelectRow,
     selectedRowKeys: propsSelectRowKeys,
@@ -169,7 +173,6 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   }, [props.value]);
 
   const setValue = (list: any[]) => {
-    console.log('setValue');
     props.onChange?.(list);
   };
 
@@ -364,14 +367,14 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
 
   const save = async (key: React.Key) => {
     try {
-      const row = (await innerForm.validateFields()) as any;
+      const row = ((await innerForm.validateFields()) as any) || {};
       const newData = [...value];
       const index = newData.findIndex((item) => key === item[rowKey]);
       if (index > -1) {
         const item = newData[index];
         newData.splice(index, 1, {
           ...item,
-          ...(row[key] || {}),
+          ...(row[`${key}`] || {}),
         });
         setValue(newData);
       } else {
@@ -681,7 +684,8 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
 
   useDeepCompareEffectDebounce(() => {
     if (divRef.current == null) return;
-    targetElement = getTargetElement(divRef.current)!;
+    container.tableContainerRef.current = divRef.current
+    targetElement = getTargetElement(divRef.current, window)!;
     if (!targetElement.addEventListener || !isNeCell) {
       return;
     }
@@ -721,13 +725,14 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
     },
   );
 
+
   const {
     record,
     creatorButtonText,
     newRecordType = 'dataSource',
     ...restButtonProps
   } = recordCreatorProps || {
-    onClick: () => {},
+    onClick: () => { },
   };
   // 新增一行
   const createClick = useRefFunction((e: any) => {
@@ -839,10 +844,31 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   //   pagination,
   //   ...container,
   // });
-  console.log('TableRender');
+
+
+  const dragProps = useMemo(() => {
+
+
+    let props = {};
+    if (dragSort === true) {
+      props = {
+        dragSort,
+        onDrop: (dargNode: any, newData: any[], oldData: any[]) => {
+
+          onDrop && onDrop(dargNode, newData, oldData)
+          setValue(newData)
+
+        }
+
+      }
+
+    }
+    return props
+
+  }, [dragSort, onDrop])
 
   return (
-    <div id={tableId.current} className="sc-editable-table" ref={divRef}>
+    <div id={tableId.current} className="sc-editable-table" ref={divRef} >
       <Form
         component={false}
         form={innerForm}
@@ -854,6 +880,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
           bordered
           checkbox={checkbox}
           {...rest}
+          {...dragProps}
           columns={columns}
           rowSelection={rowSelection}
           dataSource={dataSource}

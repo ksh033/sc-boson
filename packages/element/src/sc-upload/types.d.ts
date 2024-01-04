@@ -11,11 +11,13 @@ export type Props = {
 type SortableParams = {
   props: Omit<Props, 'onChange'>;
   onPreview?: (file: UploadFile) => void;
-  onRemove: (file: UploadFile) => void | boolean;
+  onRemove?: (file: UploadFile) => void | boolean;
 };
 
 export type SortableItemParams = {
-  item: UploadFile;
+  item?: UploadFile;
+  originNode: ReactElement;
+  file: UploadFile;
 } & SortableParams;
 
 export type SortableListParams = {

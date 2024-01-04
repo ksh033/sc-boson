@@ -21,11 +21,8 @@ import { useRefFunction } from '../_util/useRefFunction';
 import type { ActionType, ScTableProps, SorterItem } from './typing';
 import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
 import { changeCountSort } from './countSort';
-import { emptyRequest } from '../_util/emptyFn'
 
-import { ContainerContext } from '../sc-context'
-
-const { useEffect, useRef, useMemo, useState, useContext } = React;
+const { useEffect, useRef, useMemo } = React;
 
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const {
@@ -147,9 +144,12 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   });
   /** 表格拖拽重新计算表格数据 */
   const moveRow = (dropData: DropDataType) => {
+
+    if (dropData.dragId === dropData.dropId)
+      return;
     const moveResult = moveRowData(dataSource, dropData, rowKey);
     if (onDrop) {
-      const retVal = onDrop(moveResult.dargNode);
+      const retVal = onDrop(moveResult.dargNode, moveResult.dataSource, dataSource);
       if (retVal !== undefined) {
         if (typeof retVal === 'boolean') {
           if (retVal === true) {
@@ -353,7 +353,7 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
 
         }
 
-        const height = relativeRect.height - (react?.bottom-relativeRect.top)-extraHeight;
+        const height = relativeRect.height - (react?.bottom - relativeRect.top) - extraHeight;
         if (height > 0) {
           const scrollY = height - (paginationHeight) - react.height
           setAutoHeightConfig({ init: true, height, scrollY: scrollY })
@@ -392,9 +392,9 @@ const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
       if (tableDomRef.current?.parentNode) {
         observer = new MutationObserver((mutationList) => {
           if (mutationList.length > 0) {
-           //@ts-ignore
-           const dom:any= tableDomRef.current?.getElementsByClassName('ant-table-wrapper')[0]
-           dom.style["height"]=''
+            //@ts-ignore
+            const dom: any = tableDomRef.current?.getElementsByClassName('ant-table-wrapper')[0]
+            dom.style["height"] = ''
             autoTableHeight(pagination)
           }
 

@@ -15,7 +15,7 @@ import { Schema, useSchemaContext } from '../context';
 import { isObject, isString } from 'lodash';
 import { useSetState } from 'ahooks';
 import { useOutletContext } from '@umijs/renderer-react'
-import {parse} from 'query-string';
+import { parse } from 'query-string';
 import defaultEvents from '../event/DefaultEvents'
 
 import dayjs from "dayjs"
@@ -135,9 +135,9 @@ export default function useEditPage(
   // const _editPageButtons: any[] = [];
   // const toolbar = new ButtonTool();
   const schemaContext = useSchemaContext();
-  const layoutContext = useOutletContext<any>()||{};
- 
-  
+  const layoutContext = useOutletContext<any>() || {};
+
+
   const { location, params } = layoutContext
   // const { service } = config;
   const { pageProps = {}, match } = props;
@@ -243,11 +243,11 @@ export default function useEditPage(
 
     if (getAction() !== Action.ADD) {
       if (config.service && config.service[name]) {
-        let _params = params;
-        if (isObject(record)) {
-            //@ts-ignore
+        let _params = {};
+        if (isObject(record) && Object.keys(record).length > 0) {
           _params = key ? { [key]: record[key] } : record;
         }
+        _params = { ...params, ..._params }
         setLoading(true);
 
         config.service[name](_params).then((res: any) => {

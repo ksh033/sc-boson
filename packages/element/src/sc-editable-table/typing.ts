@@ -1,12 +1,12 @@
 import type { ColumnProps, TableProps } from 'antd/es/table/index';
 import type { FormInstance, FormItemProps } from 'antd';
 import type { ComponentClass, FunctionComponent } from 'react';
-import type { UseEditableUtilType } from './useEditableArray';
-import { ScTableProps } from '../sc-table';
+import type { RecordKey, RowKey, UseEditableUtilType } from './useEditableArray';
+import type { ScTableProps } from '../sc-table';
 
 export type RowEditableType = 'single' | 'multiple';
 export type ParamsType = Record<string, any>;
-export type RecordKey = React.Key | React.Key[];
+
 export type TableRowSelection = TableProps<any>['rowSelection'];
 /** 操作类型 */
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -57,7 +57,7 @@ export type ActionRenderConfig<T, LineConfig = NewLineConfig<T>> = {
   onCancel: RowEditableConfig<T>['onCancel'];
   onDelete?: RowEditableConfig<T>['onDelete'];
   deletePopconfirmMessage: RowEditableConfig<T>['deletePopconfirmMessage'];
-  setEditableRowKeys: (value: React.Key[]) => void;
+  setEditableRowKeys: (value: RowKey[]) => void;
   newLineConfig?: LineConfig;
 } & ActionTypeText<T>;
 

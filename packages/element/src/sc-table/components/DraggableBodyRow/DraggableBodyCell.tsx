@@ -61,8 +61,12 @@ const DraggableBodyCell = (props: DraggableBodyCellType & { children: any; rowIn
   );
 
   //sameDrop(sameRef);
-  nextDrop(nextRef);
-  const nextClassName = isNextOver ? dropNextClassName : '';
+  //如果树单元格支持拖动
+  if (treeDataIndex){
+    nextDrop(nextRef);
+  }
+
+  const nextClassName = isNextOver&&treeDataIndex ? dropNextClassName : '';
   //const sameClassName = isSameOver ? dropSameClassName : '';
 
   return (
