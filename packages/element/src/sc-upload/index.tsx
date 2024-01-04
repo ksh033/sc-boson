@@ -177,12 +177,7 @@ const PicturesGrid: React.FC<Props> = memo(
           props={props}
           onChange={onChange}
           onRemove={onRemove}
-<<<<<<< HEAD
         // onPreview={onPreview}
-=======
-          disableAutoscroll={true}
-          // onPreview={onPreview}
->>>>>>> origin/su-dev
         />
         <Modal
           visible={!!previewImage}

@@ -21,8 +21,11 @@ import { useRefFunction } from '../_util/useRefFunction';
 import type { ActionType, ScTableProps, SorterItem } from './typing';
 import type { FilterValue, TableCurrentDataSource } from 'antd/es/table/interface';
 import { changeCountSort } from './countSort';
+import { emptyRequest } from '../_util/emptyFn'
 
-const { useEffect, useRef, useMemo } = React;
+import { ContainerContext } from '../sc-context'
+
+const { useEffect, useRef, useMemo, useState, useContext } = React;
 
 const ScTable: React.FC<ScTableProps<any>> = (props: ScTableProps<any>) => {
   const {
