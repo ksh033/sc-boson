@@ -5,7 +5,7 @@ import type { TreeSelectProps } from 'antd/es/tree-select/index';
 
 import type { TreeNode } from 'antd/es/tree-select/index';
 
-import {emptyRequest} from '../_util/emptyFn'
+import { emptyRequest } from '../_util/emptyFn'
 import { useDebounceFn, useRequest, useUpdateEffect } from 'ahooks';
 import { SearchOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
@@ -48,11 +48,11 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
     root = null,
     autoload = false,
     nodeTransform = null,
-    request=emptyRequest,
+    request = emptyRequest,
     onLoad,
     loadDataPramsFormat,
     showSearch = false,
-    searchRequest=emptyRequest,
+    searchRequest = emptyRequest,
     searchLoad,
     onSearch,
     allowClear = false,
@@ -67,7 +67,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef<any>();
 
-  const useSearchRequest = useRequest<any,any>(
+  const useSearchRequest = useRequest<any, any>(
     searchRequest,
     {
       manual: true,
@@ -76,7 +76,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
 
 
   const customRequest = useRequest(
-    request ,
+    request,
     {
       manual: true,
     },
@@ -313,7 +313,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
                   onChange={handleSearch}
                   value={input}
                   style={{ width: '100%' }}
-                  allowClear={allowClear || searchInputAllowClear}
+                  allowClear={(allowClear || searchInputAllowClear) as boolean}
                   ref={inputRef}
                 />
               </div>
@@ -338,7 +338,7 @@ const ScTreeSelect: React.FC<ScTreeSelectProps> = (props) => {
     };
   }
   let requestProps = {};
-  if (request!==emptyRequest) {
+  if (request !== emptyRequest) {
     requestProps = {
       loadData: onLoadData,
     };

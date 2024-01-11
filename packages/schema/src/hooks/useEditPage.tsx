@@ -141,7 +141,7 @@ export default function useEditPage(
   const { location, params } = layoutContext
   // const { service } = config;
   const { pageProps = {}, match } = props;
-  let record: any = {};
+  let record: { [key: string]: any } = {};
   if (config.pageType === PageType.modal) {
     record = pageProps.params;
   } else if (location && location.search) {

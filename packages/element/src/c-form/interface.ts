@@ -2,7 +2,7 @@ import type { Rule, FormItemProps } from 'antd/es/form';
 import type { ColProps } from 'antd/es/grid/col';
 import type { Key, ReactNode } from 'react';
 import type { FormInstance, FormProps } from 'antd/es/form';
-
+import React from 'react'
 export declare type FormLayout = 'horizontal' | 'inline' | 'vertical';
 
 export declare type RenderFunction = (val: any) => React.ReactNode;

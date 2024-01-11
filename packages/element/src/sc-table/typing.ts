@@ -9,11 +9,13 @@
 import type { CompareFn, SortOrder } from 'antd/es/table/interface';
 import type { TooltipProps, TabPaneProps } from 'antd';
 import type { CardProps } from 'antd';
-import type { } from 'antd/es/table/interface';
-import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
+//, 
+import type { TablePaginationConfig, TableProps, TableColumnType as ColumnType, TableColumnsType as ColumnsType } from 'antd';
+
+
+export { ColumnsType }
+
 import type { SearchProps } from 'antd/es/input';
-export type { ColumnsType } from 'antd/es/table/InternalTable';
-import type { ColumnType } from 'antd/es/table';
 export type PageInfo = {
   pageSize: number;
   total: number;

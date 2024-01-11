@@ -37,11 +37,8 @@ import {
 } from '@scboson/sc-element';
 
 import { umi, Schema } from './context';
-import type { ScTextAreaProps } from '@scboson/sc-element/es/sc-text-area';
-import type { ScCascaderProps } from '@scboson/sc-element/es/sc-cascader';
-import type { ScSelectProps } from '@scboson/sc-element/es/sc-select';
-import type { ScTreeSelectProps } from '@scboson/sc-element/es/sc-tree-select';
-import type { ScRadioProps } from '@scboson/sc-element/es/sc-radio';
+import type { ScTextAreaProps, ScRadioProps, ScCascaderProps, ScSelectProps, ScTreeSelectProps } from '@scboson/sc-element';
+
 
 const { ScDatePicker, ScRangePicker } = ScDate;
 const { Group: InputGroup } = Input;

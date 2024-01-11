@@ -16,7 +16,7 @@ const useCurrentMenuLayoutProps = (currentMenu: ProSettings) => {
         menuHeaderRender: currentMenu.menuHeaderRender,
         headerRender: currentMenu.headerRender,
         fixSiderbar: currentMenu.fixSiderbar,
-        headerTheme: currentMenu.headerTheme,
+        //  headerTheme: currentMenu.headerTheme,
       }),
     );
   }, [
@@ -27,7 +27,7 @@ const useCurrentMenuLayoutProps = (currentMenu: ProSettings) => {
     currentMenu.menuHeaderRender,
     currentMenu.headerRender,
     currentMenu.fixSiderbar,
-    currentMenu.headerTheme,
+    // currentMenu.headerTheme,
   ]);
   return currentMenuLayoutProps;
 };

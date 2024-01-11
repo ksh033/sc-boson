@@ -4,9 +4,10 @@ import type {
   FormConfig as ScFormConfig,
   FormItemProp as ScFormItemProp,
   FormLayout,
-} from '@scboson/sc-element/es/c-form';
-import type { SearchBarItem } from '@scboson/sc-element/es/sc-search-bar';
-import type { ScProColumnType } from '@scboson/sc-element/es/sc-table';
+  SearchBarItem,
+  ScProColumnType
+} from '@scboson/sc-element';
+
 import type { ButtonProps, ButtonType } from 'antd/es/button';
 import type React from 'react';
 import type { CmpTypes, PropsType } from './register';
@@ -74,8 +75,8 @@ export interface ButtonTypeProps extends ButtonProps {
   serverName?: string;
   // 是否可见
   visible?:
-    | ((value: any, record: any, index: number) => boolean | ButtonTypeProps | React.ReactElement)
-    | boolean;
+  | ((value: any, record: any, index: number) => boolean | ButtonTypeProps | React.ReactElement)
+  | boolean;
   //
   /**
    * 返回true 表示继续 ，false 表示中断, values: 在表单中是表单数据 在页面调整和弹出是对应的参数
@@ -232,7 +233,7 @@ export const ToolButtons: ToolButtonsProps = {
 };
 export const setFuncodes = (toolButtons: any) => {
   Object.keys(toolButtons).forEach((key) => {
-    const newKey=key as  keyof typeof ToolButtons 
+    const newKey = key as keyof typeof ToolButtons
     if (ToolButtons[newKey]) {
       ToolButtons[newKey].funcode = toolButtons[key].funcode;
     }
@@ -292,9 +293,9 @@ export interface ProColumnType<RecordType> extends ScProColumnType<RecordType> {
   inputType?: string;
   props?: any; // 组件的属性
   exportConfig?: boolean | ExcelColumn; //表格列导出配置
- // children?: ScProColumnType<RecordType>;
+  // children?: ScProColumnType<RecordType>;
 }
-export interface ProColumnGroupType<RecordType> extends  Omit<ProColumnType<RecordType>, 'dataIndex'> {
+export interface ProColumnGroupType<RecordType> extends Omit<ProColumnType<RecordType>, 'dataIndex'> {
   children: ProColumns<RecordType>;
 }
 
@@ -396,52 +397,3 @@ export interface ColItem {
   editable?: boolean;
 }
 
-
-
-const pageConfig: PageConfig = {
-  queryConfig: [
-    {
-      label: '时间范围',
-      component: 'BsRangePicker',
-      name: 'time',
-      fieldProps: {
-        required: true,
-      },
-      props: {
-        rulesRequire: true,
-        startTimeFiled: 'beginDate',
-        endTimeFiled: 'endDate',
-        showTime: false,
-        presetType: 'preset1'
-      },
-    },
-    {
-      label: '变动类型',
-      name: 'changeFlowType',
-      component: 'DictSelect',
-      formItemProps: {},
-      props: {
-        allowClear: true,
-        placeholder: '请选择变动类型',
-        dictType: 'eaccountChangeFlowType'
-      },
-    },
-    {
-      label: '会员',
-      name: 'keyword',
-      component: 'Input',
-      props: {
-        placeholder: '请输入会员',
-      },
-    },
-  ],
-  tableConfig: [
- 
-    {
-      title: '变动金额',
-      children:[]
-     
-    },
-   
-  ],
-};

@@ -28,10 +28,10 @@
   },
   "scripts": {
     "build": "father doctor && father build",
-    "build:dev": "father doctor && father dev"
+    "build:dev": "father dev"
   },
   "dependencies": {
-    "@babel/runtime": "^7.18.0",
+    "@babel/runtime": "^7.23.7",
     "@scboson/sc-element": "workspace:*",
     "ahooks": "^3.7.7",
     "dayjs": "^1.11.7",

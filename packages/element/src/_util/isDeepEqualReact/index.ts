@@ -18,7 +18,7 @@ function isDeepEqualReact(a: any, b: any, ignoreKeys?: string[], debug?: boolean
     if (Array.isArray(a)) {
       length = a.length;
       if (length != b.length) return false;
-      for (i = length; i-- !== 0; )
+      for (i = length; i-- !== 0;)
         if (!isDeepEqualReact(a[i], b[i], ignoreKeys, debug)) return false;
       return true;
     }
@@ -42,7 +42,7 @@ function isDeepEqualReact(a: any, b: any, ignoreKeys?: string[], debug?: boolean
       length = a.length;
       // @ts-ignore
       if (length != b.length) return false;
-      for (i = length; i-- !== 0; ) if (a[i] !== b[i]) return false;
+      for (i = length; i-- !== 0;) if (a[i] !== b[i]) return false;
       return true;
     }
 
@@ -56,10 +56,10 @@ function isDeepEqualReact(a: any, b: any, ignoreKeys?: string[], debug?: boolean
     length = keys.length;
     if (length !== Object.keys(b).length) return false;
 
-    for (i = length; i-- !== 0; )
+    for (i = length; i-- !== 0;)
       if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
 
-    for (i = length; i-- !== 0; ) {
+    for (i = length; i-- !== 0;) {
       const key = keys[i];
 
       if (ignoreKeys?.includes(key)) continue;

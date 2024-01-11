@@ -23,7 +23,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@babel/runtime": "^7.21.0",
+    "@babel/runtime": "^7.23.7",
     "@types/jquery": "^3.3.29",
     "clean-webpack-plugin": "^2.0.1",
     "copy-webpack-plugin": "^5.0.1",

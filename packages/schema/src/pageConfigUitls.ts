@@ -298,8 +298,8 @@ const filterSearchConfig = (pageConfig: PageConfig, filter: SearchFilterProp) =>
     typeConfigCopy.forEach((item: FormSearchItem) => {
       const { component, props } = item;
       // 查找注册组建
-      
-      if (component && typeof component=="string" && cmps[component]) {
+
+      if (component && typeof component == "string" && cmps[component]) {
         item.component = cmps[component];
       }
       if (Array.isArray(item.children) && item.children.length > 0) {

@@ -48,7 +48,7 @@ export function EditPage<P extends object & { scope: UseEditPageProp<any> }, TRe
     if (ref && Object.keys(ref).length > 0) {
       props = { ...props, ref };
     }
-    const newCmp = React.createElement(baseComponent, props);
+    const newCmp: any = React.createElement(baseComponent, props);
     const { umi } = useSchemaContext();
     const Provider = umi.ModelProvider || React.Fragment;
     return (

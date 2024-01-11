@@ -12,6 +12,7 @@ import useMergedState from 'rc-util/es/hooks/useMergedState';
 import type { CheckboxProps } from 'antd/es/checkbox';
 import { useRefFunction } from '../_util/useRefFunction';
 import { useRequest } from 'ahooks';
+import { emptyRequest } from '../_util/emptyFn';
 
 export interface AreaDataProps {
   areaCode: string;
@@ -56,12 +57,13 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
     onChange: props.onChange,
   });
 
-  const newReq = useRequest(
-    request ||
-    new Promise((resolve) => {
-      resolve(null);
-    }),
+
+
+  const newReq = useRequest<any, any>(
+    request || emptyRequest
+    ,
     {
+
       manual: true,
     },
   );
@@ -365,7 +367,7 @@ const ScSelectTable: FC<ScSelectTableProps> = (props) => {
   return (
     <ScSelect
       {...restProps}
-      request={newReq.run}
+      request={newReq.runAsync}
       valueField={valueField}
       textField={textField}
       value={newValue}

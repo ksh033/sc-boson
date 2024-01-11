@@ -1,7 +1,7 @@
 import './index.less';
 import Icon, { createFromIconfontCN } from '@ant-design/icons';
 import { Menu } from 'antd';
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useMemo, useContext } from 'react';
 import classNames from 'classnames';
 import useMergedState from 'rc-util/es/hooks/useMergedState';
 import { isUrl, isImg } from '@ant-design/pro-utils';
@@ -13,6 +13,7 @@ import type { MenuDataItem, MessageDescriptor, Route, RouterTypes, WithFalse } f
 import MenuCounter from './Counter';
 import type { PrivateSiderMenuProps } from './SiderMenu';
 import PageLoading from '../PageLoading';
+import { ProProvider } from '@ant-design/pro-provider';
 
 // todo
 export type MenuMode = 'vertical' | 'vertical-left' | 'vertical-right' | 'horizontal' | 'inline';
@@ -53,7 +54,7 @@ export type BaseMenuProps = {
     ) => React.ReactNode
   >;
   postMenuData?: (menusData?: MenuDataItem[]) => MenuDataItem[];
-} & Partial<RouterTypes<Route>> &
+} & Partial<RouterTypes> &
   Omit<MenuProps, 'openKeys' | 'onOpenChange' | 'title'> &
   Partial<ProSettings>;
 
@@ -242,13 +243,13 @@ const BaseMenu: React.FC<BaseMenuProps & PrivateSiderMenuProps> = (props) => {
     collapsed,
     selectedKeys: propsSelectedKeys,
     onSelect,
-    headerHeight,
+    //headerHeight,
     openKeys: propsOpenKeys,
   } = props;
 
   // 用于减少 defaultOpenKeys 计算的组件
   const defaultOpenKeysRef = useRef<string[]>([]);
-
+  const { token } = useContext(ProProvider);
   const { flatMenuKeys } = MenuCounter.useContainer();
   const [defaultOpenAll, setDefaultOpenAll] = useState(menu?.defaultOpenAll);
 
@@ -272,10 +273,10 @@ const BaseMenu: React.FC<BaseMenuProps & PrivateSiderMenuProps> = (props) => {
     value: propsSelectedKeys,
     onChange: onSelect
       ? (keys) => {
-          if (onSelect && keys) {
-            onSelect(keys as any);
-          }
+        if (onSelect && keys) {
+          onSelect(keys as any);
         }
+      }
       : undefined,
   });
 
@@ -349,16 +350,16 @@ const BaseMenu: React.FC<BaseMenuProps & PrivateSiderMenuProps> = (props) => {
   const finallyData = props.postMenuData ? props.postMenuData(menuData) : menuData;
 
   //if (finallyData && finallyData?.length < 1) {
-  //return null;
+  //return null;  height: token.layout?.header?.heightLayoutHeader || 56
   // }
   return (
     <div className={'secondary-menu'}>
       <h2
         className={'secondary-sidebar-title'}
         style={{
-          height: headerHeight,
-          flex: `0 0 ${headerHeight}`,
-          lineHeight: `${headerHeight}px`,
+          height: token.layout?.header?.heightLayoutHeader || 48,
+          flex: `0 0 ${token.layout?.header?.heightLayoutHeader || 48}`,
+          lineHeight: `${token.layout?.header?.heightLayoutHeader || 48}px`,
         }}
       >
         {'默认菜单'}

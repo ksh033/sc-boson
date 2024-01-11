@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form } from 'antd';
 import type { ButtonProps } from 'antd/es/button/index';
-import type { TablePaginationConfig, TableProps } from 'antd/es/table/Table';
+import type { TablePaginationConfig, TableProps } from 'antd';
 import React, { useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import type { ActionType, ProTableProps } from './typing';
 import {
@@ -685,7 +685,7 @@ function EditableTable<T extends Record<string, any>>(props: EditableProTablePro
   useDeepCompareEffectDebounce(() => {
     if (divRef.current == null) return;
     container.tableContainerRef.current = divRef.current
-    targetElement = getTargetElement(divRef.current, window)!;
+    targetElement = getTargetElement<TargetElement>(divRef.current, window)!;
     if (!targetElement.addEventListener || !isNeCell) {
       return;
     }

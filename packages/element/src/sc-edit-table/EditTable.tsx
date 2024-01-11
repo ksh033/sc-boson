@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useRef, useMemo } from 'react';
 import { useUpdateEffect } from 'ahooks';
 import { Input, Form, Table } from 'antd';
-import { TableProps } from 'antd/es/table/Table';
+import { TableProps } from 'antd';
 
 const EditableContext = React.createContext<any>({});
 

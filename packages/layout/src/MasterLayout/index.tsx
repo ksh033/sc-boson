@@ -677,12 +677,13 @@ const BaseProLayout = React.forwardRef((props: ProLayoutProps, ref) => {
               theme={{
                 hashed: isNeedOpenHash(),
                 token: {
-
+                  controlHeightLG:
+                    token.layout?.sider?.menuHeight || token?.controlHeightLG,
                 },
                 components: {
 
                   Menu: coverToNewToken({
-                    colorMenuBackground: "#fff",
+                    //colorMenuBackground: "#fff",
                     colorItemBg:
                       token?.layout?.sider?.colorMenuBackground ||
                       'transparent',
@@ -690,9 +691,9 @@ const BaseProLayout = React.forwardRef((props: ProLayoutProps, ref) => {
                       token?.layout?.sider?.colorMenuBackground ||
                       'transparent',
                     radiusItem: 4,
-                    controlHeightLG:
-                      token?.layout?.sider?.menuHeight ||
-                      token?.controlHeightLG,
+                    // controlHeightLG:
+                    //   token?.layout?.sider?.menuHeight ||
+                    //   token?.controlHeightLG,
                     itemHoverBg: '#f7f7f7',
                     colorItemBgSelected: 'rgba(21,91,212,.08)',
                     // token?.layout?.sider?.colorBgMenuItemSelected ||
@@ -713,11 +714,16 @@ const BaseProLayout = React.forwardRef((props: ProLayoutProps, ref) => {
                     // token?.layout?.sider?.colorTextMenuActive ||
                     // 'rgba(0, 0, 0, 0.85)',
                     colorItemTextSelected: '#155bd4',
+                    popupBg: token?.colorBgElevated,
+                    subMenuItemBg: token?.colorBgElevated,
+                    darkSubMenuItemBg: 'transparent',
+                    // @ts-expect-error
+                    darkPopupBg: token?.colorBgElevated,
                     // token?.layout?.sider?.colorTextMenuSelected ||
                     // 'rgba(0, 0, 0, 1)',
-                    colorBgElevated:
-                      token?.layout?.sider?.colorBgMenuItemCollapsedElevated ||
-                      '#fff',
+                    // colorBgElevated:
+                    // token?.layout?.sider?.colorBgMenuItemCollapsedElevated ||
+                    // '#fff',
                   }),
                 },
               }}

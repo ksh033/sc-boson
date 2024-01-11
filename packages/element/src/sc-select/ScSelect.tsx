@@ -379,7 +379,7 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
                   onChange={handleSearch}
                   value={input}
                   style={{ width: '100%' }}
-                  allowClear={allowClear}
+                  allowClear={allowClear as boolean}
                   ref={inputRef}
                 />
               </div>
@@ -401,10 +401,10 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
   /** 数据格式化处理 */
   const formatValue = (item: any) => {
     if (props.labelInValue === true && item != null) {
-      if (typeof item==="string"){
-        return  {
+      if (typeof item === "string") {
+        return {
           label: item,
-          key:item,
+          key: item,
           value: item
         }
       }
@@ -413,12 +413,12 @@ const ScSelect: React.FC<ScSelectProps> = (props) => {
         value: item[valueField] || item.value,
       };
     }
-   
+
 
     return item;
   };
-  
-  let newVal=value === null ? undefined : formatValue(value)
+
+  let newVal = value === null ? undefined : formatValue(value)
   const onHandleClear = () => {
     setInput('');
     inputValRef.current = '';
