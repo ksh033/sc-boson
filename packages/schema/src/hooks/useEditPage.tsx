@@ -14,10 +14,9 @@ import FormInfo from '../page/FormInfo';
 import { Schema, useSchemaContext } from '../context';
 import { isObject, isString } from 'lodash';
 import { useSetState } from 'ahooks';
-import { useOutletContext } from '@umijs/renderer-react'
+import { useOutletContext } from 'react-router-dom';
 import { parse } from 'query-string';
 import defaultEvents from '../event/DefaultEvents'
-
 import dayjs from "dayjs"
 
 // import ButtonTool from '../page/OpColButton';

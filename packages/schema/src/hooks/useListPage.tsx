@@ -14,8 +14,8 @@ import SearchInfo from '../page/SearchInfo';
 import _ from 'lodash';
 import schema from '../pageConfigUitls';
 import { omitUndefinedAndEmptyArr } from '../index';
-import { useOutletContext } from '@umijs/renderer-react';
-import {parse} from 'query-string';
+import { useOutletContext } from 'react-router-dom';
+import { parse } from 'query-string';
 //import type { ActionType } from '@scboson/sc-element/es/sc-table/typing';
 import defaultEvents from '../event/DefaultEvents'
 export type { PageConfig, PageType };
@@ -88,7 +88,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const searchForm = useRef<any>();
   // 查询表格保存表单
   const saveRef = useRef<any>();
-  const layoutContext = useOutletContext<any>()||{};
+  const layoutContext = useOutletContext<any>() || {};
   const { location } = layoutContext
   const filterRef = useRef<any>({});
   const submitRef = useRef<any>({});
@@ -106,7 +106,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
     const searchParam = JSON.parse(sessionStorage.getItem('SEARCH_PARAMS') || '{}');
     return searchParam[key];
   };
-  defaultEvents.setHistory(  schemaContext.umi.history)
+  defaultEvents.setHistory(schemaContext.umi.history)
 
   const [pageData, setPageData] = useSetState<any>({});
 
@@ -258,7 +258,7 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
       callback: undefined,
       action: undefined,
     };
-    const initParams_:any = {};
+    const initParams_: any = {};
     // const action = this.action;
     const searchInfo = schema.getSearchInfo(config, tableKey, callback, '');
     let newSearchInfo: any = [];
@@ -454,10 +454,10 @@ export default function ListPage<S>(config: PageConfig, props: any): UseListPage
   const getPageParam = () => {
     // @ts-ignore
     if (location) {
-      const {query,search}=location
-      let temparm=query||search
-      if (typeof temparm=="string"){
-        temparm= parse(temparm)
+      const { query, search } = location
+      let temparm = query || search
+      if (typeof temparm == "string") {
+        temparm = parse(temparm)
       }
       // @ts-ignore
       return temparm;

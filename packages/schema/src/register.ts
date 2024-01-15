@@ -25,7 +25,6 @@ import type { InputNumberProps } from 'antd/es/input-number';
 import type { SwitchProps } from 'antd/es/switch';
 import type { UploadProps } from 'antd/es/upload';
 import type { CascaderProps } from 'antd/es/cascader';
-
 import {
   ScCascader,
   ScSelect,
@@ -35,7 +34,6 @@ import {
   ScRadio,
   ScTextArea,
 } from '@scboson/sc-element';
-
 import { umi, Schema } from './context';
 import type { ScTextAreaProps, ScRadioProps, ScCascaderProps, ScSelectProps, ScTreeSelectProps } from '@scboson/sc-element';
 
@@ -67,7 +65,6 @@ export const cmps: Record<string, any> = {
   InputGroup: InputGroup,
   TimePicker: TimePicker,
 };
-
 export type CmpPropsTypes = {
   Input: InputProps;
   ScTextArea: ScTextAreaProps;

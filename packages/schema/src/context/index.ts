@@ -23,8 +23,8 @@ export interface SchemaContextProp {
 
 export const Schema: SchemaContextProp = {
   umi,
-  dataTypeFormat: () => {},
-  dictFormat: () => {},
+  dataTypeFormat: () => { },
+  dictFormat: () => { },
   tableOpColCmp: null,
 };
 

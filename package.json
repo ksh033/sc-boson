@@ -1,31 +1,12 @@
 {
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/element",
+    "packages/schema"
   ],
   "scripts": {
-    "bootstrap": "node ./scripts/bootstrap.js",
     "build": "pnpm --filter=\"@scboson/**\" build",
-    "build:dev": "pnpm --parallel  --filter=\"@scboson/**\"  build:dev",
-    "changelog": "pro-changelog",
-    "check-deps": "node ./scripts/checkDeps.js",
-    "createRelease": "node ./scripts/createRelease.js",
-    "deploy": "npm run site && gh-pages -d ./dist",
-    "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx  --fix --format=pretty ./packages && npm run lint:prettier",
-    "lint:prettier": "npm run prettier &&  git diff && prettier --version && prettier --check \"packages/**/**.{js,jsx,tsx,ts,less,md,json}\" --end-of-line auto",
-    "prettier": "prettier --write \"**/**.{js,jsx,tsx,ts,less,md,json}\"",
-    "release": "node ./scripts/release.js  --conventional-prerelease",
-    "site": "dumi build",
-    "size": "npm run build && size-limit",
-    "size:build": "cross-env PRO_COMPONENTS_CI='CI' webpack",
-    "start": "dumi dev",
-    "sync:tnpm": "node -e 'require(\"./scripts/syncTNPM\")()'",
-    "test": "node ./scripts/test.js",
-    "test:coverage": "umi-test --coverage",
-    "test:update": "umi-test --updateSnapshot",
-    "tsc": "tsc --noEmit",
-    "tsc:duplicate": "tsc -p ./tests/tsconfig.duplicate.json",
-    "update:deps": "yarn upgrade"
+    "build:test": "pnpm   --filter=\"@scboson/sc-element\" --filter=\"@scboson/sc-schema\"  build:dev"
   },
   "browserslist": [
     "last 2 versions",
@@ -77,15 +58,10 @@
     "@types/shallowequal": "^1.1.1",
     "@types/warning": "^3.0.0",
     "@types/xhr-mock": "^2.0.0",
-    "@umijs/babel-preset-umi": "^3.5.41",
-    "@umijs/doctor": "^1.0.5",
-    "@umijs/fabric": "^3.0.0",
-    "@umijs/lint": "^4.0.74",
+    "@umijs/fabric": "^4.0.1",
+    "@umijs/lint": "^4.1.0",
     "@umijs/plugin-analytics": "^0.2.3",
-    "@umijs/renderer-react": "^4.0.74",
-    "@umijs/test": "^3.5.41",
-    "@umijs/test-utils": "^3.5.41",
-    "@umijs/utils": "^4.0.74",
+    "@umijs/utils": "^4.1.0",
     "ahooks": "^3.7.8",
     "antd": "^5.6.1",
     "antd-style": "beta",
@@ -139,8 +115,6 @@
     "stylelint": "^13.13.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
-    "umi": "^4.0.74",
-    "umi-request": "^1.4.0",
     "use-media-antd-query": "^1.1.0",
     "use-merge-value": "^1.2.0"
   },
